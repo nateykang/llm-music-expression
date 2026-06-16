@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+
+# Env
+.env
+
+# Soundfonts (large; downloaded via scripts/setup_soundfont.sh)
+soundfonts/*.sf2
+soundfonts/*.sf3
+
+# music21 / OS scratch
+.DS_Store
+*.mid
+/tmp_scratch/

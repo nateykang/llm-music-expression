@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>How do LLMs express themselves musically?</title>
+  <!-- Verovio: in-browser music engraving (WASM). -->
+  <script src="https://www.verovio.org/javascript/latest/verovio-toolkit-wasm.js" defer></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>How do LLMs express themselves musically?</h1>
+    <p class="sub">
+      Each piece was generated once by a language model, asked only to express
+      itself. Notation is engraved live in your browser with Verovio.
+      A rebuild of <a href="https://github.com/sara-fish/llm-musical-self-expression">sara-fish/llm-musical-self-expression</a>.
+    </p>
+  </header>
+
+  <nav class="controls">
+    <label>Batch
+      <select id="batch"></select>
+    </label>
+    <label>Prompt
+      <select id="prompt"></select>
+    </label>
+    <label>Model
+      <select id="model"></select>
+    </label>
+  </nav>
+
+  <main>
+    <section id="meta">
+      <h2 id="title">—</h2>
+      <p id="short" class="short"></p>
+      <audio id="audio" controls></audio>
+      <p id="audio-note" class="note" hidden>No pre-rendered audio for this piece.</p>
+      <details id="long-wrap">
+        <summary>Model's reflection</summary>
+        <p id="long"></p>
+      </details>
+      <p id="status" class="note"></p>
+    </section>
+    <section id="score" aria-label="engraved score"></section>
+  </main>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
