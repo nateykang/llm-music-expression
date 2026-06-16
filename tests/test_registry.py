@@ -14,6 +14,14 @@ def test_get_client_builds_named_client():
     assert hasattr(client, "complete")
 
 
+def test_openai_client_builds_without_key():
+    # Construction is lazy: no key needed until .complete() is called.
+    client = get_client("gpt-4.1")
+    assert client.name == "gpt-4.1"
+    assert client.model_id == "gpt-4.1"
+    assert hasattr(client, "complete")
+
+
 def test_unknown_model_raises():
     try:
         get_client("does-not-exist")

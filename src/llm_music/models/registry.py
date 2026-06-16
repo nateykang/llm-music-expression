@@ -10,12 +10,18 @@ from __future__ import annotations
 from .base import LLMClient
 
 # friendly id -> (provider, provider-specific model id)
+# The model id on the right must match exactly what your account/org exposes;
+# adjust to taste. Run `llm-music models` to see what's registered.
 MODEL_REGISTRY: dict[str, tuple[str, str]] = {
+    # Anthropic
     "opus-4.8": ("anthropic", "claude-opus-4-8"),
     "sonnet-4.6": ("anthropic", "claude-sonnet-4-6"),
-    # Add the newest model here, e.g.:
+    # OpenAI (rename/extend to whatever your org grants you)
+    "gpt-5.2": ("openai", "gpt-5.2"),
+    "gpt-4.1": ("openai", "gpt-4.1"),
+    "o3": ("openai", "o3"),
+    # Add the newest model here as a one-liner, e.g.:
     # "haiku-4.5": ("anthropic", "claude-haiku-4-5-20251001"),
-    # "gpt-5.2":   ("openai", "gpt-5.2"),                 # needs models/openai.py
     # "gemini-3-pro": ("openrouter", "google/gemini-3-pro"),  # needs models/openrouter.py
 }
 
@@ -38,7 +44,8 @@ def _build_client(name: str, provider: str, model_id: str) -> LLMClient:
         from .anthropic import AnthropicClient
 
         return AnthropicClient(name=name, model_id=model_id)
-    # elif provider == "openai":
-    #     from .openai import OpenAIClient
-    #     return OpenAIClient(name=name, model_id=model_id)
+    if provider == "openai":
+        from .openai import OpenAIClient
+
+        return OpenAIClient(name=name, model_id=model_id)
     raise ValueError(f"No adapter for provider '{provider}' (model '{name}').")

@@ -7,6 +7,7 @@ requires-python = ">=3.11"
 dependencies = [
     "music21>=9.1",
     "anthropic>=0.40",
+    "openai>=1.50",
     "python-dotenv>=1.0",
 ]
 

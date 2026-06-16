@@ -78,8 +78,13 @@ Append one line to [`MODEL_REGISTRY`](src/llm_music/models/registry.py):
 "haiku-4.5": ("anthropic", "claude-haiku-4-5-20251001"),
 ```
 
-A new **provider** (OpenAI, OpenRouter, Ollama) = a new adapter module implementing
-the `LLMClient` protocol ([`base.py`](src/llm_music/models/base.py)) plus a branch in
+**Anthropic** and **OpenAI** adapters ship in the box. The OpenAI one
+([`openai.py`](src/llm_music/models/openai.py)) uses the Responses API, so it covers
+both standard chat models (`gpt-4.1`, `gpt-4o`) and reasoning models (`o3`, GPT-5-class)
+— set `OPENAI_API_KEY` in `.env` and adjust the registry ids to whatever your org grants.
+
+A further **provider** (OpenRouter, Ollama, …) = a new adapter module implementing the
+`LLMClient` protocol ([`base.py`](src/llm_music/models/base.py)) plus a branch in
 `_build_client`. Nothing else changes.
 
 ## Safety note
