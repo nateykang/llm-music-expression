@@ -5,8 +5,8 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SF_DIR="$ROOT/soundfonts"
-SF_PATH="$SF_DIR/FluidR3_GM.sf2"
-SF_URL="https://archive.org/download/fluidr3-gm-gs/FluidR3_GM.sf2"
+SF_PATH="$SF_DIR/GeneralUser-GS.sf2"
+SF_URL="https://github.com/mrbumpy409/GeneralUser-GS/raw/main/GeneralUser-GS.sf2"
 
 if ! command -v fluidsynth >/dev/null 2>&1; then
   echo "FluidSynth not found."

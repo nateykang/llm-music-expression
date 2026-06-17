@@ -15,11 +15,69 @@ from .config import find_soundfont
 
 
 def write_score(score, midi_path: Path, musicxml_path: Path) -> None:
-    """Write a music21 Score to MIDI and MusicXML (used by ABC mode)."""
+    """Write a music21 Score to MIDI and MusicXML (used by ABC mode).
+
+    music21's ABC export is fragile in two ways that otherwise burn generation
+    retries:
+      1. the parser inserts the same context object (e.g. a TimeSignature) into
+         two Streams, so ``.write()`` raises "already found in this Stream";
+      2. multi-voice ABC can yield Parts without Measure objects, so MIDI's
+         repeat expansion raises "cannot process repeats on Stream that does not
+         have measures".
+
+    We try a direct write first, and on failure fall back to a normalized
+    variant: dedupe duplicate instances, run ``makeNotation`` to guarantee
+    measures, and (for MIDI only) strip repeats so playback export can't choke.
+    Repeats are kept in the engraved MusicXML.
+    """
     midi_path.parent.mkdir(parents=True, exist_ok=True)
     musicxml_path.parent.mkdir(parents=True, exist_ok=True)
-    score.write("midi", fp=str(midi_path))
-    score.write("musicxml", fp=str(musicxml_path))
+
+    _write_one(score, "musicxml", musicxml_path, strip_repeats=False)
+    _write_one(score, "midi", midi_path, strip_repeats=True)
+
+
+def _write_one(score, fmt: str, path: Path, strip_repeats: bool) -> None:
+    try:
+        score.write(fmt, fp=str(path))
+        return
+    except Exception:
+        safe = _normalize_for_export(score, strip_repeats=strip_repeats)
+        safe.write(fmt, fp=str(path))  # let a second failure propagate
+
+
+def _normalize_for_export(score, strip_repeats: bool):
+    """Return an export-safe deepcopy: deduped, measured, optionally repeat-free."""
+    import copy
+
+    clean = copy.deepcopy(score)
+
+    # (1) Drop duplicate object *instances* (deepcopy keeps shared refs shared).
+    seen: set[int] = set()
+    for container in clean.recurse(streamsOnly=True, includeSelf=True):
+        for el in list(container):
+            if id(el) in seen:
+                container.remove(el)
+            else:
+                seen.add(id(el))
+
+    # (2) Strip repeat marks/barlines so MIDI export won't try to expand them.
+    if strip_repeats:
+        from music21 import bar, repeat
+
+        for el in list(clean.recurse().getElementsByClass(repeat.RepeatMark)):
+            if el.activeSite is not None:
+                el.activeSite.remove(el)
+        for b in list(clean.recurse().getElementsByClass(bar.Repeat)):
+            if b.activeSite is not None:
+                b.activeSite.remove(b)
+
+    # (3) Guarantee measures exist.
+    try:
+        clean = clean.makeNotation(inPlace=False)
+    except Exception:
+        pass
+    return clean
 
 
 def audio_available() -> bool:
@@ -34,12 +92,15 @@ def midi_to_audio(midi_path: Path, audio_path: Path, timeout: int = 120) -> bool
         return False
 
     audio_path.parent.mkdir(parents=True, exist_ok=True)
-    # FluidSynth picks output format from the extension (.ogg / .wav).
+    # Force Ogg/Vorbis (-T oga): FluidSynth otherwise defaults to uncompressed
+    # WAV regardless of extension (~13 MB/min vs ~0.5 MB/min compressed).
     cmd = [
         fluidsynth,
         "-ni",
         "-F",
         str(audio_path),
+        "-T",
+        "oga",
         "-r",
         "44100",
         str(soundfont),
