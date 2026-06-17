@@ -16,7 +16,8 @@ MODEL_REGISTRY: dict[str, tuple[str, str]] = {
     # Anthropic
     "opus-4.8": ("anthropic", "claude-opus-4-8"),
     "sonnet-4.6": ("anthropic", "claude-sonnet-4-6"),
-    # OpenAI (rename/extend to whatever your org grants you)
+    # OpenAI (confirmed available on this org; extend as new ones ship)
+    "gpt-5.5": ("openai", "gpt-5.5"),
     "gpt-5.2": ("openai", "gpt-5.2"),
     "gpt-4.1": ("openai", "gpt-4.1"),
     "o3": ("openai", "o3"),
