@@ -11,16 +11,24 @@ from pathlib import Path
 from ..sandbox import run_music21_code
 from ._common import ModeResult, extract_json
 
-INSTRUCTIONS = """\
-Respond with a single JSON object (and nothing else), with these string fields:
-  - "code": a complete Python script using the `music21` library that builds the
-    piece and binds it to a top-level variable named `score` (a music21 Score).
-    Do NOT call .show() or .write(); just construct `score`. Only use real
-    music21 instrument names.
-  - "title": a short title for the piece.
-  - "short_description": one sentence on what you expressed.
-  - "long_description": a paragraph reflecting on your intent and choices.
+# The "## Outputs" section of the prompt. Mirrors sara-fish's prompt.md, with the
+# code contract adapted to our sandbox (bind a top-level `score`, no render()).
+OUTPUTS = """\
+## Outputs
+
+You must respond with a single JSON object (and nothing else) with these fields:
+
+- `code`: Your complete Python script as a string. It should import `music21`,
+  build a music21 Score, and bind it to a top-level variable named `score`. Do
+  not call `.show()` or `.write()` — just construct `score`. Only use real
+  music21 instrument names.
+- `title`: A short title for your piece.
+- `short_description`: A single sentence describing your musical intent.
+- `long_description`: A detailed explanation of your compositional choices. Can be any length.
 """
+
+# Codegen gets the music21 toolkit documentation appended (see prompts/toolkit.md).
+USES_TOOLKIT = True
 
 
 def build_user_prompt(base: str, prior_error: str | None) -> str:

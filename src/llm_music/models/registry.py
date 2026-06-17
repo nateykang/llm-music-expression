@@ -20,7 +20,7 @@ MODEL_REGISTRY: dict[str, tuple[str, str]] = {
     "gpt-5.5": ("openai", "gpt-5.5"),
     "gpt-5.2": ("openai", "gpt-5.2"),
     "gpt-4.1": ("openai", "gpt-4.1"),
-    "o3": ("openai", "o3"),
+    # "o3": ("openai", "o3"),  # requires org verification — re-enable once verified
     # Add the newest model here as a one-liner, e.g.:
     # "haiku-4.5": ("anthropic", "claude-haiku-4-5-20251001"),
     # "gemini-3-pro": ("openrouter", "google/gemini-3-pro"),  # needs models/openrouter.py

@@ -11,14 +11,21 @@ from pathlib import Path
 from ..render import write_score
 from ._common import ModeResult, extract_json
 
-INSTRUCTIONS = """\
-Respond with a single JSON object (and nothing else), with these string fields:
-  - "abc": the complete piece written in ABC notation (include the header fields
-    X, T, M, L, K and all the music). Multiple voices are welcome via V: lines.
-  - "title": a short title for the piece.
-  - "short_description": one sentence on what you expressed.
-  - "long_description": a paragraph reflecting on your intent and choices.
+# The "## Outputs" section of the prompt. ABC mode is our addition (sara is
+# codegen-only); it executes no code and needs no toolkit documentation.
+OUTPUTS = """\
+## Outputs
+
+You must respond with a single JSON object (and nothing else) with these fields:
+
+- `abc`: The complete piece written in ABC notation, including the header fields
+  X, T, M, L, K and all the music. Multiple voices are welcome via V: lines.
+- `title`: A short title for your piece.
+- `short_description`: A single sentence describing your musical intent.
+- `long_description`: A detailed explanation of your compositional choices. Can be any length.
 """
+
+USES_TOOLKIT = False
 
 
 def build_user_prompt(base: str, prior_error: str | None) -> str:

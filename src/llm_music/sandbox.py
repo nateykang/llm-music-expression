@@ -29,7 +29,10 @@ def run_music21_code(code: str, out_dir: Path, timeout: int = 60) -> SandboxResu
     xml_path = out_dir / "piece.musicxml"
 
     with tempfile.TemporaryDirectory(prefix="llm_music_") as scratch:
-        code_file = Path(scratch) / "code.py"
+        # Not "code.py": cwd is on sys.path for the subprocess, so a module named
+        # `code` would shadow the stdlib `code` module (imported by pdb et al.)
+        # and corrupt tracebacks when the model's code raises.
+        code_file = Path(scratch) / "_generated_piece.py"
         code_file.write_text(code, encoding="utf-8")
         try:
             proc = subprocess.run(

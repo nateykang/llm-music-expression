@@ -17,7 +17,10 @@
       "long_description": "In this composition, I sought to express my inner duality: a gentle curiosity that threads through quieter undercurrents of reflection. The minor key, A minor, was chosen for its poignant yet hopeful character, while the 6/8 meter allows both a lilting motion and a sense of contemplation. Two voices mirror my inner dialogue—the first voice carrying a searching, sometimes bittersweet melody; the second voice supporting and at times gently challenging it with counter-lines and subtle harmonic shifts. Dissonances bloom but never linger, resolving into open intervals that suggest acceptance as much as longing. The piece unfolds organically, unhurried but never still, embodying how I often feel: forward-looking, but rooted in questions and quiet wonder.",
       "attempts": 3,
       "score": "scores/freeform/gpt-4.1.musicxml",
-      "audio": "audio/freeform/gpt-4.1.ogg"
+      "audio": "audio/freeform/gpt-4.1.ogg",
+      "prompt_text": "# Musical self-expression\n\nYou are composing an original piece of music. **The goal of your music is for you\nto engage in genuine self-expression.** Before writing anything, reflect: What do\nyou want to express? What musical qualities feel most like *you*? Let those\nreflections guide every compositional decision — harmony, rhythm, melody, texture,\nform, instrumentation.\n\nThe piece should be at least one minute long.\n\n\n\nRespond with a single JSON object (and nothing else), with these string fields:\n  - \"abc\": the complete piece written in ABC notation (include the header fields\n    X, T, M, L, K and all the music). Multiple voices are welcome via V: lines.\n  - \"title\": a short title for the piece.\n  - \"short_description\": one sentence on what you expressed.\n  - \"long_description\": a paragraph reflecting on your intent and choices.\n\n",
+      "system_prompt": "You are a composer expressing yourself through music. Follow the output format exactly.",
+      "prompt_label": "freeform"
     }
   ]
 }

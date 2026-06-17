@@ -26,6 +26,22 @@ h1 { font-size: 1.7rem; margin: 0 0 .3rem; }
   font-size: 1rem; padding: .4rem .5rem; border: 1px solid var(--border);
   border-radius: 6px; background: var(--card); min-width: 12rem;
 }
+#prompt-panel { max-width: 920px; margin: 0 auto .5rem; padding: 0 1.5rem; }
+#prompt-panel > summary { cursor: pointer; color: var(--accent); font-size: .9rem; }
+#prompt-panel .tag {
+  display: inline-block; margin-left: .5rem; padding: .05rem .45rem; border-radius: 999px;
+  background: var(--border); color: var(--muted); font-size: .72rem; vertical-align: middle;
+}
+#prompt-panel .prompt-body {
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.25rem; margin-top: .6rem;
+}
+#prompt-panel pre {
+  white-space: pre-wrap; word-break: break-word; margin: .25rem 0 1rem;
+  font: .82rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--fg);
+}
+#prompt-panel pre:last-child { margin-bottom: 0; }
+
 main { max-width: 920px; margin: 0 auto; padding: 0 1.5rem 4rem; }
 #meta { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; }
 #title { margin: 0 0 .25rem; font-size: 1.3rem; }
@@ -39,3 +55,22 @@ summary { cursor: pointer; color: var(--accent); }
   padding: 1rem; overflow-x: auto; min-height: 200px;
 }
 #score svg { max-width: 100%; height: auto; }
+
+/* compare-models view */
+.controls .toggle { flex-direction: row; align-items: center; gap: .4rem; }
+.controls .toggle input { width: 1rem; height: 1rem; }
+#compare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.25rem;
+  align-items: start;
+}
+.compare-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+}
+.compare-card .model-name { margin: 0; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--accent); }
+.compare-card .piece-title { margin: .15rem 0 .5rem; font-size: 1.15rem; font-weight: 600; }
+.compare-card audio { width: 100%; margin: .25rem 0; }
+.compare-card .compare-score { margin-top: 1rem; overflow-x: auto; }
+.compare-card .compare-score svg { max-width: 100%; height: auto; }

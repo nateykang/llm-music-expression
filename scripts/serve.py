@@ -18,7 +18,15 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 
 
 class RangeHandler(SimpleHTTPRequestHandler):
-    """SimpleHTTPRequestHandler + minimal single-range (bytes=start-end) support."""
+    """SimpleHTTPRequestHandler + minimal single-range (bytes=start-end) support.
+
+    Also disables caching: this is a dev server, so we always want the freshest
+    edits without forcing a hard refresh. (Real static hosts cache normally.)
+    """
+
+    def end_headers(self):
+        self.send_header("Cache-Control", "no-store, must-revalidate")
+        super().end_headers()
 
     def send_head(self):
         rng = self.headers.get("Range")

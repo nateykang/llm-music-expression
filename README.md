@@ -52,14 +52,32 @@ engraves them — only the pre-baked audio is skipped.
 llm-music models                                    # list registered models
 
 # one piece
-llm-music run --model sonnet-4.6 --prompt freeform --mode abc
+llm-music run --model sonnet-4.6 --prompt free-form --mode abc
 
 # a matrix (the original's batch-and-bake)
 llm-music batch --models opus-4.8,sonnet-4.6 \
-                --prompts freeform,fugue,string-quartet --mode codegen
+                --prompts free-form,fugue,string-quartet --mode codegen
 ```
 
-Output lands in `docs/data/<timestamp>__models_N_prompts_M/`.
+Output lands in `docs/data/<timestamp>__models_N_prompts_M/`. The batch folder and
+its `data.json` are written incrementally — one piece at a time — so an interrupted
+run still leaves a valid, viewable partial batch.
+
+### Prompts
+
+Prompts mirror [sara-fish's set](https://github.com/sara-fish/llm-musical-self-expression)
+verbatim. The shared frame lives in [`prompts/prompt.md`](prompts/prompt.md); the
+eleven form/structure instructions are one row each in
+[`prompts/form_instructions.csv`](prompts/form_instructions.csv):
+
+```
+free-form · piano-piece · harp-piece · western-harmony · fugue · stab-voicing
+string-quartet · orchestral · melody-accomp · modern · postmodern
+```
+
+Codegen mode also injects a music21 cheat-sheet ([`prompts/toolkit.md`](prompts/toolkit.md))
+into the prompt to cut failed attempts. Add a prompt by appending a CSV row — no code
+changes.
 
 ## View the site
 

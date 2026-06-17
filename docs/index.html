@@ -6,7 +6,7 @@
   <title>How do LLMs express themselves musically?</title>
   <!-- Verovio: in-browser music engraving (WASM). -->
   <script src="https://www.verovio.org/javascript/latest/verovio-toolkit-wasm.js" defer></script>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=5" />
 </head>
 <body>
   <header>
@@ -19,32 +19,54 @@
   </header>
 
   <nav class="controls">
-    <label>Batch
+    <!-- Batch picker is hidden: the site loads the newest (canonical) batch
+         directly. Flip data-show-batch to "1" on <body> to reveal it for
+         comparing regenerations. -->
+    <label id="batch-label" hidden>Batch
       <select id="batch"></select>
     </label>
     <label>Prompt
       <select id="prompt"></select>
     </label>
-    <label>Model
+    <label id="model-label">Model
       <select id="model"></select>
+    </label>
+    <label class="toggle">Compare models
+      <input type="checkbox" id="compare" />
     </label>
   </nav>
 
+  <details id="prompt-panel">
+    <summary>Prompt sent to the model <span id="prompt-mode" class="tag"></span></summary>
+    <div class="prompt-body">
+      <p class="note">System</p>
+      <pre id="sys-prompt"></pre>
+      <p class="note">User</p>
+      <pre id="user-prompt"></pre>
+    </div>
+  </details>
+
   <main>
-    <section id="meta">
-      <h2 id="title">—</h2>
-      <p id="short" class="short"></p>
-      <audio id="audio" controls></audio>
-      <p id="audio-note" class="note" hidden>No pre-rendered audio for this piece.</p>
-      <details id="long-wrap">
-        <summary>Model's reflection</summary>
-        <p id="long"></p>
-      </details>
-      <p id="status" class="note"></p>
+    <!-- single-piece view -->
+    <section id="single">
+      <section id="meta">
+        <h2 id="title">—</h2>
+        <p id="short" class="short"></p>
+        <audio id="audio" controls></audio>
+        <p id="audio-note" class="note" hidden>No pre-rendered audio for this piece.</p>
+        <details id="long-wrap">
+          <summary>Model's reflection</summary>
+          <p id="long"></p>
+        </details>
+        <p id="status" class="note"></p>
+      </section>
+      <section id="score" aria-label="engraved score"></section>
     </section>
-    <section id="score" aria-label="engraved score"></section>
+
+    <!-- compare view: one column per model for the current prompt -->
+    <section id="compare-grid" hidden></section>
   </main>
 
-  <script src="app.js" defer></script>
+  <script src="app.js?v=5" defer></script>
 </body>
 </html>

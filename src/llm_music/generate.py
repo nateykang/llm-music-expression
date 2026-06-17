@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import csv
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -22,6 +23,9 @@ class PieceResult:
     model: str
     prompt: str
     mode: str
+    prompt_label: str = ""
+    prompt_text: str = ""
+    system_prompt: str = ""
     title: str = ""
     short_description: str = ""
     long_description: str = ""
@@ -49,16 +53,34 @@ def _is_retryable(exc: Exception) -> bool:
     return False
 
 
-def _load_prompt(prompt_name: str, mode_instructions: str) -> str:
-    template = (PROMPTS_DIR / "freeform.md").read_text(encoding="utf-8")
-    if prompt_name == "freeform":
-        constraints = ""
-    else:
-        cpath = PROMPTS_DIR / "constraints" / f"{prompt_name}.md"
-        if not cpath.exists():
-            raise FileNotFoundError(f"no constraint prompt '{prompt_name}' at {cpath}")
-        constraints = cpath.read_text(encoding="utf-8").strip()
-    return template.format(constraints=constraints, mode_instructions=mode_instructions)
+def _form_row(prompt_name: str) -> dict:
+    """Look up a prompt's row (id, label, instruction) from sara's CSV."""
+    path = PROMPTS_DIR / "form_instructions.csv"
+    with path.open(encoding="utf-8", newline="") as f:
+        for row in csv.DictReader(f):
+            if row["id"] == prompt_name:
+                return row
+    with path.open(encoding="utf-8", newline="") as f:
+        known = ", ".join(p["id"] for p in csv.DictReader(f))
+    raise KeyError(f"unknown prompt '{prompt_name}'. Known: {known}")
+
+
+def prompt_label(prompt_name: str) -> str:
+    """Human-readable label for a prompt id (e.g. 'free-form' -> 'Free form')."""
+    return _form_row(prompt_name).get("label") or prompt_name
+
+
+def _load_prompt(prompt_name: str, mode_mod) -> str:
+    """Assemble the full prompt: sara's prompt.md frame + form instruction + the
+    mode's Outputs section (plus the music21 toolkit doc for codegen)."""
+    template = (PROMPTS_DIR / "prompt.md").read_text(encoding="utf-8")
+    mode_block = mode_mod.OUTPUTS.strip()
+    if getattr(mode_mod, "USES_TOOLKIT", False):
+        toolkit = (PROMPTS_DIR / "toolkit.md").read_text(encoding="utf-8").strip()
+        mode_block += "\n\n# Music documentation\n\n" + toolkit
+    return template.format(
+        form_instruction=_form_row(prompt_name)["instruction"], mode_block=mode_block
+    )
 
 
 def generate_piece(
@@ -71,9 +93,17 @@ def generate_piece(
     if mode not in MODES:
         raise ValueError(f"unknown mode '{mode}'. Known: {', '.join(MODES)}")
     mode_mod = MODES[mode]
-    base_user = _load_prompt(prompt_name, mode_mod.INSTRUCTIONS)
+    base_user = _load_prompt(prompt_name, mode_mod)
 
-    result = PieceResult(ok=False, model=client.name, prompt=prompt_name, mode=mode)
+    result = PieceResult(
+        ok=False,
+        model=client.name,
+        prompt=prompt_name,
+        mode=mode,
+        prompt_label=prompt_label(prompt_name),
+        prompt_text=base_user,
+        system_prompt=SYSTEM_PROMPT,
+    )
     prior_error: str | None = None
 
     for attempt in range(1, max_attempts + 1):

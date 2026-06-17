@@ -11,7 +11,7 @@ from pathlib import Path
 from .generate import generate_piece
 from .models import get_client, list_models
 from .modes import MODES
-from .store import write_results
+from .store import append_result, open_batch, write_manifest
 
 
 def _timestamp() -> str:
@@ -23,7 +23,12 @@ def _split(csv: str) -> list[str]:
 
 
 def _run_matrix(models: list[str], prompts: list[str], mode: str, max_attempts: int):
-    results = []
+    # The batch folder + manifest are created up front and rewritten after every
+    # piece, so an interrupted run still leaves a valid, viewable partial batch.
+    ts = _timestamp()
+    batch = open_batch(ts, models, prompts)
+    print(f"  → writing to {batch}")
+    results, entries = [], []
     with tempfile.TemporaryDirectory(prefix="llm_music_batch_") as scratch:
         for m in models:
             client = get_client(m)
@@ -37,8 +42,8 @@ def _run_matrix(models: list[str], prompts: list[str], mode: str, max_attempts: 
                 else:
                     print(f" FAILED after {r.attempts}: {r.error}")
                 results.append(r)
-        ts = _timestamp()
-        batch = write_results(results, ts, models, prompts)
+                entries.append(append_result(batch, r))
+                write_manifest(batch, ts, models, prompts, entries)
     return batch, results
 
 
@@ -78,12 +83,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     pr = sub.add_parser("run", parents=[common], help="generate one model × prompt")
     pr.add_argument("--model", required=True)
-    pr.add_argument("--prompt", default="freeform")
+    pr.add_argument("--prompt", default="free-form")
     pr.set_defaults(func=cmd_run)
 
     pb = sub.add_parser("batch", parents=[common], help="generate a model × prompt matrix")
     pb.add_argument("--models", required=True, help="comma-separated friendly ids")
-    pb.add_argument("--prompts", default="freeform", help="comma-separated prompt names")
+    pb.add_argument("--prompts", default="free-form", help="comma-separated prompt names")
     pb.set_defaults(func=cmd_batch)
 
     pm = sub.add_parser("models", help="list registered models")
