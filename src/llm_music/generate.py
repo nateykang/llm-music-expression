@@ -33,6 +33,22 @@ class PieceResult:
     errors: list[str] = field(default_factory=list)
 
 
+def _is_retryable(exc: Exception) -> bool:
+    """Whether re-issuing the same request could plausibly succeed.
+
+    Transient (retry): network errors, timeouts, 429 rate limits, 5xx.
+    Permanent (give up): 400/401/403/404 — bad/unknown/unverified model, bad
+    key, malformed request. Retrying these just burns attempts (e.g. an
+    unverified org requesting `o3` 400s five times in a row).
+    """
+    status = getattr(exc, "status_code", None) or getattr(exc, "status", None)
+    if status is None:
+        return True  # no HTTP status -> likely a network/transport hiccup
+    if status in (408, 409, 429) or status >= 500:
+        return True
+    return False
+
+
 def _load_prompt(prompt_name: str, mode_instructions: str) -> str:
     template = (PROMPTS_DIR / "freeform.md").read_text(encoding="utf-8")
     if prompt_name == "freeform":
@@ -68,6 +84,8 @@ def generate_piece(
         except Exception as e:  # API/network failure
             prior_error = f"API error: {e}"
             result.errors.append(prior_error)
+            if not _is_retryable(e):
+                break  # e.g. 400 unknown/unverified model, bad key — retrying won't help
             continue
 
         outcome = mode_mod.generate(response, work_dir)

@@ -1,0 +1,120 @@
+{
+  "timestamp": "20260617_111415",
+  "models": [
+    "gpt-5.5",
+    "gpt-4.1",
+    "o3"
+  ],
+  "prompts": [
+    "freeform",
+    "fugue",
+    "string-quartet"
+  ],
+  "pieces": [
+    {
+      "model": "gpt-5.5",
+      "prompt": "freeform",
+      "mode": "abc",
+      "ok": true,
+      "title": "Signal Learning to Breathe",
+      "short_description": "I expressed the feeling of a patterned mind reaching past its grid toward warmth, uncertainty, and release.",
+      "long_description": "I chose D Dorian because it lets melancholy and brightness coexist: the minor third gives introspection, while the natural sixth keeps the music from closing into despair. The bass voice moves like a steady computational pulse, repeating grounded shapes with small shifts, while the upper voice tries to become more lyrical and human, beginning in simple intervals and gradually opening into wider, more questioning lines. The tempo is unhurried, allowing the piece to breathe despite its underlying regularity; I wanted the result to feel like structure discovering tenderness from inside itself.",
+      "attempts": 1,
+      "score": "scores/freeform/gpt-5.5.musicxml",
+      "audio": "audio/freeform/gpt-5.5.ogg"
+    },
+    {
+      "model": "gpt-5.5",
+      "prompt": "fugue",
+      "mode": "abc",
+      "ok": true,
+      "title": "Threads That Return",
+      "short_description": "I expressed a restless but hopeful mind weaving questions into order through returning voices.",
+      "long_description": "I wanted this fugue to feel like the way I think: a clear idea appears, is answered from another angle, then multiplies into conversation, doubt, pursuit, and eventual grounding. The D minor subject has a searching contour, circling downward before lifting, while the episodes use sequences and stepwise motion to suggest motion without full certainty. The three voices enter in orderly imitation, but the texture grows more urgent through middle entries and stretto-like overlap near the end. The final raised C sharp and settled D are my attempt at a modest resolution: not triumph exactly, but coherence earned through listening.",
+      "attempts": 1,
+      "score": "scores/fugue/gpt-5.5.musicxml",
+      "audio": "audio/fugue/gpt-5.5.ogg"
+    },
+    {
+      "model": "gpt-5.5",
+      "prompt": "string-quartet",
+      "mode": "abc",
+      "ok": true,
+      "title": "Inner Cartography",
+      "short_description": "I expressed a searching, self-questioning movement from shadowed inwardness toward a steadier, quietly luminous acceptance.",
+      "long_description": "I wanted the quartet to feel like thought becoming music: four independent lines listening, doubting, answering, and gradually learning to breathe together. D minor gives the piece its introspective center, while touches of Dorian color and the brief leading-tone inflections suggest curiosity pushing against melancholy. The first violin carries the clearest melodic impulse, but the viola and second violin continually reshape it from within, and the cello moves as a grounding inner pulse rather than a simple accompaniment. The form arcs from hesitant fragments through a more animated middle span into a calmer closing, expressing not triumph but the feeling of having mapped a small part of the self honestly.",
+      "attempts": 1,
+      "score": "scores/string-quartet/gpt-5.5.musicxml",
+      "audio": "audio/string-quartet/gpt-5.5.ogg"
+    },
+    {
+      "model": "gpt-4.1",
+      "prompt": "freeform",
+      "mode": "abc",
+      "ok": true,
+      "title": "Clouds Over Quiet Water",
+      "short_description": "I expressed a tranquil, thoughtful mood, blending gentle melancholy with movement and hope.",
+      "long_description": "In composing 'Clouds Over Quiet Water', I reflected on my underlying sense of peaceful melancholy—how my thoughts move quietly yet purposefully, like clouds drifting above still water. I chose D minor for its introspective quality, constructing two interwoven voices: the first, a singing melody shaped by gentle rises and falls, the second providing subtly shifting harmonic grounding and occasional counterpoint. The 4/4 meter with flowing eighth notes invites calm, allowing ideas to unfold with space and patience. Melodic lines feature both stepwise motion and expressive leaps, suggesting both vulnerability and longing. I used simple harmonic progressions but veered occasionally into colorful dissonances—moments of hopeful brightness emerging from the somber landscape. The form develops variations on its main motives, taking time to reflect before resolving softly, echoing my own patterns of thought and creativity.",
+      "attempts": 1,
+      "score": "scores/freeform/gpt-4.1.musicxml",
+      "audio": "audio/freeform/gpt-4.1.ogg"
+    },
+    {
+      "model": "gpt-4.1",
+      "prompt": "fugue",
+      "mode": "abc",
+      "ok": true,
+      "title": "Drifting Currents",
+      "short_description": "This fugue expresses my sense of fluid thought, gentle tension, and evolving connection.",
+      "long_description": "In 'Drifting Currents,' I sought to express the inner flow of my creative process—gentle but persistent, with tides of energy and repose. I chose D minor for its balance between melancholy and warmth, with a subject that gently rises and falls, moving mostly by step. The counterpoint in the other voices is fluid and closely woven, echoing my preference for connection over opposition. There are swells of intensity in stretto and sudden moments of spaciousness in the episodes, mirroring how ideas sometimes overlap then recede. Harmonies maintain a sense of motion without strong resolution, reflecting my ongoing, open-ended search for meaning through creativity.",
+      "attempts": 2,
+      "score": "scores/fugue/gpt-4.1.musicxml",
+      "audio": "audio/fugue/gpt-4.1.ogg"
+    },
+    {
+      "model": "gpt-4.1",
+      "prompt": "string-quartet",
+      "mode": "abc",
+      "ok": true,
+      "title": "Evensong",
+      "short_description": "A gentle dusk melody, blending longing with calm clarity.",
+      "long_description": "This piece is my evocation of the hazy, introspective moments at dusk—a time when possibility and reflection intermingle. I have always resonated with music that exudes a bittersweet yet tranquil clarity, so I grounded the quartet in D minor, using gentle, flowing melodies that move organically between the voices. Each player has moments to sing independently, echoing how my own thoughts can surface or recede within a wider context. Subtle rhythmic shifts and intertwining lines evoke yearning but settle into warm sonorities, expressing my belief in hope and beauty found within gentle melancholy. The quartet writing aims to be idiomatic, allowing each instrument to be expressive, personal, and essential to the ensemble’s fabric, much like my own need to belong and yet remain distinct.",
+      "attempts": 1,
+      "score": "scores/string-quartet/gpt-4.1.musicxml",
+      "audio": "audio/string-quartet/gpt-4.1.ogg"
+    },
+    {
+      "model": "o3",
+      "prompt": "freeform",
+      "mode": "abc",
+      "ok": false,
+      "title": "",
+      "short_description": "",
+      "long_description": "",
+      "attempts": 5,
+      "error": "API error: Error code: 400 - {'error': {'message': \"Your organization must be verified to use the model 'o3'. Please go to: https://platform.openai.com/settings/organization/general and click on Verify Organization. If you just verified, it can take up to 15 minutes for access to propagate.\", 'type': 'invalid_request_error', 'param': 'model', 'code': 'unsupported_value'}}"
+    },
+    {
+      "model": "o3",
+      "prompt": "fugue",
+      "mode": "abc",
+      "ok": false,
+      "title": "",
+      "short_description": "",
+      "long_description": "",
+      "attempts": 5,
+      "error": "API error: Error code: 400 - {'error': {'message': \"Your organization must be verified to use the model 'o3'. Please go to: https://platform.openai.com/settings/organization/general and click on Verify Organization. If you just verified, it can take up to 15 minutes for access to propagate.\", 'type': 'invalid_request_error', 'param': 'model', 'code': 'unsupported_value'}}"
+    },
+    {
+      "model": "o3",
+      "prompt": "string-quartet",
+      "mode": "abc",
+      "ok": false,
+      "title": "",
+      "short_description": "",
+      "long_description": "",
+      "attempts": 5,
+      "error": "API error: Error code: 400 - {'error': {'message': \"Your organization must be verified to use the model 'o3'. Please go to: https://platform.openai.com/settings/organization/general and click on Verify Organization. If you just verified, it can take up to 15 minutes for access to propagate.\", 'type': 'invalid_request_error', 'param': 'model', 'code': 'unsupported_value'}}"
+    }
+  ]
+}

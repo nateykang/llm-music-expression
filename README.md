@@ -64,11 +64,16 @@ Output lands in `docs/data/<timestamp>__models_N_prompts_M/`.
 ## View the site
 
 ```bash
-cd docs && python -m http.server 8000   # then open http://localhost:8000
+python scripts/serve.py 8000   # then open http://localhost:8000
 ```
 
 Pick batch / prompt / model; Verovio engraves the score live and the audio plays.
 `docs/` is GitHub Pages-ready as-is.
+
+> Use `scripts/serve.py`, not `python -m http.server` — the stdlib server ignores
+> HTTP Range requests, which breaks audio seeking and makes Ogg files report a
+> "growing" duration. Real static hosts (GitHub Pages) support ranges, so this
+> only affects local preview.
 
 ## Adding a model
 
