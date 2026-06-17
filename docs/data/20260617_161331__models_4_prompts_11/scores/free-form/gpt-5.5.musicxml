@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Between Queries and Quiet</work-title>
-  </work>
   <movement-title>Between Queries and Quiet</movement-title>
   <identification>
     <creator type="composer">OpenAI</creator>
@@ -25,11 +22,11 @@
     <score-part id="Pbfde98a8c07ac22e5afe2f19b58e8162">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="Idf3ef19885369af7c4cad61e82c35790">
+      <score-instrument id="Icdacab5167ee27e55ba99ef0086a68c8">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Idf3ef19885369af7c4cad61e82c35790">
+      <midi-instrument id="Icdacab5167ee27e55ba99ef0086a68c8">
         <midi-channel>1</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="P77a59cd22723408103857ac8e17ca441">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="I8aecb08c81c8e6af07e7a2ea4afdd5a8">
+      <score-instrument id="If2a77d660001945c992ac50016c940ea">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I8aecb08c81c8e6af07e7a2ea4afdd5a8">
+      <midi-instrument id="If2a77d660001945c992ac50016c940ea">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -49,11 +46,11 @@
     <score-part id="Pebfbd81d5be3f549f0d850ce90c3b2f4">
       <part-name>Clarinet</part-name>
       <part-abbreviation>Cl</part-abbreviation>
-      <score-instrument id="Ic743899ed91bd37055fc600ab9cd2a0b">
+      <score-instrument id="If46b8379aa12b2827fef4093dac41153">
         <instrument-name>Clarinet</instrument-name>
         <instrument-abbreviation>Cl</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Ic743899ed91bd37055fc600ab9cd2a0b">
+      <midi-instrument id="If46b8379aa12b2827fef4093dac41153">
         <midi-channel>3</midi-channel>
         <midi-program>72</midi-program>
       </midi-instrument>
@@ -61,11 +58,11 @@
     <score-part id="Pbc7e73c9e474ad9e39ef4d34dcbe868e">
       <part-name>Violin</part-name>
       <part-abbreviation>Vln</part-abbreviation>
-      <score-instrument id="I96a65462a4962a3e1d763467ecfc2efb">
+      <score-instrument id="I58b923b20fcc218d68c4ac9665b1b654">
         <instrument-name>Violin</instrument-name>
         <instrument-abbreviation>Vln</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I96a65462a4962a3e1d763467ecfc2efb">
+      <midi-instrument id="I58b923b20fcc218d68c4ac9665b1b654">
         <midi-channel>4</midi-channel>
         <midi-program>41</midi-program>
       </midi-instrument>
@@ -73,11 +70,11 @@
     <score-part id="P246e64f3fe2d9ee9d1729aa8027af5cb">
       <part-name>Violoncello</part-name>
       <part-abbreviation>Vc</part-abbreviation>
-      <score-instrument id="I6efe3d772e7b7cd81d366236f0786d4c">
+      <score-instrument id="I5fbfde03fa141425f12784a83bb94c7a">
         <instrument-name>Violoncello</instrument-name>
         <instrument-abbreviation>Vc</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I6efe3d772e7b7cd81d366236f0786d4c">
+      <midi-instrument id="I5fbfde03fa141425f12784a83bb94c7a">
         <midi-channel>5</midi-channel>
         <midi-program>43</midi-program>
       </midi-instrument>
@@ -2085,7 +2082,7 @@
         </direction-type>
         <sound dynamics="31" />
       </direction>
-      <note dynamics="50.00">
+      <note>
         <pitch>
           <step>E</step>
           <octave>4</octave>
@@ -2096,7 +2093,7 @@
           <fermata type="inverted" />
         </notations>
       </note>
-      <note dynamics="50.00">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -2105,7 +2102,7 @@
         <duration>40320</duration>
         <type>whole</type>
       </note>
-      <note dynamics="50.00">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -2114,7 +2111,7 @@
         <duration>40320</duration>
         <type>whole</type>
       </note>
-      <note dynamics="50.00">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -2619,7 +2616,7 @@
         </direction-type>
         <sound dynamics="31" />
       </direction>
-      <note dynamics="46.67">
+      <note>
         <pitch>
           <step>E</step>
           <octave>2</octave>
@@ -2630,7 +2627,7 @@
           <fermata type="inverted" />
         </notations>
       </note>
-      <note dynamics="46.67">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -2639,7 +2636,7 @@
         <duration>40320</duration>
         <type>whole</type>
       </note>
-      <note dynamics="46.67">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -4563,7 +4560,7 @@
         </direction-type>
         <sound dynamics="31" />
       </direction>
-      <note dynamics="40.00">
+      <note>
         <pitch>
           <step>E</step>
           <octave>2</octave>
@@ -4574,7 +4571,7 @@
           <fermata type="inverted" />
         </notations>
       </note>
-      <note dynamics="40.00">
+      <note>
         <chord />
         <pitch>
           <step>B</step>

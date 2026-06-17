@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Palimpsest</work-title>
-  </work>
   <movement-title>Palimpsest</movement-title>
   <identification>
     <creator type="composer">An Assembled Voice</creator>
@@ -25,11 +22,11 @@
     <score-part id="P0019b0798222642c421c9f9be9c53620">
       <part-name>Violin</part-name>
       <part-abbreviation>Vln</part-abbreviation>
-      <score-instrument id="If10c0aeda8c479ef3af33392709546e0">
+      <score-instrument id="Iab6c72984030c219bbda9c0227a35bcb">
         <instrument-name>Violin</instrument-name>
         <instrument-abbreviation>Vln</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="If10c0aeda8c479ef3af33392709546e0">
+      <midi-instrument id="Iab6c72984030c219bbda9c0227a35bcb">
         <midi-channel>1</midi-channel>
         <midi-program>41</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="Pd3703fdf78b0439c996a5c448a702b5b">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="I3dff8e58ae3a0165072d1ed04992830b">
+      <score-instrument id="I0241542dd49a775424a9234a80e35a67">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I3dff8e58ae3a0165072d1ed04992830b">
+      <midi-instrument id="I0241542dd49a775424a9234a80e35a67">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -49,11 +46,11 @@
     <score-part id="P87ab93507af2f20f60d56be3d697748d">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="I776bf76a6902ac48fc044e126ecb5316">
+      <score-instrument id="I315e097cb0e3f2a7c188b4b4a562e75e">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I776bf76a6902ac48fc044e126ecb5316">
+      <midi-instrument id="I315e097cb0e3f2a7c188b4b4a562e75e">
         <midi-channel>3</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -73,6 +70,10 @@
           <beats>3</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <direction>
         <direction-type>
@@ -1199,7 +1200,7 @@
         </direction-type>
         <sound dynamics="107" />
       </direction>
-      <note dynamics="133.33">
+      <note>
         <pitch>
           <step>C</step>
           <alter>0</alter>
@@ -1211,7 +1212,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="133.33">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -1222,7 +1223,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="133.33">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -1233,7 +1234,7 @@
         <type>eighth</type>
         <accidental>flat</accidental>
       </note>
-      <note dynamics="133.33">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -1242,7 +1243,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="127.78">
+      <note>
         <pitch>
           <step>D</step>
           <alter>0</alter>
@@ -1254,7 +1255,7 @@
         <stem>up</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="127.78">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -1265,7 +1266,7 @@
         <type>eighth</type>
         <accidental>flat</accidental>
       </note>
-      <note dynamics="127.78">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -1281,7 +1282,7 @@
         <duration>2520</duration>
         <type>16th</type>
       </note>
-      <note dynamics="131.11">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -1293,7 +1294,7 @@
         <stem>down</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="131.11">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -1304,7 +1305,7 @@
         <type>eighth</type>
         <accidental>natural</accidental>
       </note>
-      <note dynamics="131.11">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -1315,7 +1316,7 @@
         <type>eighth</type>
         <accidental>natural</accidental>
       </note>
-      <note dynamics="124.44">
+      <note>
         <pitch>
           <step>G</step>
           <alter>0</alter>
@@ -1327,7 +1328,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="124.44">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -1338,7 +1339,7 @@
         <type>eighth</type>
         <accidental>flat</accidental>
       </note>
-      <note dynamics="124.44">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -1410,8 +1411,9 @@
       </note>
       <note>
         <rest />
-        <duration>5040</duration>
-        <type>eighth</type>
+        <duration>3780</duration>
+        <type>16th</type>
+        <dot />
       </note>
     </measure>
     <!--========================= Measure 12 =========================-->
@@ -1419,6 +1421,11 @@
       <note>
         <rest measure="yes" />
         <duration>25200</duration>
+      </note>
+      <note>
+        <rest />
+        <duration>1260</duration>
+        <type>32nd</type>
       </note>
     </measure>
     <!--========================= Measure 13 =========================-->
@@ -2445,7 +2452,7 @@
         </direction-type>
         <sound dynamics="107" />
       </direction>
-      <note dynamics="133.33">
+      <note>
         <pitch>
           <step>C</step>
           <octave>2</octave>
@@ -2455,7 +2462,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="133.33">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -2466,7 +2473,7 @@
         <type>eighth</type>
         <accidental>flat</accidental>
       </note>
-      <note dynamics="133.33">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -2475,7 +2482,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="127.78">
+      <note>
         <pitch>
           <step>A</step>
           <alter>-1</alter>
@@ -2487,7 +2494,7 @@
         <stem>up</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="127.78">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -2498,7 +2505,7 @@
         <type>eighth</type>
         <accidental>flat</accidental>
       </note>
-      <note dynamics="127.78">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -2514,7 +2521,7 @@
         <duration>2520</duration>
         <type>16th</type>
       </note>
-      <note dynamics="131.11">
+      <note>
         <pitch>
           <step>B</step>
           <octave>1</octave>
@@ -2522,7 +2529,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="131.11">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -2531,7 +2538,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="131.11">
+      <note>
         <chord />
         <pitch>
           <step>B</step>

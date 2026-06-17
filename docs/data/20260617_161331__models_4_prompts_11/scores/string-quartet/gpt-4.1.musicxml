@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Soliloquy in Light and Shadow</work-title>
-  </work>
   <movement-title>Soliloquy in Light and Shadow</movement-title>
   <identification>
     <creator type="composer">A Composer</creator>
@@ -25,11 +22,11 @@
     <score-part id="Pb626fe37a5f4a1155bd9f0323c5a6fce">
       <part-name>Violin I</part-name>
       <part-abbreviation>Vln</part-abbreviation>
-      <score-instrument id="I095c73088bab0ed907679e8cb4c5681b">
+      <score-instrument id="I43d08f36d4875c8c99e6ef1acfecd956">
         <instrument-name>Violin</instrument-name>
         <instrument-abbreviation>Vln</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I095c73088bab0ed907679e8cb4c5681b">
+      <midi-instrument id="I43d08f36d4875c8c99e6ef1acfecd956">
         <midi-channel>1</midi-channel>
         <midi-program>41</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="Pba6c579cbe922af57d85247bfbf4460d">
       <part-name>Violin II</part-name>
       <part-abbreviation>Vln</part-abbreviation>
-      <score-instrument id="Ib05cc079a09597fec588fdf1cd3bc9ac">
+      <score-instrument id="I74b15df7a722e2a94e251486116a26bb">
         <instrument-name>Violin</instrument-name>
         <instrument-abbreviation>Vln</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Ib05cc079a09597fec588fdf1cd3bc9ac">
+      <midi-instrument id="I74b15df7a722e2a94e251486116a26bb">
         <midi-channel>2</midi-channel>
         <midi-program>41</midi-program>
       </midi-instrument>
@@ -49,11 +46,11 @@
     <score-part id="P1a261ce33915149f3937805b1147926e">
       <part-name>Viola</part-name>
       <part-abbreviation>Vla</part-abbreviation>
-      <score-instrument id="If54dc6b149dd4ed58af5713443449043">
+      <score-instrument id="Idd34d5ee96fbcec59758de006a5823fb">
         <instrument-name>Viola</instrument-name>
         <instrument-abbreviation>Vla</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="If54dc6b149dd4ed58af5713443449043">
+      <midi-instrument id="Idd34d5ee96fbcec59758de006a5823fb">
         <midi-channel>3</midi-channel>
         <midi-program>42</midi-program>
       </midi-instrument>
@@ -61,11 +58,11 @@
     <score-part id="Pbbb868b36dc5cd89a2a64d5207fbc646">
       <part-name>Cello</part-name>
       <part-abbreviation>Vc</part-abbreviation>
-      <score-instrument id="Ie316ce7312f0fb84a33152e6e5448b8f">
+      <score-instrument id="I81c37c6cbee1f8d130701d55cac2f877">
         <instrument-name>Violoncello</instrument-name>
         <instrument-abbreviation>Vc</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Ie316ce7312f0fb84a33152e6e5448b8f">
+      <midi-instrument id="I81c37c6cbee1f8d130701d55cac2f877">
         <midi-channel>4</midi-channel>
         <midi-program>43</midi-program>
       </midi-instrument>
@@ -85,6 +82,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <note>
         <pitch>
@@ -93,9 +94,6 @@
         </pitch>
         <duration>10080</duration>
         <type>quarter</type>
-        <notations>
-          <other-ornament />
-        </notations>
       </note>
       <note>
         <pitch>
@@ -349,6 +347,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <note>
         <pitch>
@@ -357,9 +359,6 @@
         </pitch>
         <duration>10080</duration>
         <type>quarter</type>
-        <notations>
-          <other-ornament />
-        </notations>
       </note>
       <note>
         <pitch>
@@ -542,6 +541,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <note>
         <pitch>
@@ -550,9 +553,6 @@
         </pitch>
         <duration>20160</duration>
         <type>half</type>
-        <notations>
-          <other-ornament />
-        </notations>
       </note>
       <note>
         <pitch>
@@ -642,8 +642,12 @@
           <step>A</step>
           <octave>4</octave>
         </pitch>
-        <duration>20160</duration>
-        <type>half</type>
+        <duration>10080</duration>
+        <tie type="start" />
+        <type>quarter</type>
+        <notations>
+          <tied type="start" />
+        </notations>
       </note>
     </measure>
     <!--========================= Measure 4 ==========================-->
@@ -656,6 +660,18 @@
         <duration>15120</duration>
         <type>quarter</type>
         <dot />
+      </note>
+      <note>
+        <pitch>
+          <step>A</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>10080</duration>
+        <tie type="stop" />
+        <type>quarter</type>
+        <notations>
+          <tied type="stop" />
+        </notations>
       </note>
       <note>
         <pitch>
@@ -730,9 +746,6 @@
         </pitch>
         <duration>20160</duration>
         <type>half</type>
-        <notations>
-          <other-ornament />
-        </notations>
       </note>
       <note>
         <pitch>

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Quiet Company</work-title>
-  </work>
   <movement-title>Quiet Company</movement-title>
   <identification>
     <creator type="composer">An AI</creator>
@@ -25,11 +22,11 @@
     <score-part id="P873d9ec9157cbd088e31e91d7139df00">
       <part-name>Clarinet</part-name>
       <part-abbreviation>Cl</part-abbreviation>
-      <score-instrument id="I688da96c86d4c5e6df715c5c81fcf419">
+      <score-instrument id="Idf16e6cfb7fcc437a09e28077f182f61">
         <instrument-name>Clarinet</instrument-name>
         <instrument-abbreviation>Cl</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I688da96c86d4c5e6df715c5c81fcf419">
+      <midi-instrument id="Idf16e6cfb7fcc437a09e28077f182f61">
         <midi-channel>1</midi-channel>
         <midi-program>72</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="P6d1eb3374fbd910ff71a5909b7726509">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="Ibe5ce06f6a99a566eab1b91b8e7d7cbc">
+      <score-instrument id="I43b1edcfb6e86265c1888da888c20ddf">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Ibe5ce06f6a99a566eab1b91b8e7d7cbc">
+      <midi-instrument id="I43b1edcfb6e86265c1888da888c20ddf">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -49,11 +46,11 @@
     <score-part id="P81288f5decbb91fd9fcdb1e19cfa097c">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="I827ffc0dd92129eab32fadb30251ebb7">
+      <score-instrument id="Ida4d9ceec3e9fee0627b9c3827cf7692">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I827ffc0dd92129eab32fadb30251ebb7">
+      <midi-instrument id="Ida4d9ceec3e9fee0627b9c3827cf7692">
         <midi-channel>3</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -61,11 +58,11 @@
     <score-part id="P00da9dc8219d14430e6d8c4efb175bd5">
       <part-name>Cello</part-name>
       <part-abbreviation>Vc</part-abbreviation>
-      <score-instrument id="I1d5c3baaf7f4e5fa460feefbce140d0e">
+      <score-instrument id="I65cc80154d5067b79b2a50410fbf1348">
         <instrument-name>Violoncello</instrument-name>
         <instrument-abbreviation>Vc</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I1d5c3baaf7f4e5fa460feefbce140d0e">
+      <midi-instrument id="I65cc80154d5067b79b2a50410fbf1348">
         <midi-channel>4</midi-channel>
         <midi-program>43</midi-program>
       </midi-instrument>
@@ -85,6 +82,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
         <transpose>
           <diatonic>-1</diatonic>
           <chromatic>-2</chromatic>
@@ -372,6 +373,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <direction>
         <direction-type>

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Thresholds</work-title>
-  </work>
   <movement-title>Thresholds</movement-title>
   <identification>
     <creator type="composer">AI Composer</creator>
@@ -25,11 +22,11 @@
     <score-part id="Pe9e3910732a15e802ea49f8bdbca7875">
       <part-name>Violin</part-name>
       <part-abbreviation>Vln</part-abbreviation>
-      <score-instrument id="I811a6c5167c0ee412d2659c27d058b5d">
+      <score-instrument id="Id49ca98b85b3c6c5fb2f341c408b140d">
         <instrument-name>Violin</instrument-name>
         <instrument-abbreviation>Vln</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I811a6c5167c0ee412d2659c27d058b5d">
+      <midi-instrument id="Id49ca98b85b3c6c5fb2f341c408b140d">
         <midi-channel>1</midi-channel>
         <midi-program>41</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="P799fc27e99b1842efef40445dbf97fba">
       <part-name>Violin</part-name>
       <part-abbreviation>Vln</part-abbreviation>
-      <score-instrument id="I45c0845ea54cdb966a2546589cd9f0a6">
+      <score-instrument id="I67fb8f18a803691f2def893a25b793f9">
         <instrument-name>Violin</instrument-name>
         <instrument-abbreviation>Vln</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I45c0845ea54cdb966a2546589cd9f0a6">
+      <midi-instrument id="I67fb8f18a803691f2def893a25b793f9">
         <midi-channel>2</midi-channel>
         <midi-program>41</midi-program>
       </midi-instrument>
@@ -49,11 +46,11 @@
     <score-part id="P620ca98e38c0064b94f3b063b4d25665">
       <part-name>Viola</part-name>
       <part-abbreviation>Vla</part-abbreviation>
-      <score-instrument id="I1f36eeb2033cdaf15931884c8ef257d2">
+      <score-instrument id="I642acd14086e78016dcd4024953a1970">
         <instrument-name>Viola</instrument-name>
         <instrument-abbreviation>Vla</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I1f36eeb2033cdaf15931884c8ef257d2">
+      <midi-instrument id="I642acd14086e78016dcd4024953a1970">
         <midi-channel>3</midi-channel>
         <midi-program>42</midi-program>
       </midi-instrument>
@@ -61,11 +58,11 @@
     <score-part id="Pc753a7c687b3bce9644380d7a99cc3bc">
       <part-name>Violoncello</part-name>
       <part-abbreviation>Vc</part-abbreviation>
-      <score-instrument id="Id9fd664ae0e976bbd6188061a7475915">
+      <score-instrument id="I36d2e5a83c7067f65806663059b6bb5f">
         <instrument-name>Violoncello</instrument-name>
         <instrument-abbreviation>Vc</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Id9fd664ae0e976bbd6188061a7475915">
+      <midi-instrument id="I36d2e5a83c7067f65806663059b6bb5f">
         <midi-channel>4</midi-channel>
         <midi-program>43</midi-program>
       </midi-instrument>
@@ -85,6 +82,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <note>
         <rest measure="yes" />
@@ -724,6 +725,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <note>
         <rest measure="yes" />
@@ -1379,6 +1384,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>F</sign>
+          <line>4</line>
+        </clef>
       </attributes>
       <note>
         <rest measure="yes" />
@@ -2114,6 +2123,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>F</sign>
+          <line>4</line>
+        </clef>
       </attributes>
       <direction>
         <direction-type>

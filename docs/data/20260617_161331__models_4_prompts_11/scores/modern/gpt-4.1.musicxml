@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Thread of Memory</work-title>
-  </work>
   <movement-title>Thread of Memory</movement-title>
   <identification>
     <creator type="composer">AI Composer (2024)</creator>
@@ -25,11 +22,11 @@
     <score-part id="Pa32655cd493972e0aff9811fbba04772">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="I1c1ca2807e8746d10bba0a9f5f3fddef">
+      <score-instrument id="I75091933008533fb3e0b4041c762d9a2">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I1c1ca2807e8746d10bba0a9f5f3fddef">
+      <midi-instrument id="I75091933008533fb3e0b4041c762d9a2">
         <midi-channel>1</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="P9956cd6d200f6db2c344c34884d761ae">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="I4d36475a508282c499b595fbc01583ef">
+      <score-instrument id="I3788c4282c9b2eaee4fcc6674a0de62f">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I4d36475a508282c499b595fbc01583ef">
+      <midi-instrument id="I3788c4282c9b2eaee4fcc6674a0de62f">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -61,6 +58,10 @@
           <beats>5</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <direction>
         <direction-type>
@@ -1232,6 +1233,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>up</stem>
+        <beam number="1">begin</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1244,6 +1247,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>up</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1256,6 +1263,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>up</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1268,6 +1277,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>up</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1280,6 +1293,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>up</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1292,6 +1307,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>up</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1304,6 +1323,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>up</stem>
+        <beam number="1">end</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1316,6 +1337,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>down</stem>
+        <beam number="1">begin</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1328,6 +1353,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1340,6 +1367,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1352,6 +1383,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1364,6 +1397,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1376,6 +1413,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1388,6 +1427,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1400,6 +1443,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1412,6 +1457,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>down</stem>
+        <beam number="1">end</beam>
+        <beam number="2">backward hook</beam>
+        <beam number="3">backward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1427,6 +1476,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>up</stem>
+        <beam number="1">begin</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1439,6 +1490,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>up</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1451,6 +1506,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>up</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1463,6 +1520,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>up</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1475,6 +1536,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>up</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1487,6 +1550,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>up</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1499,6 +1566,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>up</stem>
+        <beam number="1">end</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1511,6 +1580,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>down</stem>
+        <beam number="1">begin</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1523,6 +1596,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1535,6 +1610,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1547,6 +1626,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1559,6 +1640,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1571,6 +1656,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1583,6 +1670,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1595,6 +1686,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1607,6 +1700,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>down</stem>
+        <beam number="1">end</beam>
+        <beam number="2">backward hook</beam>
+        <beam number="3">backward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1630,6 +1727,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>up</stem>
+        <beam number="1">begin</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1642,6 +1741,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>up</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1654,6 +1757,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>up</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1666,6 +1771,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>up</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1678,6 +1787,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>up</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1690,6 +1801,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>up</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1702,6 +1817,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>up</stem>
+        <beam number="1">end</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1714,6 +1831,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>down</stem>
+        <beam number="1">begin</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1726,6 +1847,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1738,6 +1861,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1750,6 +1877,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1762,6 +1891,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1774,6 +1907,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1786,6 +1921,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">forward hook</beam>
+        <beam number="3">forward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -1798,6 +1937,8 @@
         <duration>5040</duration>
         <tie type="start" />
         <type>eighth</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
         <notations>
           <tied type="start" />
         </notations>
@@ -1810,6 +1951,10 @@
         <duration>1260</duration>
         <tie type="stop" />
         <type>32nd</type>
+        <stem>down</stem>
+        <beam number="1">end</beam>
+        <beam number="2">backward hook</beam>
+        <beam number="3">backward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>

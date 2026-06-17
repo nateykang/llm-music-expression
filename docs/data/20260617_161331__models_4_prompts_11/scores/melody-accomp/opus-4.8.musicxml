@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Quiet Light</work-title>
-  </work>
   <movement-title>Quiet Light</movement-title>
   <identification>
     <creator type="composer">AI Composer</creator>
@@ -25,11 +22,11 @@
     <score-part id="P92a921326e31466049aac1f5316b856a">
       <part-name>Flute</part-name>
       <part-abbreviation>Fl</part-abbreviation>
-      <score-instrument id="I951dc6ed709bce741425629c0c522689">
+      <score-instrument id="I4695a66e4bbadffca223beaaa32da68d">
         <instrument-name>Flute</instrument-name>
         <instrument-abbreviation>Fl</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I951dc6ed709bce741425629c0c522689">
+      <midi-instrument id="I4695a66e4bbadffca223beaaa32da68d">
         <midi-channel>1</midi-channel>
         <midi-program>74</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="P1d429f157e15efbd6e789d884acbe500">
       <part-name>Harp</part-name>
       <part-abbreviation>Hp</part-abbreviation>
-      <score-instrument id="Ie1085c5fdddd5d92e7e1c5c1b4bf2216">
+      <score-instrument id="I82c3c7d7b818c9c761e7cc634b1d9c0e">
         <instrument-name>Harp</instrument-name>
         <instrument-abbreviation>Hp</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Ie1085c5fdddd5d92e7e1c5c1b4bf2216">
+      <midi-instrument id="I82c3c7d7b818c9c761e7cc634b1d9c0e">
         <midi-channel>2</midi-channel>
         <midi-program>47</midi-program>
       </midi-instrument>
@@ -61,6 +58,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <direction>
         <direction-type>
@@ -401,8 +402,13 @@
           <step>A</step>
           <octave>5</octave>
         </pitch>
-        <duration>20160</duration>
-        <type>half</type>
+        <duration>15120</duration>
+        <tie type="start" />
+        <type>quarter</type>
+        <dot />
+        <notations>
+          <tied type="start" />
+        </notations>
       </note>
     </measure>
     <!--========================= Measure 10 =========================-->
@@ -414,6 +420,18 @@
         </pitch>
         <duration>10080</duration>
         <type>quarter</type>
+      </note>
+      <note dynamics="77.78">
+        <pitch>
+          <step>A</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>5040</duration>
+        <tie type="stop" />
+        <type>eighth</type>
+        <notations>
+          <tied type="stop" />
+        </notations>
       </note>
       <note dynamics="77.78">
         <pitch>

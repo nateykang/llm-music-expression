@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Thresholds</work-title>
-  </work>
   <movement-title>Thresholds</movement-title>
   <identification>
     <creator type="composer">AI Composer</creator>
@@ -25,11 +22,11 @@
     <score-part id="P2d6d89d8746cacf7bd4de6d4adf48d8a">
       <part-name>Violin I</part-name>
       <part-abbreviation>Vln</part-abbreviation>
-      <score-instrument id="Iefe1f891cc978f36576c1b00d0933396">
+      <score-instrument id="I3a7213793a1abd9a24bd54320f21a610">
         <instrument-name>Violin</instrument-name>
         <instrument-abbreviation>Vln</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Iefe1f891cc978f36576c1b00d0933396">
+      <midi-instrument id="I3a7213793a1abd9a24bd54320f21a610">
         <midi-channel>1</midi-channel>
         <midi-program>41</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="P23cdd205946449f42139a82c8b2aacf4">
       <part-name>Violin II</part-name>
       <part-abbreviation>Vln</part-abbreviation>
-      <score-instrument id="I22571362ec7adc4bfad87dda94101b86">
+      <score-instrument id="I8f099252e6f28d00f16470ed8b6be39a">
         <instrument-name>Violin</instrument-name>
         <instrument-abbreviation>Vln</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I22571362ec7adc4bfad87dda94101b86">
+      <midi-instrument id="I8f099252e6f28d00f16470ed8b6be39a">
         <midi-channel>2</midi-channel>
         <midi-program>41</midi-program>
       </midi-instrument>
@@ -49,11 +46,11 @@
     <score-part id="P7a15e8fed2a5ee8e2f43451180aabc6f">
       <part-name>Viola</part-name>
       <part-abbreviation>Vla</part-abbreviation>
-      <score-instrument id="Ie59dddecc8e98bc363d81acc34a0a707">
+      <score-instrument id="I301bd77b964c7221bd3d93bcfd7a9957">
         <instrument-name>Viola</instrument-name>
         <instrument-abbreviation>Vla</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Ie59dddecc8e98bc363d81acc34a0a707">
+      <midi-instrument id="I301bd77b964c7221bd3d93bcfd7a9957">
         <midi-channel>3</midi-channel>
         <midi-program>42</midi-program>
       </midi-instrument>
@@ -61,11 +58,11 @@
     <score-part id="P723b63be02bc6ebc6d755957984f8a8d">
       <part-name>Cello</part-name>
       <part-abbreviation>Vc</part-abbreviation>
-      <score-instrument id="I1b44aa1174cf15edf1ba738698652635">
+      <score-instrument id="I7495d4433ab3d68e383b0cee8b075899">
         <instrument-name>Violoncello</instrument-name>
         <instrument-abbreviation>Vc</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I1b44aa1174cf15edf1ba738698652635">
+      <midi-instrument id="I7495d4433ab3d68e383b0cee8b075899">
         <midi-channel>4</midi-channel>
         <midi-program>43</midi-program>
       </midi-instrument>
@@ -85,6 +82,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <direction>
         <direction-type>
@@ -1031,6 +1032,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <note dynamics="61.11">
         <pitch>
@@ -1625,6 +1630,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <note dynamics="55.56">
         <pitch>
@@ -2157,6 +2166,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>F</sign>
+          <line>4</line>
+        </clef>
       </attributes>
       <direction>
         <direction-type>

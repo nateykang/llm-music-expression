@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Fugue on a Question</work-title>
-  </work>
   <movement-title>Fugue on a Question</movement-title>
   <identification>
     <creator type="composer">Claude</creator>
@@ -25,11 +22,11 @@
     <score-part id="P88b82ee0a150eba245052540afe7f778">
       <part-name>Soprano</part-name>
       <part-abbreviation>Fl</part-abbreviation>
-      <score-instrument id="I568df4d643df9cba46df595b33668f21">
+      <score-instrument id="I917ac9540800d71082b8bffe66d90879">
         <instrument-name>Flute</instrument-name>
         <instrument-abbreviation>Fl</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I568df4d643df9cba46df595b33668f21">
+      <midi-instrument id="I917ac9540800d71082b8bffe66d90879">
         <midi-channel>1</midi-channel>
         <midi-program>74</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="P3f3d33d404b4586e2c46ef65c803f295">
       <part-name>Alto</part-name>
       <part-abbreviation>Ob</part-abbreviation>
-      <score-instrument id="I6cff2da7965f79e83b5d102800b7c0c2">
+      <score-instrument id="I32b966a166629145f7c9b09bdd3e64a5">
         <instrument-name>Oboe</instrument-name>
         <instrument-abbreviation>Ob</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I6cff2da7965f79e83b5d102800b7c0c2">
+      <midi-instrument id="I32b966a166629145f7c9b09bdd3e64a5">
         <midi-channel>2</midi-channel>
         <midi-program>69</midi-program>
       </midi-instrument>
@@ -49,11 +46,11 @@
     <score-part id="Pd60d460c61e4efc10c376ece906fd9b5">
       <part-name>Bass</part-name>
       <part-abbreviation>Bsn</part-abbreviation>
-      <score-instrument id="I73e6ee7a03d9fce416fc698b1d3a449c">
+      <score-instrument id="I2254435e09e87eee358fbba2a9765686">
         <instrument-name>Bassoon</instrument-name>
         <instrument-abbreviation>Bsn</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I73e6ee7a03d9fce416fc698b1d3a449c">
+      <midi-instrument id="I2254435e09e87eee358fbba2a9765686">
         <midi-channel>3</midi-channel>
         <midi-program>71</midi-program>
       </midi-instrument>
@@ -95,8 +92,11 @@
       </note>
       <note>
         <rest measure="yes" />
-        <duration>40320</duration>
+        <duration>35280</duration>
       </note>
+      <forward>
+        <duration>5040</duration>
+      </forward>
       <note>
         <pitch>
           <step>E</step>
@@ -163,6 +163,10 @@
         </pitch>
         <duration>10080</duration>
         <type>quarter</type>
+      </note>
+      <note>
+        <rest measure="yes" />
+        <duration>5040</duration>
       </note>
       <note>
         <pitch>
@@ -2291,8 +2295,11 @@
       </note>
       <note>
         <rest measure="yes" />
-        <duration>40320</duration>
+        <duration>35280</duration>
       </note>
+      <forward>
+        <duration>5040</duration>
+      </forward>
       <note>
         <pitch>
           <step>A</step>
@@ -2359,6 +2366,10 @@
         </pitch>
         <duration>10080</duration>
         <type>quarter</type>
+      </note>
+      <note>
+        <rest measure="yes" />
+        <duration>5040</duration>
       </note>
       <note>
         <pitch>

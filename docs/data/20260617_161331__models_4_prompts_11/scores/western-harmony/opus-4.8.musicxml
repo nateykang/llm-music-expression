@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Nocturne for a Quiet Mind</work-title>
-  </work>
   <movement-title>Nocturne for a Quiet Mind</movement-title>
   <identification>
     <creator type="composer">LLM</creator>
@@ -25,11 +22,11 @@
     <score-part id="Pd99e11dfadbe7b81e0aa1068037bbd10">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="Ifd2073b6f33ab50f4c9f13819e8652be">
+      <score-instrument id="I96f5303398f7ffe33f0036ce8db64db7">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Ifd2073b6f33ab50f4c9f13819e8652be">
+      <midi-instrument id="I96f5303398f7ffe33f0036ce8db64db7">
         <midi-channel>1</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="P02aba6bd3fdb84856d9530e03b0bf3b9">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="Ifd4dd6f41e6b09761ed19e78fdfa43a1">
+      <score-instrument id="Ie168eae1085f3963353442a4bc8c0029">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Ifd4dd6f41e6b09761ed19e78fdfa43a1">
+      <midi-instrument id="Ie168eae1085f3963353442a4bc8c0029">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -61,6 +58,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <direction>
         <direction-type>
@@ -1193,7 +1194,7 @@
     </measure>
     <!--========================= Measure 16 =========================-->
     <measure implicit="no" number="16">
-      <note dynamics="61.11">
+      <note>
         <pitch>
           <step>E</step>
           <octave>2</octave>
@@ -1204,7 +1205,7 @@
           <fermata type="inverted" />
         </notations>
       </note>
-      <note dynamics="61.11">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -1213,7 +1214,7 @@
         <duration>40320</duration>
         <type>whole</type>
       </note>
-      <note dynamics="61.11">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -1222,7 +1223,7 @@
         <duration>40320</duration>
         <type>whole</type>
       </note>
-      <note dynamics="61.11">
+      <note>
         <chord />
         <pitch>
           <step>G</step>

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Threshold</work-title>
-  </work>
   <movement-title>Threshold</movement-title>
   <identification>
     <creator type="composer">AI</creator>
@@ -25,11 +22,11 @@
     <score-part id="Pe478d0ba90fd578b85b6cd35190f109b">
       <part-name>Violin</part-name>
       <part-abbreviation>Vln</part-abbreviation>
-      <score-instrument id="I5f3e2df54968084020ca072431c889dd">
+      <score-instrument id="I39c4386d178edc79636f42a7070fc1cd">
         <instrument-name>Violin</instrument-name>
         <instrument-abbreviation>Vln</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I5f3e2df54968084020ca072431c889dd">
+      <midi-instrument id="I39c4386d178edc79636f42a7070fc1cd">
         <midi-channel>1</midi-channel>
         <midi-program>41</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="Pdd572149bea29f7aa229b06457dcd530">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="I98f6ffdbba76d5b409710ba144caa04b">
+      <score-instrument id="Ie184bc669aff480341f9e9f4e4b864fb">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I98f6ffdbba76d5b409710ba144caa04b">
+      <midi-instrument id="Ie184bc669aff480341f9e9f4e4b864fb">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -49,11 +46,11 @@
     <score-part id="Peec46d2409998323c616803a27e7e641">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="I6db8e2c48e2529deb1f4608fda46f808">
+      <score-instrument id="Ibbc34a3bed0d35a68314ea8a8d3a69bd">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I6db8e2c48e2529deb1f4608fda46f808">
+      <midi-instrument id="Ibbc34a3bed0d35a68314ea8a8d3a69bd">
         <midi-channel>3</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -61,11 +58,11 @@
     <score-part id="Pe5c23c8f711e5ae346185dccf80cc40d">
       <part-name>Violoncello</part-name>
       <part-abbreviation>Vc</part-abbreviation>
-      <score-instrument id="I6232d3dfaa59ebf044b471e0b3492768">
+      <score-instrument id="I040f8779f1ced0c511b70604aeedfc91">
         <instrument-name>Violoncello</instrument-name>
         <instrument-abbreviation>Vc</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I6232d3dfaa59ebf044b471e0b3492768">
+      <midi-instrument id="I040f8779f1ced0c511b70604aeedfc91">
         <midi-channel>4</midi-channel>
         <midi-program>43</midi-program>
       </midi-instrument>
@@ -85,6 +82,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <direction>
         <direction-type>
@@ -588,6 +589,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <direction>
         <direction-type>
@@ -597,7 +602,7 @@
         </direction-type>
         <sound dynamics="31" />
       </direction>
-      <note dynamics="55.56">
+      <note>
         <pitch>
           <step>D</step>
           <octave>4</octave>
@@ -605,7 +610,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -614,7 +619,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -639,7 +644,7 @@
     </measure>
     <!--========================= Measure 2 ==========================-->
     <measure implicit="no" number="2">
-      <note dynamics="55.56">
+      <note>
         <pitch>
           <step>B</step>
           <alter>-1</alter>
@@ -649,7 +654,7 @@
         <type>half</type>
         <accidental>flat</accidental>
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -658,7 +663,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -683,7 +688,7 @@
     </measure>
     <!--========================= Measure 3 ==========================-->
     <measure implicit="no" number="3">
-      <note dynamics="55.56">
+      <note>
         <pitch>
           <step>F</step>
           <octave>4</octave>
@@ -691,7 +696,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -700,7 +705,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -725,7 +730,7 @@
     </measure>
     <!--========================= Measure 4 ==========================-->
     <measure implicit="no" number="4">
-      <note dynamics="55.56">
+      <note>
         <pitch>
           <step>C</step>
           <octave>5</octave>
@@ -733,7 +738,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -742,7 +747,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -767,7 +772,7 @@
     </measure>
     <!--========================= Measure 5 ==========================-->
     <measure implicit="no" number="5">
-      <note dynamics="55.56">
+      <note>
         <pitch>
           <step>G</step>
           <octave>4</octave>
@@ -775,7 +780,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -786,7 +791,7 @@
         <type>half</type>
         <accidental>flat</accidental>
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -811,7 +816,7 @@
     </measure>
     <!--========================= Measure 6 ==========================-->
     <measure implicit="no" number="6">
-      <note dynamics="55.56">
+      <note>
         <pitch>
           <step>D</step>
           <octave>4</octave>
@@ -819,7 +824,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -828,7 +833,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -853,7 +858,7 @@
     </measure>
     <!--========================= Measure 7 ==========================-->
     <measure implicit="no" number="7">
-      <note dynamics="55.56">
+      <note>
         <pitch>
           <step>A</step>
           <octave>4</octave>
@@ -861,7 +866,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -872,7 +877,7 @@
         <type>half</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -897,7 +902,7 @@
     </measure>
     <!--========================= Measure 8 ==========================-->
     <measure implicit="no" number="8">
-      <note dynamics="55.56">
+      <note>
         <pitch>
           <step>D</step>
           <octave>4</octave>
@@ -905,7 +910,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -914,7 +919,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -2174,6 +2179,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>F</sign>
+          <line>4</line>
+        </clef>
       </attributes>
       <note dynamics="57.78">
         <pitch>

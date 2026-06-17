@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Luminous Recursion</work-title>
-  </work>
   <movement-title>Luminous Recursion</movement-title>
   <identification>
     <creator type="composer">OpenAI</creator>
@@ -25,11 +22,11 @@
     <score-part id="P9c92da2b1472a73feaa8ea1b9df328c9">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="I54aa1689efbddb43e5e150de62672284">
+      <score-instrument id="I78a22af572121d315e12a017ab80e659">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I54aa1689efbddb43e5e150de62672284">
+      <midi-instrument id="I78a22af572121d315e12a017ab80e659">
         <midi-channel>1</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="P139f91cfc7f8434fd02d5f5a02535a45">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="I230ceeecb22a111c7bd3f0eaa6d41ee6">
+      <score-instrument id="I2a27661ccaceac51a70592c31230b521">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I230ceeecb22a111c7bd3f0eaa6d41ee6">
+      <midi-instrument id="I2a27661ccaceac51a70592c31230b521">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -74,7 +71,7 @@
         </direction-type>
         <sound dynamics="31" />
       </direction>
-      <note dynamics="58.89">
+      <note>
         <pitch>
           <step>G</step>
           <octave>3</octave>
@@ -88,7 +85,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="58.89">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -98,7 +95,7 @@
         <type>quarter</type>
         <dot />
       </note>
-      <note dynamics="58.89">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -110,7 +107,7 @@
         <dot />
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="58.89">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -128,7 +125,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="56.67">
+      <note>
         <pitch>
           <step>E</step>
           <octave>4</octave>
@@ -136,7 +133,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="56.67">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -145,7 +142,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="56.67">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -154,7 +151,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="56.67">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -181,7 +178,7 @@
     </measure>
     <!--========================= Measure 2 ==========================-->
     <measure implicit="no" number="2">
-      <note dynamics="60.00">
+      <note>
         <pitch>
           <step>E</step>
           <octave>3</octave>
@@ -195,7 +192,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="60.00">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -205,7 +202,7 @@
         <type>quarter</type>
         <dot />
       </note>
-      <note dynamics="60.00">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -215,7 +212,7 @@
         <type>quarter</type>
         <dot />
       </note>
-      <note dynamics="60.00">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -233,7 +230,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="57.78">
+      <note>
         <pitch>
           <step>E</step>
           <octave>4</octave>
@@ -241,7 +238,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="57.78">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -250,7 +247,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="57.78">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -259,7 +256,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="57.78">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -284,7 +281,7 @@
     </measure>
     <!--========================= Measure 3 ==========================-->
     <measure implicit="no" number="3">
-      <note dynamics="61.11">
+      <note>
         <pitch>
           <step>D</step>
           <octave>3</octave>
@@ -298,7 +295,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="61.11">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -308,7 +305,7 @@
         <type>quarter</type>
         <dot />
       </note>
-      <note dynamics="61.11">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -318,7 +315,7 @@
         <type>quarter</type>
         <dot />
       </note>
-      <note dynamics="61.11">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -336,7 +333,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="58.89">
+      <note>
         <pitch>
           <step>G</step>
           <octave>3</octave>
@@ -344,7 +341,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="58.89">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -353,7 +350,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="58.89">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -362,7 +359,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="58.89">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -387,7 +384,7 @@
     </measure>
     <!--========================= Measure 4 ==========================-->
     <measure implicit="no" number="4">
-      <note dynamics="62.22">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -403,7 +400,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="62.22">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -413,7 +410,7 @@
         <type>quarter</type>
         <dot />
       </note>
-      <note dynamics="62.22">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -423,7 +420,7 @@
         <type>quarter</type>
         <dot />
       </note>
-      <note dynamics="62.22">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -443,7 +440,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="60.00">
+      <note>
         <pitch>
           <step>D</step>
           <octave>4</octave>
@@ -451,7 +448,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="60.00">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -462,7 +459,7 @@
         <type>quarter</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="60.00">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -471,7 +468,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="60.00">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -504,7 +501,7 @@
         </direction-type>
         <sound dynamics="44" />
       </direction>
-      <note dynamics="63.33">
+      <note>
         <pitch>
           <step>C</step>
           <octave>3</octave>
@@ -518,7 +515,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="63.33">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -528,7 +525,7 @@
         <type>quarter</type>
         <dot />
       </note>
-      <note dynamics="63.33">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -538,7 +535,7 @@
         <type>quarter</type>
         <dot />
       </note>
-      <note dynamics="63.33">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -556,7 +553,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="61.11">
+      <note>
         <pitch>
           <step>A</step>
           <octave>3</octave>
@@ -564,7 +561,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="61.11">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -573,7 +570,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="61.11">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -582,7 +579,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="61.11">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -607,7 +604,7 @@
     </measure>
     <!--========================= Measure 6 ==========================-->
     <measure implicit="no" number="6">
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>D</step>
           <alter>1</alter>
@@ -623,7 +620,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -633,7 +630,7 @@
         <type>quarter</type>
         <dot />
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -643,7 +640,7 @@
         <type>quarter</type>
         <dot />
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -663,7 +660,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="62.22">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -673,7 +670,7 @@
         <type>quarter</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="62.22">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -682,7 +679,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="62.22">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -693,7 +690,7 @@
         <type>quarter</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="62.22">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -718,7 +715,7 @@
     </measure>
     <!--========================= Measure 7 ==========================-->
     <measure implicit="no" number="7">
-      <note dynamics="65.56">
+      <note>
         <pitch>
           <step>G</step>
           <octave>3</octave>
@@ -732,7 +729,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -742,7 +739,7 @@
         <type>quarter</type>
         <dot />
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -752,7 +749,7 @@
         <type>quarter</type>
         <dot />
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -770,7 +767,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="63.33">
+      <note>
         <pitch>
           <step>E</step>
           <octave>4</octave>
@@ -778,7 +775,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="63.33">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -787,7 +784,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="63.33">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -796,7 +793,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="63.33">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -823,7 +820,7 @@
     </measure>
     <!--========================= Measure 8 ==========================-->
     <measure implicit="no" number="8">
-      <note dynamics="66.67">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -839,7 +836,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -849,7 +846,7 @@
         <type>quarter</type>
         <dot />
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -859,7 +856,7 @@
         <type>quarter</type>
         <dot />
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -879,7 +876,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>D</step>
           <octave>4</octave>
@@ -887,7 +884,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -897,7 +894,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -906,7 +903,7 @@
         <duration>10080</duration>
         <type>quarter</type>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -939,7 +936,7 @@
         </direction-type>
         <sound dynamics="57" />
       </direction>
-      <note dynamics="73.33">
+      <note>
         <pitch>
           <step>G</step>
           <octave>3</octave>
@@ -954,7 +951,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="73.33">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -963,7 +960,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="73.33">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -1004,7 +1001,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="73.33">
+      <note>
         <pitch>
           <step>G</step>
           <octave>3</octave>
@@ -1014,7 +1011,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="73.33">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -1023,7 +1020,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="73.33">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -1067,7 +1064,7 @@
     </measure>
     <!--========================= Measure 10 =========================-->
     <measure implicit="no" number="10">
-      <note dynamics="68.89">
+      <note>
         <pitch>
           <step>D</step>
           <octave>3</octave>
@@ -1082,7 +1079,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="68.89">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -1091,7 +1088,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="68.89">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -1130,7 +1127,7 @@
         <stem>up</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="68.89">
+      <note>
         <pitch>
           <step>D</step>
           <octave>3</octave>
@@ -1140,7 +1137,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="68.89">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -1149,7 +1146,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="68.89">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -1191,7 +1188,7 @@
     </measure>
     <!--========================= Measure 11 =========================-->
     <measure implicit="no" number="11">
-      <note dynamics="70.00">
+      <note>
         <pitch>
           <step>E</step>
           <octave>3</octave>
@@ -1206,7 +1203,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="70.00">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -1215,7 +1212,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="70.00">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -1254,7 +1251,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="70.00">
+      <note>
         <pitch>
           <step>E</step>
           <octave>3</octave>
@@ -1264,7 +1261,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="70.00">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -1273,7 +1270,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="70.00">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -1315,7 +1312,7 @@
     </measure>
     <!--========================= Measure 12 =========================-->
     <measure implicit="no" number="12">
-      <note dynamics="71.11">
+      <note>
         <pitch>
           <step>C</step>
           <octave>3</octave>
@@ -1330,7 +1327,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="71.11">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -1339,7 +1336,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="71.11">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -1378,7 +1375,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="71.11">
+      <note>
         <pitch>
           <step>C</step>
           <octave>3</octave>
@@ -1388,7 +1385,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="71.11">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -1397,7 +1394,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="71.11">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -1447,7 +1444,7 @@
         </direction-type>
         <sound dynamics="69" />
       </direction>
-      <note dynamics="72.22">
+      <note>
         <pitch>
           <step>C</step>
           <octave>3</octave>
@@ -1462,7 +1459,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="72.22">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -1473,7 +1470,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="72.22">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -1516,7 +1513,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="72.22">
+      <note>
         <pitch>
           <step>C</step>
           <octave>3</octave>
@@ -1526,7 +1523,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="72.22">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -1537,7 +1534,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="72.22">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -1583,7 +1580,7 @@
     </measure>
     <!--========================= Measure 14 =========================-->
     <measure implicit="no" number="14">
-      <note dynamics="73.33">
+      <note>
         <pitch>
           <step>D</step>
           <alter>1</alter>
@@ -1600,7 +1597,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="73.33">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -1609,7 +1606,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="73.33">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -1652,7 +1649,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="73.33">
+      <note>
         <pitch>
           <step>D</step>
           <alter>1</alter>
@@ -1664,7 +1661,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="73.33">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -1673,7 +1670,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="73.33">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -1717,7 +1714,7 @@
     </measure>
     <!--========================= Measure 15 =========================-->
     <measure implicit="no" number="15">
-      <note dynamics="68.89">
+      <note>
         <pitch>
           <step>G</step>
           <octave>3</octave>
@@ -1732,7 +1729,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="68.89">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -1741,7 +1738,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="68.89">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -1780,7 +1777,7 @@
         <stem>up</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="68.89">
+      <note>
         <pitch>
           <step>G</step>
           <octave>3</octave>
@@ -1790,7 +1787,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="68.89">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -1799,7 +1796,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="68.89">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -1843,7 +1840,7 @@
     </measure>
     <!--========================= Measure 16 =========================-->
     <measure implicit="no" number="16">
-      <note dynamics="70.00">
+      <note>
         <pitch>
           <step>G</step>
           <alter>1</alter>
@@ -1860,7 +1857,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="70.00">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -1869,7 +1866,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="70.00">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -1910,7 +1907,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="70.00">
+      <note>
         <pitch>
           <step>G</step>
           <alter>1</alter>
@@ -1922,7 +1919,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="70.00">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -1931,7 +1928,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="70.00">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -1983,7 +1980,7 @@
         </direction-type>
         <sound dynamics="88" />
       </direction>
-      <note dynamics="71.11">
+      <note>
         <pitch>
           <step>C</step>
           <octave>3</octave>
@@ -1998,7 +1995,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="71.11">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -2009,7 +2006,7 @@
         <type>eighth</type>
         <accidental>natural</accidental>
       </note>
-      <note dynamics="71.11">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -2048,7 +2045,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="71.11">
+      <note>
         <pitch>
           <step>C</step>
           <octave>3</octave>
@@ -2058,7 +2055,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="71.11">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -2067,7 +2064,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="71.11">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -2109,7 +2106,7 @@
     </measure>
     <!--========================= Measure 18 =========================-->
     <measure implicit="no" number="18">
-      <note dynamics="72.22">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -2126,7 +2123,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="72.22">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -2135,7 +2132,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="72.22">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -2176,7 +2173,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="72.22">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -2188,7 +2185,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="72.22">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -2197,7 +2194,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="72.22">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -2241,7 +2238,7 @@
     </measure>
     <!--========================= Measure 19 =========================-->
     <measure implicit="no" number="19">
-      <note dynamics="73.33">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -2258,7 +2255,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="73.33">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -2267,7 +2264,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="73.33">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -2308,7 +2305,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="73.33">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -2320,7 +2317,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="73.33">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -2329,7 +2326,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="73.33">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -2373,7 +2370,7 @@
     </measure>
     <!--========================= Measure 20 =========================-->
     <measure implicit="no" number="20">
-      <note dynamics="68.89">
+      <note>
         <pitch>
           <step>E</step>
           <octave>3</octave>
@@ -2388,7 +2385,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="68.89">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -2397,7 +2394,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="68.89">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -2436,7 +2433,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="68.89">
+      <note>
         <pitch>
           <step>E</step>
           <octave>3</octave>
@@ -2446,7 +2443,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="68.89">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -2455,7 +2452,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="68.89">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -2505,7 +2502,7 @@
         </direction-type>
         <sound dynamics="69" />
       </direction>
-      <note dynamics="70.00">
+      <note>
         <pitch>
           <step>C</step>
           <octave>3</octave>
@@ -2520,7 +2517,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="70.00">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -2531,7 +2528,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="70.00">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -2574,7 +2571,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="70.00">
+      <note>
         <pitch>
           <step>C</step>
           <octave>3</octave>
@@ -2584,7 +2581,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="70.00">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -2595,7 +2592,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="70.00">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -2641,7 +2638,7 @@
     </measure>
     <!--========================= Measure 22 =========================-->
     <measure implicit="no" number="22">
-      <note dynamics="71.11">
+      <note>
         <pitch>
           <step>D</step>
           <alter>1</alter>
@@ -2658,7 +2655,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="71.11">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -2667,7 +2664,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="71.11">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -2710,7 +2707,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="71.11">
+      <note>
         <pitch>
           <step>D</step>
           <alter>1</alter>
@@ -2722,7 +2719,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="71.11">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -2731,7 +2728,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="71.11">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -2777,7 +2774,7 @@
     </measure>
     <!--========================= Measure 23 =========================-->
     <measure implicit="no" number="23">
-      <note dynamics="72.22">
+      <note>
         <pitch>
           <step>G</step>
           <octave>3</octave>
@@ -2792,7 +2789,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="72.22">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -2801,7 +2798,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="72.22">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -2842,7 +2839,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="72.22">
+      <note>
         <pitch>
           <step>G</step>
           <octave>3</octave>
@@ -2852,7 +2849,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="72.22">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -2861,7 +2858,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="72.22">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -2903,7 +2900,7 @@
     </measure>
     <!--========================= Measure 24 =========================-->
     <measure implicit="no" number="24">
-      <note dynamics="73.33">
+      <note>
         <pitch>
           <step>G</step>
           <alter>1</alter>
@@ -2920,7 +2917,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="73.33">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -2929,7 +2926,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="73.33">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -2970,7 +2967,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="73.33">
+      <note>
         <pitch>
           <step>G</step>
           <alter>1</alter>
@@ -2982,7 +2979,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="73.33">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -2991,7 +2988,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="73.33">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -4723,7 +4720,7 @@
         </direction-type>
         <sound dynamics="44" />
       </direction>
-      <note dynamics="48.89">
+      <note>
         <pitch>
           <step>E</step>
           <octave>4</octave>
@@ -4736,7 +4733,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -4745,7 +4742,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -4754,7 +4751,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -4794,7 +4791,7 @@
     </measure>
     <!--========================= Measure 34 =========================-->
     <measure implicit="no" number="34">
-      <note dynamics="48.89">
+      <note>
         <pitch>
           <step>E</step>
           <octave>4</octave>
@@ -4807,7 +4804,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -4816,7 +4813,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -4825,7 +4822,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -4863,7 +4860,7 @@
     </measure>
     <!--========================= Measure 35 =========================-->
     <measure implicit="no" number="35">
-      <note dynamics="48.89">
+      <note>
         <pitch>
           <step>G</step>
           <octave>3</octave>
@@ -4876,7 +4873,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -4885,7 +4882,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -4896,7 +4893,7 @@
         <type>half</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -4934,7 +4931,7 @@
     </measure>
     <!--========================= Measure 36 =========================-->
     <measure implicit="no" number="36">
-      <note dynamics="48.89">
+      <note>
         <pitch>
           <step>D</step>
           <octave>4</octave>
@@ -4947,7 +4944,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -4958,7 +4955,7 @@
         <type>half</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -4967,7 +4964,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -5015,7 +5012,7 @@
         </direction-type>
         <sound dynamics="31" />
       </direction>
-      <note dynamics="48.89">
+      <note>
         <pitch>
           <step>A</step>
           <octave>3</octave>
@@ -5028,7 +5025,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -5037,7 +5034,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -5046,7 +5043,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -5084,7 +5081,7 @@
     </measure>
     <!--========================= Measure 38 =========================-->
     <measure implicit="no" number="38">
-      <note dynamics="48.89">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -5099,7 +5096,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -5108,7 +5105,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -5119,7 +5116,7 @@
         <type>half</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -5159,7 +5156,7 @@
     </measure>
     <!--========================= Measure 39 =========================-->
     <measure implicit="no" number="39">
-      <note dynamics="48.89">
+      <note>
         <pitch>
           <step>E</step>
           <octave>4</octave>
@@ -5172,7 +5169,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -5181,7 +5178,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -5190,7 +5187,7 @@
         <duration>20160</duration>
         <type>half</type>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -5238,7 +5235,7 @@
         </direction-type>
         <sound dynamics="19" />
       </direction>
-      <note dynamics="37.78">
+      <note>
         <pitch>
           <step>E</step>
           <octave>3</octave>
@@ -5252,7 +5249,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="37.78">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -5261,7 +5258,7 @@
         <duration>40320</duration>
         <type>whole</type>
       </note>
-      <note dynamics="37.78">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -5272,7 +5269,7 @@
         <type>whole</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="37.78">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -5281,7 +5278,7 @@
         <duration>40320</duration>
         <type>whole</type>
       </note>
-      <note dynamics="37.78">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -5290,7 +5287,7 @@
         <duration>40320</duration>
         <type>whole</type>
       </note>
-      <note dynamics="37.78">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -5328,7 +5325,7 @@
         </direction-type>
         <sound dynamics="31" />
       </direction>
-      <note dynamics="45.56">
+      <note>
         <pitch>
           <step>E</step>
           <octave>2</octave>
@@ -5341,7 +5338,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="45.56">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -5369,7 +5366,7 @@
     </measure>
     <!--========================= Measure 2 ==========================-->
     <measure implicit="no" number="2">
-      <note dynamics="46.67">
+      <note>
         <pitch>
           <step>C</step>
           <octave>2</octave>
@@ -5382,7 +5379,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="46.67">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -5410,7 +5407,7 @@
     </measure>
     <!--========================= Measure 3 ==========================-->
     <measure implicit="no" number="3">
-      <note dynamics="47.78">
+      <note>
         <pitch>
           <step>G</step>
           <octave>2</octave>
@@ -5423,7 +5420,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="47.78">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -5451,7 +5448,7 @@
     </measure>
     <!--========================= Measure 4 ==========================-->
     <measure implicit="no" number="4">
-      <note dynamics="48.89">
+      <note>
         <pitch>
           <step>D</step>
           <octave>2</octave>
@@ -5464,7 +5461,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="48.89">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -5502,7 +5499,7 @@
         </direction-type>
         <sound dynamics="44" />
       </direction>
-      <note dynamics="50.00">
+      <note>
         <pitch>
           <step>A</step>
           <octave>1</octave>
@@ -5515,7 +5512,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="50.00">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -5543,7 +5540,7 @@
     </measure>
     <!--========================= Measure 6 ==========================-->
     <measure implicit="no" number="6">
-      <note dynamics="51.11">
+      <note>
         <pitch>
           <step>B</step>
           <octave>1</octave>
@@ -5556,7 +5553,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="51.11">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -5588,7 +5585,7 @@
     </measure>
     <!--========================= Measure 7 ==========================-->
     <measure implicit="no" number="7">
-      <note dynamics="52.22">
+      <note>
         <pitch>
           <step>E</step>
           <octave>2</octave>
@@ -5601,7 +5598,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="52.22">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -5629,7 +5626,7 @@
     </measure>
     <!--========================= Measure 8 ==========================-->
     <measure implicit="no" number="8">
-      <note dynamics="53.33">
+      <note>
         <pitch>
           <step>D</step>
           <octave>2</octave>
@@ -5642,7 +5639,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="53.33">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -7088,7 +7085,7 @@
         </direction-type>
         <sound dynamics="107" />
       </direction>
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>C</step>
           <octave>2</octave>
@@ -7103,7 +7100,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -7112,7 +7109,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="65.56">
+      <note>
         <pitch>
           <step>G</step>
           <alter>0</alter>
@@ -7124,7 +7121,7 @@
         <stem>up</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -7133,7 +7130,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="66.67">
+      <note>
         <pitch>
           <step>E</step>
           <octave>3</octave>
@@ -7143,7 +7140,7 @@
         <stem>down</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -7152,7 +7149,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="67.78">
+      <note>
         <pitch>
           <step>B</step>
           <octave>3</octave>
@@ -7162,7 +7159,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="67.78">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -7171,7 +7168,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>C</step>
           <octave>3</octave>
@@ -7186,7 +7183,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -7195,7 +7192,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="65.56">
+      <note>
         <pitch>
           <step>E</step>
           <octave>3</octave>
@@ -7205,7 +7202,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -7214,7 +7211,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="66.67">
+      <note>
         <pitch>
           <step>G</step>
           <octave>3</octave>
@@ -7224,7 +7221,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -7233,7 +7230,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="67.78">
+      <note>
         <pitch>
           <step>B</step>
           <octave>3</octave>
@@ -7243,7 +7240,7 @@
         <stem>up</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="67.78">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -7255,7 +7252,7 @@
     </measure>
     <!--========================= Measure 26 =========================-->
     <measure implicit="no" number="26">
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>B</step>
           <octave>1</octave>
@@ -7270,7 +7267,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -7281,7 +7278,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="65.56">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -7293,7 +7290,7 @@
         <stem>up</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -7302,7 +7299,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="66.67">
+      <note>
         <pitch>
           <step>D</step>
           <alter>1</alter>
@@ -7314,7 +7311,7 @@
         <stem>down</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -7323,7 +7320,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="67.78">
+      <note>
         <pitch>
           <step>A</step>
           <octave>3</octave>
@@ -7333,7 +7330,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="67.78">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -7344,7 +7341,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>B</step>
           <octave>2</octave>
@@ -7359,7 +7356,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -7370,7 +7367,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="65.56">
+      <note>
         <pitch>
           <step>D</step>
           <alter>1</alter>
@@ -7382,7 +7379,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -7391,7 +7388,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="66.67">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -7403,7 +7400,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -7412,7 +7409,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="67.78">
+      <note>
         <pitch>
           <step>A</step>
           <octave>3</octave>
@@ -7422,7 +7419,7 @@
         <stem>up</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="67.78">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -7436,7 +7433,7 @@
     </measure>
     <!--========================= Measure 27 =========================-->
     <measure implicit="no" number="27">
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>E</step>
           <octave>2</octave>
@@ -7451,7 +7448,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -7460,7 +7457,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="65.56">
+      <note>
         <pitch>
           <step>B</step>
           <octave>2</octave>
@@ -7470,7 +7467,7 @@
         <stem>up</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -7479,7 +7476,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="66.67">
+      <note>
         <pitch>
           <step>G</step>
           <octave>3</octave>
@@ -7489,7 +7486,7 @@
         <stem>down</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -7498,7 +7495,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="67.78">
+      <note>
         <pitch>
           <step>B</step>
           <octave>3</octave>
@@ -7508,7 +7505,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="67.78">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -7517,7 +7514,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>E</step>
           <octave>3</octave>
@@ -7532,7 +7529,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -7541,7 +7538,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="65.56">
+      <note>
         <pitch>
           <step>G</step>
           <octave>3</octave>
@@ -7551,7 +7548,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -7560,7 +7557,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="66.67">
+      <note>
         <pitch>
           <step>B</step>
           <octave>3</octave>
@@ -7570,7 +7567,7 @@
         <stem>down</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -7579,7 +7576,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="67.78">
+      <note>
         <pitch>
           <step>E</step>
           <octave>4</octave>
@@ -7589,7 +7586,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="67.78">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -7601,7 +7598,7 @@
     </measure>
     <!--========================= Measure 28 =========================-->
     <measure implicit="no" number="28">
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -7618,7 +7615,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -7627,7 +7624,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="65.56">
+      <note>
         <pitch>
           <step>C</step>
           <octave>3</octave>
@@ -7637,7 +7634,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -7646,7 +7643,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="66.67">
+      <note>
         <pitch>
           <step>A</step>
           <octave>3</octave>
@@ -7656,7 +7653,7 @@
         <stem>down</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -7667,7 +7664,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="67.78">
+      <note>
         <pitch>
           <step>C</step>
           <octave>4</octave>
@@ -7677,7 +7674,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="67.78">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -7686,7 +7683,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -7703,7 +7700,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -7712,7 +7709,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="65.56">
+      <note>
         <pitch>
           <step>A</step>
           <octave>3</octave>
@@ -7722,7 +7719,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -7733,7 +7730,7 @@
         <type>eighth</type>
         <accidental>flat</accidental>
       </note>
-      <note dynamics="66.67">
+      <note>
         <pitch>
           <step>C</step>
           <octave>4</octave>
@@ -7743,7 +7740,7 @@
         <stem>down</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -7754,7 +7751,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="67.78">
+      <note>
         <pitch>
           <step>E</step>
           <alter>-1</alter>
@@ -7766,7 +7763,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="67.78">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -7786,7 +7783,7 @@
         </direction-type>
         <sound dynamics="88" />
       </direction>
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>A</step>
           <octave>1</octave>
@@ -7801,7 +7798,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -7810,7 +7807,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="65.56">
+      <note>
         <pitch>
           <step>E</step>
           <alter>0</alter>
@@ -7822,7 +7819,7 @@
         <stem>up</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -7831,7 +7828,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="66.67">
+      <note>
         <pitch>
           <step>C</step>
           <octave>3</octave>
@@ -7841,7 +7838,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -7850,7 +7847,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="67.78">
+      <note>
         <pitch>
           <step>G</step>
           <octave>3</octave>
@@ -7860,7 +7857,7 @@
         <stem>up</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="67.78">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -7869,7 +7866,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>A</step>
           <octave>2</octave>
@@ -7884,7 +7881,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -7893,7 +7890,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="65.56">
+      <note>
         <pitch>
           <step>B</step>
           <octave>2</octave>
@@ -7903,7 +7900,7 @@
         <stem>up</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -7912,7 +7909,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="66.67">
+      <note>
         <pitch>
           <step>C</step>
           <octave>3</octave>
@@ -7922,7 +7919,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -7931,7 +7928,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="67.78">
+      <note>
         <pitch>
           <step>E</step>
           <octave>3</octave>
@@ -7941,7 +7938,7 @@
         <stem>up</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="67.78">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -7953,7 +7950,7 @@
     </measure>
     <!--========================= Measure 30 =========================-->
     <measure implicit="no" number="30">
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>D</step>
           <alter>1</alter>
@@ -7970,7 +7967,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -7979,7 +7976,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="65.56">
+      <note>
         <pitch>
           <step>A</step>
           <octave>2</octave>
@@ -7989,7 +7986,7 @@
         <stem>up</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -8000,7 +7997,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="66.67">
+      <note>
         <pitch>
           <step>C</step>
           <octave>3</octave>
@@ -8010,7 +8007,7 @@
         <stem>down</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -8021,7 +8018,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="67.78">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -8033,7 +8030,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="67.78">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -8044,7 +8041,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>D</step>
           <alter>1</alter>
@@ -8061,7 +8058,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -8070,7 +8067,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="65.56">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -8082,7 +8079,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -8091,7 +8088,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="66.67">
+      <note>
         <pitch>
           <step>A</step>
           <octave>3</octave>
@@ -8101,7 +8098,7 @@
         <stem>down</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -8112,7 +8109,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="67.78">
+      <note>
         <pitch>
           <step>C</step>
           <octave>4</octave>
@@ -8122,7 +8119,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="67.78">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -8134,7 +8131,7 @@
     </measure>
     <!--========================= Measure 31 =========================-->
     <measure implicit="no" number="31">
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>B</step>
           <octave>1</octave>
@@ -8149,7 +8146,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -8160,7 +8157,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="65.56">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -8172,7 +8169,7 @@
         <stem>up</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -8181,7 +8178,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="66.67">
+      <note>
         <pitch>
           <step>D</step>
           <alter>1</alter>
@@ -8193,7 +8190,7 @@
         <stem>down</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -8202,7 +8199,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="67.78">
+      <note>
         <pitch>
           <step>A</step>
           <octave>3</octave>
@@ -8212,7 +8209,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="67.78">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -8223,7 +8220,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>B</step>
           <octave>2</octave>
@@ -8238,7 +8235,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -8249,7 +8246,7 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
       </note>
-      <note dynamics="65.56">
+      <note>
         <pitch>
           <step>D</step>
           <alter>1</alter>
@@ -8261,7 +8258,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -8270,7 +8267,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="66.67">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -8282,7 +8279,7 @@
         <stem>up</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -8291,7 +8288,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="67.78">
+      <note>
         <pitch>
           <step>A</step>
           <octave>3</octave>
@@ -8301,7 +8298,7 @@
         <stem>up</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="67.78">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -8315,7 +8312,7 @@
     </measure>
     <!--========================= Measure 32 =========================-->
     <measure implicit="no" number="32">
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>E</step>
           <octave>2</octave>
@@ -8330,7 +8327,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -8339,7 +8336,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="65.56">
+      <note>
         <pitch>
           <step>B</step>
           <octave>2</octave>
@@ -8349,7 +8346,7 @@
         <stem>up</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -8358,7 +8355,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="66.67">
+      <note>
         <pitch>
           <step>G</step>
           <octave>3</octave>
@@ -8368,7 +8365,7 @@
         <stem>down</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -8377,7 +8374,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="67.78">
+      <note>
         <pitch>
           <step>B</step>
           <octave>3</octave>
@@ -8387,7 +8384,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="67.78">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -8396,7 +8393,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="64.44">
+      <note>
         <pitch>
           <step>E</step>
           <octave>3</octave>
@@ -8411,7 +8408,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="64.44">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -8420,7 +8417,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="65.56">
+      <note>
         <pitch>
           <step>G</step>
           <octave>3</octave>
@@ -8430,7 +8427,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="65.56">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -8439,7 +8436,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="66.67">
+      <note>
         <pitch>
           <step>B</step>
           <octave>3</octave>
@@ -8449,7 +8446,7 @@
         <stem>down</stem>
         <beam number="1">begin</beam>
       </note>
-      <note dynamics="66.67">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -8458,7 +8455,7 @@
         <duration>5040</duration>
         <type>eighth</type>
       </note>
-      <note dynamics="67.78">
+      <note>
         <pitch>
           <step>E</step>
           <octave>4</octave>
@@ -8468,7 +8465,7 @@
         <stem>down</stem>
         <beam number="1">end</beam>
       </note>
-      <note dynamics="67.78">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -8488,7 +8485,7 @@
         </direction-type>
         <sound dynamics="44" />
       </direction>
-      <note dynamics="37.78">
+      <note>
         <pitch>
           <step>E</step>
           <octave>2</octave>
@@ -8501,7 +8498,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="37.78">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -8529,7 +8526,7 @@
     </measure>
     <!--========================= Measure 34 =========================-->
     <measure implicit="no" number="34">
-      <note dynamics="37.78">
+      <note>
         <pitch>
           <step>C</step>
           <octave>2</octave>
@@ -8542,7 +8539,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="37.78">
+      <note>
         <chord />
         <pitch>
           <step>C</step>
@@ -8570,7 +8567,7 @@
     </measure>
     <!--========================= Measure 35 =========================-->
     <measure implicit="no" number="35">
-      <note dynamics="37.78">
+      <note>
         <pitch>
           <step>G</step>
           <octave>2</octave>
@@ -8583,7 +8580,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="37.78">
+      <note>
         <chord />
         <pitch>
           <step>G</step>
@@ -8613,7 +8610,7 @@
     </measure>
     <!--========================= Measure 36 =========================-->
     <measure implicit="no" number="36">
-      <note dynamics="37.78">
+      <note>
         <pitch>
           <step>D</step>
           <octave>2</octave>
@@ -8626,7 +8623,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="37.78">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -8664,7 +8661,7 @@
         </direction-type>
         <sound dynamics="31" />
       </direction>
-      <note dynamics="37.78">
+      <note>
         <pitch>
           <step>A</step>
           <octave>1</octave>
@@ -8677,7 +8674,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="37.78">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -8705,7 +8702,7 @@
     </measure>
     <!--========================= Measure 38 =========================-->
     <measure implicit="no" number="38">
-      <note dynamics="37.78">
+      <note>
         <pitch>
           <step>B</step>
           <octave>1</octave>
@@ -8718,7 +8715,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="37.78">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -8750,7 +8747,7 @@
     </measure>
     <!--========================= Measure 39 =========================-->
     <measure implicit="no" number="39">
-      <note dynamics="37.78">
+      <note>
         <pitch>
           <step>E</step>
           <octave>2</octave>
@@ -8763,7 +8760,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="37.78">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -8799,7 +8796,7 @@
         </direction-type>
         <sound dynamics="19" />
       </direction>
-      <note dynamics="35.56">
+      <note>
         <pitch>
           <step>E</step>
           <octave>1</octave>
@@ -8813,7 +8810,7 @@
           </articulations>
         </notations>
       </note>
-      <note dynamics="35.56">
+      <note>
         <chord />
         <pitch>
           <step>E</step>
@@ -8822,7 +8819,7 @@
         <duration>40320</duration>
         <type>whole</type>
       </note>
-      <note dynamics="35.56">
+      <note>
         <chord />
         <pitch>
           <step>B</step>
@@ -8831,7 +8828,7 @@
         <duration>40320</duration>
         <type>whole</type>
       </note>
-      <note dynamics="35.56">
+      <note>
         <chord />
         <pitch>
           <step>E</step>

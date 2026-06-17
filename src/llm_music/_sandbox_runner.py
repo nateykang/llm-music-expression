@@ -61,8 +61,26 @@ def main() -> int:
         return 3
 
     try:
-        score.write("midi", fp=midi_out)
+        from music21 import clef, converter
+
+        # Give every part a clef (models often omit them, which breaks engraving
+        # of bass/LH staves).
+        parts = list(getattr(score, "parts", [])) or [score]
+        for p in parts:
+            if list(p.recurse().getElementsByClass(clef.Clef)):
+                continue
+            try:
+                best = clef.bestClef(p, recurse=True)
+            except Exception:
+                continue
+            target = p.recurse().getElementsByClass("Measure").first() or p
+            target.insert(0, best)
+
+        # Write MusicXML first, then derive MIDI FROM it. music21's direct MIDI
+        # export drops a grand-staff's second (bass) part while its MusicXML keeps
+        # it; rendering MIDI from the MusicXML guarantees audio == engraving.
         score.write("musicxml", fp=xml_out)
+        converter.parse(xml_out).write("midi", fp=midi_out)
     except Exception:
         traceback.print_exc()
         return 4

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Searching for Home</work-title>
-  </work>
   <movement-title>Searching for Home</movement-title>
   <identification>
     <creator type="composer">AI Composer</creator>
@@ -25,11 +22,11 @@
     <score-part id="Pf081ab4b2414c1b44a62aad118d9eace">
       <part-name>Melody</part-name>
       <part-abbreviation>Fl</part-abbreviation>
-      <score-instrument id="Id3bf280de3868b6cc2a99ff7b8025165">
+      <score-instrument id="I3fa802de6491920aa68244c7566b70c8">
         <instrument-name>Flute</instrument-name>
         <instrument-abbreviation>Fl</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Id3bf280de3868b6cc2a99ff7b8025165">
+      <midi-instrument id="I3fa802de6491920aa68244c7566b70c8">
         <midi-channel>1</midi-channel>
         <midi-program>74</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="P63eb361b07947f61d4bad59bbe4970b7">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="I4c7bed2fe7c632dbf247c2bf77cf3117">
+      <score-instrument id="I08ec8c67d9b2a12812f68adc6a8af5b2">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I4c7bed2fe7c632dbf247c2bf77cf3117">
+      <midi-instrument id="I08ec8c67d9b2a12812f68adc6a8af5b2">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -49,11 +46,11 @@
     <score-part id="Pf31a02063034d53334baa545956579dd">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="I47e278b2ead72dc4b6fe503120513a81">
+      <score-instrument id="Ie2db07c764e8cb81b6e9d3fca2b87ed1">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I47e278b2ead72dc4b6fe503120513a81">
+      <midi-instrument id="Ie2db07c764e8cb81b6e9d3fca2b87ed1">
         <midi-channel>3</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -73,6 +70,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <note>
         <pitch>
@@ -312,6 +313,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <note>
         <pitch>

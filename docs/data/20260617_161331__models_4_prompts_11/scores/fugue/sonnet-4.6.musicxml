@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Fugue in D minor</work-title>
-  </work>
   <movement-title>Fugue in D minor</movement-title>
   <identification>
     <creator type="composer">AI Composer</creator>
@@ -25,11 +22,11 @@
     <score-part id="Pd4ff866b6c5ccb7e895e1dbc3cdcd0fe">
       <part-name>Soprano</part-name>
       <part-abbreviation>Fl</part-abbreviation>
-      <score-instrument id="I4219853321094653ef0cdc35206e7e03">
+      <score-instrument id="I555293d2500fc732be0687d35c133f94">
         <instrument-name>Flute</instrument-name>
         <instrument-abbreviation>Fl</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I4219853321094653ef0cdc35206e7e03">
+      <midi-instrument id="I555293d2500fc732be0687d35c133f94">
         <midi-channel>1</midi-channel>
         <midi-program>74</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="Pac03d2083640f8b11a4a2c03c5ff4e3d">
       <part-name>Alto</part-name>
       <part-abbreviation>Ob</part-abbreviation>
-      <score-instrument id="Id6b02aca78c7a2bb346faac917f01a49">
+      <score-instrument id="I69249b1bdd7136c4a89761ec6a9d4c3e">
         <instrument-name>Oboe</instrument-name>
         <instrument-abbreviation>Ob</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Id6b02aca78c7a2bb346faac917f01a49">
+      <midi-instrument id="I69249b1bdd7136c4a89761ec6a9d4c3e">
         <midi-channel>2</midi-channel>
         <midi-program>69</midi-program>
       </midi-instrument>
@@ -49,11 +46,11 @@
     <score-part id="P0accc6be9777d33347a01c49bd2e00f1">
       <part-name>Bass</part-name>
       <part-abbreviation>Bsn</part-abbreviation>
-      <score-instrument id="I9d4545b894948ccc05f53f0978816fde">
+      <score-instrument id="Ie6914f8386ba1377908704a0505eb31a">
         <instrument-name>Bassoon</instrument-name>
         <instrument-abbreviation>Bsn</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I9d4545b894948ccc05f53f0978816fde">
+      <midi-instrument id="Ie6914f8386ba1377908704a0505eb31a">
         <midi-channel>3</midi-channel>
         <midi-program>71</midi-program>
       </midi-instrument>
@@ -65,14 +62,41 @@
     <measure implicit="no" number="1">
       <attributes>
         <divisions>10080</divisions>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
+      <note>
+        <rest />
+        <duration>40320</duration>
+        <type>whole</type>
+      </note>
     </measure>
     <!--========================= Measure 2 ==========================-->
-    <measure implicit="no" number="2" />
+    <measure implicit="no" number="2">
+      <note>
+        <rest />
+        <duration>40320</duration>
+        <type>whole</type>
+      </note>
+    </measure>
     <!--========================= Measure 3 ==========================-->
-    <measure implicit="no" number="3" />
+    <measure implicit="no" number="3">
+      <note>
+        <rest />
+        <duration>40320</duration>
+        <type>whole</type>
+      </note>
+    </measure>
     <!--========================= Measure 4 ==========================-->
-    <measure implicit="no" number="4" />
+    <measure implicit="no" number="4">
+      <note>
+        <rest />
+        <duration>40320</duration>
+        <type>whole</type>
+      </note>
+    </measure>
     <!--========================= Measure 1 ==========================-->
     <measure implicit="no" number="1">
       <note dynamics="80.00">
@@ -2279,6 +2303,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <note>
         <rest measure="yes" />
@@ -4014,6 +4042,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>F</sign>
+          <line>4</line>
+        </clef>
       </attributes>
       <note>
         <rest measure="yes" />

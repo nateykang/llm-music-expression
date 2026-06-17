@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Fragments and Echoes</work-title>
-  </work>
   <movement-title>Fragments and Echoes</movement-title>
   <identification>
     <creator type="composer">AI Composer</creator>
@@ -25,11 +22,11 @@
     <score-part id="P4e9a8b69b46ebef97675d3a0e7c80ab7">
       <part-name>Clarinet</part-name>
       <part-abbreviation>Cl</part-abbreviation>
-      <score-instrument id="I48eb502c86d43e8291ce5890f586faab">
+      <score-instrument id="I4c0713e1de8a43109958e7228eab72f7">
         <instrument-name>Clarinet</instrument-name>
         <instrument-abbreviation>Cl</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I48eb502c86d43e8291ce5890f586faab">
+      <midi-instrument id="I4c0713e1de8a43109958e7228eab72f7">
         <midi-channel>1</midi-channel>
         <midi-program>72</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="Pd91d65c1a5029c90947d6e746bb10680">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="I75ffcd0c0f428ab5b8a505f2bb1fff86">
+      <score-instrument id="I18fc7e4a86c2a5bb0e70c03cb1f58628">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I75ffcd0c0f428ab5b8a505f2bb1fff86">
+      <midi-instrument id="I18fc7e4a86c2a5bb0e70c03cb1f58628">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -49,11 +46,11 @@
     <score-part id="P1e7a29877fd65c131ec0d2fcf8b01247">
       <part-name>Cello</part-name>
       <part-abbreviation>Vc</part-abbreviation>
-      <score-instrument id="I9ef6bf2fc6b00d0d723c17e4be511da7">
+      <score-instrument id="I4d750a9839b6c4882039af977172bb88">
         <instrument-name>Violoncello</instrument-name>
         <instrument-abbreviation>Vc</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I9ef6bf2fc6b00d0d723c17e4be511da7">
+      <midi-instrument id="I4d750a9839b6c4882039af977172bb88">
         <midi-channel>3</midi-channel>
         <midi-program>43</midi-program>
       </midi-instrument>
@@ -61,11 +58,11 @@
     <score-part id="P9eb0973f27830546a36ba620282eda92">
       <part-name>Vibraphone</part-name>
       <part-abbreviation>Vbp</part-abbreviation>
-      <score-instrument id="I3e0758d32c3427265b38c19048ddc7ed">
+      <score-instrument id="Ia4de21f0ee6c10f838511f7b31964944">
         <instrument-name>Vibraphone</instrument-name>
         <instrument-abbreviation>Vbp</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I3e0758d32c3427265b38c19048ddc7ed">
+      <midi-instrument id="Ia4de21f0ee6c10f838511f7b31964944">
         <midi-channel>4</midi-channel>
         <midi-program>12</midi-program>
       </midi-instrument>
@@ -85,6 +82,10 @@
           <beats>5</beats>
           <beat-type>8</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
         <transpose>
           <diatonic>-1</diatonic>
           <chromatic>-2</chromatic>
@@ -221,8 +222,11 @@
       </note>
       <note>
         <rest measure="yes" />
-        <duration>25200</duration>
+        <duration>20160</duration>
       </note>
+      <forward>
+        <duration>5040</duration>
+      </forward>
       <note>
         <pitch>
           <step>F</step>
@@ -270,7 +274,11 @@
       </note>
       <note>
         <rest measure="yes" />
-        <duration>25200</duration>
+        <duration>5040</duration>
+      </note>
+      <note>
+        <rest measure="yes" />
+        <duration>22680</duration>
       </note>
       <note>
         <rest />
@@ -335,6 +343,10 @@
         </notations>
       </note>
       <note>
+        <rest measure="yes" />
+        <duration>2520</duration>
+      </note>
+      <note>
         <pitch>
           <step>D</step>
           <octave>5</octave>
@@ -348,9 +360,8 @@
       </note>
       <note>
         <rest />
-        <duration>17640</duration>
+        <duration>15120</duration>
         <type>quarter</type>
-        <dot />
         <dot />
       </note>
     </measure>
@@ -359,6 +370,11 @@
       <note>
         <rest measure="yes" />
         <duration>25200</duration>
+      </note>
+      <note>
+        <rest />
+        <duration>2520</duration>
+        <type>16th</type>
       </note>
       <note>
         <rest measure="yes" />
@@ -387,6 +403,10 @@
           <beats>5</beats>
           <beat-type>8</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <note>
         <rest measure="yes" />
@@ -652,9 +672,11 @@
         <type>quarter</type>
         <dot />
       </note>
-      <forward>
+      <note print-object="no" print-spacing="yes">
+        <rest />
         <duration>5040</duration>
-      </forward>
+        <type>eighth</type>
+      </note>
       <note>
         <pitch>
           <step>A</step>
@@ -707,9 +729,8 @@
       </note>
       <note>
         <rest />
-        <duration>15120</duration>
+        <duration>10080</duration>
         <type>quarter</type>
-        <dot />
       </note>
     </measure>
     <!--========================= Measure 6 ==========================-->
@@ -717,6 +738,11 @@
       <note>
         <rest measure="yes" />
         <duration>25200</duration>
+      </note>
+      <note>
+        <rest />
+        <duration>5040</duration>
+        <type>eighth</type>
       </note>
       <note>
         <rest measure="yes" />
@@ -745,6 +771,10 @@
           <beats>5</beats>
           <beat-type>8</beat-type>
         </time>
+        <clef>
+          <sign>F</sign>
+          <line>4</line>
+        </clef>
       </attributes>
       <note>
         <rest measure="yes" />
@@ -783,8 +813,11 @@
       </note>
       <note>
         <rest measure="yes" />
-        <duration>25200</duration>
+        <duration>10080</duration>
       </note>
+      <forward>
+        <duration>15120</duration>
+      </forward>
       <note>
         <rest />
         <duration>5040</duration>
@@ -822,6 +855,10 @@
         <rest />
         <duration>10080</duration>
         <type>quarter</type>
+      </note>
+      <note>
+        <rest measure="yes" />
+        <duration>15120</duration>
       </note>
       <note>
         <pitch>
@@ -898,6 +935,8 @@
         <duration>7560</duration>
         <type>eighth</type>
         <dot />
+        <stem>down</stem>
+        <beam number="1">begin</beam>
       </note>
       <note>
         <pitch>
@@ -907,6 +946,9 @@
         <duration>2520</duration>
         <tie type="stop" />
         <type>16th</type>
+        <stem>down</stem>
+        <beam number="1">end</beam>
+        <beam number="2">backward hook</beam>
         <notations>
           <tied type="stop" />
         </notations>
@@ -926,9 +968,8 @@
       </note>
       <note>
         <rest />
-        <duration>17640</duration>
+        <duration>15120</duration>
         <type>quarter</type>
-        <dot />
         <dot />
       </note>
     </measure>
@@ -937,6 +978,11 @@
       <note>
         <rest measure="yes" />
         <duration>25200</duration>
+      </note>
+      <note>
+        <rest />
+        <duration>2520</duration>
+        <type>16th</type>
       </note>
       <note>
         <rest measure="yes" />
@@ -965,6 +1011,10 @@
           <beats>5</beats>
           <beat-type>8</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <note>
         <rest measure="yes" />
@@ -1019,8 +1069,11 @@
       </note>
       <note>
         <rest measure="yes" />
-        <duration>25200</duration>
+        <duration>17640</duration>
       </note>
+      <forward>
+        <duration>7560</duration>
+      </forward>
       <note>
         <rest />
         <duration>5040</duration>
@@ -1113,6 +1166,10 @@
         <rest measure="yes" />
         <duration>25200</duration>
       </note>
+      <note>
+        <rest measure="yes" />
+        <duration>7560</duration>
+      </note>
     </measure>
     <!--========================= Measure 4 ==========================-->
     <measure implicit="no" number="4">
@@ -1131,8 +1188,11 @@
       </note>
       <note>
         <rest measure="yes" />
-        <duration>25200</duration>
+        <duration>20160</duration>
       </note>
+      <forward>
+        <duration>5040</duration>
+      </forward>
       <note>
         <pitch>
           <step>F</step>
@@ -1200,7 +1260,11 @@
       </note>
       <note>
         <rest measure="yes" />
-        <duration>25200</duration>
+        <duration>5040</duration>
+      </note>
+      <note>
+        <rest measure="yes" />
+        <duration>20160</duration>
       </note>
       <note>
         <rest />
@@ -1213,6 +1277,10 @@
       <note>
         <rest measure="yes" />
         <duration>25200</duration>
+      </note>
+      <note>
+        <rest measure="yes" />
+        <duration>5040</duration>
       </note>
       <note>
         <rest measure="yes" />

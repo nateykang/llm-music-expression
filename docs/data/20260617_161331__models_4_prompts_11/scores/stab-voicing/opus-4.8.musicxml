@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Quiet Conversations</work-title>
-  </work>
   <movement-title>Quiet Conversations</movement-title>
   <identification>
     <creator type="composer">AI Composer</creator>
@@ -25,11 +22,11 @@
     <score-part id="P3953c5ce8af2b4046f4540f2fdec176e">
       <part-name>Flute</part-name>
       <part-abbreviation>Fl</part-abbreviation>
-      <score-instrument id="Ia7ed4d7441a3a00f9495e3a6c0254f43">
+      <score-instrument id="I1f5fe71fee051bbe1127828f22237de8">
         <instrument-name>Flute</instrument-name>
         <instrument-abbreviation>Fl</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Ia7ed4d7441a3a00f9495e3a6c0254f43">
+      <midi-instrument id="I1f5fe71fee051bbe1127828f22237de8">
         <midi-channel>1</midi-channel>
         <midi-program>74</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="P89761ae9fb54cee0efcc3c47261b11d5">
       <part-name>Clarinet</part-name>
       <part-abbreviation>Cl</part-abbreviation>
-      <score-instrument id="Id106eec523b8137328fa211f6b10291d">
+      <score-instrument id="I2f5d3280baf30fff2713041a5ad440a4">
         <instrument-name>Clarinet</instrument-name>
         <instrument-abbreviation>Cl</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Id106eec523b8137328fa211f6b10291d">
+      <midi-instrument id="I2f5d3280baf30fff2713041a5ad440a4">
         <midi-channel>2</midi-channel>
         <midi-program>72</midi-program>
       </midi-instrument>
@@ -49,11 +46,11 @@
     <score-part id="P983fc83fcf263b16abfd741e9b39950e">
       <part-name>Violoncello</part-name>
       <part-abbreviation>Vc</part-abbreviation>
-      <score-instrument id="I9637f258e128b8e2e64a924cadc99e1c">
+      <score-instrument id="Ib226ed00a688647593fac8bf62ae2fcd">
         <instrument-name>Violoncello</instrument-name>
         <instrument-abbreviation>Vc</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I9637f258e128b8e2e64a924cadc99e1c">
+      <midi-instrument id="Ib226ed00a688647593fac8bf62ae2fcd">
         <midi-channel>3</midi-channel>
         <midi-program>43</midi-program>
       </midi-instrument>
@@ -61,11 +58,11 @@
     <score-part id="P85309564685e0a4afc67c59a516c802e">
       <part-name>Bassoon</part-name>
       <part-abbreviation>Bsn</part-abbreviation>
-      <score-instrument id="Ic81b19e0a5405b41e2969c18dfe89adb">
+      <score-instrument id="Ia801d3191b704bc5ed728803646adc9f">
         <instrument-name>Bassoon</instrument-name>
         <instrument-abbreviation>Bsn</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Ic81b19e0a5405b41e2969c18dfe89adb">
+      <midi-instrument id="Ia801d3191b704bc5ed728803646adc9f">
         <midi-channel>4</midi-channel>
         <midi-program>71</midi-program>
       </midi-instrument>
@@ -85,6 +82,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <direction>
         <direction-type>
@@ -503,6 +504,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
         <transpose>
           <diatonic>-1</diatonic>
           <chromatic>-2</chromatic>

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Driftings</work-title>
-  </work>
   <movement-title>Driftings</movement-title>
   <identification>
     <creator type="composer">ComposerAI</creator>
@@ -25,11 +22,11 @@
     <score-part id="P00156f3b10f52bdcbb9c08dbcf275eff">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="I17d3f51959c76243bcd8bb85d99d7715">
+      <score-instrument id="Ief19896ee2897fd1b7faa3489395e045">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I17d3f51959c76243bcd8bb85d99d7715">
+      <midi-instrument id="Ief19896ee2897fd1b7faa3489395e045">
         <midi-channel>1</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="P455d4145f676bfa714d5dcd85f4c8f43">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="Ifc42b1fb50b908f983cabf4cc153b48f">
+      <score-instrument id="I2f3b86f5a77748e76e83ca0f5c008e18">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Ifc42b1fb50b908f983cabf4cc153b48f">
+      <midi-instrument id="I2f3b86f5a77748e76e83ca0f5c008e18">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -61,6 +58,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <direction>
         <direction-type>

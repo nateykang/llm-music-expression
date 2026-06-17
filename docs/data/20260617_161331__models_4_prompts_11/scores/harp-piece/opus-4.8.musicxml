@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Tide Returning</work-title>
-  </work>
   <movement-title>Tide Returning</movement-title>
   <identification>
     <creator type="composer">Anonymous</creator>
@@ -25,11 +22,11 @@
     <score-part id="P39c6207ae11565bda61125324e6496ba">
       <part-name>Harp</part-name>
       <part-abbreviation>Hp</part-abbreviation>
-      <score-instrument id="I47c24807a38f5793f14d590ffd0ca2c8">
+      <score-instrument id="Ib0286f46718f37a98d28ba853238ae17">
         <instrument-name>Harp</instrument-name>
         <instrument-abbreviation>Hp</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I47c24807a38f5793f14d590ffd0ca2c8">
+      <midi-instrument id="Ib0286f46718f37a98d28ba853238ae17">
         <midi-channel>1</midi-channel>
         <midi-program>47</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="Pd71f9b08b7f75b020ac2964cc69eabe8">
       <part-name>Harp</part-name>
       <part-abbreviation>Hp</part-abbreviation>
-      <score-instrument id="I7d990b2bdcbff03eebb06aa1ae17c859">
+      <score-instrument id="I264870221d4eb2d019a9d76163f3ea89">
         <instrument-name>Harp</instrument-name>
         <instrument-abbreviation>Hp</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I7d990b2bdcbff03eebb06aa1ae17c859">
+      <midi-instrument id="I264870221d4eb2d019a9d76163f3ea89">
         <midi-channel>2</midi-channel>
         <midi-program>47</midi-program>
       </midi-instrument>
@@ -61,6 +58,10 @@
           <beats>6</beats>
           <beat-type>8</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <note>
         <rest measure="yes" />
@@ -965,7 +966,7 @@
     </measure>
     <!--========================= Measure 27 =========================-->
     <measure implicit="no" number="27">
-      <note dynamics="55.56">
+      <note>
         <pitch>
           <step>F</step>
           <alter>1</alter>
@@ -979,7 +980,7 @@
           <fermata type="inverted" />
         </notations>
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -989,7 +990,7 @@
         <type>half</type>
         <dot />
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>D</step>
@@ -999,7 +1000,7 @@
         <type>half</type>
         <dot />
       </note>
-      <note dynamics="55.56">
+      <note>
         <chord />
         <pitch>
           <step>F</step>
@@ -2798,7 +2799,7 @@
         </direction-type>
         <sound dynamics="31" />
       </direction>
-      <note dynamics="44.44">
+      <note>
         <pitch>
           <step>D</step>
           <octave>2</octave>
@@ -2807,7 +2808,7 @@
         <type>half</type>
         <dot />
       </note>
-      <note dynamics="44.44">
+      <note>
         <chord />
         <pitch>
           <step>A</step>
@@ -2817,7 +2818,7 @@
         <type>half</type>
         <dot />
       </note>
-      <note dynamics="44.44">
+      <note>
         <chord />
         <pitch>
           <step>D</step>

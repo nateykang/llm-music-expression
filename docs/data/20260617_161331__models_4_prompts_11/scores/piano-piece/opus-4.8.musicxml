@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="4.0">
-  <work>
-    <work-title>Quiet Reckoning</work-title>
-  </work>
   <movement-title>Quiet Reckoning</movement-title>
   <identification>
     <creator type="composer">AI</creator>
@@ -25,11 +22,11 @@
     <score-part id="P18cb01447a9bc165268a90f1606b7e4a">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="Ibe5db609b9b364b838cf1155dab77a5d">
+      <score-instrument id="I6964677f82ccb1a34332459ec171d3de">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Ibe5db609b9b364b838cf1155dab77a5d">
+      <midi-instrument id="I6964677f82ccb1a34332459ec171d3de">
         <midi-channel>1</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -37,11 +34,11 @@
     <score-part id="P78455b68cb7fa8e1452a4a45285767fd">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="I739481a1aa48b84ac5e4229dbdeab964">
+      <score-instrument id="I93669f5f0675e65c77a6265dddafd3dc">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I739481a1aa48b84ac5e4229dbdeab964">
+      <midi-instrument id="I93669f5f0675e65c77a6265dddafd3dc">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
@@ -61,6 +58,10 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
         </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
       </attributes>
       <direction>
         <direction-type>

@@ -80,6 +80,28 @@ def _normalize_for_export(score, strip_repeats: bool):
     return clean
 
 
+def ensure_clefs(score) -> None:
+    """Give every part a clef if it lacks one.
+
+    Models often omit clefs; music21's MusicXML export then emits a part with no
+    clef (Verovio falls back to treble, which is wrong for a bass/LH staff).
+    Insert a best-guess clef from each part's pitch range so the engraving is
+    correct. In-place; safe to call on any Score/Part.
+    """
+    from music21 import clef
+
+    parts = list(getattr(score, "parts", [])) or [score]
+    for p in parts:
+        if list(p.recurse().getElementsByClass(clef.Clef)):
+            continue
+        try:
+            best = clef.bestClef(p, recurse=True)
+        except Exception:
+            continue
+        target = p.recurse().getElementsByClass("Measure").first() or p
+        target.insert(0, best)
+
+
 def audio_available() -> bool:
     return shutil.which("fluidsynth") is not None and find_soundfont() is not None
 
