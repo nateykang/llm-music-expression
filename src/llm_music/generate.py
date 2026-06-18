@@ -33,6 +33,7 @@ class PieceResult:
     midi_path: Path | None = None
     musicxml_path: Path | None = None
     audio_path: Path | None = None
+    abc: str = ""
     error: str | None = None
     errors: list[str] = field(default_factory=list)
 
@@ -126,6 +127,7 @@ def generate_piece(
             result.long_description = outcome.long_description
             result.midi_path = outcome.midi_path
             result.musicxml_path = outcome.musicxml_path
+            result.abc = outcome.abc
             break
         prior_error = outcome.error
         result.errors.append(prior_error or "unknown error")
@@ -134,8 +136,10 @@ def generate_piece(
         result.error = result.errors[-1] if result.errors else "generation failed"
         return result
 
-    # Pre-render audio (skipped gracefully if FluidSynth/SoundFont unavailable).
-    audio_path = work_dir / "piece.ogg"
-    if midi_to_audio(result.midi_path, audio_path):
-        result.audio_path = audio_path
+    # Pre-render audio for code-gen (MIDI -> FluidSynth). ABC pieces carry no MIDI:
+    # abcjs engraves and plays the raw ABC client-side.
+    if result.midi_path:
+        audio_path = work_dir / "piece.ogg"
+        if midi_to_audio(result.midi_path, audio_path):
+            result.audio_path = audio_path
     return result

@@ -54,6 +54,8 @@ def append_result(batch: Path, result: PieceResult) -> dict:
         "long_description": r.long_description,
         "attempts": r.attempts,
     }
+    if r.abc:
+        entry["abc"] = r.abc
     if r.ok and r.musicxml_path:
         score_rel = f"scores/{r.prompt}/{r.model}.musicxml"
         _copy(r.musicxml_path, batch / score_rel)

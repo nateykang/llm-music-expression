@@ -7,8 +7,7 @@ const els = {
   title: document.getElementById("title"),
   short: document.getElementById("short"),
   long: document.getElementById("long"),
-  audio: document.getElementById("audio"),
-  audioNote: document.getElementById("audio-note"),
+  audioSlot: document.getElementById("audio-slot"),
   score: document.getElementById("score"),
   status: document.getElementById("status"),
   modelLabel: document.getElementById("model-label"),
@@ -162,22 +161,10 @@ async function onSelectChange() {
 async function renderSingle() {
   const piece = current();
   if (!piece) return;
-
   els.title.textContent = piece.title || "Untitled";
   els.short.textContent = piece.short_description || "";
   els.long.textContent = piece.long_description || "";
-
-  if (piece.audio) {
-    els.audio.src = `${manifest._dir}/${piece.audio}`;
-    els.audio.hidden = false;
-    els.audioNote.hidden = true;
-  } else {
-    els.audio.removeAttribute("src");
-    els.audio.hidden = true;
-    els.audioNote.hidden = false;
-  }
-
-  await renderScoreInto(els.score, piece);
+  await mountMedia(els.score, els.audioSlot, piece, manifest._dir);
 }
 
 // One column per model for the currently selected prompt + generation method.
@@ -206,22 +193,73 @@ async function renderCompareMethods() {
 async function addCompareCard(piece, dir, header) {
   const card = document.createElement("article");
   card.className = "compare-card";
-  const audio = piece.audio
-    ? `<audio controls src="${dir}/${piece.audio}"></audio>`
-    : `<p class="note">No pre-rendered audio.</p>`;
   card.innerHTML = `
     <h3 class="model-name">${header}</h3>
     <p class="piece-title">${piece.ok ? (piece.title || "Untitled") : "—"}</p>
     <p class="short">${piece.short_description || ""}</p>
-    ${audio}
+    <div class="audio-slot"></div>
     <details><summary>Model's reflection</summary><p>${piece.long_description || ""}</p></details>
     <div class="compare-score"></div>`;
   els.grid.appendChild(card);
-  await renderScoreInto(card.querySelector(".compare-score"), piece);
+  await mountMedia(card.querySelector(".compare-score"), card.querySelector(".audio-slot"), piece, dir);
 }
 
-// Engrave one piece's MusicXML into a target element (shared by both views).
-async function renderScoreInto(target, piece) {
+// Mount notation + audio for a piece, picking the engine by generation method:
+// ABC pieces carry raw ABC (abcjs engraves + plays it); code-gen pieces carry a
+// MusicXML score + pre-baked ogg (Verovio + <audio>).
+async function mountMedia(scoreEl, audioSlot, piece, dir) {
+  const visual = await mountScore(scoreEl, piece, dir);
+  mountAudio(audioSlot, piece, dir, visual);
+}
+
+async function mountScore(scoreEl, piece, dir) {
+  if (!piece.ok) {
+    scoreEl.innerHTML = `<p class="note">${piece.error ? "Generation failed: " + piece.error : "No score available."}</p>`;
+    return null;
+  }
+  if (piece.abc) {
+    if (!window.ABCJS) { scoreEl.innerHTML = `<p class="note">Loading ABC engraver…</p>`; return null; }
+    scoreEl.innerHTML = "";
+    try {
+      return ABCJS.renderAbc(scoreEl, piece.abc, { responsive: "resize", add_classes: true })[0];
+    } catch (e) {
+      scoreEl.innerHTML = `<p class="note">Could not render ABC: ${e}</p>`;
+      return null;
+    }
+  }
+  await renderScoreInto(scoreEl, piece, dir);
+  return null;
+}
+
+function mountAudio(slot, piece, dir, visual) {
+  slot.innerHTML = "";
+  if (piece.abc) {
+    if (!visual || !window.ABCJS || !ABCJS.synth.supportsAudio()) {
+      slot.innerHTML = `<p class="note">Audio unavailable in this browser.</p>`;
+      return;
+    }
+    const ctrl = document.createElement("div");
+    slot.appendChild(ctrl);
+    const sc = new ABCJS.synth.SynthController();
+    sc.load(ctrl, null, { displayPlay: true, displayProgress: true, displayWarp: false });
+    sc.setTune(visual, false, { soundFontUrl: SOUNDFONT }).catch(() => {
+      slot.innerHTML = `<p class="note">Could not load audio.</p>`;
+    });
+    return;
+  }
+  if (piece.audio) {
+    const a = document.createElement("audio");
+    a.controls = true;
+    a.src = `${dir}/${piece.audio}`;
+    slot.appendChild(a);
+  } else {
+    slot.innerHTML = `<p class="note">No pre-rendered audio.</p>`;
+  }
+}
+const SOUNDFONT = "https://paulrosen.github.io/midi-js-soundfonts/abcjs/";
+
+// Engrave one piece's MusicXML into a target element (code-gen path).
+async function renderScoreInto(target, piece, dir) {
   if (!piece.ok || !piece.score) {
     target.innerHTML = `<p class="note">${piece.error ? "Generation failed: " + piece.error : "No score available."}</p>`;
     return;
@@ -232,7 +270,7 @@ async function renderScoreInto(target, piece) {
   }
   setStatus("");
   try {
-    const xml = await (await fetch(`${manifest._dir}/${piece.score}`)).text();
+    const xml = await (await fetch(`${dir}/${piece.score}`)).text();
     tk.loadData(xml);
     let svg = "";
     const pages = tk.getPageCount();

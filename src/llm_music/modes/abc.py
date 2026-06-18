@@ -1,14 +1,14 @@
-"""ABC-direct mode: the LLM writes ABC notation, parsed by music21.
+"""ABC-direct mode: the LLM writes ABC notation; abcjs renders it client-side.
 
-No code execution — the safe/reproducible path. The ABC body is parsed with
-music21.converter, which then exports MIDI + MusicXML like any other Score.
+No code execution. The raw ABC text is the stored artifact — the browser engraves
+and plays it with abcjs, which (unlike music21's ABC reader) handles multi-voice
+ABC correctly. We keep only a coarse server-side syntax gate to trigger retries.
 """
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from ..render import write_score
 from ._common import ModeResult, extract_json
 
 # The "## Outputs" section of the prompt. ABC mode is our addition (sara is
@@ -48,26 +48,28 @@ def generate(response_text: str, work_dir: Path) -> ModeResult:
     if not isinstance(abc, str) or not abc.strip():
         return ModeResult(ok=False, error="response JSON missing non-empty 'abc' field")
 
-    try:
-        from music21 import converter
-
-        score = converter.parse(abc, format="abc")
-    except Exception as e:  # music21 raises various parse errors
-        return ModeResult(ok=False, error=f"ABC parse failed: {e}")
-
-    work_dir.mkdir(parents=True, exist_ok=True)
-    midi_path = work_dir / "piece.mid"
-    xml_path = work_dir / "piece.musicxml"
-    try:
-        write_score(score, midi_path, xml_path)
-    except Exception as e:
-        return ModeResult(ok=False, error=f"score export failed: {e}")
+    # The raw ABC is the artifact: abcjs engraves and plays it client-side, which
+    # handles multi-voice ABC correctly (music21's ABC reader silently collapses
+    # voices into one staff). We only do a coarse syntax sanity check here so a
+    # truly malformed body triggers a retry; we do NOT use music21's output.
+    err = _abc_syntax_error(abc)
+    if err:
+        return ModeResult(ok=False, error=f"ABC looks malformed: {err}")
 
     return ModeResult(
         ok=True,
         title=str(obj.get("title", "Untitled")),
         short_description=str(obj.get("short_description", "")),
         long_description=str(obj.get("long_description", "")),
-        midi_path=midi_path,
-        musicxml_path=xml_path,
+        abc=abc.strip(),
     )
+
+
+def _abc_syntax_error(abc: str) -> str | None:
+    """Coarse validity gate: require the essential ABC headers. Returns an error
+    string to trigger a regeneration, or None if the body looks like real ABC."""
+    has_key = any(line.lstrip().startswith("K:") for line in abc.splitlines())
+    has_index = any(line.lstrip().startswith("X:") for line in abc.splitlines())
+    if not (has_key and has_index):
+        return "missing required X: and/or K: header lines"
+    return None

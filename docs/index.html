@@ -4,9 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>How do LLMs express themselves musically?</title>
-  <!-- Verovio: in-browser music engraving (WASM). -->
+  <!-- Verovio engraves MusicXML (code-gen); abcjs engraves + plays raw ABC. -->
   <script src="https://www.verovio.org/javascript/latest/verovio-toolkit-wasm.js" defer></script>
-  <link rel="stylesheet" href="style.css?v=9" />
+  <script src="https://cdn.jsdelivr.net/npm/abcjs@6.4.4/dist/abcjs-basic-min.js" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/abcjs@6.4.4/abcjs-audio.css" />
+  <link rel="stylesheet" href="style.css?v=11" />
 </head>
 <body>
   <header>
@@ -58,8 +60,7 @@
       <section id="meta">
         <h2 id="title">—</h2>
         <p id="short" class="short"></p>
-        <audio id="audio" controls></audio>
-        <p id="audio-note" class="note" hidden>No pre-rendered audio for this piece.</p>
+        <div id="audio-slot"></div>
         <details id="long-wrap">
           <summary>Model's reflection</summary>
           <p id="long"></p>
@@ -73,6 +74,6 @@
     <section id="compare-grid" hidden></section>
   </main>
 
-  <script src="app.js?v=9" defer></script>
+  <script src="app.js?v=11" defer></script>
 </body>
 </html>

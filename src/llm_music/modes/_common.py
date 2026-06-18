@@ -17,6 +17,7 @@ class ModeResult:
     long_description: str = ""
     midi_path: object = None  # pathlib.Path when ok
     musicxml_path: object = None  # pathlib.Path when ok
+    abc: str = ""  # raw ABC text (ABC mode renders client-side via abcjs)
     error: str | None = None
 
 

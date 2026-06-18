@@ -22,14 +22,23 @@ def _response(abc_text: str) -> str:
     )
 
 
-def test_abc_mode_produces_midi_and_musicxml(tmp_path):
+def test_abc_mode_keeps_raw_abc(tmp_path):
+    # ABC mode stores the raw ABC verbatim (abcjs renders it client-side); it no
+    # longer routes through music21, so there is no MIDI/MusicXML artifact.
     result = abc.generate(_response(SAMPLE_ABC), tmp_path)
     assert result.ok, result.error
     assert result.title == "Test Tune"
-    assert result.midi_path.exists()
-    assert result.musicxml_path.exists()
-    xml = result.musicxml_path.read_text(encoding="utf-8")
-    assert "<score-partwise" in xml
+    assert "K:C" in result.abc and "C D E F" in result.abc
+    assert result.midi_path is None
+    assert result.musicxml_path is None
+
+
+def test_abc_mode_rejects_non_abc_body(tmp_path):
+    # Missing X:/K: headers -> coarse syntax gate fails -> triggers a retry.
+    bad = json.dumps({"abc": "just some prose, not notation", "title": "x"})
+    result = abc.generate(bad, tmp_path)
+    assert not result.ok
+    assert result.error
 
 
 def test_abc_mode_handles_fenced_json(tmp_path):
