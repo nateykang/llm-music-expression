@@ -42,6 +42,18 @@ const verovioReady = new Promise((resolve) => {
 });
 
 async function init() {
+  // Only one piece audible at a time: when any <audio> starts, pause the others
+  // (matters most in compare mode, which renders one player per model).
+  document.addEventListener(
+    "play",
+    (e) => {
+      for (const a of document.querySelectorAll("audio")) {
+        if (a !== e.target) a.pause();
+      }
+    },
+    true
+  );
+
   verovioReady.then((toolkit) => {
     tk = toolkit;
     tk.setOptions({ pageWidth: 1800, scale: 40, adjustPageHeight: true, footer: "none", header: "none" });
