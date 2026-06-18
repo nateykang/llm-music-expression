@@ -17,6 +17,8 @@ const els = {
   grid: document.getElementById("compare-grid"),
   mode: document.getElementById("mode"),
   modeLabel: document.getElementById("mode-label"),
+  compareGen: document.getElementById("compare-gen"),
+  compareGenLabel: document.getElementById("compare-gen-label"),
   promptPanel: document.getElementById("prompt-panel"),
   promptMode: document.getElementById("prompt-mode"),
   sysPrompt: document.getElementById("sys-prompt"),
@@ -97,12 +99,15 @@ async function init() {
     els.batch.value = modeToBatch[els.mode.value];
     els.modeLabel.hidden = false;
     els.mode.onchange = () => { els.batch.value = modeToBatch[els.mode.value]; loadBatch(); };
+    els.compareGenLabel.hidden = false; // comparing methods only makes sense with 2+
   }
 
   els.batch.onchange = loadBatch;
   els.prompt.onchange = async () => { refreshModels(); await onSelectChange(); };
   els.model.onchange = onSelectChange;
-  els.compare.onchange = onSelectChange;
+  // The two compare views are mutually exclusive.
+  els.compare.onchange = () => { if (els.compare.checked) els.compareGen.checked = false; onSelectChange(); };
+  els.compareGen.onchange = () => { if (els.compareGen.checked) els.compare.checked = false; onSelectChange(); };
   await loadBatch();
 }
 
@@ -112,13 +117,20 @@ function modeLabel(mode) {
 }
 let modeToBatch = {};
 
+const _manifests = {}; // dir -> manifest (cached; the other generation method needs it too)
+async function getManifest(dir) {
+  if (!_manifests[dir]) {
+    const m = await fetchJSON(`${dir}/data.json`);
+    m._dir = dir;
+    m._labels = {};
+    for (const p of m.pieces) m._labels[p.prompt] = p.prompt_label || p.prompt;
+    _manifests[dir] = m;
+  }
+  return _manifests[dir];
+}
+
 async function loadBatch() {
-  const dir = `data/${els.batch.value}`;
-  manifest = await fetchJSON(`${dir}/data.json`);
-  manifest._dir = dir;
-  // id -> human label (e.g. "free-form" -> "Free form"), from the baked manifest.
-  manifest._labels = {};
-  for (const p of manifest.pieces) manifest._labels[p.prompt] = p.prompt_label || p.prompt;
+  manifest = await getManifest(`data/${els.batch.value}`);
   fillSelect(els.prompt, unique(manifest.pieces.map((p) => p.prompt)), (id) => manifest._labels[id]);
   refreshModels();
   await onSelectChange();
@@ -133,15 +145,18 @@ function refreshModels() {
 
 async function onSelectChange() {
   updatePromptPanel();
-  const comparing = els.compare.checked;
-  els.modelLabel.hidden = comparing;
-  els.single.hidden = comparing;
-  els.grid.hidden = !comparing;
-  if (comparing) {
-    await renderCompare();
-  } else {
-    await renderSingle();
-  }
+  const byModel = els.compare.checked;       // compare models (fix prompt+method)
+  const byMethod = els.compareGen.checked;    // compare methods (fix prompt+model)
+  const grid = byModel || byMethod;
+  // In compare-models the model selector is irrelevant; in compare-methods the
+  // generation selector is (we show every method); single view shows both.
+  els.modelLabel.hidden = byModel;
+  els.modeLabel.hidden = byMethod || Object.keys(modeToBatch).length < 2;
+  els.single.hidden = grid;
+  els.grid.hidden = !grid;
+  if (byMethod) await renderCompareMethods();
+  else if (byModel) await renderCompare();
+  else await renderSingle();
 }
 
 async function renderSingle() {
@@ -165,29 +180,44 @@ async function renderSingle() {
   await renderScoreInto(els.score, piece);
 }
 
-// One column per model for the currently selected prompt, side by side.
+// One column per model for the currently selected prompt + generation method.
 async function renderCompare() {
   const pieces = manifest.pieces.filter((p) => p.prompt === els.prompt.value);
   els.grid.innerHTML = "";
   for (const piece of pieces) {
-    const card = document.createElement("article");
-    card.className = "compare-card";
-
-    const audio = piece.audio
-      ? `<audio controls src="${manifest._dir}/${piece.audio}"></audio>`
-      : `<p class="note">No pre-rendered audio.</p>`;
-
-    card.innerHTML = `
-      <h3 class="model-name">${piece.model}</h3>
-      <p class="piece-title">${piece.ok ? (piece.title || "Untitled") : "—"}</p>
-      <p class="short">${piece.short_description || ""}</p>
-      ${audio}
-      <details><summary>Model's reflection</summary><p>${piece.long_description || ""}</p></details>
-      <div class="compare-score"></div>`;
-    els.grid.appendChild(card);
-
-    await renderScoreInto(card.querySelector(".compare-score"), piece);
+    await addCompareCard(piece, manifest._dir, piece.model);
   }
+}
+
+// One column per generation method (code-gen / ABC) for the current model + prompt.
+async function renderCompareMethods() {
+  els.grid.innerHTML = "";
+  for (const mode of Object.keys(modeToBatch)) {
+    const m = await getManifest(`data/${modeToBatch[mode]}`);
+    const piece = m.pieces.find(
+      (p) => p.prompt === els.prompt.value && p.model === els.model.value
+    );
+    if (!piece) continue;
+    await addCompareCard(piece, m._dir, modeLabel(mode));
+  }
+}
+
+// Build one comparison card (shared by both compare views).
+async function addCompareCard(piece, dir, header) {
+  const card = document.createElement("article");
+  card.className = "compare-card";
+  const audio = piece.audio
+    ? `<audio controls src="${dir}/${piece.audio}"></audio>`
+    : `<p class="note">No pre-rendered audio.</p>`;
+  card.innerHTML = `
+    <h3 class="model-name">${header}</h3>
+    <p class="piece-title">${piece.ok ? (piece.title || "Untitled") : "—"}</p>
+    <p class="short">${piece.short_description || ""}</p>
+    ${audio}
+    <details><summary>Model's reflection</summary><p>${piece.long_description || ""}</p></details>
+    <div class="compare-score"></div>`;
+  els.grid.appendChild(card);
+  await renderScoreInto(card.querySelector(".compare-score"), piece);
 }
 
 // Engrave one piece's MusicXML into a target element (shared by both views).
