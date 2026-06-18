@@ -220,22 +220,59 @@ async function mountScore(scoreEl, piece, dir) {
   if (piece.abc) {
     if (!window.ABCJS) { scoreEl.innerHTML = `<p class="note">Loading ABC engraver…</p>`; return null; }
     scoreEl.innerHTML = "";
+    let visual = null;
     try {
-      return ABCJS.renderAbc(scoreEl, piece.abc, { responsive: "resize", add_classes: true })[0];
+      visual = ABCJS.renderAbc(scoreEl, withInstruments(piece.abc), { responsive: "resize", add_classes: true })[0];
     } catch (e) {
-      scoreEl.innerHTML = `<p class="note">Could not render ABC: ${e}</p>`;
+      visual = null;
+    }
+    // abcjs is lenient: malformed ABC yields a blank SVG (0 staves) with no
+    // throw. Treat that as a failure and surface it honestly instead of a blank.
+    if (!scoreEl.querySelector(".abcjs-staff")) {
+      scoreEl.innerHTML =
+        `<p class="note">Couldn't engrave this piece — the model's ABC is malformed (invalid syntax abcjs can't parse).</p>` +
+        `<details><summary>Show the raw ABC the model wrote</summary><pre class="abc-raw">${escapeHtml(piece.abc)}</pre></details>`;
       return null;
     }
+    return visual;
   }
   await renderScoreInto(scoreEl, piece, dir);
   return null;
+}
+
+// abcjs plays every voice as piano unless told the instrument. Bind a General
+// MIDI program after each named voice header so timbres match the notation.
+const GM_BY_NAME = [
+  [/contrabass|double ?bass/, 43], [/violoncello|cello/, 42], [/viola/, 41], [/violin/, 40],
+  [/harp/, 46], [/piccolo/, 72], [/flute/, 73], [/oboe/, 68], [/clarinet/, 71], [/bassoon/, 70],
+  [/trumpet/, 56], [/trombone/, 57], [/tuba/, 58], [/\bhorn/, 60], [/timpani/, 47],
+  [/guitar/, 24], [/organ/, 19], [/harpsichord/, 6], [/sax/, 65], [/piano|keyboard/, 0],
+  [/soprano|alto|tenor|bass|choir|voice|vocal/, 52],
+];
+function gmProgram(name) {
+  const n = name.toLowerCase();
+  for (const [re, p] of GM_BY_NAME) if (re.test(n)) return p;
+  return null;
+}
+function withInstruments(abc) {
+  return abc.split("\n").flatMap((line) => {
+    const m = line.match(/^\s*V:\s*\S+.*name="([^"]+)"/);
+    if (m) {
+      const p = gmProgram(m[1]);
+      if (p != null) return [line, `%%MIDI program ${p}`];
+    }
+    return [line];
+  }).join("\n");
+}
+function escapeHtml(s) {
+  return s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 }
 
 function mountAudio(slot, piece, dir, visual) {
   slot.innerHTML = "";
   if (piece.abc) {
     if (!visual || !window.ABCJS || !ABCJS.synth.supportsAudio()) {
-      slot.innerHTML = `<p class="note">Audio unavailable in this browser.</p>`;
+      slot.innerHTML = `<p class="note">No audio — the ABC couldn't be parsed.</p>`;
       return;
     }
     const ctrl = document.createElement("div");
