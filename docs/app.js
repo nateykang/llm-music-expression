@@ -15,6 +15,8 @@ const els = {
   compare: document.getElementById("compare"),
   single: document.getElementById("single"),
   grid: document.getElementById("compare-grid"),
+  mode: document.getElementById("mode"),
+  modeLabel: document.getElementById("mode-label"),
   promptPanel: document.getElementById("prompt-panel"),
   promptMode: document.getElementById("prompt-mode"),
   sysPrompt: document.getElementById("sys-prompt"),
@@ -64,12 +66,39 @@ async function init() {
   if (document.body.dataset.showBatch === "1") {
     document.getElementById("batch-label").hidden = false;
   }
+
+  // Discover each batch's generation mode (from its first piece) so the user can
+  // flip between e.g. code-gen and ABC versions of the same model×prompt grid.
+  const metas = await Promise.all(
+    batches.map((b) =>
+      fetchJSON(`data/${b}/data.json`).then((m) => ({ dir: b, mode: m.pieces?.[0]?.mode })).catch(() => null)
+    )
+  );
+  modeToBatch = {};
+  for (const m of metas) {
+    if (m && m.mode && !(m.mode in modeToBatch)) modeToBatch[m.mode] = m.dir; // batches are newest-first
+  }
+  const modes = Object.keys(modeToBatch);
+  if (modes.length > 1) {
+    fillSelect(els.mode, modes, modeLabel);
+    els.mode.value = modes.includes("codegen") ? "codegen" : modes[0];
+    els.batch.value = modeToBatch[els.mode.value];
+    els.modeLabel.hidden = false;
+    els.mode.onchange = () => { els.batch.value = modeToBatch[els.mode.value]; loadBatch(); };
+  }
+
   els.batch.onchange = loadBatch;
   els.prompt.onchange = async () => { refreshModels(); await onSelectChange(); };
   els.model.onchange = onSelectChange;
   els.compare.onchange = onSelectChange;
   await loadBatch();
 }
+
+// Friendly labels for the generation-mode toggle.
+function modeLabel(mode) {
+  return { codegen: "Code (music21)", abc: "ABC notation" }[mode] || mode;
+}
+let modeToBatch = {};
 
 async function loadBatch() {
   const dir = `data/${els.batch.value}`;

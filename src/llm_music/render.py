@@ -33,6 +33,7 @@ def write_score(score, midi_path: Path, musicxml_path: Path) -> None:
     midi_path.parent.mkdir(parents=True, exist_ok=True)
     musicxml_path.parent.mkdir(parents=True, exist_ok=True)
 
+    ensure_clefs(score)
     _write_one(score, "musicxml", musicxml_path, strip_repeats=False)
     _write_one(score, "midi", midi_path, strip_repeats=True)
 

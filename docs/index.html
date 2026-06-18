@@ -6,7 +6,7 @@
   <title>How do LLMs express themselves musically?</title>
   <!-- Verovio: in-browser music engraving (WASM). -->
   <script src="https://www.verovio.org/javascript/latest/verovio-toolkit-wasm.js" defer></script>
-  <link rel="stylesheet" href="style.css?v=5" />
+  <link rel="stylesheet" href="style.css?v=7" />
 </head>
 <body>
   <header>
@@ -24,6 +24,9 @@
          comparing regenerations. -->
     <label id="batch-label" hidden>Batch
       <select id="batch"></select>
+    </label>
+    <label id="mode-label" hidden>Generation
+      <select id="mode"></select>
     </label>
     <label>Prompt
       <select id="prompt"></select>
@@ -67,6 +70,6 @@
     <section id="compare-grid" hidden></section>
   </main>
 
-  <script src="app.js?v=5" defer></script>
+  <script src="app.js?v=7" defer></script>
 </body>
 </html>
