@@ -112,7 +112,7 @@ async function init() {
 
 // Friendly labels for the generation-mode toggle.
 function modeLabel(mode) {
-  return { codegen: "Code (music21)", abc: "ABC notation" }[mode] || mode;
+  return { codegen: "Code (music21)", abc: "ABC notation", "smt-abc": "SMT-ABC (synchronized)" }[mode] || mode;
 }
 let modeToBatch = {};
 
