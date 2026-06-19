@@ -222,7 +222,7 @@ async function mountScore(scoreEl, piece, dir) {
     scoreEl.innerHTML = "";
     let visual = null;
     try {
-      visual = ABCJS.renderAbc(scoreEl, withInstruments(piece.abc), { responsive: "resize", add_classes: true })[0];
+      visual = ABCJS.renderAbc(scoreEl, withInstruments(normalizeAbc(piece.abc)), { responsive: "resize", add_classes: true })[0];
     } catch (e) {
       visual = null;
     }
@@ -254,6 +254,19 @@ function gmProgram(name) {
   for (const [re, p] of GM_BY_NAME) if (re.test(n)) return p;
   return null;
 }
+// Some models write inline voice switches as [V1] — but ABC requires [V:V1], and
+// abcjs reads a bare [ as a chord, scrambling the voices. Fix only markers whose
+// id matches a DECLARED voice (V:<id> header), so real chords like [CEG] are safe.
+function normalizeAbc(abc) {
+  const voices = [...new Set([...abc.matchAll(/^\s*V:\s*(\S+)/gm)].map((m) => m[1]))];
+  let out = abc;
+  for (const v of voices) {
+    const esc = v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    out = out.replace(new RegExp(`\\[${esc}\\]`, "g"), `[V:${v}]`);
+  }
+  return out;
+}
+
 function withInstruments(abc) {
   return abc.split("\n").flatMap((line) => {
     const m = line.match(/^\s*V:\s*\S+.*name="([^"]+)"/);
