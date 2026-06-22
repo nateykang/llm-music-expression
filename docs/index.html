@@ -21,10 +21,10 @@
   </header>
 
   <nav class="controls">
-    <!-- Batch picker is hidden: the site loads the newest (canonical) batch
-         directly. Flip data-show-batch to "1" on <body> to reveal it for
-         comparing regenerations. -->
-    <label id="batch-label" hidden>Batch
+    <!-- Batch picker = experiment navigator. Each batch is a distinct run; the
+         app reveals this on load and scopes the Generation toggle to the loaded
+         batch's comparison family. -->
+    <label id="batch-label" hidden>Experiment
       <select id="batch"></select>
     </label>
     <label id="mode-label" hidden>Generation
@@ -74,6 +74,6 @@
     <section id="compare-grid" hidden></section>
   </main>
 
-  <script src="app.js?v=21" defer></script>
+  <script src="app.js?v=22" defer></script>
 </body>
 </html>

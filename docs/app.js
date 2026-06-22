@@ -77,34 +77,30 @@ async function init() {
     return;
   }
   fillSelect(els.batch, batches, batchLabel);
-  // Newest batch (index.json is sorted newest-first) is the canonical one and
-  // loads by default. Reveal the picker only if explicitly opted in.
-  if (document.body.dataset.showBatch === "1") {
-    document.getElementById("batch-label").hidden = false;
-  }
+  // The batch picker is the experiment navigator: each batch is a distinct run
+  // (a model×prompt grid in one generation mode). Always visible now that we run
+  // many heterogeneous experiments. Newest (index.json is newest-first) loads first.
+  document.getElementById("batch-label").hidden = false;
 
-  // Discover each batch's generation mode (from its first piece) so the user can
-  // flip between e.g. code-gen and ABC versions of the same model×prompt grid.
+  // Per-batch grid (mode + models × prompts) so loadBatch can group batches that
+  // share a models×prompts grid into a "comparison family" and scope the
+  // Generation toggle to the loaded batch's family.
   const metas = await Promise.all(
     batches.map((b) =>
-      fetchJSON(`data/${b}/data.json`).then((m) => ({ dir: b, mode: m.pieces?.[0]?.mode })).catch(() => null)
+      fetchJSON(`data/${b}/data.json`)
+        .then((m) => ({
+          dir: b,
+          mode: m.pieces?.[0]?.mode,
+          models: unique((m.pieces || []).map((p) => p.model)),
+          prompts: unique((m.pieces || []).map((p) => p.prompt)),
+        }))
+        .catch(() => null)
     )
   );
-  modeToBatch = {};
-  for (const m of metas) {
-    if (m && m.mode && !(m.mode in modeToBatch)) modeToBatch[m.mode] = m.dir; // batches are newest-first
-  }
-  const modes = Object.keys(modeToBatch);
-  if (modes.length > 1) {
-    fillSelect(els.mode, modes, modeLabel);
-    els.mode.value = modes.includes("codegen") ? "codegen" : modes[0];
-    els.batch.value = modeToBatch[els.mode.value];
-    els.modeLabel.hidden = false;
-    els.mode.onchange = () => { els.batch.value = modeToBatch[els.mode.value]; loadBatch(); };
-    els.compareGenLabel.hidden = false; // comparing methods only makes sense with 2+
-  }
+  batchMetas = metas.filter(Boolean);
 
   els.batch.onchange = loadBatch;
+  els.mode.onchange = () => { els.batch.value = modeToBatch[els.mode.value]; loadBatch(); };
   els.prompt.onchange = async () => { refreshModels(); await onSelectChange(); };
   els.model.onchange = onSelectChange;
   // The two compare views are mutually exclusive.
@@ -118,6 +114,13 @@ function modeLabel(mode) {
   return { codegen: "Code (music21)", abc: "ABC notation", "smt-abc": "SMT-ABC (synchronized)" }[mode] || mode;
 }
 let modeToBatch = {};
+let batchMetas = []; // [{dir, mode, models, prompts}] for every batch
+
+// Batches with the same models×prompts grid form a "comparison family" — the
+// same run done in different generation modes (code/abc/smt-abc).
+function familyKey(m) {
+  return JSON.stringify([[...m.models].sort(), [...m.prompts].sort()]);
+}
 
 const _manifests = {}; // dir -> manifest (cached; the other generation method needs it too)
 async function getManifest(dir) {
@@ -132,7 +135,26 @@ async function getManifest(dir) {
 }
 
 async function loadBatch() {
-  manifest = await getManifest(`data/${els.batch.value}`);
+  const dir = els.batch.value;
+  manifest = await getManifest(`data/${dir}`);
+
+  // Scope the Generation toggle to this batch's comparison family: sibling batches
+  // with the same models×prompts grid but a different generation mode. A run with
+  // no siblings (e.g. a one-off model sweep) hides the toggle entirely.
+  const cur = batchMetas.find((m) => m.dir === dir);
+  const fam = cur ? batchMetas.filter((m) => familyKey(m) === familyKey(cur)) : [];
+  modeToBatch = {};
+  for (const m of fam) if (m.mode && !(m.mode in modeToBatch)) modeToBatch[m.mode] = m.dir; // newest-first
+  const modes = Object.keys(modeToBatch);
+  const hasSiblings = modes.length > 1;
+  if (hasSiblings) {
+    fillSelect(els.mode, modes, modeLabel);
+    els.mode.value = cur.mode;
+  }
+  els.modeLabel.hidden = !hasSiblings;
+  els.compareGenLabel.hidden = !hasSiblings;
+  if (!hasSiblings) els.compareGen.checked = false;
+
   fillSelect(els.prompt, unique(manifest.pieces.map((p) => p.prompt)), (id) => manifest._labels[id]);
   refreshModels();
   await onSelectChange();
