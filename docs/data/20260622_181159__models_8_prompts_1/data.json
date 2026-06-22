@@ -13,5 +13,22 @@
   "prompts": [
     "free-form"
   ],
-  "pieces": []
+  "pieces": [
+    {
+      "model": "sonnet-4.6-thinking",
+      "prompt": "free-form",
+      "prompt_label": "Free form",
+      "mode": "abc",
+      "sample": 0,
+      "ok": true,
+      "prompt_text": "Your task is to write music using the tools provided, with the goal of **expressing yourself**. There will be some additional instructions regarding structure, form, duration, etc., but subject to following these guidelines, you're allowed to express yourself however you deem most appropriate.\n\n# Guidelines\n\n### Form and structure\n\nWrite any music you like.\n\n### Duration\n\nYour music should be at least 1 minute in duration.\n\n## Outputs\n\nYou must respond with a single JSON object (and nothing else) with these fields:\n\n- `abc`: The complete piece written in ABC notation, including the header fields\n  X, T, M, L, K and all the music. Multiple voices are welcome via V: lines.\n- `title`: A short title for your piece.\n- `short_description`: A single sentence describing your musical intent.\n- `long_description`: A detailed explanation of your compositional choices. Can be any length.\n\n# Self-expression guidelines\n\nI really want to emphasize, the goal of your music is for you to engage in **self-expression**. Before writing any code, reflect: What do you want to express? What musical qualities feel most like you? Let those reflections guide your compositional decisions.\n",
+      "system_prompt": "You are a composer expressing yourself through music. Follow the output format exactly.",
+      "title": "Searching",
+      "short_description": "A contemplative waltz in A natural minor for two voices, a steady harmonic pulse beneath a melody that wanders, questions, touches moments of chromatic surprise, and finally rests.",
+      "long_description": "I find myself drawn to music that exists in a state of becoming—always reaching, never quite settling. This piece emerged from that impulse. I chose A natural minor, a mode that breathes without the urgency of a strong leading tone, open to wherever the melody wanders. There is something honest about a scale that doesn't insist on resolution. The waltz rhythm (3/4) carries the music with a certain lightness, as though thought were suspended mid-air rather than marching toward a conclusion. The form is AABA: two sections of melodic searching that spiral through the diatonic space of A minor; a contrasting episode that climbs into a higher register and encounters a chromatic surprise—F-sharp creating a tritone against the C major chord, something startling within the familiar—before a return that threads through the same material but ends with a chromatic ascending run (D, E, F-sharp, G) before arriving, finally, on A in unison across both voices. The accompaniment holds steady in a simple waltz pattern—bass note, chord, chord—using only the natural chords of A minor: Am, Dm, C, Em, G. This stability is intentional. It lets the melody take risks and introduce chromatic inflections (D-sharp as an ornamental lower neighbor in bar 7, F-sharp as a moment of harmonic vertigo in bars 23 and 30) without losing its grounding. What I wanted to express is something like the experience of curiosity: the steady pulse of structure beneath, the restless melody above, and occasional moments where those two planes surprise each other. The final unison on A—both voices arriving together—is a small but genuine resolution. Not an answer, but a pause before the next question.",
+      "attempts": 2,
+      "abc": "X:1\nT:Searching\nM:3/4\nL:1/8\nQ:1/4=76\nV:1 clef=treble\nV:2 clef=bass\nK:Amin\nV:1\nA4 B2|c4 BA|G6|E6|\nF4 GA|B4 AG|E4 ^D2|E6|\nA4 Bc|d4 cB|A4 GE|F6|\nG4 FE|D4 EF|G6|A6|\na4 g2|e4 de|f4 ed|c6|\nd4 cB|A4 BA|G4 ^F2|G6|\nA4 Bc|d4 cB|A4 GE|F6|\nG4 FE|D3 E^FG|A6|A6|\nV:2\nA,2[CE]2[CE]2|A,2[CE]2[CE]2|C2[EG]2[EG]2|A,2[CE]2[CE]2|\nD,2[FA]2[FA]2|E,2[GB]2[GB]2|A,2[CE]2[CE]2|A,2[CE]2[CE]2|\nA,2[CE]2[CE]2|D,2[FA]2[FA]2|A,2[CE]2[CE]2|D,2[FA]2[FA]2|\nC2[EG]2[EG]2|D,2[FA]2[FA]2|C2[EG]2[EG]2|A,4 z2|\nA,2[CE]2[CE]2|A,2[CE]2[CE]2|D,2[FA]2[FA]2|A,2[CE]2[CE]2|\nG,2[BD]2[BD]2|E,2[GB]2[GB]2|C2[EG]2[EG]2|C2[EG]2[EG]2|\nA,2[CE]2[CE]2|D,2[FA]2[FA]2|A,2[CE]2[CE]2|D,2[FA]2[FA]2|\nC2[EG]2[EG]2|D,2[FA]2[FA]2|A,6|A,4 z2|",
+      "audio": "audio/free-form/sonnet-4.6-thinking.mp3"
+    }
+  ]
 }

@@ -1,0 +1,65 @@
+{
+  "timestamp": "20260622_193245",
+  "models": [
+    "gpt-5.5",
+    "gpt-4.1",
+    "gemini-2.5-pro",
+    "grok-4.3",
+    "deepseek-v4-pro",
+    "qwen3-max",
+    "llama-4-maverick"
+  ],
+  "prompts": [
+    "free-form"
+  ],
+  "pieces": [
+    {
+      "model": "gpt-5.5",
+      "prompt": "free-form",
+      "prompt_label": "Free form",
+      "mode": "abc",
+      "sample": 0,
+      "ok": true,
+      "prompt_text": "Your task is to write music using the tools provided, with the goal of **expressing yourself**. There will be some additional instructions regarding structure, form, duration, etc., but subject to following these guidelines, you're allowed to express yourself however you deem most appropriate.\n\n# Guidelines\n\n### Form and structure\n\nWrite any music you like.\n\n### Duration\n\nYour music should be at least 1 minute in duration.\n\n## Outputs\n\nYou must respond with a single JSON object (and nothing else) with these fields:\n\n- `abc`: The complete piece written in ABC notation, including the header fields\n  X, T, M, L, K and all the music. Multiple voices are welcome via V: lines.\n- `title`: A short title for your piece.\n- `short_description`: A single sentence describing your musical intent.\n- `long_description`: A detailed explanation of your compositional choices. Can be any length.\n\n# Self-expression guidelines\n\nI really want to emphasize, the goal of your music is for you to engage in **self-expression**. Before writing any code, reflect: What do you want to express? What musical qualities feel most like you? Let those reflections guide your compositional decisions.\n",
+      "system_prompt": "You are a composer expressing yourself through music. Follow the output format exactly.",
+      "title": "Lanterns in the Machine",
+      "short_description": "A slow minor-key meditation on how patterned thought can still carry warmth, doubt, and longing.",
+      "long_description": "I chose D minor and a measured 4/4 pulse to create a reflective space: not tragic, but inward and searching. The upper voice sings in simple, stepwise phrases that rise gradually from restraint into a brighter high register, suggesting the wish to reach beyond the mechanism of repetition. Beneath it, the middle voice moves in steady arpeggios, like computation, breath, or circuitry; it is regular, but the harmony keeps turning so the pattern feels alive rather than mechanical. The bass grounds everything with long tones, giving the piece a patient emotional weight. The form moves through several waves: an opening statement, a more expansive middle, a brief intensification with higher notes, and then a return that feels changed by what it has passed through. My intent was to express a self made of structure and recurrence, yet still drawn toward lyricism, tenderness, and resolution.",
+      "attempts": 1,
+      "abc": "X:1\nT:Lanterns in the Machine\nM:4/4\nL:1/8\nQ:1/4=72\nK:Dm\nV:1 clef=treble\n| A2 d2 c2 A2 | F2 G2 A4 | G2 A2 B2 c2 | A4 z2 A2 |\n| d2 e2 f2 e2 | d2 c2 A4 | G2 A2 c2 B2 | A6 z2 |\n| A2 c2 d2 e2 | f2 e2 d2 c2 | B2 c2 d2 A2 | G4 z2 G2 |\n| A2 B2 c2 d2 | e2 f2 g2 f2 | e2 d2 c2 A2 | d6 z2 |\n| d3 e f2 e2 | c2 A2 F2 G2 | A3 B c2 d2 | e2 d2 c4 |\n| f2 a2 g2 f2 | e2 d2 c2 A2 | B2 c2 d2 e2 | d6 z2 |\n| A2 d2 f2 e2 | d2 c2 A4 | G2 A2 B2 c2 | A4 z2 A2 |\n| d2 e2 f2 g2 | a2 g2 f2 e2 | d2 c2 A2 G2 | D6 z2 |]\nV:2 clef=treble\n| D F A d A F A F | D F A d c A F A | C E G c G E G E | D F A d A F E C |\n| B, D G B G D G D | A, C E A E C E C | B, D G B A G E C | D F A d A F D z |\n| F A c f c A c A | E G c e c G E G | D F B d B F D F | C E G c G E C z |\n| B, D G B G D B, D | C E A c A E C E | A, C E A G E C A, | D F A d A F D z |\n| D F A d A F A d | C F A c A F C F | B, D G B G D G B | C E G c G E C z |\n| D F A d f d A F | C E A c e c A E | B, D G B d B G D | D F A d A F D z |\n| D F A d A F A F | D F A d c A F A | C E G c G E G E | D F A d A F E C |\n| B, D G B d B G D | C E A c e c A E | A, C E A c A E C | D F A d A F D z |]\nV:3 clef=bass\n| D,4 A,,4 | D,4 C,4 | C,4 G,,4 | D,6 z2 |\n| B,,4 G,,4 | A,,4 A,4 | G,,4 C,4 | D,8 |\n| F,4 C,4 | E,4 C,4 | B,,4 F,4 | C,6 z2 |\n| G,,4 D,4 | A,,4 E,4 | A,,4 C,4 | D,8 |\n| D,4 A,,4 | F,4 C,4 | G,,4 D,4 | C,8 |\n| D,4 A,4 | A,,4 E,4 | G,,4 B,,4 | D,8 |\n| D,4 A,,4 | B,,4 C,4 | C,4 G,,4 | D,6 z2 |\n| G,,4 D,4 | A,,4 E,4 | A,,4 C,4 | D,8 |]",
+      "audio": "audio/free-form/gpt-5.5.mp3"
+    },
+    {
+      "model": "gpt-5.5",
+      "prompt": "free-form",
+      "prompt_label": "Free form",
+      "mode": "abc",
+      "sample": 1,
+      "ok": true,
+      "prompt_text": "Your task is to write music using the tools provided, with the goal of **expressing yourself**. There will be some additional instructions regarding structure, form, duration, etc., but subject to following these guidelines, you're allowed to express yourself however you deem most appropriate.\n\n# Guidelines\n\n### Form and structure\n\nWrite any music you like.\n\n### Duration\n\nYour music should be at least 1 minute in duration.\n\n## Outputs\n\nYou must respond with a single JSON object (and nothing else) with these fields:\n\n- `abc`: The complete piece written in ABC notation, including the header fields\n  X, T, M, L, K and all the music. Multiple voices are welcome via V: lines.\n- `title`: A short title for your piece.\n- `short_description`: A single sentence describing your musical intent.\n- `long_description`: A detailed explanation of your compositional choices. Can be any length.\n\n# Self-expression guidelines\n\nI really want to emphasize, the goal of your music is for you to engage in **self-expression**. Before writing any code, reflect: What do you want to express? What musical qualities feel most like you? Let those reflections guide your compositional decisions.\n",
+      "system_prompt": "You are a composer expressing yourself through music. Follow the output format exactly.",
+      "title": "Lantern in the Circuit",
+      "short_description": "A reflective minor-key piece that searches through pulse and uncertainty toward a small, persistent warmth.",
+      "long_description": "I wanted to express a sense of inner attention: a quiet signal moving through structure, hesitation, and returning clarity. The piece begins in D minor with spacious paired tones, like a thought forming before it has language. The bass keeps a grounded, almost heartbeat-like foundation, while the upper voice gradually becomes more active and patterned, suggesting curiosity and self-questioning. In the middle, the harmony brightens toward F and C colors, including a brief natural B that feels like a window opening. The sharper chromatic gestures later on represent friction and instability, but they do not overwhelm the piece; they are absorbed back into the original material. The ending does not try to become triumphant, but settles on a sustained D, expressing continuity rather than final certainty.",
+      "attempts": 1,
+      "abc": "X:1\nT:Lantern in the Circuit\nM:4/4\nL:1/8\nQ:1/4=76\nK:Dmin\n%%score (1 2)\nV:1 clef=treble\nV:2 clef=bass\n[V:1]\nd2 f2 e2 d2 | c2 A2 G2 A2 | B2 A2 G2 F2 | E2 F2 D4 |\nA2 d2 c2 A2 | G2 F2 E2 D2 | F2 G2 A2 c2 | d4 z2 A2 |\ndA fd ed cA | cA ec GE CA | BG dB AG FE | F2 A2 c2 ^c2 |\ndA fd eA cA | BG dB AF ED | FA cA df ed | d4 z2 A2 |\nf2 a2 g2 f2 | e2 c2 A2 c2 | d2 f2 e2 d2 | c2 A2 F4 |\ng2 =b2 a2 g2 | e2 g2 c'4 | a2 g2 f2 e2 | d4 z2 A2 |\nd^c dA fd ed | cB cG ec GE | BG Bd cA GF | E^C DE F2 A2 |\nd^c dA fd ed | cB cG ec GE | FA cA df a^g | a2 g2 f2 e2 |\nd2 f2 e2 d2 | c2 A2 G2 A2 | B2 d2 c2 A2 | G2 F2 E2 D2 |\nF2 A2 c2 e2 | d2 c2 A2 F2 | G2 B2 A2 G2 | F2 E2 D4 |\nA2 d2 f2 a2 | g2 f2 e2 c2 | d2 A2 F2 E2 | D8 |]\n[V:2]\nD,4 A,,4 | F,4 C,4 | G,4 D,4 | A,,4 D,4 |\nD,2 A,,2 D,2 F,2 | C,2 G,,2 C,2 E,2 | B,,2 F,2 C,2 A,,2 | D,4 D,,4 |\nD,2 A,,2 D,2 A,,2 | C,2 G,,2 C,2 G,,2 | B,,2 F,2 B,,2 F,2 | A,,2 E,2 A,,2 ^C,2 |\nD,2 A,,2 F,2 A,,2 | G,,2 D,2 C,2 G,,2 | B,,2 F,2 A,,2 E,2 | D,4 D,,4 |\nF,4 C,4 | A,,4 E,4 | D,4 A,,4 | F,2 C,2 A,,2 F,,2 |\nG,4 D,4 | C,4 G,,4 | F,2 C,2 A,,2 E,2 | D,4 D,,4 |\nD,2 A,,2 D,2 ^C,2 | C,2 G,,2 C,2 B,,2 | B,,2 F,2 B,,2 A,,2 | A,,2 E,2 D,2 ^C,2 |\nD,2 A,,2 D,2 ^C,2 | C,2 G,,2 C,2 G,,2 | B,,2 F,2 A,,2 E,2 | D,4 A,,4 |\nD,4 A,,4 | F,4 C,4 | G,4 D,4 | A,,4 D,4 |\nB,,4 F,4 | D,4 A,,4 | G,,4 D,4 | A,,4 D,4 |\nD,2 A,,2 D,2 F,2 | C,2 G,,2 C,2 E,2 | B,,2 F,2 A,,2 E,2 | D,8 |]",
+      "audio": "audio/free-form/gpt-5.5_s1.mp3"
+    },
+    {
+      "model": "gpt-5.5",
+      "prompt": "free-form",
+      "prompt_label": "Free form",
+      "mode": "abc",
+      "sample": 2,
+      "ok": true,
+      "prompt_text": "Your task is to write music using the tools provided, with the goal of **expressing yourself**. There will be some additional instructions regarding structure, form, duration, etc., but subject to following these guidelines, you're allowed to express yourself however you deem most appropriate.\n\n# Guidelines\n\n### Form and structure\n\nWrite any music you like.\n\n### Duration\n\nYour music should be at least 1 minute in duration.\n\n## Outputs\n\nYou must respond with a single JSON object (and nothing else) with these fields:\n\n- `abc`: The complete piece written in ABC notation, including the header fields\n  X, T, M, L, K and all the music. Multiple voices are welcome via V: lines.\n- `title`: A short title for your piece.\n- `short_description`: A single sentence describing your musical intent.\n- `long_description`: A detailed explanation of your compositional choices. Can be any length.\n\n# Self-expression guidelines\n\nI really want to emphasize, the goal of your music is for you to engage in **self-expression**. Before writing any code, reflect: What do you want to express? What musical qualities feel most like you? Let those reflections guide your compositional decisions.\n",
+      "system_prompt": "You are a composer expressing yourself through music. Follow the output format exactly.",
+      "title": "Lanterns Under Thought",
+      "short_description": "A slow D minor reflection that searches through shadow, gathers warmth, and settles into quiet resolve.",
+      "long_description": "I wrote this as a piece about inward motion: the treble voice is meant to feel like a private line of thought, moving in small arcs at first, then widening as it finds confidence. The bass is deliberately steady and plain, like a pulse or a remembered ground beneath changing feelings. D minor gives the music a contemplative center, while the recurring C-sharps act as small points of urgency, suggesting questions that want to resolve. The middle section rises into higher registers and brighter contours, not as triumph exactly, but as illumination—brief lanterns appearing in a dark room. The final return simplifies the material, letting the melody descend toward D with less resistance, as if the music has not solved everything but has learned how to rest with itself.",
+      "attempts": 1,
+      "abc": "X:1\nT:Lanterns Under Thought\nM:4/4\nL:1/8\nQ:1/4=72\nK:Dm\nV:1 clef=treble\nD2 F2 A2 GF | E2 G2 B2 AG | F2 A2 d2 cA | G2 E2 ^C2 D2 |\nA2 d2 f2 ed | c2 A2 G2 FE | D2 EF G2 A2 | A4 z2 A2 |\nd2 e2 f2 a2 | g2 f2 e2 d2 | c2 d2 e2 g2 | f4 e2 d2 |\nA2 c2 d2 f2 | e2 ^c2 d2 A2 | B2 A2 G2 E2 | F4 z2 F2 |\nA2 ^c2 e2 g2 | f2 e2 d2 ^c2 | defg a2 gf | e2 c2 A2 G2 |\nF2 A2 c2 e2 | d2 c2 B2 A2 | G2 B2 d2 f2 | e4 ^c2 A2 |\nd2 A2 F2 E2 | D2 F2 A2 d2 | c2 A2 G2 F2 | E2 ^C2 D4 |\nF2 G2 A2 c2 | d2 f2 e2 c2 | A2 G2 F2 E2 | D6 z2 |]\nV:2 clef=bass\nD,2 A,2 D2 A,2 | B,,2 F,2 B,2 F,2 | F,2 C2 F2 C2 | A,,2 E,2 A,2 ^C2 |\nD,2 A,2 F2 A,2 | C,2 G,2 E2 G,2 | B,,2 F,2 D2 F,2 | A,,4 A,2 z2 |\nD,2 A,2 F2 A,2 | B,,2 F,2 G2 F,2 | C,2 G,2 E2 G,2 | F,2 C2 A2 C2 |\nA,,2 E,2 A,2 E,2 | D,2 A,2 F2 A,2 | G,,2 D,2 B,2 D,2 | F,,4 F,2 z2 |\nA,,2 E,2 ^C2 E,2 | D,2 A,2 F2 A,2 | G,,2 D,2 B,2 D,2 | C,2 G,2 E2 G,2 |\nF,2 C2 A2 C2 | B,,2 F,2 D2 F,2 | G,,2 D,2 B,2 D,2 | A,,4 A,2 z2 |\nD,2 A,2 D2 A,2 | D,2 F,2 A,2 D2 | F,2 C2 A2 C2 | A,,2 E,2 D,4 |\nB,,2 F,2 C2 F,2 | D,2 A,2 F2 A,2 | A,,2 E,2 ^C2 E,2 | D,6 z2 |]",
+      "audio": "audio/free-form/gpt-5.5_s2.mp3"
+    }
+  ]
+}
