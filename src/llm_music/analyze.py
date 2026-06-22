@@ -93,15 +93,18 @@ def extract_features(piece: dict, batch_dir: Path) -> dict | None:
     mm = score.recurse().getElementsByClass(m21tempo.MetronomeMark).first()
     bpm = float(mm.number) if mm and mm.number else 120.0
     n_notes = len(list(score.recurse().notes))
-    length_q = float(score.highestTime) or 1.0
+    length_q = float(score.highestTime) or 1.0          # duration in quarter-notes
     length_s = length_q * 60.0 / bpm
-    density = n_notes / length_s if length_s else 0.0
+    notes_per_beat = n_notes / length_q                 # tempo-invariant rhythmic density
+
     resolution = (mus.resolution or 480) * 4  # assume 4 beats/measure for grooving
 
-    # affect proxy: mode -> valence, tempo + density -> arousal (Russell circumplex)
+    # affect proxy: mode -> valence; tempo + rhythmic density -> arousal (Russell
+    # circumplex). Density is notes-PER-BEAT (not per-second) so it stays independent
+    # of tempo — otherwise the two arousal terms would both encode speed.
     valence = 0 if mode == "?" else (1 if mode == "major" else -1)
     tempo_norm = max(0.0, min(1.0, (bpm - 50) / (160 - 50)))
-    dens_norm = max(0.0, min(1.0, density / 6.0))
+    dens_norm = max(0.0, min(1.0, notes_per_beat / 4.0))
     arousal = round(0.6 * tempo_norm + 0.4 * dens_norm, 3)
     quadrant = ("unknown" if valence == 0
                 else "happy/excited" if (valence > 0 and arousal >= 0.5)
@@ -124,7 +127,7 @@ def extract_features(piece: dict, batch_dir: Path) -> dict | None:
         "n_pitches_used": safe(muspy.n_pitches_used),
         "pitch_range": safe(muspy.pitch_range),
         "tempo_bpm": round(bpm, 1), "n_notes": n_notes,
-        "length_seconds": round(length_s, 1), "note_density": round(density, 2),
+        "length_seconds": round(length_s, 1), "note_density": round(notes_per_beat, 2),
         "valence": valence, "arousal": arousal, "affect_quadrant": quadrant,
     }
 

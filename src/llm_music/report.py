@@ -32,15 +32,23 @@ HEADER_TIPS = [
     ("minor", "Share of pieces in a minor key. Key is detected by music21's "
               "Krumhansl–Schmuckler algorithm: it correlates the piece's pitch-class "
               "histogram against profiles for all 24 major/minor keys and takes the best fit."),
-    ("valence", "Affect proxy on the Russell circumplex: +1 for major, −1 for minor. "
-                "A coarse 'brightness' signal derived from the detected mode."),
-    ("arousal", "Energy proxy (0–1) combining tempo and note density: faster and "
-                "busier music scores higher."),
+    ("valence", "How positive/bright vs negative/dark the mood sounds (−1 to +1). We use a "
+                "deliberately simple proxy: major key → +1, minor key → −1, since major/minor "
+                "is the single strongest cue for musical 'happiness' vs 'sadness'. The concept "
+                "comes from affect psychology (Russell circumplex); the major/minor mapping is "
+                "ours, not a trained emotion model — so read it as 'bright vs dark', not literal joy."),
+    ("arousal", "An 'energy' level from 0 (calm) to 1 (energetic). Computed as "
+                "0.6 × tempo + 0.4 × rhythmic-density: tempo rescaled linearly (50 BPM → 0, "
+                "160 BPM → 1) and note-density (notes per beat) rescaled (0 → 0, 4 notes/beat → 1), "
+                "each clipped to [0,1]. A transparent heuristic of ours, not a standard metric."),
     ("tempo", "Tempo in beats per minute, from the score's metronome mark (120 if unset)."),
     ("scale consist.", "MusPy scale consistency: the largest fraction of notes that fit "
                        "a single major or minor scale. 1.0 = perfectly diatonic (every note "
                        "in one key); lower = more chromatic / out-of-key notes."),
-    ("note density", "Average number of notes sounded per second."),
+    ("note density", "Average note onsets per beat (a beat = one quarter note), so it is "
+                     "tempo-invariant — it measures rhythmic busyness, not real-time speed. "
+                     "~1 = about one note per beat; higher = runs or chords packing more notes "
+                     "into each beat. (Our descriptor, not from a specific paper.)"),
     ("length (s)", "Duration of the piece in seconds."),
 ]
 
