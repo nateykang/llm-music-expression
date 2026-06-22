@@ -88,12 +88,16 @@ python scripts/serve.py 8000   # then open http://localhost:8000
 Pick batch / prompt / model; Verovio engraves the score live and the audio plays.
 `docs/` is GitHub Pages-ready as-is.
 
-> Code-gen audio is rendered to **MP3** (FluidSynth → WAV → `lame`). MP3 has
-> reliable duration metadata and plays in every browser, including Safari/iOS —
-> unlike FluidSynth's direct Ogg output, whose broken length header makes browsers
-> misreport the duration and breaks Chrome playback. (ABC pieces aren't pre-baked:
-> abcjs plays them client-side.) Install `lame` (`brew install lame`); without it
-> the pipeline still produces scores, only the pre-baked audio is skipped.
+> All modes pre-bake audio to **MP3** and play it with a native `<audio>` tag.
+> The split follows the standard ABC toolchain (as in EasyABC/ChatMusician):
+> **notation** comes from Verovio (code-gen MusicXML) or **abcjs** (ABC), and
+> **audio** from FluidSynth — fed by music21's MIDI for code-gen and by
+> **`abc2midi`** (the reference ABC→MIDI converter) for ABC. MP3 (FluidSynth → WAV
+> → `lame`) is used over FluidSynth's direct Ogg, whose broken length header makes
+> browsers misreport the duration and breaks Chrome playback; MP3 also plays on
+> Safari/iOS. Requires `abc2midi` and `lame` (`brew install abcmidi lame`); without
+> them scores still render, only the pre-baked audio is skipped (ABC then falls
+> back to the abcjs in-browser synth).
 
 ## Adding a model
 
