@@ -142,7 +142,17 @@ function refreshModels() {
   fillSelect(els.model, models);
 }
 
+// abcjs synths play through Web Audio (not an <audio> element), so they keep
+// going when their control UI is cleared. Track them so we can stop them.
+let activeSynths = [];
+function stopAllMedia() {
+  for (const a of document.querySelectorAll("audio")) { try { a.pause(); } catch (e) {} }
+  for (const sc of activeSynths) { try { sc.pause(); } catch (e) {} }
+  activeSynths = [];
+}
+
 async function onSelectChange() {
+  stopAllMedia(); // switching pieces/views must stop whatever's currently playing
   updatePromptPanel();
   const byModel = els.compare.checked;       // compare models (fix prompt+method)
   const byMethod = els.compareGen.checked;    // compare methods (fix prompt+model)
@@ -291,6 +301,7 @@ function mountAudio(slot, piece, dir, visual) {
     const ctrl = document.createElement("div");
     slot.appendChild(ctrl);
     const sc = new ABCJS.synth.SynthController();
+    activeSynths.push(sc); // so a later switch can stop it (Web Audio, not <audio>)
     sc.load(ctrl, null, { displayPlay: true, displayProgress: true, displayWarp: false });
     sc.setTune(visual, false, { soundFontUrl: SOUNDFONT }).catch(() => {
       slot.innerHTML = `<p class="note">Could not load audio.</p>`;
