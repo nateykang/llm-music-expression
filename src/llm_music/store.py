@@ -38,14 +38,20 @@ def open_batch(
     return batch
 
 
-def append_result(batch: Path, result: PieceResult) -> dict:
-    """Copy one piece's outputs into the batch folder and return its manifest entry."""
+def append_result(batch: Path, result: PieceResult, sample: int = 0) -> dict:
+    """Copy one piece's outputs into the batch folder and return its manifest entry.
+
+    `sample` is the repeat index for a (model, prompt) cell when generating many
+    samples; it suffixes the stored filenames so samples don't overwrite each other.
+    """
     r = result
+    suffix = f"_s{sample}" if sample else ""
     entry = {
         "model": r.model,
         "prompt": r.prompt,
         "prompt_label": r.prompt_label,
         "mode": r.mode,
+        "sample": sample,
         "ok": r.ok,
         "prompt_text": r.prompt_text,
         "system_prompt": r.system_prompt,
@@ -57,11 +63,11 @@ def append_result(batch: Path, result: PieceResult) -> dict:
     if r.abc:
         entry["abc"] = r.abc
     if r.ok and r.musicxml_path:
-        score_rel = f"scores/{r.prompt}/{r.model}.musicxml"
+        score_rel = f"scores/{r.prompt}/{r.model}{suffix}.musicxml"
         _copy(r.musicxml_path, batch / score_rel)
         entry["score"] = score_rel
     if r.ok and r.audio_path:
-        audio_rel = f"audio/{r.prompt}/{r.model}.mp3"
+        audio_rel = f"audio/{r.prompt}/{r.model}{suffix}.mp3"
         _copy(r.audio_path, batch / audio_rel)
         entry["audio"] = audio_rel
     if not r.ok:

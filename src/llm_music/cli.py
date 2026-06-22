@@ -22,7 +22,8 @@ def _split(csv: str) -> list[str]:
     return [x.strip() for x in csv.split(",") if x.strip()]
 
 
-def _run_matrix(models: list[str], prompts: list[str], mode: str, max_attempts: int):
+def _run_matrix(models: list[str], prompts: list[str], mode: str, max_attempts: int,
+                samples: int = 1):
     # The batch folder + manifest are created up front and rewritten after every
     # piece, so an interrupted run still leaves a valid, viewable partial batch.
     ts = _timestamp()
@@ -33,17 +34,19 @@ def _run_matrix(models: list[str], prompts: list[str], mode: str, max_attempts: 
         for m in models:
             client = get_client(m)
             for p in prompts:
-                work = Path(scratch) / m / p
-                print(f"  • {m} × {p} ({mode}) …", end="", flush=True)
-                r = generate_piece(client, p, mode, work, max_attempts=max_attempts)
-                if r.ok:
-                    audio = "audio" if r.audio_path else "no-audio"
-                    print(f" ok ({r.attempts} attempt(s), {audio}): {r.title!r}")
-                else:
-                    print(f" FAILED after {r.attempts}: {r.error}")
-                results.append(r)
-                entries.append(append_result(batch, r))
-                write_manifest(batch, ts, models, prompts, entries)
+                for s in range(samples):
+                    work = Path(scratch) / m / p / str(s)
+                    tag = f" #{s + 1}" if samples > 1 else ""
+                    print(f"  • {m} × {p}{tag} ({mode}) …", end="", flush=True)
+                    r = generate_piece(client, p, mode, work, max_attempts=max_attempts)
+                    if r.ok:
+                        audio = "audio" if r.audio_path else "no-audio"
+                        print(f" ok ({r.attempts} attempt(s), {audio}): {r.title!r}")
+                    else:
+                        print(f" FAILED after {r.attempts}: {r.error}")
+                    results.append(r)
+                    entries.append(append_result(batch, r, sample=s))
+                    write_manifest(batch, ts, models, prompts, entries)
     return batch, results
 
 
@@ -59,8 +62,10 @@ def cmd_batch(args) -> int:
     if not models or not prompts:
         print("error: --models and --prompts must be non-empty", file=sys.stderr)
         return 2
-    print(f"Batch: {len(models)} model(s) × {len(prompts)} prompt(s) [{args.mode}]")
-    batch, results = _run_matrix(models, prompts, args.mode, args.max_attempts)
+    n_cells = len(models) * len(prompts) * args.samples
+    print(f"Batch: {len(models)} model(s) × {len(prompts)} prompt(s) × {args.samples} "
+          f"sample(s) = {n_cells} [{args.mode}]")
+    batch, results = _run_matrix(models, prompts, args.mode, args.max_attempts, args.samples)
     n_ok = sum(r.ok for r in results)
     print(f"\nWrote batch: {batch}  ({n_ok}/{len(results)} succeeded)")
     return 0 if n_ok == len(results) else 1
@@ -141,6 +146,8 @@ def build_parser() -> argparse.ArgumentParser:
     pb = sub.add_parser("batch", parents=[common], help="generate a model × prompt matrix")
     pb.add_argument("--models", required=True, help="comma-separated friendly ids")
     pb.add_argument("--prompts", default="free-form", help="comma-separated prompt names")
+    pb.add_argument("--samples", type=int, default=1,
+                    help="repeats per model×prompt cell (for sampling distributions)")
     pb.set_defaults(func=cmd_batch)
 
     pm = sub.add_parser("models", help="list registered models")
