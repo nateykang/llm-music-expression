@@ -30,6 +30,7 @@ FIELDS = [
     "model", "prompt", "mode", "title",
     "key_tonic", "key_mode", "key_confidence",
     "scale_consistency", "pitch_class_entropy", "pitch_in_scale_rate",
+    "consonance_rate", "chord_tone_rate",
     "polyphony", "n_voices", "empty_beat_rate", "groove_consistency",
     "n_pitches_used", "pitch_range",
     "tempo_bpm", "n_notes", "length_seconds", "note_density",
@@ -67,6 +68,49 @@ def _load(piece: dict, batch_dir: Path, work_dir: Path):
         return None, None
 
 
+def _harmony_metrics(score):
+    """MuSpike-style harmony metrics from a chordified score → (consonance, chord_tone).
+
+    consonance:  fraction of vertical sonorities (≥2 notes) that are consonant
+                 (music21 Chord.isConsonant) — a Pitch-Consonance-Score analog; how
+                 harmonically clean the vertical writing is.
+    chord_tone:  per measure, the prevailing harmony = the 3 most duration-present
+                 pitch classes; the fraction of sounding pitches in that set — a
+                 Chord-Tone / Non-Chord-Tone-Ratio analog.
+    """
+    from music21 import chord as m21chord
+
+    try:
+        chords = score.chordify()
+        sonorities = list(chords.recurse().getElementsByClass(m21chord.Chord))
+    except Exception:
+        return None, None
+    if not sonorities:
+        return None, None
+
+    multi = [c for c in sonorities if len(c.pitches) >= 2]
+    consonance = (sum(c.isConsonant() for c in multi) / len(multi)) if multi else None
+
+    hits = total = 0
+    measures = list(chords.recurse().getElementsByClass("Measure")) or [chords]
+    for m in measures:
+        pc_dur: dict[int, float] = {}
+        cs = list(m.recurse().getElementsByClass(m21chord.Chord))
+        for c in cs:
+            for p in c.pitches:
+                pc_dur[p.pitchClass] = pc_dur.get(p.pitchClass, 0.0) + float(c.quarterLength or 0)
+        if not pc_dur:
+            continue
+        prevailing = set(sorted(pc_dur, key=lambda k: -pc_dur[k])[:3])
+        for c in cs:
+            for p in c.pitches:
+                total += 1
+                hits += p.pitchClass in prevailing
+    chord_tone = (hits / total) if total else None
+    return (round(consonance, 4) if consonance is not None else None,
+            round(chord_tone, 4) if chord_tone is not None else None)
+
+
 def extract_features(piece: dict, batch_dir: Path) -> dict | None:
     import muspy
     from music21 import tempo as m21tempo
@@ -81,6 +125,8 @@ def extract_features(piece: dict, batch_dir: Path) -> dict | None:
             return round(float(fn(mus, *args)), 4)
         except Exception:
             return None
+
+    consonance_rate, chord_tone_rate = _harmony_metrics(score)
 
     # Degenerate pieces (empty / all-rest, e.g. a hollow generation) can't be
     # key-analyzed — record them with unknown tonality rather than dropping them.
@@ -120,6 +166,7 @@ def extract_features(piece: dict, batch_dir: Path) -> dict | None:
         "scale_consistency": safe(muspy.scale_consistency),
         "pitch_class_entropy": safe(muspy.pitch_class_entropy),
         "pitch_in_scale_rate": safe(muspy.pitch_in_scale_rate),
+        "consonance_rate": consonance_rate, "chord_tone_rate": chord_tone_rate,
         "polyphony": safe(muspy.polyphony),
         "n_voices": len(mus.tracks),
         "empty_beat_rate": safe(muspy.empty_beat_rate),

@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import csv
 import html
+import json
 from collections import defaultdict
 from pathlib import Path
 from statistics import mean, pstdev
@@ -25,32 +26,76 @@ ACCENT = "#7a5a3a"
 PALETTE = ["#7a5a3a", "#b5651d", "#3a6b5a", "#8a3a4a", "#4a5a7a",
            "#9a7a3a", "#5a7a4a", "#7a4a6a", "#3a7a7a", "#aa5a3a"]
 
-# Table headers with hover definitions (label, tooltip), in body-column order.
-HEADER_TIPS = [
-    ("model", "The language model that generated the pieces."),
-    ("n", "Number of pieces this row aggregates."),
-    ("minor", "Share of pieces in a minor key. Key is detected by music21's "
-              "Krumhansl–Schmuckler algorithm: it correlates the piece's pitch-class "
-              "histogram against profiles for all 24 major/minor keys and takes the best fit."),
-    ("valence", "How positive/bright vs negative/dark the mood sounds (−1 to +1). We use a "
-                "deliberately simple proxy: major key → +1, minor key → −1, since major/minor "
-                "is the single strongest cue for musical 'happiness' vs 'sadness'. The concept "
-                "comes from affect psychology (Russell circumplex); the major/minor mapping is "
-                "ours, not a trained emotion model — so read it as 'bright vs dark', not literal joy."),
-    ("arousal", "An 'energy' level from 0 (calm) to 1 (energetic). Computed as "
-                "0.6 × tempo + 0.4 × rhythmic-density: tempo rescaled linearly (50 BPM → 0, "
-                "160 BPM → 1) and note-density (notes per beat) rescaled (0 → 0, 4 notes/beat → 1), "
-                "each clipped to [0,1]. A transparent heuristic of ours, not a standard metric."),
-    ("tempo", "Tempo in beats per minute, from the score's metronome mark (120 if unset)."),
-    ("scale consist.", "MusPy scale consistency: the largest fraction of notes that fit "
-                       "a single major or minor scale. 1.0 = perfectly diatonic (every note "
-                       "in one key); lower = more chromatic / out-of-key notes."),
-    ("note density", "Average note onsets per beat (a beat = one quarter note), so it is "
-                     "tempo-invariant — it measures rhythmic busyness, not real-time speed. "
-                     "~1 = about one note per beat; higher = runs or chords packing more notes "
-                     "into each beat. (Our descriptor, not from a specific paper.)"),
-    ("length (s)", "Duration of the piece in seconds."),
+# Summary-table columns: (summary-key, header label, hover definition, format).
+COLUMNS = [
+    ("model", "model", "The language model that generated the pieces.", "text"),
+    ("n", "n", "Number of pieces this row aggregates.", "int"),
+    ("minor_frac", "minor", "Share of pieces in a minor key. Key is detected by music21's "
+        "Krumhansl–Schmuckler algorithm: it correlates the piece's pitch-class histogram "
+        "against profiles for all 24 major/minor keys and takes the best fit.", "pct"),
+    ("valence", "valence", "How positive/bright vs negative/dark the mood sounds (−1 to +1). A "
+        "deliberately simple proxy: major key → +1, minor key → −1 (the strongest single cue for "
+        "musical 'happiness'). Concept from the Russell circumplex; the mapping is ours, not a "
+        "trained emotion model — read it as 'bright vs dark', not literal joy.", "f2"),
+    ("arousal", "arousal", "An 'energy' level from 0 (calm) to 1 (energetic) = 0.6 × tempo + 0.4 × "
+        "rhythmic-density, with tempo rescaled 50 BPM→0 / 160 BPM→1 and density (notes/beat) "
+        "rescaled 0→0 / 4→1, each clipped to [0,1]. Our heuristic, not a standard metric.", "f2"),
+    ("tempo", "tempo", "Tempo in beats per minute, from the score's metronome mark (120 if unset).", "f0"),
+    ("scale_consistency", "scale consist.", "MusPy scale consistency: the largest fraction of notes "
+        "that fit a single major or minor scale. 1.0 = perfectly diatonic; lower = more chromatic / "
+        "out-of-key notes.", "f2"),
+    ("consonance", "consonance", "MuSpike-style Pitch Consonance: the fraction of vertical sonorities "
+        "(the score chordified, ≥2 notes) that are consonant. Higher = harmonically cleaner vertical "
+        "writing; lower = more clashing/dissonant simultaneities.", "f2"),
+    ("chord_tone", "chord-tones", "MuSpike-style Chord-Tone ratio: per bar the prevailing harmony is the "
+        "3 most-present pitch classes; this is the share of notes belonging to it. Higher = notes stay "
+        "within the underlying chord; lower = more non-chord / passing tones.", "pct"),
+    ("note_density", "note density", "Average note onsets per beat (a beat = one quarter note), so it is "
+        "tempo-invariant — rhythmic busyness, not real-time speed. ~1 = about one note per beat; higher = "
+        "runs or chords. (Our descriptor, not from a specific paper.)", "f2"),
+    ("length", "length (s)", "Duration of the piece in seconds.", "f0"),
 ]
+
+# Reliability table columns (computed from batch manifests, not features.csv).
+REL_COLUMNS = [
+    ("model", "model", "The model.", "text"),
+    ("gen", "method", "Generation method.", "text"),
+    ("n", "n", "Pieces generated.", "int"),
+    ("first_ok", "1st-try valid", "Share that passed the validity gate on the FIRST attempt "
+        "(code-gen: executed without error; ABC: passed the syntax gate). A ChatMusician-style "
+        "format-success rate. Caveat: the gates differ in strictness — code must run, while our ABC "
+        "gate is lenient, so ABC's number overstates true musical validity.", "pct"),
+    ("fail", "failed", "Share that never produced a valid result within the attempt budget.", "pct"),
+    ("avg_attempts", "avg tries", "Mean attempts until a valid generation (1 = first try). Higher = the "
+        "model slipped and the harness had to retry.", "f2"),
+]
+
+
+def _cell(v, kind):
+    if v is None:
+        return "—"
+    if kind == "text":
+        return html.escape(str(v))
+    if kind == "int":
+        return str(int(v))
+    if kind == "pct":
+        return f"{v * 100:.0f}%"
+    if kind == "f0":
+        return f"{v:.0f}"
+    return f"{v:.2f}"
+
+
+def _table_html(rows, columns):
+    head = "<tr>" + "".join(
+        f"<th><span class='tip' tabindex='0' data-tip=\"{html.escape(tip)}\">"
+        f"{html.escape(lbl).replace(' ', '&nbsp;')}</span></th>"
+        for _, lbl, tip, _ in columns) + "</tr>"
+    body = ""
+    for r in rows:
+        body += "<tr>" + "".join(
+            f"<td class='{'m' if key in ('model', 'gen') else ''}'>{_cell(r.get(key), kind)}</td>"
+            for key, _, _, kind in columns) + "</tr>"
+    return f"<div class='tscroll'><table>{head}{body}</table></div>"
 
 
 def _f(v):
@@ -72,7 +117,8 @@ def load_features(data_dir: Path) -> list[dict]:
                 r["_batch"] = batch
                 for k in ("valence", "arousal", "tempo_bpm", "scale_consistency",
                           "pitch_class_entropy", "note_density", "length_seconds",
-                          "pitch_range", "polyphony", "n_voices"):
+                          "pitch_range", "polyphony", "n_voices",
+                          "consonance_rate", "chord_tone_rate"):
                     r[k] = _f(r.get(k))
                 rows.append(r)
     return rows
@@ -102,6 +148,8 @@ def summarize(rows: list[dict]) -> list[dict]:
             "valence": _agg(rs, "valence")[0], "arousal": _agg(rs, "arousal")[0],
             "tempo": _agg(rs, "tempo_bpm")[0],
             "scale_consistency": _agg(rs, "scale_consistency")[0],
+            "consonance": _agg(rs, "consonance_rate")[0],
+            "chord_tone": _agg(rs, "chord_tone_rate")[0],
             "note_density": _agg(rs, "note_density")[0],
             "length": _agg(rs, "length_seconds")[0],
             "pitch_range": _agg(rs, "pitch_range")[0],
@@ -219,17 +267,37 @@ def make_charts(rows: list[dict], out_dir: Path) -> list[tuple[str, str]]:
     return charts
 
 
+# --- reliability (from manifests, not features.csv) ---------------------------
+
+def load_reliability(data_dir: Path) -> list[dict]:
+    """Per (model, generation method): validity/retry stats from batch manifests."""
+    from statistics import mean
+
+    agg: dict[tuple, list] = {}
+    for f in sorted(data_dir.glob("*/data.json")):
+        try:
+            m = json.loads(f.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        for p in m.get("pieces", []):
+            agg.setdefault((p["model"], p.get("mode")), []).append(p)
+    rows = []
+    for (model, mode), ps in sorted(agg.items()):
+        n = len(ps)
+        rows.append({
+            "model": model, "gen": mode, "n": n,
+            "first_ok": sum(bool(p.get("attempts") == 1 and p.get("ok")) for p in ps) / n,
+            "fail": sum(not p.get("ok") for p in ps) / n,
+            "avg_attempts": round(mean(p.get("attempts", 1) for p in ps), 2),
+        })
+    return rows
+
+
 # --- HTML ---------------------------------------------------------------------
 
-def _fmt(v, pct=False, dp=2):
-    if v is None:
-        return "—"
-    if pct:
-        return f"{v*100:.0f}%"
-    return f"{v:.{dp}f}"
 
-
-def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path) -> None:
+def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
+                reliability: list[dict] | None = None) -> None:
     summary = summarize(rows)
     n_pieces = len(rows)
     n_models = len({r["model"] for r in rows})
@@ -240,21 +308,18 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path)
     ff_summary = summarize(ff) if ff else []
 
     def table(summ, caption):
-        head = "<tr>" + "".join(
-            f"<th><span class='tip' tabindex='0' data-tip=\"{html.escape(tip)}\">"
-            f"{html.escape(lbl).replace(' ', '&nbsp;')}</span></th>"
-            for lbl, tip in HEADER_TIPS
-        ) + "</tr>"
-        body = ""
-        for s in summ:
-            body += (f"<tr><td class='m'>{html.escape(s['model'])}</td><td>{s['n']}</td>"
-                     f"<td>{_fmt(s['minor_frac'], pct=True)}</td>"
-                     f"<td>{_fmt(s['valence'])}</td><td>{_fmt(s['arousal'])}</td>"
-                     f"<td>{_fmt(s['tempo'], dp=0)}</td>"
-                     f"<td>{_fmt(s['scale_consistency'])}</td>"
-                     f"<td>{_fmt(s['note_density'])}</td>"
-                     f"<td>{_fmt(s['length'], dp=0)}</td></tr>")
-        return f"<figure><figcaption>{caption}</figcaption><table>{head}{body}</table></figure>"
+        return f"<figure><figcaption>{caption}</figcaption>{_table_html(summ, COLUMNS)}</figure>"
+
+    rel_section = ""
+    if reliability:
+        rel_section = (
+            "<h2>Reliability <span class='sub'>(format-success &amp; retries, per method)</span></h2>"
+            "<figure><figcaption>How often each model produced a valid generation, and how many "
+            "tries it took. Code-gen fails loudly (the interpreter rejects bad code → retry); ABC "
+            "fails quietly (a lenient syntax gate passes, so 1st-try rates run high). A "
+            "ChatMusician-style format-success view.</figcaption>"
+            f"{_table_html(reliability, REL_COLUMNS)}</figure>"
+        )
 
     chart_html = "".join(
         f"<figure class='chart'><img src='analysis/{fn}' alt='{html.escape(cap)}'>"
@@ -275,6 +340,7 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path)
   .wrap {{ max-width: 980px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }}
   .sub {{ color: {MUTED}; font-weight: 400; font-size: .8em; }}
   .scope {{ color: {MUTED}; font-size: .9rem; margin: .25rem 0 1.5rem; }}
+  .tscroll {{ overflow-x: auto; }}
   table {{ border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: .9rem; }}
   th, td {{ text-align: right; padding: .35rem .55rem; border-bottom: 1px solid #e7ddd2; }}
   th {{ color: {MUTED}; font-weight: 600; position: relative; }}
@@ -311,6 +377,8 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path)
 
   <h2>All pieces, by model</h2>
   {table(summary, 'Aggregated over every prompt and generation mode. "n" is how many pieces that model contributed.')}
+
+  {rel_section}
 
   <h2>Charts</h2>
   <div class="charts">{chart_html}</div>
