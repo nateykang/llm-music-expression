@@ -235,7 +235,18 @@ async function mountScore(scoreEl, piece, dir) {
     scoreEl.innerHTML = "";
     let visual = null;
     try {
-      visual = ABCJS.renderAbc(scoreEl, withInstruments(normalizeAbc(piece.abc)), { responsive: "resize", add_classes: true })[0];
+      // wrap (needs an explicit staffwidth) reflows measures to fit the width.
+      // Without it, abcjs honors the model's source line breaks — and models
+      // often write an entire voice on one line (e.g. a 41-bar fugue), which
+      // responsive-resize then shrinks to unreadably tiny. Wrap to the container
+      // width so it re-flows into multiple readable systems instead.
+      const staffwidth = Math.max(360, (scoreEl.clientWidth || 740) - 16);
+      visual = ABCJS.renderAbc(scoreEl, withInstruments(normalizeAbc(piece.abc)), {
+        responsive: "resize",
+        add_classes: true,
+        staffwidth,
+        wrap: { minSpacing: 1.8, maxSpacing: 2.7, preferredMeasuresPerLine: 4 },
+      })[0];
     } catch (e) {
       visual = null;
     }
