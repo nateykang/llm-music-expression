@@ -25,6 +25,25 @@ ACCENT = "#7a5a3a"
 PALETTE = ["#7a5a3a", "#b5651d", "#3a6b5a", "#8a3a4a", "#4a5a7a",
            "#9a7a3a", "#5a7a4a", "#7a4a6a", "#3a7a7a", "#aa5a3a"]
 
+# Table headers with hover definitions (label, tooltip), in body-column order.
+HEADER_TIPS = [
+    ("model", "The language model that generated the pieces."),
+    ("n", "Number of pieces this row aggregates."),
+    ("minor", "Share of pieces in a minor key. Key is detected by music21's "
+              "Krumhansl–Schmuckler algorithm: it correlates the piece's pitch-class "
+              "histogram against profiles for all 24 major/minor keys and takes the best fit."),
+    ("valence", "Affect proxy on the Russell circumplex: +1 for major, −1 for minor. "
+                "A coarse 'brightness' signal derived from the detected mode."),
+    ("arousal", "Energy proxy (0–1) combining tempo and note density: faster and "
+                "busier music scores higher."),
+    ("tempo", "Tempo in beats per minute, from the score's metronome mark (120 if unset)."),
+    ("scale consist.", "MusPy scale consistency: the largest fraction of notes that fit "
+                       "a single major or minor scale. 1.0 = perfectly diatonic (every note "
+                       "in one key); lower = more chromatic / out-of-key notes."),
+    ("note density", "Average number of notes sounded per second."),
+    ("length (s)", "Duration of the piece in seconds."),
+]
+
 
 def _f(v):
     """Parse a CSV cell to float, or None (NaN -> None so it drops from averages)."""
@@ -213,9 +232,11 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path)
     ff_summary = summarize(ff) if ff else []
 
     def table(summ, caption):
-        head = ("<tr><th>model</th><th>n</th><th>minor</th><th>valence</th>"
-                "<th>arousal</th><th>tempo</th><th>scale&nbsp;consist.</th>"
-                "<th>note&nbsp;density</th><th>length&nbsp;(s)</th></tr>")
+        head = "<tr>" + "".join(
+            f"<th><span class='tip' tabindex='0' data-tip=\"{html.escape(tip)}\">"
+            f"{html.escape(lbl).replace(' ', '&nbsp;')}</span></th>"
+            for lbl, tip in HEADER_TIPS
+        ) + "</tr>"
         body = ""
         for s in summ:
             body += (f"<tr><td class='m'>{html.escape(s['model'])}</td><td>{s['n']}</td>"
@@ -248,7 +269,16 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path)
   .scope {{ color: {MUTED}; font-size: .9rem; margin: .25rem 0 1.5rem; }}
   table {{ border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: .9rem; }}
   th, td {{ text-align: right; padding: .35rem .55rem; border-bottom: 1px solid #e7ddd2; }}
-  th {{ color: {MUTED}; font-weight: 600; }}
+  th {{ color: {MUTED}; font-weight: 600; position: relative; }}
+  .tip {{ border-bottom: 1px dotted {MUTED}; cursor: help; outline: none; }}
+  th .tip:hover::after, th .tip:focus::after {{
+    content: attr(data-tip); position: absolute; left: 0; top: 145%; z-index: 30;
+    width: 240px; white-space: normal; text-align: left; font-weight: 400;
+    font-size: .76rem; line-height: 1.45; color: {BG}; background: {INK};
+    padding: .55rem .65rem; border-radius: 7px; box-shadow: 0 6px 20px rgba(0,0,0,.2);
+  }}
+  th:nth-last-child(-n+3) .tip:hover::after,
+  th:nth-last-child(-n+3) .tip:focus::after {{ left: auto; right: 0; }}
   td.m, th:first-child {{ text-align: left; font-weight: 600; }}
   figure {{ margin: 1.5rem 0; }}
   figcaption {{ color: {MUTED}; font-size: .85rem; margin-top: .4rem; }}
@@ -276,6 +306,21 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path)
 
   <h2>Charts</h2>
   <div class="charts">{chart_html}</div>
+
+  <h2>Methods &amp; references</h2>
+  <p class="scope">
+    Metrics are standard symbolic-music descriptors, computed with
+    <a href="https://arxiv.org/abs/2008.01951">MusPy</a> (Dong et al., ISMIR 2020) —
+    scale consistency, pitch-class entropy, polyphony, etc. — and
+    <a href="https://www.music21.org/">music21</a> for key (Krumhansl–Schmuckler) and
+    tempo. Affect (valence/arousal) follows the
+    <a href="https://en.wikipedia.org/wiki/Emotion_classification#Circumplex_model">Russell
+    circumplex</a> model. <b>Hover any column header</b> for what it measures.
+    Project after <a href="https://github.com/sara-fish/llm-musical-self-expression">sara-fish/llm-musical-self-expression</a>;
+    representation/evaluation choices follow the LLM-music literature
+    (<a href="https://arxiv.org/abs/2402.16153">ChatMusician</a>,
+    <a href="https://arxiv.org/abs/2404.06393">MuPT</a>).
+  </p>
 
   <p class="scope" style="margin-top:2rem">Note: with small n per model this is a
      <b>snapshot</b>, not a settled result — the sampling run (many free-form pieces per

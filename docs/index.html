@@ -25,9 +25,8 @@
   </header>
 
   <nav class="controls">
-    <!-- Batch picker = experiment navigator. Each batch is a distinct run; the
-         app reveals this on load and scopes the Generation toggle to the loaded
-         batch's comparison family. -->
+    <!-- Experiment/batch picker stays hidden on Browse: the Generation toggle is
+         the primary navigator here. Large one-off sweeps live in Results & analysis. -->
     <label id="batch-label" hidden>Experiment
       <select id="batch"></select>
     </label>
@@ -78,6 +77,6 @@
     <section id="compare-grid" hidden></section>
   </main>
 
-  <script src="app.js?v=22" defer></script>
+  <script src="app.js?v=23" defer></script>
 </body>
 </html>

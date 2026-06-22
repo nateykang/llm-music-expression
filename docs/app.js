@@ -77,10 +77,9 @@ async function init() {
     return;
   }
   fillSelect(els.batch, batches, batchLabel);
-  // The batch picker is the experiment navigator: each batch is a distinct run
-  // (a model×prompt grid in one generation mode). Always visible now that we run
-  // many heterogeneous experiments. Newest (index.json is newest-first) loads first.
-  document.getElementById("batch-label").hidden = false;
+  // Browse focuses on the canonical comparison: the Generation toggle (code/abc/
+  // smt-abc) over one model×prompt grid. The experiment picker stays hidden here —
+  // large one-off sweeps live in the Results & analysis tab.
 
   // Per-batch grid (mode + models × prompts) so loadBatch can group batches that
   // share a models×prompts grid into a "comparison family" and scope the
@@ -98,6 +97,12 @@ async function init() {
     )
   );
   batchMetas = metas.filter(Boolean);
+
+  // Default to the canonical comparison family's code-gen batch (not the newest
+  // one-off sweep), so Browse opens on the full code/abc/smt-abc toggle.
+  const primary = primaryFamily(batchMetas);
+  const preferred = primary.find((m) => m.mode === "codegen") || primary[0];
+  if (preferred) els.batch.value = preferred.dir;
 
   els.batch.onchange = loadBatch;
   els.mode.onchange = () => { els.batch.value = modeToBatch[els.mode.value]; loadBatch(); };
@@ -120,6 +125,19 @@ let batchMetas = []; // [{dir, mode, models, prompts}] for every batch
 // same run done in different generation modes (code/abc/smt-abc).
 function familyKey(m) {
   return JSON.stringify([[...m.models].sort(), [...m.prompts].sort()]);
+}
+
+// The "primary" family for browsing = the comparison with the most generation
+// modes (the full code/abc/smt-abc set); recency breaks ties (newest-first input).
+function primaryFamily(metas) {
+  const groups = {};
+  for (const m of metas) (groups[familyKey(m)] = groups[familyKey(m)] || []).push(m);
+  let best = [], bestModes = 0;
+  for (const fam of Object.values(groups)) {
+    const modes = new Set(fam.map((x) => x.mode)).size;
+    if (modes > bestModes) { best = fam; bestModes = modes; }
+  }
+  return best;
 }
 
 const _manifests = {}; // dir -> manifest (cached; the other generation method needs it too)
