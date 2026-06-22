@@ -21,14 +21,13 @@ MODEL_REGISTRY: dict[str, tuple[str, str]] = {
     "gpt-5.2": ("openai", "gpt-5.2"),
     "gpt-4.1": ("openai", "gpt-4.1"),
     # "o3": ("openai", "o3"),  # requires org verification — re-enable once verified
-    # OpenRouter — one cutting-edge flagship per family (slugs verified live).
+    # OpenRouter — frontier models from other labs (slugs verified live). The
+    # study roster is the five closed frontier labs + the strongest open model:
+    #   opus-4.8, gpt-5.5, gemini-2.5-pro, grok-4.3, deepseek-v4-pro, qwen3-max
     "gemini-2.5-pro": ("openrouter", "google/gemini-2.5-pro"),
+    "grok-4.3": ("openrouter", "x-ai/grok-4.3"),
     "deepseek-v4-pro": ("openrouter", "deepseek/deepseek-v4-pro"),
     "qwen3-max": ("openrouter", "qwen/qwen3-max"),
-    "llama-4-maverick": ("openrouter", "meta-llama/llama-4-maverick"),
-    "mistral-large": ("openrouter", "mistralai/mistral-large-2512"),
-    "grok-4.3": ("openrouter", "x-ai/grok-4.3"),
-    "kimi-k2.6": ("openrouter", "moonshotai/kimi-k2.6"),
 }
 
 
