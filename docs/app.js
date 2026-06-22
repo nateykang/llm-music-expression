@@ -309,7 +309,9 @@ function escapeHtml(s) {
 
 function mountAudio(slot, piece, dir, visual) {
   slot.innerHTML = "";
-  if (piece.abc) {
+  // ABC audio is pre-baked to MP3 (abc2midi -> FluidSynth), played below like
+  // code-gen. Only fall back to the abcjs synth if no MP3 was produced.
+  if (piece.abc && !piece.audio) {
     if (!visual || !window.ABCJS || !ABCJS.synth.supportsAudio()) {
       slot.innerHTML = `<p class="note">No audio — the ABC couldn't be parsed.</p>`;
       return;

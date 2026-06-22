@@ -103,6 +103,71 @@ def ensure_clefs(score) -> None:
         target.insert(0, best)
 
 
+# General MIDI program by instrument-name keyword (mirrors the frontend so the
+# pre-baked audio and the abcjs notation agree on instruments).
+_GM_BY_NAME = [
+    ("contrabass", 43), ("double bass", 43), ("violoncello", 42), ("cello", 42),
+    ("viola", 41), ("violin", 40), ("harp", 46), ("piccolo", 72), ("flute", 73),
+    ("oboe", 68), ("clarinet", 71), ("bassoon", 70), ("trumpet", 56),
+    ("trombone", 57), ("tuba", 58), ("horn", 60), ("timpani", 47),
+    ("guitar", 24), ("organ", 19), ("harpsichord", 6), ("sax", 65),
+    ("piano", 0), ("keyboard", 0),
+    ("soprano", 52), ("alto", 52), ("tenor", 52), ("bass", 52),
+    ("choir", 52), ("voice", 52), ("vocal", 52),
+]
+
+
+def _gm_program(name: str):
+    n = name.lower()
+    for kw, prog in _GM_BY_NAME:
+        if kw in n:
+            return prog
+    return None
+
+
+def _prepare_abc_for_audio(abc: str) -> str:
+    """Normalize ABC so abc2midi renders it faithfully: fix bare [V1] -> [V:V1]
+    voice markers (else abc2midi reads a chord), and inject a %%MIDI program per
+    named voice when the model gave none (else everything defaults to piano)."""
+    import re
+
+    voices = list(dict.fromkeys(re.findall(r"(?m)^\s*V:\s*(\S+)", abc)))
+    for v in voices:
+        abc = re.sub(r"\[" + re.escape(v) + r"\]", "[V:" + v + "]", abc)
+
+    if "%%MIDI program" not in abc:
+        out = []
+        for line in abc.split("\n"):
+            out.append(line)
+            m = re.match(r"^\s*V:\s*\S+.*\bname=(?:\"([^\"]+)\"|(\S+))", line)
+            if m:
+                prog = _gm_program(m.group(1) or m.group(2))
+                if prog is not None:
+                    out.append(f"%%MIDI program {prog}")
+        abc = "\n".join(out)
+    return abc
+
+
+def abc_to_midi(abc: str, work_dir: Path) -> "Path | None":
+    """Convert ABC text to MIDI with abc2midi (the reference ABC->MIDI tool).
+    Returns the MIDI path, or None if abc2midi is unavailable or fails."""
+    import subprocess as _sp
+
+    abc2midi = shutil.which("abc2midi")
+    if not abc2midi:
+        return None
+    work_dir.mkdir(parents=True, exist_ok=True)
+    abc_file = work_dir / "piece.abc"
+    abc_file.write_text(_prepare_abc_for_audio(abc), encoding="utf-8")
+    midi_path = work_dir / "piece.mid"
+    try:
+        _sp.run([abc2midi, str(abc_file), "-o", str(midi_path)],
+                capture_output=True, text=True, timeout=60)
+    except _sp.TimeoutExpired:
+        return None
+    return midi_path if midi_path.exists() else None
+
+
 def audio_available() -> bool:
     return (
         shutil.which("fluidsynth") is not None

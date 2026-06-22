@@ -56,12 +56,20 @@ def generate(response_text: str, work_dir: Path) -> ModeResult:
     if err:
         return ModeResult(ok=False, error=f"ABC looks malformed: {err}")
 
+    abc = abc.strip()
+    # Pre-bake audio via the canonical ABC->MIDI tool (abc2midi); generate_piece
+    # turns the MIDI into MP3. The raw ABC is still stored for abcjs notation.
+    from ..render import abc_to_midi
+
+    midi_path = abc_to_midi(abc, work_dir)
+
     return ModeResult(
         ok=True,
         title=str(obj.get("title", "Untitled")),
         short_description=str(obj.get("short_description", "")),
         long_description=str(obj.get("long_description", "")),
-        abc=abc.strip(),
+        abc=abc,
+        midi_path=midi_path,
     )
 
 
