@@ -12,10 +12,13 @@ from .base import LLMClient
 # friendly id -> (provider, provider-specific model id)
 # The model id on the right must match exactly what your account/org exposes;
 # adjust to taste. Run `llm-music models` to see what's registered.
-MODEL_REGISTRY: dict[str, tuple[str, str]] = {
-    # Anthropic
+MODEL_REGISTRY: dict[str, tuple] = {
+    # Anthropic. A 3rd tuple element carries provider options (e.g. extended
+    # thinking) — used for the thinking-on/off ablation on the same model.
     "opus-4.8": ("anthropic", "claude-opus-4-8"),
+    "opus-4.8-thinking": ("anthropic", "claude-opus-4-8", {"thinking": {"type": "adaptive"}}),
     "sonnet-4.6": ("anthropic", "claude-sonnet-4-6"),
+    "sonnet-4.6-thinking": ("anthropic", "claude-sonnet-4-6", {"thinking": {"type": "adaptive"}}),
     # OpenAI (confirmed available on this org; extend as new ones ship)
     "gpt-5.5": ("openai", "gpt-5.5"),
     "gpt-5.2": ("openai", "gpt-5.2"),
@@ -41,15 +44,17 @@ def get_client(name: str) -> LLMClient:
         raise KeyError(
             f"Unknown model '{name}'. Known: {', '.join(list_models()) or '(none)'}"
         )
-    provider, model_id = MODEL_REGISTRY[name]
-    return _build_client(name, provider, model_id)
+    provider, model_id, *rest = MODEL_REGISTRY[name]
+    options = rest[0] if rest else {}
+    return _build_client(name, provider, model_id, options)
 
 
-def _build_client(name: str, provider: str, model_id: str) -> LLMClient:
+def _build_client(name: str, provider: str, model_id: str, options: dict | None = None) -> LLMClient:
+    options = options or {}
     if provider == "anthropic":
         from .anthropic import AnthropicClient
 
-        return AnthropicClient(name=name, model_id=model_id)
+        return AnthropicClient(name=name, model_id=model_id, thinking=options.get("thinking"))
     if provider == "openai":
         from .openai import OpenAIClient
 

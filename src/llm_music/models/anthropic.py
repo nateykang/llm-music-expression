@@ -8,10 +8,13 @@ import os
 class AnthropicClient:
     """LLMClient implementation backed by the Anthropic Messages API."""
 
-    def __init__(self, name: str, model_id: str, max_tokens: int = 16000):
+    def __init__(self, name: str, model_id: str, max_tokens: int = 16000,
+                 thinking: dict | None = None):
         self.name = name
         self.model_id = model_id
-        self.max_tokens = max_tokens
+        self.thinking = thinking
+        # Thinking tokens count toward max_tokens, so give the answer headroom.
+        self.max_tokens = 32000 if thinking else max_tokens
         self._client = None  # lazily constructed so import never needs a key
 
     def _ensure_client(self):
@@ -27,10 +30,20 @@ class AnthropicClient:
 
     def complete(self, system: str, user: str) -> str:
         client = self._ensure_client()
-        resp = client.messages.create(
+        kwargs = dict(
             model=self.model_id,
             max_tokens=self.max_tokens,
             system=system,
             messages=[{"role": "user", "content": user}],
         )
+        if self.thinking:
+            # Extended thinking requires temperature=1 (the default, so left unset)
+            # and, with our high max_tokens, streaming (the SDK refuses non-streaming
+            # for potentially-long requests). Thinking blocks are dropped; only the
+            # answer text is returned, identical in shape to the non-thinking path.
+            kwargs["thinking"] = self.thinking
+            with client.messages.stream(**kwargs) as stream:
+                msg = stream.get_final_message()
+            return "".join(b.text for b in msg.content if b.type == "text")
+        resp = client.messages.create(**kwargs)
         return "".join(block.text for block in resp.content if block.type == "text")
