@@ -16,6 +16,21 @@ body {
   color: var(--fg);
   background: var(--bg);
 }
+/* Top tab bar — two sections of one site: Browse outputs / Results & analysis. */
+.tabs {
+  display: flex; gap: .25rem; max-width: 920px; margin: 0 auto;
+  padding: .9rem 1.5rem 0; border-bottom: 1px solid var(--border);
+}
+.tabs a {
+  padding: .5rem .9rem; text-decoration: none; color: var(--muted);
+  font-weight: 600; font-size: .92rem; border: 1px solid transparent;
+  border-bottom: none; border-radius: 8px 8px 0 0; margin-bottom: -1px;
+}
+.tabs a:hover { color: var(--accent); }
+.tabs a.active {
+  color: var(--fg); background: var(--card);
+  border-color: var(--border); border-bottom: 1px solid var(--card);
+}
 header { padding: 2rem 1.5rem 1rem; max-width: 920px; margin: 0 auto; }
 h1 { font-size: 1.7rem; margin: 0 0 .3rem; }
 .sub { color: var(--muted); margin: 0; }

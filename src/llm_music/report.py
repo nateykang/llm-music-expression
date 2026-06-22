@@ -241,7 +241,7 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path)
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Results — LLM musical inductive biases</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=22">
 <style>
   .wrap {{ max-width: 980px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }}
   .sub {{ color: {MUTED}; font-weight: 400; font-size: .8em; }}
@@ -258,8 +258,11 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path)
   nav.top a {{ color: {ACCENT}; text-decoration: none; font-weight: 600; }}
 </style>
 </head><body>
+<nav class="tabs">
+  <a href="index.html">Browse outputs</a>
+  <a href="results.html" class="active">Results &amp; analysis</a>
+</nav>
 <div class="wrap">
-  <nav class="top"><a href="index.html">← browse individual outputs</a></nav>
   <h1>What do LLMs default to, musically?</h1>
   <p class="scope">Summary metrics across <b>{n_pieces} generated pieces</b>
      ({n_models} models, {n_batches} experiments, code-gen + ABC + SMT-ABC).
