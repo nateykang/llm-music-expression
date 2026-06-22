@@ -73,6 +73,42 @@ def cmd_models(_args) -> int:
     return 0
 
 
+def cmd_analyze(args) -> int:
+    from collections import Counter
+    from statistics import mean
+
+    from .analyze import analyze_batch, write_csv
+
+    batch = Path(args.batch)
+    rows = analyze_batch(batch)
+    if not rows:
+        print(f"no analyzable pieces in {batch}")
+        return 1
+    out = batch / "features.csv"
+    write_csv(rows, out)
+    print(f"Wrote {len(rows)} rows → {out}\n")
+
+    # Inductive-bias readout: per-model defaults (free-form is the purest probe).
+    ff = [r for r in rows if r["prompt"] == args.summary_prompt] or rows
+    scope = args.summary_prompt if any(r["prompt"] == args.summary_prompt for r in rows) else "all prompts"
+    print(f"=== Per-model defaults ({scope}) ===")
+    by_model: dict[str, list] = {}
+    for r in ff:
+        by_model.setdefault(r["model"], []).append(r)
+    for model, rs in sorted(by_model.items()):
+        minor = sum(r["key_mode"] == "minor" for r in rs) / len(rs)
+        keys = Counter(f"{r['key_tonic']} {r['key_mode']}" for r in rs).most_common(2)
+        print(
+            f"  {model:14} n={len(rs):2d}  minor={minor:.0%}  "
+            f"valence={mean(r['valence'] for r in rs):+.2f}  "
+            f"arousal={mean(r['arousal'] for r in rs):.2f}  "
+            f"tempo={mean(r['tempo_bpm'] for r in rs):3.0f}  "
+            f"scale_consist={mean(r['scale_consistency'] for r in rs if r['scale_consistency'] is not None):.2f}  "
+            f"top_keys={keys}"
+        )
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="llm-music", description=__doc__)
     sub = p.add_subparsers(dest="command", required=True)
@@ -93,6 +129,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     pm = sub.add_parser("models", help="list registered models")
     pm.set_defaults(func=cmd_models)
+
+    pa = sub.add_parser("analyze", help="extract standard metrics from a batch → features.csv")
+    pa.add_argument("batch", help="path to a docs/data/<batch> folder")
+    pa.add_argument("--summary-prompt", default="free-form",
+                    help="prompt to base the per-model bias readout on")
+    pa.set_defaults(func=cmd_analyze)
     return p
 
 
