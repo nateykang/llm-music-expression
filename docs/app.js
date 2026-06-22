@@ -293,9 +293,11 @@ function normalizeAbc(abc) {
 
 function withInstruments(abc) {
   return abc.split("\n").flatMap((line) => {
-    const m = line.match(/^\s*V:\s*\S+.*name="([^"]+)"/);
+    // ABC voice names may be quoted (name="Violin I") or a bare token
+    // (name=Soprano) — handle both, else we miss the name and default to piano.
+    const m = line.match(/^\s*V:\s*\S+.*\bname=(?:"([^"]+)"|(\S+))/);
     if (m) {
-      const p = gmProgram(m[1]);
+      const p = gmProgram(m[1] || m[2]);
       if (p != null) return [line, `%%MIDI program ${p}`];
     }
     return [line];
