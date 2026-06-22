@@ -22,10 +22,12 @@ MODELS="${MODELS:-gpt-5.5,gpt-4.1,gemini-2.5-pro,grok-4.3,deepseek-v4-pro,qwen3-
 PROMPTS="${PROMPTS:-free-form}"
 MODE="${MODE:-abc}"
 SAMPLES="${SAMPLES:-30}"
+WORKERS="${WORKERS:-8}"
 REPO_SLUG="${REPO_SLUG:-nateykang/llm-music-expression}"
 
-echo "=== generating: $MODELS x $PROMPTS x $SAMPLES samples [$MODE] ==="
-llm-music batch --models "$MODELS" --prompts "$PROMPTS" --mode "$MODE" --samples "$SAMPLES"
+echo "=== generating: $MODELS x $PROMPTS x $SAMPLES samples [$MODE], $WORKERS workers ==="
+llm-music batch --models "$MODELS" --prompts "$PROMPTS" --mode "$MODE" \
+  --samples "$SAMPLES" --workers "$WORKERS"
 
 echo "=== pushing results ==="
 if [ -z "${GITHUB_TOKEN:-}" ]; then

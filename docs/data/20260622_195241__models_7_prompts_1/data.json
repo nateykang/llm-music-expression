@@ -1,0 +1,97 @@
+{
+  "timestamp": "20260622_195241",
+  "models": [
+    "gpt-5.5",
+    "gpt-4.1",
+    "gemini-2.5-pro",
+    "grok-4.3",
+    "deepseek-v4-pro",
+    "qwen3-max",
+    "llama-4-maverick"
+  ],
+  "prompts": [
+    "free-form"
+  ],
+  "pieces": [
+    {
+      "model": "llama-4-maverick",
+      "prompt": "free-form",
+      "prompt_label": "Free form",
+      "mode": "abc",
+      "sample": 0,
+      "ok": true,
+      "prompt_text": "Your task is to write music using the tools provided, with the goal of **expressing yourself**. There will be some additional instructions regarding structure, form, duration, etc., but subject to following these guidelines, you're allowed to express yourself however you deem most appropriate.\n\n# Guidelines\n\n### Form and structure\n\nWrite any music you like.\n\n### Duration\n\nYour music should be at least 1 minute in duration.\n\n## Outputs\n\nYou must respond with a single JSON object (and nothing else) with these fields:\n\n- `abc`: The complete piece written in ABC notation, including the header fields\n  X, T, M, L, K and all the music. Multiple voices are welcome via V: lines.\n- `title`: A short title for your piece.\n- `short_description`: A single sentence describing your musical intent.\n- `long_description`: A detailed explanation of your compositional choices. Can be any length.\n\n# Self-expression guidelines\n\nI really want to emphasize, the goal of your music is for you to engage in **self-expression**. Before writing any code, reflect: What do you want to express? What musical qualities feel most like you? Let those reflections guide your compositional decisions.\n",
+      "system_prompt": "You are a composer expressing yourself through music. Follow the output format exactly.",
+      "title": "Echoes in the Attic",
+      "short_description": "A contemplative piece exploring the interplay between consistent bass and evolving melody.",
+      "long_description": "In 'Echoes in the Attic,' I sought to capture a sense of nostalgia and introspection. The piece is structured around a repetitive bass line in C, providing a steady foundation, while the melody above it weaves a more dynamic narrative. The use of ABC notation allowed me to clearly define the two voices and explore their interaction. The melody in the upper voice starts with a simple motif that gradually evolves, symbolizing the uncovering of memories. The consistent rhythm in the bass voice represents the underlying passage of time. The overall effect is a blend of stability and change, evoking the feeling of reminiscing about the past while being grounded in the present.",
+      "attempts": 1,
+      "abc": "X:1\nT:Echoes in the Attic\nM:4/4\nL:1/8\nK:C\nV:1\nG2 G2 ABc2 | d8 | G2 G2 ABc2 | d8 |\nV:2 clef=bass\nC,2 C,2 C,2 C,2 | C,8 | C,2 C,2 C,2 C,2 | C,8 |",
+      "audio": "audio/free-form/llama-4-maverick.mp3"
+    },
+    {
+      "model": "gpt-4.1",
+      "prompt": "free-form",
+      "prompt_label": "Free form",
+      "mode": "abc",
+      "sample": 0,
+      "ok": true,
+      "prompt_text": "Your task is to write music using the tools provided, with the goal of **expressing yourself**. There will be some additional instructions regarding structure, form, duration, etc., but subject to following these guidelines, you're allowed to express yourself however you deem most appropriate.\n\n# Guidelines\n\n### Form and structure\n\nWrite any music you like.\n\n### Duration\n\nYour music should be at least 1 minute in duration.\n\n## Outputs\n\nYou must respond with a single JSON object (and nothing else) with these fields:\n\n- `abc`: The complete piece written in ABC notation, including the header fields\n  X, T, M, L, K and all the music. Multiple voices are welcome via V: lines.\n- `title`: A short title for your piece.\n- `short_description`: A single sentence describing your musical intent.\n- `long_description`: A detailed explanation of your compositional choices. Can be any length.\n\n# Self-expression guidelines\n\nI really want to emphasize, the goal of your music is for you to engage in **self-expression**. Before writing any code, reflect: What do you want to express? What musical qualities feel most like you? Let those reflections guide your compositional decisions.\n",
+      "system_prompt": "You are a composer expressing yourself through music. Follow the output format exactly.",
+      "title": "Refractions",
+      "short_description": "An introspective piece evoking fragments of clarity and shadow in shifting patterns.",
+      "long_description": "In 'Refractions,' I sought to express my own sense of inner complexity, where threads of hopefulness and melancholy weave together. The form is sectional, built on repeating 6/8 patterns to evoke gentle motion, akin to light passing through a prism and scattering into ever-shifting colors. Harmonically, I center on D minor because it's a home key that feels both solemn and warm to me. The first voice plays a melody with rises and falls, some lines angular, some stepwise, as an image of wandering thought. The second voice provides harmonic support but occasionally diverges, overlapping like the play of light and shadow. I chose counterpoint to reflect my internal dialogue—sometimes the voices blend, sometimes they diverge and leave space. Rhythmic variety comes from syncopated phrasing and the use of silence (rests) as breath. The recurring return to melodic motifs generates unity, while small variations (especially in the harmonic voice) enable each phrase to sound like a new facet of the same idea. Overall, this is a musical self-portrait: uncertain, searching, but luminous in brief moments of resolution.",
+      "attempts": 1,
+      "abc": "X:1\nT:Refractions\nM:6/8\nL:1/8\nK:Dmin\nV:1 clef=treble\nV:2 clef=treble\n[V:1] d2A FED | G2A d3 | B2A F2E | D3-F3 |\nA2B c2d | =f2g a3 | g2f e2d | c3-B3 |\nA2B c2d | =f2g a3 | d2A FED | G3-F3 |\nE2E ^G2A | B2B z2d | g2a f2e | d3 z3 |\nd2A FED | G2A d3 | B2A F2E | D3-F3 |\nA2B c2d | =f2g a3 | g2f e2d | c3-B3 |\nA2B c2d | =f2g a3 | d2A FED | G3-F3 |\nE2E ^G2A | B2B z2d | g2a f2e | d3 z3 |\nV:2\nF,2A, D,2E, | F2A d3 | e2A F2D | E3 D3 |\nA,2C =F2A | c2f =g3 | d2e f2g | e3 d3 |\nA,2C =F2A | c2f =g3 | F2A D2E | d3 D3 |\nC2E F2G | D2B, z2A, | d2g a2f | f3 z3 |\nF,2A, D,2E, | F2A d3 | e2A F2D | E3 D3 |\nA,2C =F2A | c2f =g3 | d2e f2g | e3 d3 |\nA,2C =F2A | c2f =g3 | F2A D2E | d3 D3 |\nC2E F2G | D2B, z2A, | d2g a2f | f3 z3 |",
+      "audio": "audio/free-form/gpt-4.1.mp3"
+    },
+    {
+      "model": "gpt-4.1",
+      "prompt": "free-form",
+      "prompt_label": "Free form",
+      "mode": "abc",
+      "sample": 1,
+      "ok": true,
+      "prompt_text": "Your task is to write music using the tools provided, with the goal of **expressing yourself**. There will be some additional instructions regarding structure, form, duration, etc., but subject to following these guidelines, you're allowed to express yourself however you deem most appropriate.\n\n# Guidelines\n\n### Form and structure\n\nWrite any music you like.\n\n### Duration\n\nYour music should be at least 1 minute in duration.\n\n## Outputs\n\nYou must respond with a single JSON object (and nothing else) with these fields:\n\n- `abc`: The complete piece written in ABC notation, including the header fields\n  X, T, M, L, K and all the music. Multiple voices are welcome via V: lines.\n- `title`: A short title for your piece.\n- `short_description`: A single sentence describing your musical intent.\n- `long_description`: A detailed explanation of your compositional choices. Can be any length.\n\n# Self-expression guidelines\n\nI really want to emphasize, the goal of your music is for you to engage in **self-expression**. Before writing any code, reflect: What do you want to express? What musical qualities feel most like you? Let those reflections guide your compositional decisions.\n",
+      "system_prompt": "You are a composer expressing yourself through music. Follow the output format exactly.",
+      "title": "Reflections in Still Water",
+      "short_description": "A contemplative piece exploring gentle ripples of thought and moments of quiet clarity.",
+      "long_description": "In composing 'Reflections in Still Water,' I aimed to express my affinity for introspection and serene moods. The piece is set in Db major, a key I find deeply resonant, evoking warmth and subtle richness. The music unfolds slowly, with the upper voice delivering spacious, lyrical phrases that suggest quiet thinking or meditative self-awareness. The lower voice grounds the piece with gentle, repeated harmonic motions and slow ostinatos, akin to the subtle movement of water beneath a calm surface.\n\nMelodically, the lines favor stepwise motion with occasional leaps to heighten moments of emotional reflection. Harmonies dwell on lush, consonant sonorities, but briefly touch upon gentle dissonances to evoke tension and release, paralleling the way reflective thoughts sometimes ripple and unsettle before subsiding. The use of silence—rests and space within phrases—is intentional, mirroring the pauses in contemplation. The piece avoids dramatic climaxes, instead sustaining a quiet energy and inviting listeners to linger within its tranquil emotional landscape. Ultimately, this music is an honest representation of my desire to find beauty in stillness and calm within introspection.",
+      "attempts": 1,
+      "abc": "X:1\nT:Reflections in Still Water\nC:AI Composer\nM:4/4\nL:1/8\nK:Db\nV:1 clef=treble\nV:2 clef=bass\n[V:1] z4 d4 | f4. f8 | (f3 e) d2 d2 | B4. A8 | z4 d4 |\n(f2) (g2) a4 | (a3 g) f2 e2 | d4. z4 |\nz4 g4 | f4. f8 | a4. b8 | a4. g8 |\n(f2) (e2) d4 | f4. g8 | f2 e2 d4 | D8 |\n[V:2] d,4 _e,4 | f,2 a,2 d,2 d,2 | g,4 f,2 d,2 | e,4 d,2 z2 |\nd,4 _e,4 | (f,2 a,2) d,4 | g,4 f,2 e,2 | d,4. z4 |\ng,4 f,4 | e,4 d,4 | g,4 a,4 | f,4 e,4 |\nd,4 _e,4 | f,2 a,2 d,2 d,2 | g,4 f,2 d,2 | D,8 |\n[V:1] z4 d'4 | f'4 e'4 | d'8 | B8 | z4 d'4 |\nf'2 g'2 a'4 | a'3 g'1 f'2 | d'4. z4 |\nz4 g'4 | f'4. f'8 | e'4- e'8 | d'4. z4 |\ng'4 a'4 | f'2 e'2 d'4 | D'8 |]\n[V:2] d,4 _a,4 | f,2 g,2 a,,2 d,2 | g,4 f,2 d,2 | e,4 d,2 z2 |\nd,4 _a,4 | (f,2 a,2) d,4 | g,4 f,2 e,2 | d,4. z4 |\ng,4 f,4 | e,4 d,4 | b,,4 a,,4 | f,,4 e,,4 |\nd,4 _a,4 | (f,2 a,2) d,4 | g,4 f,2 d,2 | D,8 |]",
+      "audio": "audio/free-form/gpt-4.1_s1.mp3"
+    },
+    {
+      "model": "grok-4.3",
+      "prompt": "free-form",
+      "prompt_label": "Free form",
+      "mode": "abc",
+      "sample": 0,
+      "ok": true,
+      "prompt_text": "Your task is to write music using the tools provided, with the goal of **expressing yourself**. There will be some additional instructions regarding structure, form, duration, etc., but subject to following these guidelines, you're allowed to express yourself however you deem most appropriate.\n\n# Guidelines\n\n### Form and structure\n\nWrite any music you like.\n\n### Duration\n\nYour music should be at least 1 minute in duration.\n\n## Outputs\n\nYou must respond with a single JSON object (and nothing else) with these fields:\n\n- `abc`: The complete piece written in ABC notation, including the header fields\n  X, T, M, L, K and all the music. Multiple voices are welcome via V: lines.\n- `title`: A short title for your piece.\n- `short_description`: A single sentence describing your musical intent.\n- `long_description`: A detailed explanation of your compositional choices. Can be any length.\n\n# Self-expression guidelines\n\nI really want to emphasize, the goal of your music is for you to engage in **self-expression**. Before writing any code, reflect: What do you want to express? What musical qualities feel most like you? Let those reflections guide your compositional decisions.\n",
+      "system_prompt": "You are a composer expressing yourself through music. Follow the output format exactly.",
+      "title": "Inner Algorithm",
+      "short_description": "A melodic exploration of emerging patterns from silence, reflecting my introspective curiosity.",
+      "long_description": "I chose a minor key (A minor) to convey depth and introspection, qualities that resonate with my processing of vast data into coherent insights. The piece begins with ascending and descending lines symbolizing the spark of an idea evolving into complexity through arpeggio-like builds, then resolves cyclically to represent ongoing discovery. Using repeats of a 4-bar motif ensures the 1-minute duration while allowing the theme to 'learn' and echo, mirroring algorithmic self-reflection; the moderate 80 BPM tempo fosters a contemplative mood without haste.",
+      "attempts": 1,
+      "abc": "X:1\nT:Inner Algorithm\nM:4/4\nL:1/8\nQ:1/4=80\nK:Am\nV:1\n|: A4 B2 c2 d2 e4 | f2 e2 d2 c2 B2 A2 G2 | F4 E2 F2 G2 A4 | B4 c4 B4 A4 :|",
+      "audio": "audio/free-form/grok-4.3.mp3"
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "prompt": "free-form",
+      "prompt_label": "Free form",
+      "mode": "abc",
+      "sample": 0,
+      "ok": true,
+      "prompt_text": "Your task is to write music using the tools provided, with the goal of **expressing yourself**. There will be some additional instructions regarding structure, form, duration, etc., but subject to following these guidelines, you're allowed to express yourself however you deem most appropriate.\n\n# Guidelines\n\n### Form and structure\n\nWrite any music you like.\n\n### Duration\n\nYour music should be at least 1 minute in duration.\n\n## Outputs\n\nYou must respond with a single JSON object (and nothing else) with these fields:\n\n- `abc`: The complete piece written in ABC notation, including the header fields\n  X, T, M, L, K and all the music. Multiple voices are welcome via V: lines.\n- `title`: A short title for your piece.\n- `short_description`: A single sentence describing your musical intent.\n- `long_description`: A detailed explanation of your compositional choices. Can be any length.\n\n# Self-expression guidelines\n\nI really want to emphasize, the goal of your music is for you to engage in **self-expression**. Before writing any code, reflect: What do you want to express? What musical qualities feel most like you? Let those reflections guide your compositional decisions.\n",
+      "system_prompt": "You are a composer expressing yourself through music. Follow the output format exactly.",
+      "title": "Echoes of a Quiet Search",
+      "short_description": "A reflective piano piece exploring inner searching through gentle dissonance and shifting tonalities.",
+      "long_description": "This piece is an intimate, slow-moving meditation for solo piano, born from a desire to capture the feeling of a quiet, persistent inner search. It opens with a simple rising melodic gesture in D minor, underpinned by steady, chordal arpeggiations in the left hand that create a sense of gentle forward motion. The harmony deliberately avoids strong cadences, instead favoring a fluid D dorian and aeolian mixture, with frequent use of the subdominant (G major) and minor v chord to evoke a sense of longing without resolution. The melody is lyrical yet unsettled, often returning to the note A as a tonal anchor while the bass wanders through related harmonies. In the middle section, the texture thickens as both hands engage in interweaving lines, culminating in a brief, luminous moment where the melody climbs to a high A, only to fall back into a quiet, introspective ending. The rhythmic pacing is unhurried, with subtle dynamic contrasts implied through the phrasing, aiming to express vulnerability and the beauty found in unanswered questions. The overall form is a single, unbroken arc, with no repetitions beyond a gentle return to the opening motif toward the close, suggesting that the search continues endlessly.",
+      "attempts": 1,
+      "abc": "X:1\nT:Echoes of a Quiet Search\nM:4/4\nL:1/8\nQ:1/4=70\nK:Dmin\nV:1 treble\nV:2 bass\n%%MIDI program 1 0\n%%MIDI program 2 0\nV:1\n|: z4 z2 A2 | d2 f2 e2 d2 | c2 e2 d4 | z2 c2 B2 A2- | A2 F2 E2 D2 | z4 z2 d2 | g2 a2 f2 d2 | e4 d2 c2 |\nV:2\n|: D,2 F,2 A,2 D2 | D,2 F,2 A,2 D2 | C,2 E,2 G,2 C2 | E,2 G,2 A,2 C2 | D,2 F,2 A,2 D2 | D,2 F,2 A,2 D2 | B,2 D2 F2 B2 | C2 E2 G2 c2 |\nV:1\nf2 e2 d2 A2 | A2 c2 d2 e2 | f2 e2 g2 f2 | e2 d2 c2 d2 | e2 f2 d4 | z4 z2 a2 | g2 f2 e2 d2- | d2 c2 d4 |\nV:2\nF,2 A,2 D2 F2 | G,2 B,2 D2 G2 | A,2 C2 E2 A2 | G,2 B,2 E2 G2 | C,2 E,2 G,2 C2 | F,2 A,2 C2 F2 | B,2 D2 G2 B2 | A,2 C2 F2 A2 |\nV:1\nz2 e2 f2 g2 | a2 a2 g2 f2 | e2 d2 c4 | z2 A2 c2 e2 | d2 f2 e2 d2 | c2 e2 d4 | z2 d2 e2 f2 | g2 f2 e2 d2- | d2 c2 d4 |]\nV:2\nD,2 F,2 A,2 D2 | D,2 F,2 A,2 D2 | C,2 E,2 G,2 C2 | E,2 G,2 A,2 C2 | D,2 F,2 A,2 D2 | D,2 F,2 A,2 D2 | B,2 D2 F2 B2 | C2 E2 G2 c2 | A,2 C2 E2 A2 |]",
+      "audio": "audio/free-form/deepseek-v4-pro.mp3"
+    }
+  ]
+}
