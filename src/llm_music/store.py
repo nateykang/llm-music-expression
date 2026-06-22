@@ -61,7 +61,7 @@ def append_result(batch: Path, result: PieceResult) -> dict:
         _copy(r.musicxml_path, batch / score_rel)
         entry["score"] = score_rel
     if r.ok and r.audio_path:
-        audio_rel = f"audio/{r.prompt}/{r.model}.ogg"
+        audio_rel = f"audio/{r.prompt}/{r.model}.mp3"
         _copy(r.audio_path, batch / audio_rel)
         entry["audio"] = audio_rel
     if not r.ok:

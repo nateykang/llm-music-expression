@@ -139,7 +139,7 @@ def generate_piece(
     # Pre-render audio for code-gen (MIDI -> FluidSynth). ABC pieces carry no MIDI:
     # abcjs engraves and plays the raw ABC client-side.
     if result.midi_path:
-        audio_path = work_dir / "piece.ogg"
+        audio_path = work_dir / "piece.mp3"
         if midi_to_audio(result.midi_path, audio_path):
             result.audio_path = audio_path
     return result

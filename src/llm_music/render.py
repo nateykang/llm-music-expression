@@ -104,33 +104,46 @@ def ensure_clefs(score) -> None:
 
 
 def audio_available() -> bool:
-    return shutil.which("fluidsynth") is not None and find_soundfont() is not None
+    return (
+        shutil.which("fluidsynth") is not None
+        and find_soundfont() is not None
+        and shutil.which("lame") is not None
+    )
 
 
 def midi_to_audio(midi_path: Path, audio_path: Path, timeout: int = 120) -> bool:
-    """Render MIDI to an audio file via FluidSynth. Returns False if skipped."""
+    """Render MIDI -> MP3 (FluidSynth to WAV, then lame to MP3). Returns False if
+    skipped (no FluidSynth/SoundFont/lame).
+
+    MP3 rather than FluidSynth's direct Ogg output: that Ogg carries broken length
+    metadata, so browsers misreport the duration (e.g. 254s for a 67s piece) and
+    playback breaks in Chrome. MP3 has reliable duration and plays everywhere
+    (incl. Safari/iOS, which can't play Ogg Vorbis at all).
+    """
+    import os
+    import tempfile
+
     fluidsynth = shutil.which("fluidsynth")
     soundfont = find_soundfont()
-    if not fluidsynth or not soundfont:
+    lame = shutil.which("lame")
+    if not fluidsynth or not soundfont or not lame:
         return False
 
     audio_path.parent.mkdir(parents=True, exist_ok=True)
-    # Force Ogg/Vorbis (-T oga): FluidSynth otherwise defaults to uncompressed
-    # WAV regardless of extension (~13 MB/min vs ~0.5 MB/min compressed).
-    cmd = [
-        fluidsynth,
-        "-ni",
-        "-F",
-        str(audio_path),
-        "-T",
-        "oga",
-        "-r",
-        "44100",
-        str(soundfont),
-        str(midi_path),
-    ]
-    try:
-        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
-    except subprocess.TimeoutExpired:
-        return False
-    return proc.returncode == 0 and audio_path.exists()
+    with tempfile.TemporaryDirectory(prefix="llm_music_wav_") as tmp:
+        wav = os.path.join(tmp, "render.wav")
+        try:
+            r1 = subprocess.run(
+                [fluidsynth, "-ni", "-F", wav, "-T", "wav", "-r", "44100",
+                 str(soundfont), str(midi_path)],
+                capture_output=True, text=True, timeout=timeout,
+            )
+            if r1.returncode != 0 or not os.path.exists(wav):
+                return False
+            r2 = subprocess.run(
+                [lame, "--quiet", "-V", "4", wav, str(audio_path)],
+                capture_output=True, text=True, timeout=timeout,
+            )
+        except subprocess.TimeoutExpired:
+            return False
+    return audio_path.exists()

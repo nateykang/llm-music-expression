@@ -26,7 +26,7 @@ prompt ──▶ model ──▶ ┌ codegen: JSON{code,…} ─▶ sandbox runs
                                             │        │
                           FluidSynth ◀──────┘        └──▶ Verovio (browser)
                               │
-                            audio.ogg  ──▶ docs/data/<ts>/ + data.json ──▶ static site
+                            audio.mp3  ──▶ docs/data/<ts>/ + data.json ──▶ static site
 ```
 
 ## Setup
@@ -88,10 +88,12 @@ python scripts/serve.py 8000   # then open http://localhost:8000
 Pick batch / prompt / model; Verovio engraves the score live and the audio plays.
 `docs/` is GitHub Pages-ready as-is.
 
-> Use `scripts/serve.py`, not `python -m http.server` — the stdlib server ignores
-> HTTP Range requests, which breaks audio seeking and makes Ogg files report a
-> "growing" duration. Real static hosts (GitHub Pages) support ranges, so this
-> only affects local preview.
+> Code-gen audio is rendered to **MP3** (FluidSynth → WAV → `lame`). MP3 has
+> reliable duration metadata and plays in every browser, including Safari/iOS —
+> unlike FluidSynth's direct Ogg output, whose broken length header makes browsers
+> misreport the duration and breaks Chrome playback. (ABC pieces aren't pre-baked:
+> abcjs plays them client-side.) Install `lame` (`brew install lame`); without it
+> the pipeline still produces scores, only the pre-baked audio is skipped.
 
 ## Adding a model
 
