@@ -109,6 +109,21 @@ def cmd_analyze(args) -> int:
     return 0
 
 
+def cmd_report(args) -> int:
+    from .report import load_features, make_charts, render_html
+
+    data_dir = Path(args.data_dir)
+    rows = load_features(data_dir)
+    if not rows:
+        print(f"No features.csv found under {data_dir}. Run `llm-music analyze <batch>` first.")
+        return 1
+    charts = make_charts(rows, data_dir.parent / "analysis")
+    out = data_dir.parent / "results.html"
+    render_html(rows, charts, out)
+    print(f"Wrote dashboard → {out}  ({len(rows)} pieces, {len(charts)} charts)")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="llm-music", description=__doc__)
     sub = p.add_subparsers(dest="command", required=True)
@@ -135,6 +150,11 @@ def build_parser() -> argparse.ArgumentParser:
     pa.add_argument("--summary-prompt", default="free-form",
                     help="prompt to base the per-model bias readout on")
     pa.set_defaults(func=cmd_analyze)
+
+    prp = sub.add_parser("report", help="build the analysis dashboard (results.html + charts)")
+    prp.add_argument("--data-dir", default="docs/data",
+                     help="folder holding the batch subfolders (default: docs/data)")
+    prp.set_defaults(func=cmd_report)
     return p
 
 

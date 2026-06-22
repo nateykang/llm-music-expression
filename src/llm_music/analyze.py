@@ -82,8 +82,14 @@ def extract_features(piece: dict, batch_dir: Path) -> dict | None:
         except Exception:
             return None
 
-    key = score.analyze("key")
-    mode = key.mode
+    # Degenerate pieces (empty / all-rest, e.g. a hollow generation) can't be
+    # key-analyzed — record them with unknown tonality rather than dropping them.
+    try:
+        key = score.analyze("key")
+        tonic, mode = key.tonic.name, key.mode
+        key_conf = round(float(key.tonalCertainty()), 3)
+    except Exception:
+        tonic, mode, key_conf = "?", "?", None
     mm = score.recurse().getElementsByClass(m21tempo.MetronomeMark).first()
     bpm = float(mm.number) if mm and mm.number else 120.0
     n_notes = len(list(score.recurse().notes))
@@ -93,11 +99,12 @@ def extract_features(piece: dict, batch_dir: Path) -> dict | None:
     resolution = (mus.resolution or 480) * 4  # assume 4 beats/measure for grooving
 
     # affect proxy: mode -> valence, tempo + density -> arousal (Russell circumplex)
-    valence = 1 if mode == "major" else -1
+    valence = 0 if mode == "?" else (1 if mode == "major" else -1)
     tempo_norm = max(0.0, min(1.0, (bpm - 50) / (160 - 50)))
     dens_norm = max(0.0, min(1.0, density / 6.0))
     arousal = round(0.6 * tempo_norm + 0.4 * dens_norm, 3)
-    quadrant = ("happy/excited" if (valence > 0 and arousal >= 0.5)
+    quadrant = ("unknown" if valence == 0
+                else "happy/excited" if (valence > 0 and arousal >= 0.5)
                 else "serene/content" if (valence > 0)
                 else "angry/tense" if (arousal >= 0.5)
                 else "sad/depressed")
@@ -105,8 +112,8 @@ def extract_features(piece: dict, batch_dir: Path) -> dict | None:
     return {
         "model": piece["model"], "prompt": piece["prompt"],
         "mode": piece.get("mode"), "title": piece.get("title", ""),
-        "key_tonic": key.tonic.name, "key_mode": mode,
-        "key_confidence": round(float(key.tonalCertainty()), 3),
+        "key_tonic": tonic, "key_mode": mode,
+        "key_confidence": key_conf,
         "scale_consistency": safe(muspy.scale_consistency),
         "pitch_class_entropy": safe(muspy.pitch_class_entropy),
         "pitch_in_scale_rate": safe(muspy.pitch_in_scale_rate),
