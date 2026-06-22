@@ -42,18 +42,21 @@ const verovioReady = new Promise((resolve) => {
   }
 });
 
+// Only one piece audible at a time, across both audio engines (native <audio>
+// for code-gen, abcjs Web Audio synths for ABC). Pause everything except the one
+// just started.
+function pauseOthers(exceptAudio, exceptSynth) {
+  for (const a of document.querySelectorAll("audio")) {
+    if (a !== exceptAudio) { try { a.pause(); } catch (e) {} }
+  }
+  for (const sc of activeSynths) {
+    if (sc !== exceptSynth) { try { sc.pause(); } catch (e) {} }
+  }
+}
+
 async function init() {
-  // Only one piece audible at a time: when any <audio> starts, pause the others
-  // (matters most in compare mode, which renders one player per model).
-  document.addEventListener(
-    "play",
-    (e) => {
-      for (const a of document.querySelectorAll("audio")) {
-        if (a !== e.target) a.pause();
-      }
-    },
-    true
-  );
+  // When a native <audio> starts, pause every other player (audio + synths).
+  document.addEventListener("play", (e) => pauseOthers(e.target, null), true);
 
   verovioReady.then((toolkit) => {
     tk = toolkit;
@@ -302,7 +305,8 @@ function mountAudio(slot, piece, dir, visual) {
     slot.appendChild(ctrl);
     const sc = new ABCJS.synth.SynthController();
     activeSynths.push(sc); // so a later switch can stop it (Web Audio, not <audio>)
-    sc.load(ctrl, null, { displayPlay: true, displayProgress: true, displayWarp: false });
+    // onStart fires when this synth begins playing -> pause every other player.
+    sc.load(ctrl, { onStart: () => pauseOthers(null, sc) }, { displayPlay: true, displayProgress: true, displayWarp: false });
     sc.setTune(visual, false, { soundFontUrl: SOUNDFONT }).catch(() => {
       slot.innerHTML = `<p class="note">Could not load audio.</p>`;
     });
