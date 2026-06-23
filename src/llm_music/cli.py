@@ -25,7 +25,7 @@ def _split(csv: str) -> list[str]:
 
 
 def _run_matrix(models: list[str], prompts: list[str], mode: str, max_attempts: int,
-                samples: int = 1, workers: int = 6):
+                samples: int = 1, workers: int = 6, bake_audio: bool = True):
     # The batch folder + manifest are created up front and rewritten after every
     # piece, so an interrupted run still leaves a valid, viewable partial batch.
     ts = _timestamp()
@@ -46,7 +46,8 @@ def _run_matrix(models: list[str], prompts: list[str], mode: str, max_attempts: 
         def work_cell(cell):
             m, p, s = cell
             wd = Path(scratch) / m / p / str(s)
-            return cell, generate_piece(clients[m], p, mode, wd, max_attempts=max_attempts)
+            return cell, generate_piece(clients[m], p, mode, wd,
+                                        max_attempts=max_attempts, bake_audio=bake_audio)
 
         with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
             for fut in as_completed([ex.submit(work_cell, c) for c in cells]):
@@ -79,7 +80,7 @@ def cmd_batch(args) -> int:
     print(f"Batch: {len(models)} model(s) × {len(prompts)} prompt(s) × {args.samples} "
           f"sample(s) = {n_cells} [{args.mode}], {args.workers} workers")
     batch, results = _run_matrix(models, prompts, args.mode, args.max_attempts,
-                                 args.samples, args.workers)
+                                 args.samples, args.workers, bake_audio=not args.no_audio)
     n_ok = sum(r.ok for r in results)
     print(f"\nWrote batch: {batch}  ({n_ok}/{len(results)} succeeded)")
     return 0 if n_ok == len(results) else 1
@@ -164,6 +165,8 @@ def build_parser() -> argparse.ArgumentParser:
                     help="repeats per model×prompt cell (for sampling distributions)")
     pb.add_argument("--workers", type=int, default=6,
                     help="concurrent generations (network-bound; raise to go faster)")
+    pb.add_argument("--no-audio", action="store_true",
+                    help="skip audio baking (for large sampling runs — keeps the site lean)")
     pb.set_defaults(func=cmd_batch)
 
     pm = sub.add_parser("models", help="list registered models")

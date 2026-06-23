@@ -25,9 +25,12 @@ SAMPLES="${SAMPLES:-30}"
 WORKERS="${WORKERS:-8}"
 REPO_SLUG="${REPO_SLUG:-nateykang/llm-music-expression}"
 
-echo "=== generating: $MODELS x $PROMPTS x $SAMPLES samples [$MODE], $WORKERS workers ==="
+# Sampling corpora feed the metrics dashboard, not the site player, so skip audio
+# by default (keeps the repo/Pages lean). Set AUDIO=1 to bake MP3s anyway.
+AUDIO_FLAG="--no-audio"; [ -n "${AUDIO:-}" ] && AUDIO_FLAG=""
+echo "=== generating: $MODELS x $PROMPTS x $SAMPLES samples [$MODE], $WORKERS workers ${AUDIO_FLAG} ==="
 llm-music batch --models "$MODELS" --prompts "$PROMPTS" --mode "$MODE" \
-  --samples "$SAMPLES" --workers "$WORKERS"
+  --samples "$SAMPLES" --workers "$WORKERS" $AUDIO_FLAG
 
 echo "=== pushing results ==="
 if [ -z "${GITHUB_TOKEN:-}" ]; then

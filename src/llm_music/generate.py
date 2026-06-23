@@ -90,6 +90,7 @@ def generate_piece(
     mode: str,
     work_dir: Path,
     max_attempts: int = 5,
+    bake_audio: bool = True,
 ) -> PieceResult:
     if mode not in MODES:
         raise ValueError(f"unknown mode '{mode}'. Known: {', '.join(MODES)}")
@@ -138,7 +139,7 @@ def generate_piece(
 
     # Pre-render audio for code-gen (MIDI -> FluidSynth). ABC pieces carry no MIDI:
     # abcjs engraves and plays the raw ABC client-side.
-    if result.midi_path:
+    if bake_audio and result.midi_path:
         audio_path = work_dir / "piece.mp3"
         if midi_to_audio(result.midi_path, audio_path):
             result.audio_path = audio_path
