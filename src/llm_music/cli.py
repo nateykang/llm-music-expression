@@ -145,11 +145,11 @@ def cmd_report(args) -> int:
         return 1
     analysis = data_dir.parent / "analysis"
     charts = make_charts(rows, analysis)
-    ff, allp = key_distributions(rows)
-    charts.append(make_key_chart(ff, analysis))
+    dists = key_distributions(rows)
+    charts.append(make_key_chart(dists["all"], analysis))
     reliability = load_reliability(data_dir)
     out = data_dir.parent / "results.html"
-    render_html(rows, charts, out, reliability, ff, allp)
+    render_html(rows, charts, out, reliability, dists)
     print(f"Wrote dashboard → {out}  ({len(rows)} pieces, {len(charts)} charts)")
     return 0
 

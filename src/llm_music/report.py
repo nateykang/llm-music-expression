@@ -288,21 +288,25 @@ def make_charts(rows: list[dict], out_dir: Path) -> list[tuple[str, str]]:
 # --- key choices (circle of fifths) -------------------------------------------
 
 def key_distributions(rows, min_n=10):
-    """Per-model declared-key counts → (free_form, all_prompts) dicts {model: {key: n}}."""
+    """Free-form per-model key counts, split by representation:
+    {'text': {model:{key:n}}, 'code': ..., 'all': ...}. 'text' = ABC/SMT-ABC
+    (declared K:), 'code' = code-gen (music21-detected), 'all' = both."""
     from collections import Counter
 
-    ff, allp = {}, {}
+    buckets = {"text": {}, "code": {}, "all": {}}
     for r in rows:
+        if r["prompt"] != "free-form":
+            continue
         tonic = (r.get("key_declared_tonic") or r.get("key_tonic") or "").replace("-", "b")
         mode = r.get("key_mode_best") or r.get("key_mode")
         if not tonic or mode in ("", "?"):
             continue
         lab = tonic if mode == "major" else tonic + "m"
-        allp.setdefault(r["model"], Counter())[lab] += 1
-        if r["prompt"] == "free-form":
-            ff.setdefault(r["model"], Counter())[lab] += 1
+        rep = "code" if r.get("mode") == "codegen" else "text"
+        for b in (rep, "all"):
+            buckets[b].setdefault(r["model"], Counter())[lab] += 1
     keep = lambda d: {m: dict(c) for m, c in d.items() if sum(c.values()) >= min_n}
-    return keep(ff), keep(allp)
+    return {k: keep(v) for k, v in buckets.items()}
 
 
 def make_key_chart(ff, out_dir):
@@ -354,9 +358,9 @@ KEY_WIDGET_CSS = """
 
 KEY_WIDGET_TMPL = """
 <h2>Key choices <span class='sub'>(circle of fifths — major on C, relative minors on A)</span></h2>
-<p class="scope">Which keys each model actually chooses (from the declared K: field). Click a model; toggle free-form vs all prompts.</p>
+<p class="scope">Which keys each model chooses in free-form. Toggle representation — ABC uses the model's declared K:, code-gen uses music21's detected key. Click a model to filter. (Note the "default" models swing toward minor in code-gen, where there's no lazy K:C default.)</p>
 <div class="keyviz">
-  <div class="kv-row" style="margin-bottom:.6rem;"><span style="font-size:.85rem;color:#6b5d52;">showing</span><span id="kv-scope" class="kv-row"></span></div>
+  <div class="kv-row" style="margin-bottom:.6rem;"><span style="font-size:.85rem;color:#6b5d52;">representation</span><span id="kv-scope" class="kv-row"></span></div>
   <div id="kv-models" class="kv-row" style="margin-bottom:.5rem;"></div>
   <div id="kv-stat" class="kv-stat"></div>
   <div class="kv-legend"><span><span class="kv-sw" style="background:#BA7517;"></span>major (top label)</span><span><span class="kv-sw" style="background:#378ADD;"></span>minor (bottom label)</span><span style="margin-left:auto;">← flats · sharps →</span></div>
@@ -365,15 +369,15 @@ KEY_WIDGET_TMPL = """
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 (function(){
-  const FF=__FF__, ALL=__ALL__, MODELS=__MODELS__;
+  const TEXT=__TEXT__, CODE=__CODE__, ALL=__ALL__, MODELS=__MODELS__;
   const majorKeys=["Db","Ab","Eb","Bb","F","C","G","D","A","E","B","F#"];
   const minorKeys=["Bbm","Fm","Cm","Gm","Dm","Am","Em","Bm","F#m","C#m","G#m","D#m"];
   const pp=t=>t.replace('b','\\u266d').replace('#','\\u266f');
   const majorPretty=majorKeys.map(pp);
   const minorPretty=minorKeys.map(t=>pp(t.slice(0,-1))+'m');
   const xlabels=majorPretty.map((mj,i)=>[mj,minorPretty[i]]);
-  let scope='free', current='All';
-  const base=()=>scope==='free'?FF:ALL;
+  let scope='text', current='All';
+  const base=()=>scope==='code'?CODE:scope==='all'?ALL:TEXT;
   function srcFor(sel){const D=base();if(sel!=='All')return D[sel]||{};const t={};for(const m in D)for(const k in D[m])t[k]=(t[k]||0)+D[m][k];return t;}
   const major=sel=>{const s=srcFor(sel);return majorKeys.map(t=>s[t]||0);};
   const minor=sel=>{const s=srcFor(sel);return minorKeys.map(t=>s[t]||0);};
@@ -381,7 +385,7 @@ KEY_WIDGET_TMPL = """
   function styleBtns(box,val,attr){Array.prototype.forEach.call(box.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',b.dataset[attr]===val);});}
   function render(){chart.data.datasets[0].data=major(current);chart.data.datasets[1].data=minor(current);chart.update();updateStat(current);styleBtns(document.getElementById('kv-models'),current,'m');styleBtns(document.getElementById('kv-scope'),scope,'s');}
   const sb=document.getElementById('kv-scope');
-  [['free','free-form'],['all','all prompts']].forEach(function(p){const b=document.createElement('button');b.className='kv-btn';b.textContent=p[1];b.dataset.s=p[0];b.onclick=function(){scope=p[0];render();};sb.appendChild(b);});
+  [['text','ABC'],['code','code-gen'],['all','both']].forEach(function(p){const b=document.createElement('button');b.className='kv-btn';b.textContent=p[1];b.dataset.s=p[0];b.onclick=function(){scope=p[0];render();};sb.appendChild(b);});
   const bw=document.getElementById('kv-models');
   ['All'].concat(MODELS).forEach(function(m){const b=document.createElement('button');b.className='kv-btn';b.textContent=m;b.dataset.m=m;b.onclick=function(){current=m;render();};bw.appendChild(b);});
   const countLabels={id:'countLabels',afterDatasetsDraw:function(ch){var x=ch.ctx;x.save();x.font='11px -apple-system,system-ui,sans-serif';x.fillStyle='#6b5d52';x.textAlign='center';ch.data.datasets.forEach(function(ds,di){var meta=ch.getDatasetMeta(di);meta.data.forEach(function(bar,i){var v=ds.data[i];if(v>0)x.fillText(v,bar.x,bar.y-4);});});x.restore();}};Chart.register(countLabels);
@@ -392,12 +396,15 @@ KEY_WIDGET_TMPL = """
 """
 
 
-def _key_widget_html(ff, allp):
-    present = [m for m in KEY_MODEL_ORDER if m in allp or m in ff]
-    present += [m for m in sorted(set(allp) | set(ff)) if m not in present]
+def _key_widget_html(dists):
+    text, code, allb = dists["text"], dists["code"], dists["all"]
+    allmodels = set(text) | set(code) | set(allb)
+    present = [m for m in KEY_MODEL_ORDER if m in allmodels]
+    present += [m for m in sorted(allmodels) if m not in present]
     return (KEY_WIDGET_TMPL
-            .replace("__FF__", json.dumps(ff))
-            .replace("__ALL__", json.dumps(allp))
+            .replace("__TEXT__", json.dumps(text))
+            .replace("__CODE__", json.dumps(code))
+            .replace("__ALL__", json.dumps(allb))
             .replace("__MODELS__", json.dumps(present)))
 
 
@@ -431,8 +438,7 @@ def load_reliability(data_dir: Path) -> list[dict]:
 
 
 def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
-                reliability: list[dict] | None = None,
-                key_ff: dict | None = None, key_all: dict | None = None) -> None:
+                reliability: list[dict] | None = None, dists: dict | None = None) -> None:
     summary = summarize(rows)
     n_pieces = len(rows)
     n_models = len({r["model"] for r in rows})
@@ -445,7 +451,7 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
     def table(summ, caption):
         return f"<figure><figcaption>{caption}</figcaption>{_table_html(summ, COLUMNS)}</figure>"
 
-    key_widget = _key_widget_html(key_ff, key_all) if (key_ff or key_all) else ""
+    key_widget = _key_widget_html(dists) if dists and any(dists.values()) else ""
 
     rel_section = ""
     if reliability:
