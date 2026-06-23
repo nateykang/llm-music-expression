@@ -131,6 +131,12 @@ def _prepare_abc_for_audio(abc: str) -> str:
     named voice when the model gave none (else everything defaults to piano)."""
     import re
 
+    # abc2midi treats a blank line as end-of-tune, so a blank line between the
+    # header/voice declarations and the music (or between sections — several models
+    # do this) silently truncates the tune to ZERO notes. Our pieces are single
+    # tunes, so drop blank lines first.
+    abc = "\n".join(ln for ln in abc.splitlines() if ln.strip())
+
     voices = list(dict.fromkeys(re.findall(r"(?m)^\s*V:\s*(\S+)", abc)))
     for v in voices:
         abc = re.sub(r"\[" + re.escape(v) + r"\]", "[V:" + v + "]", abc)

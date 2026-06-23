@@ -122,9 +122,10 @@ def extract_features(piece: dict, batch_dir: Path) -> dict | None:
 
     def safe(fn, *args):
         try:
-            return round(float(fn(mus, *args)), 4)
+            v = float(fn(mus, *args))
         except Exception:
             return None
+        return None if v != v else round(v, 4)  # NaN (e.g. 0/0 on a note-less piece) -> None
 
     consonance_rate, chord_tone_rate = _harmony_metrics(score)
 
