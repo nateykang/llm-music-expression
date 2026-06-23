@@ -74,6 +74,12 @@ COLUMNS = [
     ("chord_tone", "chord-tones", "MuSpike-style Chord-Tone ratio: per bar the prevailing harmony is the "
         "3 most-present pitch classes; this is the share of notes belonging to it. Higher = notes stay "
         "within the underlying chord; lower = more non-chord / passing tones.", "pct"),
+    ("chord_tonal_distance", "harm. motion", "Chord Tonal Distance (survey/MuSpike): average circle-of-fifths "
+        "distance between consecutive bars' tonal centers — how far the harmony travels. ~0 = static (sits on one "
+        "chord); higher = real functional motion. Bach chorales ≈ 1.4.", "f2"),
+    ("structureness", "structure", "Self-similarity: how strongly each bar resembles some OTHER bar "
+        "(duration-weighted pitch-class histograms, cosine, averaged). ~1.0 = highly repetitive/structured; "
+        "low = through-composed with no recurring material. Bach chorales ≈ 0.9.", "f2"),
     ("note_density", "note density", "Average note onsets per beat (a beat = one quarter note), so it is "
         "tempo-invariant — rhythmic busyness, not real-time speed. ~1 = about one note per beat; higher = "
         "runs or chords. (Our descriptor, not from a specific paper.)", "f2"),
@@ -116,7 +122,8 @@ def _table_html(rows, columns):
         for _, lbl, tip, _ in columns) + "</tr>"
     body = ""
     for r in rows:
-        body += "<tr>" + "".join(
+        ref = " class='ref'" if r.get("model") == "Bach chorales" else ""
+        body += f"<tr{ref}>" + "".join(
             f"<td class='{'m' if key in ('model', 'gen') else ''}'>{_cell(r.get(key), kind)}</td>"
             for key, _, _, kind in columns) + "</tr>"
     return f"<div class='tscroll'><table>{head}{body}</table></div>"
@@ -142,7 +149,9 @@ def load_features(data_dir: Path) -> list[dict]:
                 for k in ("valence", "arousal", "tempo_bpm", "scale_consistency",
                           "pitch_class_entropy", "note_density", "length_seconds",
                           "pitch_range", "polyphony", "n_voices",
-                          "consonance_rate", "chord_tone_rate", "mode_match"):
+                          "consonance_rate", "chord_tone_rate", "mode_match",
+                          "chord_tonal_distance", "structureness",
+                          "pitch_interval", "ioi", "rhythm_entropy", "pitch_entropy"):
                     r[k] = _f(r.get(k))
                 rows.append(r)
     return rows
@@ -169,7 +178,7 @@ def summarize(rows: list[dict]) -> list[dict]:
         # minor% from the declared-preferred mode (K: field where available).
         modes = [r.get("key_mode_best") for r in rs if r.get("key_mode_best")]
         minor = (sum(m == "minor" for m in modes) / len(modes)) if modes else None
-        matches = [r["mode_match"] for r in rs if r.get("mode_match") is not None]
+        matches = [m for m in (r.get("mode_match") for r in rs) if isinstance(m, (int, float))]
         out.append({
             "model": model, "n": len(rs), "minor_frac": minor,
             "mode_match": (mean(matches) if matches else None),
@@ -178,6 +187,8 @@ def summarize(rows: list[dict]) -> list[dict]:
             "scale_consistency": _agg(rs, "scale_consistency")[0],
             "consonance": _agg(rs, "consonance_rate")[0],
             "chord_tone": _agg(rs, "chord_tone_rate")[0],
+            "chord_tonal_distance": _agg(rs, "chord_tonal_distance")[0],
+            "structureness": _agg(rs, "structureness")[0],
             "note_density": _agg(rs, "note_density")[0],
             "length": _agg(rs, "length_seconds")[0],
             "pitch_range": _agg(rs, "pitch_range")[0],
@@ -448,7 +459,8 @@ def load_reliability(data_dir: Path) -> list[dict]:
 
 
 def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
-                reliability: list[dict] | None = None, dists: dict | None = None) -> None:
+                reliability: list[dict] | None = None, dists: dict | None = None,
+                bach_rows: list[dict] | None = None) -> None:
     summary = summarize(rows)
     n_pieces = len(rows)
     n_models = len({r["model"] for r in rows})
@@ -460,10 +472,12 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
     # Each table is rendered once per representation (ABC / code-gen / both); the
     # page-wide toggle shows one pane at a time. ABC and code-gen are different runs,
     # so their n and metrics shouldn't be blended by default.
+    bach = [summarize(bach_rows)[0]] if bach_rows else []  # human reference row (rep-independent)
+
     def table(base_rows, caption):
         panes = "".join(
             f"<div class='rep-pane' data-rep='{rep}'{'' if rep == 'text' else ' hidden'}>"
-            f"{_table_html(summarize(_rep_filter(base_rows, rep)), COLUMNS)}</div>"
+            f"{_table_html(bach + summarize(_rep_filter(base_rows, rep)), COLUMNS)}</div>"
             for rep, _lbl in REPS)
         return f"<figure><figcaption>{caption}</figcaption>{panes}</figure>"
 
@@ -516,6 +530,7 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
   th:nth-last-child(-n+3) .tip:hover::after,
   th:nth-last-child(-n+3) .tip:focus::after {{ left: auto; right: 0; }}
   td.m, th:first-child {{ text-align: left; font-weight: 600; }}
+  tr.ref td {{ font-style: italic; color: {ACCENT}; background: #f3ede4; border-bottom: 2px solid #d8c9b5; }}
   figure {{ margin: 1.5rem 0; }}
   figcaption {{ color: {MUTED}; font-size: .85rem; margin-top: .4rem; }}
   .charts {{ display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2rem; }}

@@ -144,12 +144,27 @@ def cmd_report(args) -> int:
         print(f"No features.csv found under {data_dir}. Run `llm-music analyze <batch>` first.")
         return 1
     analysis = data_dir.parent / "analysis"
+    analysis.mkdir(parents=True, exist_ok=True)
     charts = make_charts(rows, analysis)
     dists = key_distributions(rows)
     charts.append(make_key_chart(dists["all"], analysis))
     reliability = load_reliability(data_dir)
+
+    # Bach-chorale reference (human functional-harmony baseline) — cached, since
+    # computing the metric panel on the chorales is slow.
+    import json as _json
+
+    from .analyze import bach_reference
+    bach_cache = analysis / "bach_reference.json"
+    if bach_cache.exists():
+        bach_rows = _json.loads(bach_cache.read_text(encoding="utf-8"))
+    else:
+        print("computing Bach-chorale reference (first run, ~1-2 min)…")
+        bach_rows = bach_reference()
+        bach_cache.write_text(_json.dumps(bach_rows), encoding="utf-8")
+
     out = data_dir.parent / "results.html"
-    render_html(rows, charts, out, reliability, dists)
+    render_html(rows, charts, out, reliability, dists, bach_rows)
     print(f"Wrote dashboard → {out}  ({len(rows)} pieces, {len(charts)} charts)")
     return 0
 

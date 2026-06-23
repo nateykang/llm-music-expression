@@ -30,9 +30,10 @@ FIELDS = [
     "model", "prompt", "mode", "title",
     "key_tonic", "key_mode", "key_confidence",
     "key_declared_tonic", "key_declared_mode", "key_mode_best", "mode_match",
-    "scale_consistency", "pitch_class_entropy", "pitch_in_scale_rate",
-    "consonance_rate", "chord_tone_rate",
+    "scale_consistency", "pitch_class_entropy", "pitch_entropy", "pitch_in_scale_rate",
+    "consonance_rate", "chord_tone_rate", "chord_tonal_distance", "structureness",
     "polyphony", "n_voices", "empty_beat_rate", "groove_consistency",
+    "pitch_interval", "ioi", "rhythm_entropy",
     "n_pitches_used", "pitch_range",
     "tempo_bpm", "n_notes", "length_seconds", "note_density",
     "valence", "arousal", "affect_quadrant",
@@ -138,14 +139,111 @@ def _harmony_metrics(score):
             round(chord_tone, 4) if chord_tone is not None else None)
 
 
-def extract_features(piece: dict, batch_dir: Path) -> dict | None:
-    import muspy
-    from music21 import tempo as m21tempo
+def _sequence_metrics(mus):
+    """MuSpike melodic/rhythmic metrics from the onset-ordered note stream:
+    average pitch interval (semitones), average inter-onset interval (beats), and
+    a note-length transition entropy (NLTM reduced to a scalar = rhythmic
+    predictability). Returns (pitch_interval, ioi, rhythm_entropy)."""
+    import math
+    from collections import Counter, defaultdict
 
+    notes = sorted((n for t in mus.tracks for n in t.notes), key=lambda n: (n.time, n.pitch))
+    if len(notes) < 2:
+        return None, None, None
+    res = mus.resolution or 480
+    pis = [abs(notes[i + 1].pitch - notes[i].pitch) for i in range(len(notes) - 1)]
+    pitch_interval = sum(pis) / len(pis)
+    onsets = sorted({n.time for n in notes})
+    iois = [(onsets[i + 1] - onsets[i]) / res for i in range(len(onsets) - 1)]
+    ioi = (sum(iois) / len(iois)) if iois else None
+    durs = [round(n.duration / res, 3) for n in notes]  # durations in beats
+    trans = defaultdict(Counter)
+    for a, b in zip(durs, durs[1:]):
+        trans[a][b] += 1
+    ents, weights = [], []
+    for cnt in trans.values():
+        tot = sum(cnt.values())
+        ents.append(-sum((c / tot) * math.log2(c / tot) for c in cnt.values()))
+        weights.append(tot)
+    rhythm_entropy = (sum(e * w for e, w in zip(ents, weights)) / sum(weights)) if weights else None
+    return (round(pitch_interval, 3),
+            round(ioi, 4) if ioi is not None else None,
+            round(rhythm_entropy, 4) if rhythm_entropy is not None else None)
+
+
+def _chord_tonal_distance(score):
+    """Survey/MuSpike Chord Tonal Distance: average circle-of-fifths distance
+    between consecutive bars' tonal centers (how far the harmony travels).
+    Low = smooth/functional motion; high = jumpy/chromatic. None if < 2 bars."""
+    from music21 import chord as m21chord
+
+    try:
+        chords = score.chordify()
+        measures = list(chords.recurse().getElementsByClass("Measure")) or [chords]
+    except Exception:
+        return None
+    centers = []
+    for m in measures:
+        pc_dur = {}
+        for c in m.recurse().getElementsByClass(m21chord.Chord):
+            for p in c.pitches:
+                pc_dur[p.pitchClass] = pc_dur.get(p.pitchClass, 0.0) + float(c.quarterLength or 0)
+        if pc_dur:
+            centers.append(max(pc_dur, key=pc_dur.get))
+    if len(centers) < 2:
+        return None
+
+    def cof(a, b):  # circle-of-fifths min distance (0..6)
+        d = abs((a * 7) % 12 - (b * 7) % 12)
+        return min(d, 12 - d)
+
+    dists = [cof(centers[i], centers[i + 1]) for i in range(len(centers) - 1)]
+    return round(sum(dists) / len(dists), 3)
+
+
+def _structureness(score):
+    """Self-similarity structure score: bar the piece, describe each bar by its
+    duration-weighted pitch-class histogram, and average how strongly each bar
+    resembles its most similar OTHER bar (cosine). High = repeated/structured;
+    low = through-composed. None if < 2 bars of notes."""
+    import math
+
+    try:
+        measures = list(score.recurse().getElementsByClass("Measure"))
+    except Exception:
+        return None
+    chromas = []
+    for m in measures:
+        h = [0.0] * 12
+        for el in m.recurse().notes:
+            for p in el.pitches:
+                h[p.pitchClass] += float(el.quarterLength or 0.25)
+        if sum(h) > 0:
+            chromas.append(h)
+    if len(chromas) < 2:
+        return None
+
+    def cos(a, b):
+        dot = sum(x * y for x, y in zip(a, b))
+        na, nb = math.sqrt(sum(x * x for x in a)), math.sqrt(sum(y * y for y in b))
+        return dot / (na * nb) if na and nb else 0.0
+
+    best = [max((cos(chromas[i], chromas[j]) for j in range(len(chromas)) if j != i), default=0.0)
+            for i in range(len(chromas))]
+    return round(sum(best) / len(best), 4)
+
+
+def extract_features(piece: dict, batch_dir: Path) -> dict | None:
     with tempfile.TemporaryDirectory(prefix="llm_music_an_") as td:
         mus, score = _load(piece, batch_dir, Path(td))
     if mus is None or score is None:
         return None
+    return _compute_features(mus, score, piece)
+
+
+def _compute_features(mus, score, meta) -> dict | None:
+    import muspy
+    from music21 import tempo as m21tempo
 
     def safe(fn, *args):
         try:
@@ -155,6 +253,9 @@ def extract_features(piece: dict, batch_dir: Path) -> dict | None:
         return None if v != v else round(v, 4)  # NaN (e.g. 0/0 on a note-less piece) -> None
 
     consonance_rate, chord_tone_rate = _harmony_metrics(score)
+    pitch_interval, ioi, rhythm_entropy = _sequence_metrics(mus)
+    chord_tonal_distance = _chord_tonal_distance(score)
+    structureness = _structureness(score)
 
     # Degenerate pieces (empty / all-rest, e.g. a hollow generation) can't be
     # key-analyzed — record them with unknown tonality rather than dropping them.
@@ -176,7 +277,7 @@ def extract_features(piece: dict, batch_dir: Path) -> dict | None:
     # Declared (K: field) vs detected (Krumhansl–Schmuckler) key. Declared is the
     # model's stated intent — more reliable for "what key did it choose" — so it
     # drives the headline metrics; the gap between them is intent-vs-execution.
-    decl_tonic, decl_mode = _parse_declared_key(piece.get("abc", ""))
+    decl_tonic, decl_mode = _parse_declared_key(meta.get("abc", ""))
     best_mode = decl_mode or (mode if mode != "?" else None)
     mode_match = None if (not decl_mode or mode == "?") else int(decl_mode == mode)
 
@@ -194,26 +295,62 @@ def extract_features(piece: dict, batch_dir: Path) -> dict | None:
                 else "sad/depressed")
 
     return {
-        "model": piece["model"], "prompt": piece["prompt"],
-        "mode": piece.get("mode"), "title": piece.get("title", ""),
+        "model": meta["model"], "prompt": meta["prompt"],
+        "mode": meta.get("mode"), "title": meta.get("title", ""),
         "key_tonic": tonic, "key_mode": mode,
         "key_confidence": key_conf,
         "key_declared_tonic": decl_tonic or "", "key_declared_mode": decl_mode or "",
         "key_mode_best": best_mode or "", "mode_match": "" if mode_match is None else mode_match,
         "scale_consistency": safe(muspy.scale_consistency),
         "pitch_class_entropy": safe(muspy.pitch_class_entropy),
+        "pitch_entropy": safe(muspy.pitch_entropy),
         "pitch_in_scale_rate": safe(muspy.pitch_in_scale_rate),
         "consonance_rate": consonance_rate, "chord_tone_rate": chord_tone_rate,
+        "chord_tonal_distance": chord_tonal_distance, "structureness": structureness,
         "polyphony": safe(muspy.polyphony),
         "n_voices": len(mus.tracks),
         "empty_beat_rate": safe(muspy.empty_beat_rate),
         "groove_consistency": safe(muspy.groove_consistency, resolution),
+        "pitch_interval": pitch_interval, "ioi": ioi, "rhythm_entropy": rhythm_entropy,
         "n_pitches_used": safe(muspy.n_pitches_used),
         "pitch_range": safe(muspy.pitch_range),
         "tempo_bpm": round(bpm, 1), "n_notes": n_notes,
         "length_seconds": round(length_s, 1), "note_density": round(notes_per_beat, 2),
         "valence": valence, "arousal": arousal, "affect_quadrant": quadrant,
     }
+
+
+def bach_reference(n: int = 40) -> list[dict]:
+    """Compute the metric panel on Bach chorales (music21's built-in corpus) as a
+    human 'functional harmony / structure' reference — one feature row per chorale.
+    No download needed; the chorales ship with music21."""
+    import tempfile
+
+    import muspy
+    from music21.corpus import chorales
+
+    rows = []
+    try:
+        it = chorales.Iterator()
+    except Exception:
+        return rows
+    for score in it:
+        if len(rows) >= n:
+            break
+        try:
+            with tempfile.TemporaryDirectory() as td:
+                midi = Path(td) / "bach.mid"
+                score.write("midi", fp=str(midi))
+                mus = muspy.read_midi(str(midi))
+            feats = _compute_features(mus, score, {
+                "model": "Bach chorales", "prompt": "reference",
+                "mode": "reference", "title": "", "abc": "",
+            })
+            if feats:
+                rows.append(feats)
+        except Exception:
+            continue
+    return rows
 
 
 def analyze_batch(batch_dir: Path) -> list[dict]:
