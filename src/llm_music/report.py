@@ -36,6 +36,16 @@ KEY_MINOR = "#378ADD"
 KEY_MODEL_ORDER = ["gpt-5.5", "opus-4.8", "opus-4.8-thinking", "sonnet-4.6", "gpt-4.1",
                    "gemini-2.5-pro", "grok-4.3", "deepseek-v4-pro", "qwen3-max", "llama-4-maverick"]
 
+# Page-wide representation toggle: ABC (declared K:) vs code-gen (music21-detected).
+REPS = [("text", "ABC"), ("code", "code-gen"), ("all", "both")]
+
+
+def _rep_filter(rows, rep):
+    if rep == "all":
+        return rows
+    want_code = rep == "code"
+    return [r for r in rows if (r.get("mode") == "codegen") == want_code]
+
 # Summary-table columns: (summary-key, header label, hover definition, format).
 COLUMNS = [
     ("model", "model", "The language model that generated the pieces.", "text"),
@@ -362,7 +372,6 @@ KEY_WIDGET_TMPL = """
 <h2>Key choices <span class='sub'>(circle of fifths — major on C, relative minors on A)</span></h2>
 <p class="scope">Which keys each model chooses in free-form. Toggle representation — ABC uses the model's declared K:, code-gen uses music21's detected key. Click a model to filter. (Note the "default" models swing toward minor in code-gen, where there's no lazy K:C default.)</p>
 <div class="keyviz">
-  <div class="kv-row" style="margin-bottom:.6rem;"><span style="font-size:.85rem;color:#6b5d52;">representation</span><span id="kv-scope" class="kv-row"></span></div>
   <div id="kv-models" class="kv-row" style="margin-bottom:.5rem;"></div>
   <div id="kv-stat" class="kv-stat"></div>
   <div class="kv-legend"><span><span class="kv-sw" style="background:#BA7517;"></span>major (top label)</span><span><span class="kv-sw" style="background:#378ADD;"></span>minor (bottom label)</span><span style="margin-left:auto;">← flats · sharps →</span></div>
@@ -385,9 +394,8 @@ KEY_WIDGET_TMPL = """
   const minor=sel=>{const s=srcFor(sel);return minorKeys.map(t=>s[t]||0);};
   function updateStat(sel){const M=major(sel),N=minor(sel);const tot=M.reduce((a,b)=>a+b,0)+N.reduce((a,b)=>a+b,0)||1;const ms=N.reduce((a,b)=>a+b,0);let fav='',fmax=-1;M.forEach((v,i)=>{if(v>fmax){fmax=v;fav=majorPretty[i];}});N.forEach((v,i)=>{if(v>fmax){fmax=v;fav=minorPretty[i];}});document.getElementById('kv-stat').textContent=(sel==='All'?'all models':sel)+' \\u00b7 '+tot+' pieces \\u00b7 '+Math.round(100*ms/tot)+'% minor \\u00b7 favourite: '+fav+' ('+fmax+')';}
   function styleBtns(box,val,attr){Array.prototype.forEach.call(box.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',b.dataset[attr]===val);});}
-  function render(){chart.data.datasets[0].data=major(current);chart.data.datasets[1].data=minor(current);chart.update();updateStat(current);styleBtns(document.getElementById('kv-models'),current,'m');styleBtns(document.getElementById('kv-scope'),scope,'s');}
-  const sb=document.getElementById('kv-scope');
-  [['text','ABC'],['code','code-gen'],['all','both']].forEach(function(p){const b=document.createElement('button');b.className='kv-btn';b.textContent=p[1];b.dataset.s=p[0];b.onclick=function(){scope=p[0];render();};sb.appendChild(b);});
+  function render(){chart.data.datasets[0].data=major(current);chart.data.datasets[1].data=minor(current);chart.update();updateStat(current);styleBtns(document.getElementById('kv-models'),current,'m');}
+  window.__kvSetScope=function(rep){scope=rep;render();};
   const bw=document.getElementById('kv-models');
   ['All'].concat(MODELS).forEach(function(m){const b=document.createElement('button');b.className='kv-btn';b.textContent=m;b.dataset.m=m;b.onclick=function(){current=m;render();};bw.appendChild(b);});
   const countLabels={id:'countLabels',afterDatasetsDraw:function(ch){var x=ch.ctx;var total=0;ch.data.datasets.forEach(function(ds){ds.data.forEach(function(v){total+=v;});});if(!total)return;x.save();x.font='11px -apple-system,system-ui,sans-serif';x.fillStyle='#6b5d52';x.textAlign='center';ch.data.datasets.forEach(function(ds,di){var meta=ch.getDatasetMeta(di);meta.data.forEach(function(bar,i){var v=ds.data[i];if(v>0){var p=100*v/total;x.fillText(p<0.5?'<1%':Math.round(p)+'%',bar.x,bar.y-4);}});});x.restore();}};Chart.register(countLabels);
@@ -448,22 +456,31 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
 
     # Free-form-only defaults (the purest bias probe).
     ff = [r for r in rows if r["prompt"] == "free-form"]
-    ff_summary = summarize(ff) if ff else []
 
-    def table(summ, caption):
-        return f"<figure><figcaption>{caption}</figcaption>{_table_html(summ, COLUMNS)}</figure>"
+    # Each table is rendered once per representation (ABC / code-gen / both); the
+    # page-wide toggle shows one pane at a time. ABC and code-gen are different runs,
+    # so their n and metrics shouldn't be blended by default.
+    def table(base_rows, caption):
+        panes = "".join(
+            f"<div class='rep-pane' data-rep='{rep}'{'' if rep == 'text' else ' hidden'}>"
+            f"{_table_html(summarize(_rep_filter(base_rows, rep)), COLUMNS)}</div>"
+            for rep, _lbl in REPS)
+        return f"<figure><figcaption>{caption}</figcaption>{panes}</figure>"
 
     key_widget = _key_widget_html(dists) if dists and any(dists.values()) else ""
 
     rel_section = ""
     if reliability:
+        rel_panes = "".join(
+            f"<div class='rep-pane' data-rep='{rep}'{'' if rep == 'text' else ' hidden'}>"
+            f"{_table_html([x for x in reliability if rep == 'all' or (x.get('gen') == 'codegen') == (rep == 'code')], REL_COLUMNS)}</div>"
+            for rep, _lbl in REPS)
         rel_section = (
             "<h2>Reliability <span class='sub'>(format-success &amp; retries, per method)</span></h2>"
             "<figure><figcaption>How often each model produced a valid generation, and how many "
             "tries it took. Code-gen fails loudly (the interpreter rejects bad code → retry); ABC "
             "fails quietly (a lenient syntax gate passes, so 1st-try rates run high). A "
-            "ChatMusician-style format-success view.</figcaption>"
-            f"{_table_html(reliability, REL_COLUMNS)}</figure>"
+            f"ChatMusician-style format-success view.</figcaption>{rel_panes}</figure>"
         )
 
     chart_html = "".join(
@@ -472,9 +489,9 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
         for fn, cap in charts
     )
 
-    ff_section = (f"<h2>Free-form defaults <span class='sub'>(the purest bias probe — "
-                  f"{len(ff)} pieces)</span></h2>{table(ff_summary, 'What each model reaches for when asked only to express itself.')}"
-                  if ff_summary else "")
+    ff_section = (f"<h2>Free-form defaults <span class='sub'>(the purest bias probe)</span></h2>"
+                  f"{table(ff, 'What each model reaches for when asked only to express itself.')}"
+                  if ff else "")
 
     doc = f"""<!doctype html>
 <html lang="en"><head>
@@ -519,10 +536,20 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
      Metrics are standard symbolic-music descriptors (MusPy + music21); affect is a
      valence/arousal proxy (Russell circumplex). Generated by <code>llm-music report</code>.</p>
 
+  <div class="kv-row" style="margin:0 0 1.5rem; align-items:center; gap:10px; position:sticky; top:0; background:{BG}; padding:.5rem 0; z-index:5;">
+    <span style="font-size:.9rem; color:{INK}; font-weight:500;">Representation</span>
+    <span id="rep-toggle" class="kv-row">
+      <button class="kv-btn" data-rep="text" aria-pressed="true">ABC</button>
+      <button class="kv-btn" data-rep="code">code-gen</button>
+      <button class="kv-btn" data-rep="all">both</button>
+    </span>
+    <span style="font-size:.8rem; color:{MUTED};">ABC and code-gen are separate runs — "both" blends them.</span>
+  </div>
+
   {ff_section}
 
   <h2>All pieces, by model</h2>
-  {table(summary, 'Aggregated over every prompt and generation mode. "n" is how many pieces that model contributed.')}
+  {table(rows, 'Aggregated over every prompt for the selected representation. "n" is how many pieces that model contributed.')}
 
   {key_widget}
 
@@ -546,10 +573,23 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
     <a href="https://arxiv.org/abs/2404.06393">MuPT</a>).
   </p>
 
-  <p class="scope" style="margin-top:2rem">Note: with small n per model this is a
-     <b>snapshot</b>, not a settled result — the sampling run (many free-form pieces per
-     model) is what turns these into statistically-backed claims.</p>
+  <p class="scope" style="margin-top:2rem">Note: the charts below aggregate all
+     representations; the toggle above drives the tables and the key-choice chart.</p>
 </div>
+<script>
+(function(){{
+  function setRep(rep){{
+    var panes=document.querySelectorAll('.rep-pane');
+    for(var i=0;i<panes.length;i++) panes[i].hidden = panes[i].getAttribute('data-rep')!==rep;
+    var btns=document.querySelectorAll('#rep-toggle button');
+    for(var j=0;j<btns.length;j++) btns[j].setAttribute('aria-pressed', btns[j].getAttribute('data-rep')===rep);
+    if(window.__kvSetScope) window.__kvSetScope(rep);
+  }}
+  var btns=document.querySelectorAll('#rep-toggle button');
+  for(var k=0;k<btns.length;k++)(function(b){{ b.onclick=function(){{ setRep(b.getAttribute('data-rep')); }}; }})(btns[k]);
+  setRep('text');
+}})();
+</script>
 </body></html>"""
     out_path.write_text(doc, encoding="utf-8")
 
