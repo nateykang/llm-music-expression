@@ -26,6 +26,16 @@ ACCENT = "#7a5a3a"
 PALETTE = ["#7a5a3a", "#b5651d", "#3a6b5a", "#8a3a4a", "#4a5a7a",
            "#9a7a3a", "#5a7a4a", "#7a4a6a", "#3a7a7a", "#aa5a3a"]
 
+# Circle of fifths: major keys centered on C, relative minors centered on A,
+# aligned column-wise (each position is a relative pair sharing a key signature).
+MAJOR_FIFTHS = ["Db", "Ab", "Eb", "Bb", "F", "C", "G", "D", "A", "E", "B", "F#"]
+MINOR_FIFTHS = ["Bbm", "Fm", "Cm", "Gm", "Dm", "Am", "Em", "Bm", "F#m", "C#m", "G#m", "D#m"]
+KEY_MAJOR = "#BA7517"
+KEY_MINOR = "#378ADD"
+# Preferred model order for the key widget (others appended as found).
+KEY_MODEL_ORDER = ["gpt-5.5", "opus-4.8", "opus-4.8-thinking", "sonnet-4.6", "gpt-4.1",
+                   "gemini-2.5-pro", "grok-4.3", "deepseek-v4-pro", "qwen3-max", "llama-4-maverick"]
+
 # Summary-table columns: (summary-key, header label, hover definition, format).
 COLUMNS = [
     ("model", "model", "The language model that generated the pieces.", "text"),
@@ -275,6 +285,119 @@ def make_charts(rows: list[dict], out_dir: Path) -> list[tuple[str, str]]:
     return charts
 
 
+# --- key choices (circle of fifths) -------------------------------------------
+
+def key_distributions(rows, min_n=10):
+    """Per-model declared-key counts → (free_form, all_prompts) dicts {model: {key: n}}."""
+    from collections import Counter
+
+    ff, allp = {}, {}
+    for r in rows:
+        tonic = (r.get("key_declared_tonic") or r.get("key_tonic") or "").replace("-", "b")
+        mode = r.get("key_mode_best") or r.get("key_mode")
+        if not tonic or mode in ("", "?"):
+            continue
+        lab = tonic if mode == "major" else tonic + "m"
+        allp.setdefault(r["model"], Counter())[lab] += 1
+        if r["prompt"] == "free-form":
+            ff.setdefault(r["model"], Counter())[lab] += 1
+    keep = lambda d: {m: dict(c) for m, c in d.items() if sum(c.values()) >= min_n}
+    return keep(ff), keep(allp)
+
+
+def make_key_chart(ff, out_dir):
+    """Static circle-of-fifths key chart (free-form, all models) for PDF/print."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    out_dir.mkdir(parents=True, exist_ok=True)
+    agg = {}
+    for c in ff.values():
+        for k, v in c.items():
+            agg[k] = agg.get(k, 0) + v
+    maj = [agg.get(k, 0) for k in MAJOR_FIFTHS]
+    minr = [agg.get(k, 0) for k in MINOR_FIFTHS]
+    xs = list(range(len(MAJOR_FIFTHS)))
+    f, ax = plt.subplots(figsize=(8.4, 4.2), dpi=130)
+    f.patch.set_facecolor(BG)
+    _style_ax(ax)
+    ax.bar([x - 0.2 for x in xs], maj, 0.4, color=KEY_MAJOR, label="major")
+    ax.bar([x + 0.2 for x in xs], minr, 0.4, color=KEY_MINOR, label="minor")
+    ax.set_xticks(xs)
+    ax.set_xticklabels([f"{k}\n{mk}" for k, mk in zip(MAJOR_FIFTHS, MINOR_FIFTHS)], fontsize=8)
+    ax.set_ylabel("pieces")
+    ax.set_title("Key choice on the circle of fifths (free-form, all models)")
+    ax.legend(frameon=False, fontsize=8, loc="upper right")
+    f.tight_layout()
+    f.savefig(out_dir / "key_circle.png", facecolor=BG)
+    plt.close(f)
+    return ("key_circle.png",
+            "Major keys (amber) along the circle of fifths centered on C; relative minors (blue) "
+            "centered on A and column-aligned. Free-form, all models — usage concentrates on C major / D minor.")
+
+
+KEY_WIDGET_CSS = """
+  .keyviz { margin: 1rem 0 1.5rem; }
+  .kv-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .kv-btn { font-size: 13px; padding: 5px 10px; border: 1px solid #e0d5c8; background: #fff;
+            color: #2b2420; border-radius: 6px; cursor: pointer; }
+  .kv-btn:hover { border-color: #c9b69f; }
+  .kv-btn[aria-pressed=true] { background: #7a5a3a; color: #fff; border-color: #7a5a3a; }
+  .kv-stat { font-size: .9rem; color: #6b5d52; margin: .6rem 0; min-height: 20px; }
+  .kv-legend { display: flex; gap: 16px; font-size: .8rem; color: #6b5d52; margin-bottom: 8px; }
+  .kv-sw { width: 11px; height: 11px; border-radius: 2px; display: inline-block; vertical-align: -1px; margin-right: 5px; }
+  .kv-chartwrap { position: relative; width: 100%; height: 320px; }
+"""
+
+KEY_WIDGET_TMPL = """
+<h2>Key choices <span class='sub'>(circle of fifths — major on C, relative minors on A)</span></h2>
+<p class="scope">Which keys each model actually chooses (from the declared K: field). Click a model; toggle free-form vs all prompts.</p>
+<div class="keyviz">
+  <div class="kv-row" style="margin-bottom:.6rem;"><span style="font-size:.85rem;color:#6b5d52;">showing</span><span id="kv-scope" class="kv-row"></span></div>
+  <div id="kv-models" class="kv-row" style="margin-bottom:.5rem;"></div>
+  <div id="kv-stat" class="kv-stat"></div>
+  <div class="kv-legend"><span><span class="kv-sw" style="background:#BA7517;"></span>major (top label)</span><span><span class="kv-sw" style="background:#378ADD;"></span>minor (bottom label)</span><span style="margin-left:auto;">← flats · sharps →</span></div>
+  <div class="kv-chartwrap"><canvas id="kv-chart" role="img" aria-label="Key choices along the circle of fifths, major in amber and minor in blue"></canvas></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+(function(){
+  const FF=__FF__, ALL=__ALL__, MODELS=__MODELS__;
+  const majorKeys=["Db","Ab","Eb","Bb","F","C","G","D","A","E","B","F#"];
+  const minorKeys=["Bbm","Fm","Cm","Gm","Dm","Am","Em","Bm","F#m","C#m","G#m","D#m"];
+  const pp=t=>t.replace('b','\\u266d').replace('#','\\u266f');
+  const majorPretty=majorKeys.map(pp);
+  const minorPretty=minorKeys.map(t=>pp(t.slice(0,-1))+'m');
+  const xlabels=majorPretty.map((mj,i)=>[mj,minorPretty[i]]);
+  let scope='free', current='All';
+  const base=()=>scope==='free'?FF:ALL;
+  function srcFor(sel){const D=base();if(sel!=='All')return D[sel]||{};const t={};for(const m in D)for(const k in D[m])t[k]=(t[k]||0)+D[m][k];return t;}
+  const major=sel=>{const s=srcFor(sel);return majorKeys.map(t=>s[t]||0);};
+  const minor=sel=>{const s=srcFor(sel);return minorKeys.map(t=>s[t]||0);};
+  function updateStat(sel){const M=major(sel),N=minor(sel);const tot=M.reduce((a,b)=>a+b,0)+N.reduce((a,b)=>a+b,0)||1;const ms=N.reduce((a,b)=>a+b,0);let fav='',fmax=-1;M.forEach((v,i)=>{if(v>fmax){fmax=v;fav=majorPretty[i];}});N.forEach((v,i)=>{if(v>fmax){fmax=v;fav=minorPretty[i];}});document.getElementById('kv-stat').textContent=(sel==='All'?'all models':sel)+' \\u00b7 '+tot+' pieces \\u00b7 '+Math.round(100*ms/tot)+'% minor \\u00b7 favourite: '+fav+' ('+fmax+')';}
+  function styleBtns(box,val,attr){Array.prototype.forEach.call(box.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',b.dataset[attr]===val);});}
+  function render(){chart.data.datasets[0].data=major(current);chart.data.datasets[1].data=minor(current);chart.update();updateStat(current);styleBtns(document.getElementById('kv-models'),current,'m');styleBtns(document.getElementById('kv-scope'),scope,'s');}
+  const sb=document.getElementById('kv-scope');
+  [['free','free-form'],['all','all prompts']].forEach(function(p){const b=document.createElement('button');b.className='kv-btn';b.textContent=p[1];b.dataset.s=p[0];b.onclick=function(){scope=p[0];render();};sb.appendChild(b);});
+  const bw=document.getElementById('kv-models');
+  ['All'].concat(MODELS).forEach(function(m){const b=document.createElement('button');b.className='kv-btn';b.textContent=m;b.dataset.m=m;b.onclick=function(){current=m;render();};bw.appendChild(b);});
+  const chart=new Chart(document.getElementById('kv-chart'),{type:'bar',data:{labels:xlabels,datasets:[{label:'major',data:major('All'),backgroundColor:'#BA7517',borderWidth:0,borderRadius:2},{label:'minor',data:minor('All'),backgroundColor:'#378ADD',borderWidth:0,borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},plugins:{legend:{display:false},tooltip:{callbacks:{title:function(items){const i=items[0].dataIndex;return items[0].dataset.label==='minor'?minorPretty[i]+' minor':majorPretty[i]+' major';},label:function(ctx){const M=major(current),N=minor(current);const tot=M.reduce((a,b)=>a+b,0)+N.reduce((a,b)=>a+b,0)||1;const v=ctx.parsed.y;return v+' piece'+(v===1?'':'s')+' \\u00b7 '+Math.round(100*v/tot)+'%';}}}},scales:{x:{grid:{display:false},ticks:{color:'#6b5d52',font:{size:12},autoSkip:false}},y:{beginAtZero:true,ticks:{precision:0,color:'#6b5d52'},grid:{color:'rgba(0,0,0,0.08)'}}}}});
+  render();
+})();
+</script>
+"""
+
+
+def _key_widget_html(ff, allp):
+    present = [m for m in KEY_MODEL_ORDER if m in allp or m in ff]
+    present += [m for m in sorted(set(allp) | set(ff)) if m not in present]
+    return (KEY_WIDGET_TMPL
+            .replace("__FF__", json.dumps(ff))
+            .replace("__ALL__", json.dumps(allp))
+            .replace("__MODELS__", json.dumps(present)))
+
+
 # --- reliability (from manifests, not features.csv) ---------------------------
 
 def load_reliability(data_dir: Path) -> list[dict]:
@@ -305,7 +428,8 @@ def load_reliability(data_dir: Path) -> list[dict]:
 
 
 def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
-                reliability: list[dict] | None = None) -> None:
+                reliability: list[dict] | None = None,
+                key_ff: dict | None = None, key_all: dict | None = None) -> None:
     summary = summarize(rows)
     n_pieces = len(rows)
     n_models = len({r["model"] for r in rows})
@@ -317,6 +441,8 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
 
     def table(summ, caption):
         return f"<figure><figcaption>{caption}</figcaption>{_table_html(summ, COLUMNS)}</figure>"
+
+    key_widget = _key_widget_html(key_ff, key_all) if (key_ff or key_all) else ""
 
     rel_section = ""
     if reliability:
@@ -368,6 +494,7 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
   .chart img {{ width: 100%; border: 1px solid #e7ddd2; border-radius: 8px; }}
   @media (max-width: 760px) {{ .charts {{ grid-template-columns: 1fr; }} }}
   nav.top a {{ color: {ACCENT}; text-decoration: none; font-weight: 600; }}
+{KEY_WIDGET_CSS}
 </style>
 </head><body>
 <nav class="tabs">
@@ -385,6 +512,8 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
 
   <h2>All pieces, by model</h2>
   {table(summary, 'Aggregated over every prompt and generation mode. "n" is how many pieces that model contributed.')}
+
+  {key_widget}
 
   {rel_section}
 

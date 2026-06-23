@@ -135,17 +135,21 @@ def cmd_analyze(args) -> int:
 
 
 def cmd_report(args) -> int:
-    from .report import load_features, load_reliability, make_charts, render_html
+    from .report import (key_distributions, load_features, load_reliability,
+                         make_charts, make_key_chart, render_html)
 
     data_dir = Path(args.data_dir)
     rows = load_features(data_dir)
     if not rows:
         print(f"No features.csv found under {data_dir}. Run `llm-music analyze <batch>` first.")
         return 1
-    charts = make_charts(rows, data_dir.parent / "analysis")
+    analysis = data_dir.parent / "analysis"
+    charts = make_charts(rows, analysis)
+    ff, allp = key_distributions(rows)
+    charts.append(make_key_chart(ff, analysis))
     reliability = load_reliability(data_dir)
     out = data_dir.parent / "results.html"
-    render_html(rows, charts, out, reliability)
+    render_html(rows, charts, out, reliability, ff, allp)
     print(f"Wrote dashboard → {out}  ({len(rows)} pieces, {len(charts)} charts)")
     return 0
 
