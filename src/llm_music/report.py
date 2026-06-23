@@ -328,8 +328,10 @@ def make_key_chart(ff, out_dir):
     _style_ax(ax)
     b1 = ax.bar([x - 0.2 for x in xs], maj, 0.4, color=KEY_MAJOR, label="major")
     b2 = ax.bar([x + 0.2 for x in xs], minr, 0.4, color=KEY_MINOR, label="minor")
-    ax.bar_label(b1, labels=[str(v) if v else "" for v in maj], padding=2, fontsize=7, color=MUTED)
-    ax.bar_label(b2, labels=[str(v) if v else "" for v in minr], padding=2, fontsize=7, color=MUTED)
+    total = sum(maj) + sum(minr) or 1
+    pct = lambda v: ("" if not v else "<1%" if 100 * v / total < 0.5 else f"{round(100 * v / total)}%")
+    ax.bar_label(b1, labels=[pct(v) for v in maj], padding=2, fontsize=7, color=MUTED)
+    ax.bar_label(b2, labels=[pct(v) for v in minr], padding=2, fontsize=7, color=MUTED)
     ax.set_xticks(xs)
     ax.set_xticklabels([f"{k}\n{mk}" for k, mk in zip(MAJOR_FIFTHS, MINOR_FIFTHS)], fontsize=8)
     ax.set_ylabel("pieces")
@@ -388,7 +390,7 @@ KEY_WIDGET_TMPL = """
   [['text','ABC'],['code','code-gen'],['all','both']].forEach(function(p){const b=document.createElement('button');b.className='kv-btn';b.textContent=p[1];b.dataset.s=p[0];b.onclick=function(){scope=p[0];render();};sb.appendChild(b);});
   const bw=document.getElementById('kv-models');
   ['All'].concat(MODELS).forEach(function(m){const b=document.createElement('button');b.className='kv-btn';b.textContent=m;b.dataset.m=m;b.onclick=function(){current=m;render();};bw.appendChild(b);});
-  const countLabels={id:'countLabels',afterDatasetsDraw:function(ch){var x=ch.ctx;x.save();x.font='11px -apple-system,system-ui,sans-serif';x.fillStyle='#6b5d52';x.textAlign='center';ch.data.datasets.forEach(function(ds,di){var meta=ch.getDatasetMeta(di);meta.data.forEach(function(bar,i){var v=ds.data[i];if(v>0)x.fillText(v,bar.x,bar.y-4);});});x.restore();}};Chart.register(countLabels);
+  const countLabels={id:'countLabels',afterDatasetsDraw:function(ch){var x=ch.ctx;var total=0;ch.data.datasets.forEach(function(ds){ds.data.forEach(function(v){total+=v;});});if(!total)return;x.save();x.font='11px -apple-system,system-ui,sans-serif';x.fillStyle='#6b5d52';x.textAlign='center';ch.data.datasets.forEach(function(ds,di){var meta=ch.getDatasetMeta(di);meta.data.forEach(function(bar,i){var v=ds.data[i];if(v>0){var p=100*v/total;x.fillText(p<0.5?'<1%':Math.round(p)+'%',bar.x,bar.y-4);}});});x.restore();}};Chart.register(countLabels);
   const chart=new Chart(document.getElementById('kv-chart'),{type:'bar',data:{labels:xlabels,datasets:[{label:'major',data:major('All'),backgroundColor:'#BA7517',borderWidth:0,borderRadius:2},{label:'minor',data:minor('All'),backgroundColor:'#378ADD',borderWidth:0,borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},plugins:{legend:{display:false},tooltip:{callbacks:{title:function(items){const i=items[0].dataIndex;return items[0].dataset.label==='minor'?minorPretty[i]+' minor':majorPretty[i]+' major';},label:function(ctx){const M=major(current),N=minor(current);const tot=M.reduce((a,b)=>a+b,0)+N.reduce((a,b)=>a+b,0)||1;const v=ctx.parsed.y;return v+' piece'+(v===1?'':'s')+' \\u00b7 '+Math.round(100*v/tot)+'%';}}}},scales:{x:{grid:{display:false},ticks:{color:'#6b5d52',font:{size:12},autoSkip:false}},y:{beginAtZero:true,ticks:{precision:0,color:'#6b5d52'},grid:{color:'rgba(0,0,0,0.08)'}}}}});
   render();
 })();
