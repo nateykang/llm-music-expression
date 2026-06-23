@@ -169,6 +169,19 @@ def cmd_report(args) -> int:
     return 0
 
 
+def cmd_judge(args) -> int:
+    from .judge import judge_corpus
+
+    judges = _split(args.judges)
+    if not judges:
+        print("error: --judges must be non-empty", file=sys.stderr)
+        return 2
+    judge_corpus(Path(args.data_dir), judges, prompt=args.prompt or None,
+                 limit=args.limit, workers=args.workers,
+                 exclude_self=not args.no_exclude_self)
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="llm-music", description=__doc__)
     sub = p.add_subparsers(dest="command", required=True)
@@ -201,6 +214,18 @@ def build_parser() -> argparse.ArgumentParser:
     pa.add_argument("--summary-prompt", default="free-form",
                     help="prompt to base the per-model bias readout on")
     pa.set_defaults(func=cmd_analyze)
+
+    pj = sub.add_parser("judge", help="run the LLM-judge panel over the corpus → judge.csv")
+    pj.add_argument("--judges", default="gpt-5.5,gemini-2.5-pro,opus-4.8",
+                    help="comma-separated panelist model ids (frontier; diverse)")
+    pj.add_argument("--prompt", default="free-form",
+                    help="restrict to one prompt (default free-form; '' for all)")
+    pj.add_argument("--limit", type=int, default=None, help="cap number of pieces (for a pilot)")
+    pj.add_argument("--workers", type=int, default=6, help="concurrent judge calls")
+    pj.add_argument("--no-exclude-self", action="store_true",
+                    help="let a model judge its own pieces (default: exclude, to defuse self-bias)")
+    pj.add_argument("--data-dir", default="docs/data")
+    pj.set_defaults(func=cmd_judge)
 
     prp = sub.add_parser("report", help="build the analysis dashboard (results.html + charts)")
     prp.add_argument("--data-dir", default="docs/data",
