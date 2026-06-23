@@ -178,7 +178,8 @@ def cmd_judge(args) -> int:
         return 2
     judge_corpus(Path(args.data_dir), judges, prompt=args.prompt or None,
                  limit=args.limit, workers=args.workers,
-                 exclude_self=not args.no_exclude_self)
+                 exclude_self=not args.no_exclude_self,
+                 include_note=args.include_note)
     return 0
 
 
@@ -224,6 +225,9 @@ def build_parser() -> argparse.ArgumentParser:
     pj.add_argument("--workers", type=int, default=6, help="concurrent judge calls")
     pj.add_argument("--no-exclude-self", action="store_true",
                     help="let a model judge its own pieces (default: exclude, to defuse self-bias)")
+    pj.add_argument("--include-note", action="store_true",
+                    help="show the composer's note + add intent dimension (noted condition; "
+                         "default is blind music-only — run both to test for text bias)")
     pj.add_argument("--data-dir", default="docs/data")
     pj.set_defaults(func=cmd_judge)
 
