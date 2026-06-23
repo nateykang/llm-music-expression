@@ -116,14 +116,19 @@ def cmd_analyze(args) -> int:
     for r in ff:
         by_model.setdefault(r["model"], []).append(r)
     for model, rs in sorted(by_model.items()):
-        minor = sum(r["key_mode"] == "minor" for r in rs) / len(rs)
-        keys = Counter(f"{r['key_tonic']} {r['key_mode']}" for r in rs).most_common(2)
+        modes = [r["key_mode_best"] for r in rs if r.get("key_mode_best")]
+        minor = (sum(m == "minor" for m in modes) / len(modes)) if modes else 0
+        matches = [r["mode_match"] for r in rs if r.get("mode_match") not in (None, "")]
+        match = (sum(int(x) for x in matches) / len(matches)) if matches else None
+        keys = Counter(f"{r['key_declared_tonic'] or r['key_tonic']} {m}"
+                       for r, m in zip(rs, (r.get("key_mode_best") or "?" for r in rs))).most_common(2)
+        scales = [r["scale_consistency"] for r in rs if r["scale_consistency"] is not None]
         print(
-            f"  {model:14} n={len(rs):2d}  minor={minor:.0%}  "
+            f"  {model:16} n={len(rs):2d}  minor={minor:.0%}  "
+            f"mode_match={'—' if match is None else f'{match:.0%}'}  "
             f"valence={mean(r['valence'] for r in rs):+.2f}  "
-            f"arousal={mean(r['arousal'] for r in rs):.2f}  "
             f"tempo={mean(r['tempo_bpm'] for r in rs):3.0f}  "
-            f"scale_consist={mean(r['scale_consistency'] for r in rs if r['scale_consistency'] is not None):.2f}  "
+            f"scale_consist={(sum(scales)/len(scales) if scales else 0):.2f}  "
             f"top_keys={keys}"
         )
     return 0

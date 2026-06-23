@@ -30,9 +30,13 @@ PALETTE = ["#7a5a3a", "#b5651d", "#3a6b5a", "#8a3a4a", "#4a5a7a",
 COLUMNS = [
     ("model", "model", "The language model that generated the pieces.", "text"),
     ("n", "n", "Number of pieces this row aggregates.", "int"),
-    ("minor_frac", "minor", "Share of pieces in a minor key. Key is detected by music21's "
-        "Krumhansl–Schmuckler algorithm: it correlates the piece's pitch-class histogram "
-        "against profiles for all 24 major/minor keys and takes the best fit.", "pct"),
+    ("minor_frac", "minor", "Share of pieces in a minor key. Mode comes from the model's "
+        "DECLARED key (the ABC K: field — its stated intent) where available, falling back to "
+        "music21's Krumhansl–Schmuckler detection for code-gen pieces (which have no K:).", "pct"),
+    ("mode_match", "mode match", "Intent-vs-execution: how often the actual notes (music21 "
+        "detection) match the major/minor mode the model DECLARED in K:. 100% = it plays what it "
+        "writes; lower = it declares one mode but the notes lean the other way. Blank for code-gen "
+        "(no K: field to compare against).", "pct"),
     ("valence", "valence", "How positive/bright vs negative/dark the mood sounds (−1 to +1). A "
         "deliberately simple proxy: major key → +1, minor key → −1 (the strongest single cue for "
         "musical 'happiness'). Concept from the Russell circumplex; the mapping is ours, not a "
@@ -118,7 +122,7 @@ def load_features(data_dir: Path) -> list[dict]:
                 for k in ("valence", "arousal", "tempo_bpm", "scale_consistency",
                           "pitch_class_entropy", "note_density", "length_seconds",
                           "pitch_range", "polyphony", "n_voices",
-                          "consonance_rate", "chord_tone_rate"):
+                          "consonance_rate", "chord_tone_rate", "mode_match"):
                     r[k] = _f(r.get(k))
                 rows.append(r)
     return rows
@@ -142,9 +146,13 @@ def summarize(rows: list[dict]) -> list[dict]:
     out = []
     for model in _model_order(rows):
         rs = [r for r in rows if r["model"] == model]
-        minor = sum(r.get("key_mode") == "minor" for r in rs) / len(rs)
+        # minor% from the declared-preferred mode (K: field where available).
+        modes = [r.get("key_mode_best") for r in rs if r.get("key_mode_best")]
+        minor = (sum(m == "minor" for m in modes) / len(modes)) if modes else None
+        matches = [r["mode_match"] for r in rs if r.get("mode_match") is not None]
         out.append({
             "model": model, "n": len(rs), "minor_frac": minor,
+            "mode_match": (mean(matches) if matches else None),
             "valence": _agg(rs, "valence")[0], "arousal": _agg(rs, "arousal")[0],
             "tempo": _agg(rs, "tempo_bpm")[0],
             "scale_consistency": _agg(rs, "scale_consistency")[0],

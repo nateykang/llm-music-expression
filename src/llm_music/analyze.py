@@ -29,6 +29,7 @@ warnings.filterwarnings("ignore")
 FIELDS = [
     "model", "prompt", "mode", "title",
     "key_tonic", "key_mode", "key_confidence",
+    "key_declared_tonic", "key_declared_mode", "key_mode_best", "mode_match",
     "scale_consistency", "pitch_class_entropy", "pitch_in_scale_rate",
     "consonance_rate", "chord_tone_rate",
     "polyphony", "n_voices", "empty_beat_rate", "groove_consistency",
@@ -66,6 +67,32 @@ def _load(piece: dict, batch_dir: Path, work_dir: Path):
         return muspy.read_midi(str(midi)), score
     except Exception:
         return None, None
+
+
+def _parse_declared_key(abc: str):
+    """Parse the model's DECLARED key from the ABC K: header → (tonic, 'major'/'minor').
+
+    This is the model's stated intent (e.g. K:Dmin), unambiguous and free of the
+    detection noise that Krumhansl–Schmuckler introduces. Modes are classified by
+    their third: Ionian/Lydian/Mixolydian → major; Aeolian/Dorian/Phrygian/Locrian
+    and bare 'm'/'min' → minor. Returns (None, None) if there's no usable K: field.
+    """
+    import re
+
+    if not abc:
+        return None, None
+    m = re.search(r"(?mi)^[ \t]*K:[ \t]*([A-Ga-g])([#b]?)[ \t]*([A-Za-z]*)", abc)
+    if not m:
+        return None, None
+    tonic = m.group(1).upper() + {"#": "#", "b": "-"}.get(m.group(2), "")
+    s = m.group(3).lower()
+    if not s or s.startswith(("maj", "ion", "lyd", "mix")):
+        mode = "major"
+    elif s.startswith(("min", "aeo", "dor", "phr", "loc")) or s[0] == "m":
+        mode = "minor"
+    else:
+        mode = "major"
+    return tonic, mode
 
 
 def _harmony_metrics(score):
@@ -146,10 +173,17 @@ def extract_features(piece: dict, batch_dir: Path) -> dict | None:
 
     resolution = (mus.resolution or 480) * 4  # assume 4 beats/measure for grooving
 
+    # Declared (K: field) vs detected (Krumhansl–Schmuckler) key. Declared is the
+    # model's stated intent — more reliable for "what key did it choose" — so it
+    # drives the headline metrics; the gap between them is intent-vs-execution.
+    decl_tonic, decl_mode = _parse_declared_key(piece.get("abc", ""))
+    best_mode = decl_mode or (mode if mode != "?" else None)
+    mode_match = None if (not decl_mode or mode == "?") else int(decl_mode == mode)
+
     # affect proxy: mode -> valence; tempo + rhythmic density -> arousal (Russell
     # circumplex). Density is notes-PER-BEAT (not per-second) so it stays independent
     # of tempo — otherwise the two arousal terms would both encode speed.
-    valence = 0 if mode == "?" else (1 if mode == "major" else -1)
+    valence = 0 if best_mode in (None, "?") else (1 if best_mode == "major" else -1)
     tempo_norm = max(0.0, min(1.0, (bpm - 50) / (160 - 50)))
     dens_norm = max(0.0, min(1.0, notes_per_beat / 4.0))
     arousal = round(0.6 * tempo_norm + 0.4 * dens_norm, 3)
@@ -164,6 +198,8 @@ def extract_features(piece: dict, batch_dir: Path) -> dict | None:
         "mode": piece.get("mode"), "title": piece.get("title", ""),
         "key_tonic": tonic, "key_mode": mode,
         "key_confidence": key_conf,
+        "key_declared_tonic": decl_tonic or "", "key_declared_mode": decl_mode or "",
+        "key_mode_best": best_mode or "", "mode_match": "" if mode_match is None else mode_match,
         "scale_consistency": safe(muspy.scale_consistency),
         "pitch_class_entropy": safe(muspy.pitch_class_entropy),
         "pitch_in_scale_rate": safe(muspy.pitch_in_scale_rate),
