@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -46,6 +47,13 @@ def _is_retryable(exc: Exception) -> bool:
     key, malformed request. Retrying these just burns attempts (e.g. an
     unverified org requesting `o3` 400s five times in a row).
     """
+    # Transient markers that can show up without a clean 5xx status — notably
+    # Anthropic's "overloaded" (HTTP 529, often surfaced via the streaming path).
+    msg = str(exc).lower()
+    if any(k in msg for k in ("overload", "rate limit", "rate_limit", "ratelimit",
+                              "timeout", "timed out", "temporarily", "try again",
+                              "502", "503", "504", "529", "connection")):
+        return True
     status = getattr(exc, "status_code", None) or getattr(exc, "status", None)
     if status is None:
         return True  # no HTTP status -> likely a network/transport hiccup
@@ -118,6 +126,7 @@ def generate_piece(
             result.errors.append(prior_error)
             if not _is_retryable(e):
                 break  # e.g. 400 unknown/unverified model, bad key — retrying won't help
+            time.sleep(min(2 ** attempt, 20))  # exponential backoff (esp. for overload)
             continue
 
         outcome = mode_mod.generate(response, work_dir)
