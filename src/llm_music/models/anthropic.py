@@ -25,7 +25,9 @@ class AnthropicClient:
                 )
             from anthropic import Anthropic
 
-            self._client = Anthropic()
+            # Bound each request so a hung call can't pin a worker thread forever
+            # (a stalled run got stuck with all workers blocked for 38 min, no timeout).
+            self._client = Anthropic(timeout=120.0, max_retries=2)
         return self._client
 
     def complete(self, system: str, user: str) -> str:

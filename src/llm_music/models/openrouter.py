@@ -28,7 +28,8 @@ class OpenRouterClient:
                 )
             from openai import OpenAI
 
-            self._client = OpenAI(base_url=_BASE_URL, api_key=key)
+            # Bound each request so a hung call can't pin a worker thread forever.
+            self._client = OpenAI(base_url=_BASE_URL, api_key=key, timeout=120.0, max_retries=2)
         return self._client
 
     def complete(self, system: str, user: str) -> str:
