@@ -110,7 +110,7 @@ def _strip_abc_text(abc: str) -> str:
             continue
         if s.startswith("%") and not s.startswith("%%"):  # comment line
             continue
-        if re.match(r"^[TCWNOSGHBDFZ]:", s):  # text info fields (keep X K M L Q V P R)
+        if re.match(r"^(?:[TCWNOSGHBDFZ]|w):", s):  # text fields + w: lyrics (keep X K M L Q V P R)
             continue
         if "%" in line and "%%" not in line:  # inline comment
             line = line[:line.index("%")].rstrip()
