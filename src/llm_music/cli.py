@@ -183,6 +183,16 @@ def cmd_judge(args) -> int:
     return 0
 
 
+def cmd_judge_report(args) -> int:
+    from .judge_report import render_judge_html
+
+    data_dir = Path(args.data_dir)
+    analysis = data_dir.parent / "analysis"
+    out = render_judge_html(analysis, data_dir, data_dir.parent / "judge.html")
+    print(f"Wrote judge page → {out}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="llm-music", description=__doc__)
     sub = p.add_subparsers(dest="command", required=True)
@@ -232,6 +242,10 @@ def build_parser() -> argparse.ArgumentParser:
                     help="output basename under analysis/ (default: judge / judge_noted)")
     pj.add_argument("--data-dir", default="docs/data")
     pj.set_defaults(func=cmd_judge)
+
+    pjr = sub.add_parser("judge-report", help="build the LLM-judge analysis page (judge.html)")
+    pjr.add_argument("--data-dir", default="docs/data")
+    pjr.set_defaults(func=cmd_judge_report)
 
     prp = sub.add_parser("report", help="build the analysis dashboard (results.html + charts)")
     prp.add_argument("--data-dir", default="docs/data",

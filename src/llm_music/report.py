@@ -543,6 +543,7 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
 <nav class="tabs">
   <a href="index.html">Browse outputs</a>
   <a href="results.html" class="active">Results &amp; analysis</a>
+  <a href="judge.html">LLM judge</a>
 </nav>
 <div class="wrap">
   <h1>What do LLMs default to, musically?</h1>
