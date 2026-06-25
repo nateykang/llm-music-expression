@@ -255,14 +255,9 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
                     "models over-credit themselves exactly where they're weakest (grok→harmony, llama→emotion); "
                     "strong models are calibrated. Small n per model — read patterns, not single cells.</p>"
                     + _per_trait(raw))
-    if blind and noted:
-        tb_html, npaired = _text_bias(blind, noted)
-        secs.append("<h2>Text bias <span class='sub'>(does the written note sway the judge?)</span></h2>"
-                    f"<p class='scope'>Same pieces, same panel, but the composer's note is shown. Δ over "
-                    f"{npaired} paired pieces — the bias is modest (~+0.17 overall), concentrated in the "
-                    f"subjective dimensions (creativity, emotion, naturalness) and near-zero on the objective "
-                    f"ones (harmony, structure): you can talk the judge into hearing more creativity, not "
-                    f"better harmony.</p>" + tb_html)
+    # Text bias is only meaningful against a GOAL prompt (does the brief make the
+    # judge over-credit adherence) — not free-form. _text_bias() is kept for that
+    # steering-phase comparison; intentionally not shown on the free-form page.
 
     body = "\n".join(secs) or "<p>No judge results found. Run <code>llm-music judge</code> first.</p>"
     doc = f"""<!doctype html>
