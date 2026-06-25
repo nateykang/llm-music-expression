@@ -27,3 +27,6 @@ docs/data/20260623_105811__models_11_prompts_1/scores/
 # validation answer key + returned ratings stay local (blind integrity)
 docs/validation/sample_key.json
 docs/validation/human_ratings*.json
+
+# judge run checkpoints (transient, cleared on completion)
+docs/analysis/*_ckpt.json
