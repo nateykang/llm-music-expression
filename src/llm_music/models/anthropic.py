@@ -32,7 +32,7 @@ class AnthropicClient:
             self._client = Anthropic(timeout=600.0, max_retries=2)
         return self._client
 
-    def complete(self, system: str, user: str) -> str:
+    def complete(self, system: str, user: str, json_mode: bool = False) -> str:  # noqa: ARG002 (opus returns clean JSON)
         client = self._ensure_client()
         kwargs = dict(
             model=self.model_id,

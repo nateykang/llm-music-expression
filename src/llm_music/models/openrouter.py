@@ -34,9 +34,9 @@ class OpenRouterClient:
             self._client = OpenAI(base_url=_BASE_URL, api_key=key, timeout=600.0, max_retries=2)
         return self._client
 
-    def complete(self, system: str, user: str) -> str:
+    def complete(self, system: str, user: str, json_mode: bool = False) -> str:
         client = self._ensure_client()
-        resp = client.chat.completions.create(
+        kwargs = dict(
             model=self.model_id,
             messages=[
                 {"role": "system", "content": system},
@@ -44,6 +44,11 @@ class OpenRouterClient:
             ],
             max_tokens=self.max_output_tokens,
         )
+        if json_mode:
+            # Force valid JSON into `content` so reasoning models can't strand the
+            # answer in their reasoning trace (the gemini judge-parse-failure fix).
+            kwargs["response_format"] = {"type": "json_object"}
+        resp = client.chat.completions.create(**kwargs)
         choice = resp.choices[0] if resp.choices else None
         if not choice or not choice.message:
             return ""

@@ -16,6 +16,11 @@ class LLMClient(Protocol):
     #: Friendly id used in CLI args, filenames, and the data.json manifest.
     name: str
 
-    def complete(self, system: str, user: str) -> str:
-        """Return the model's text response to a system + user prompt."""
+    def complete(self, system: str, user: str, json_mode: bool = False) -> str:
+        """Return the model's text response to a system + user prompt.
+
+        json_mode requests strict JSON output from providers that support it (used
+        by the LLM-judge so reasoning models don't strand the answer in a non-JSON
+        reasoning trace). Providers that don't support it ignore the flag.
+        """
         ...

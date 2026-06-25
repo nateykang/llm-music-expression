@@ -32,8 +32,8 @@ class OpenAIClient:
             self._client = OpenAI()
         return self._client
 
-    def complete(self, system: str, user: str) -> str:
-        client = self._ensure_client()
+    def complete(self, system: str, user: str, json_mode: bool = False) -> str:
+        client = self._ensure_client()  # json_mode unused: gpt-* already return clean JSON
         try:
             resp = client.responses.create(
                 model=self.model_id,

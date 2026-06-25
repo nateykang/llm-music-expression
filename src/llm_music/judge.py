@@ -24,6 +24,7 @@ import json
 import re
 import tempfile
 import threading
+import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
@@ -212,17 +213,28 @@ def _extract_json(text: str) -> dict | None:
     return None
 
 
-def judge_piece(client, piece: dict, batch_dir: Path, include_note: bool = False) -> dict | None:
-    """One judge's verdict on one piece → {key:{score,reason}, emotion_label:str}."""
+def judge_piece(client, piece: dict, batch_dir: Path, include_note: bool = False,
+                attempts: int = 3) -> dict | None:
+    """One judge's verdict on one piece → {key:{score,reason}, emotion_label:str}.
+
+    Retries on transient failures — empty content, an `error` finish_reason, or an
+    exception — which is the bulk of what's left after JSON mode (reasoning models
+    flake intermittently; the same piece usually succeeds on the next call)."""
     rep_kind, rep_text = representation(piece, batch_dir)
     if rep_text is None:
         return None
     user = build_user(piece, rep_kind, rep_text, include_note)
-    try:
-        raw = client.complete(_system(include_note), user)
-    except Exception:
-        return None
-    obj = _extract_json(raw)
+    obj = None
+    for a in range(attempts):
+        try:
+            raw = client.complete(_system(include_note), user, json_mode=True)
+            obj = _extract_json(raw)
+        except Exception:
+            obj = None
+        if obj:
+            break
+        if a < attempts - 1:
+            time.sleep(min(2 ** a, 8))
     if not obj:
         return None
     out = {}
