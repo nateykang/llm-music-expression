@@ -49,24 +49,37 @@ def main():
     tasks = pilot_tasks(200)
     cli = get_client(JUDGE)
     lock = threading.Lock()
-    results = {}
-    done = ok = 0
+
+    # Resumable: each verdict is checkpointed as it completes, so an interrupted run
+    # (sleep / shutdown) picks up where it left off instead of losing everything.
+    ckpt = ROOT / "docs/analysis/rejudge_gemini_ckpt.json"
+    results = {int(k): v for k, v in json.loads(ckpt.read_text()).items()} if ckpt.exists() else {}
+    todo = [i for i in range(len(tasks)) if i not in results]
+    print(f"re-judging {JUDGE}: {len(todo)} to do, {len(results)} cached from checkpoint "
+          f"(600s timeout, {args.workers} workers)…", flush=True)
+
+    def save():
+        tmp = ckpt.with_suffix(".tmp")
+        tmp.write_text(json.dumps({str(k): v for k, v in results.items()}))
+        tmp.replace(ckpt)
 
     def work(i):
-        pc, bd = tasks[i]
-        return i, judge_piece(cli, pc, bd, include_note=False)
+        return i, judge_piece(cli, tasks[i][0], tasks[i][1], include_note=False)
 
-    print(f"re-judging {JUDGE} on {len(tasks)} pieces (600s timeout, {args.workers} workers)…",
-          flush=True)
+    n = 0
     with ThreadPoolExecutor(max_workers=args.workers) as ex:
-        for fut in as_completed([ex.submit(work, i) for i in range(len(tasks))]):
+        for fut in as_completed([ex.submit(work, i) for i in todo]):
             i, v = fut.result()
             with lock:
-                done += 1
-                ok += bool(v)
                 results[i] = v
-                if done % 20 == 0 or done == len(tasks):
-                    print(f"  [{done}/{len(tasks)}] {JUDGE} valid={ok}", flush=True)
+                n += 1
+                if n % 5 == 0 or n == len(todo):
+                    save()
+                if n % 20 == 0 or n == len(todo):
+                    valid = sum(1 for x in results.values() if x)
+                    print(f"  [{len(results)}/{len(tasks)}] {JUDGE} valid={valid}", flush=True)
+    save()
+    ok = sum(1 for x in results.values() if x)
 
     # merge into raw json by index (raw is built in the same sorted-task order)
     rawp = ROOT / "docs/analysis/judge_allmodels_raw.json"
@@ -89,6 +102,7 @@ def main():
             p["panel"].pop(JUDGE, None)
     new = sum(1 for p in raw_ff if JUDGE in p.get("panel", {}))
     rawp.write_text(json.dumps(raw, indent=1), encoding="utf-8")
+    ckpt.unlink(missing_ok=True)  # merged successfully — clear the checkpoint
     print(f"\n{JUDGE} coverage in raw json: {old} -> {new}  (fresh valid: {ok}/{len(tasks)})")
     print("=== REJUDGE GEMINI COMPLETE ===")
 
