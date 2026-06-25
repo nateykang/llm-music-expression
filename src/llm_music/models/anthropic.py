@@ -27,7 +27,9 @@ class AnthropicClient:
 
             # Bound each request so a hung call can't pin a worker thread forever
             # (a stalled run got stuck with all workers blocked for 38 min, no timeout).
-            self._client = Anthropic(timeout=120.0, max_retries=2)
+            # Generous (10 min) so reasoning/thinking models get their full think time —
+            # the cap is a hang backstop, NOT a budget on legitimate reasoning.
+            self._client = Anthropic(timeout=600.0, max_retries=2)
         return self._client
 
     def complete(self, system: str, user: str) -> str:
