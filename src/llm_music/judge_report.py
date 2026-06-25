@@ -204,6 +204,29 @@ def _per_trait(raw):
     return f"<div class='tscroll'><table class='heat'>{head}{body}{nrow}</table></div>"
 
 
+def _panel_rows(raw, panel):
+    """Per-piece blind aggregate from the given panel judges (excluding the author),
+    so rankings/emotion use the all-9 data as their single source — every author
+    (incl. the thinking variants) appears, not just whoever the pilot reached."""
+    rows = []
+    for p in raw:
+        author = p["model"]
+        verds = [v for j, v in p["panel"].items() if j in panel and j != author]
+        if not verds:
+            continue
+        row = {"model": author, "prompt": p["prompt"], "mode": p.get("mode", ""),
+               "title": p.get("title", "")}
+        for k in QUALITY_KEYS + ["valence", "arousal"]:
+            sc = [v[k]["score"] for v in verds if k in v]
+            row[k] = (sum(sc) / len(sc)) if sc else None
+        qd = [row[k] for k in QUALITY_KEYS if row.get(k) is not None]
+        row["overall"] = (sum(qd) / len(qd)) if qd else None
+        labels = [v["emotion_label"] for v in verds if v.get("emotion_label")]
+        row["emotion_label"] = Counter(labels).most_common(1)[0][0] if labels else ""
+        rows.append(row)
+    return rows
+
+
 def _text_bias(blind, noted):
     bkey = {(r["model"], r["title"]): r for r in blind}
     rows = [(bkey[(r["model"], r["title"])], r) for r in noted if (r["model"], r["title"]) in bkey]
@@ -221,14 +244,13 @@ def _text_bias(blind, noted):
 
 # ---------- page ----------
 def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
-    blind = _load_csv(analysis_dir / "judge.csv")
-    noted = _load_csv(analysis_dir / "judge_noted.csv")
     feats = []
     for fp in sorted(data_dir.glob("*/features.csv")):
         feats += [r for r in csv.DictReader(fp.open(encoding="utf-8")) if r["prompt"] == "free-form"]
     rawp = analysis_dir / "judge_allmodels_raw.json"
     raw = [p for p in json.loads(rawp.read_text(encoding="utf-8")) if p["prompt"] == "free-form"] \
         if rawp.exists() else []
+    blind = _panel_rows(raw, PANEL)  # blind 3-frontier panel, derived from the all-9 data
 
     secs = []
     if blind:

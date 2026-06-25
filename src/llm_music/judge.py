@@ -291,31 +291,54 @@ def judge_corpus(data_dir: Path, judge_names: list[str], *, prompt: str | None =
     if limit:
         tasks = tasks[:limit]
 
+    # Resumable: every verdict is checkpointed as it completes so a multi-hour run
+    # survives sleep/shutdown. Keyed by "<task-index>|<judge>" — task order is the
+    # deterministic sorted-batch order, so indices are stable across a resume.
+    analysis = data_dir.parent / "analysis"
+    analysis.mkdir(parents=True, exist_ok=True)
+    ckpt_path = analysis / f"{out_name}_ckpt.json"
+    attempted = json.loads(ckpt_path.read_text(encoding="utf-8")) if ckpt_path.exists() else {}
+
     jobs = []
     for ti, (pc, bd) in enumerate(tasks):
         for jname in judge_names:
             if exclude_self and jname == pc["model"]:
                 continue
-            jobs.append((ti, jname, pc, bd))
+            if f"{ti}|{jname}" not in attempted:
+                jobs.append((ti, jname, pc, bd))
 
-    print(f"Judging {len(tasks)} pieces × panel {judge_names} = {len(jobs)} calls "
-          f"({workers} workers, exclude_self={exclude_self}, include_note={include_note})")
-    verdicts: dict[int, dict[str, dict]] = {}
+    print(f"Judging {len(tasks)} pieces × panel {judge_names}: {len(jobs)} calls to do, "
+          f"{len(attempted)} cached ({workers} workers, exclude_self={exclude_self}, "
+          f"include_note={include_note})", flush=True)
 
     def work(job):
         ti, jname, pc, bd = job
         return ti, jname, judge_piece(clients[jname], pc, bd, include_note)
+
+    def save_ckpt():
+        tmp = ckpt_path.with_suffix(".tmp")
+        tmp.write_text(json.dumps(attempted))
+        tmp.replace(ckpt_path)
 
     done = 0
     with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
         for fut in as_completed([ex.submit(work, j) for j in jobs]):
             ti, jname, verdict = fut.result()
             with lock:
+                attempted[f"{ti}|{jname}"] = verdict
                 done += 1
-                if verdict:
-                    verdicts.setdefault(ti, {})[jname] = verdict
-                if done % 20 == 0 or done == len(jobs):
+                if done % 25 == 0 or done == len(jobs):
+                    save_ckpt()
+                if done % 50 == 0 or done == len(jobs):
                     print(f"  [{done}/{len(jobs)}]", flush=True)
+    save_ckpt()
+
+    # reconstruct verdicts (successes only) from all attempts in the checkpoint
+    verdicts: dict[int, dict[str, dict]] = {}
+    for key, v in attempted.items():
+        if v:
+            ti_s, jname = key.split("|", 1)
+            verdicts.setdefault(int(ti_s), {})[jname] = v
 
     score_keys = QUALITY_KEYS + AFFECT_KEYS + (["intent"] if include_note else [])
     rows, raw = [], []
@@ -338,8 +361,6 @@ def judge_corpus(data_dir: Path, judge_names: list[str], *, prompt: str | None =
         raw.append({"model": pc["model"], "prompt": pc["prompt"], "mode": pc.get("mode", ""),
                     "title": pc.get("title", ""), "panel": panel})
 
-    analysis = data_dir.parent / "analysis"
-    analysis.mkdir(parents=True, exist_ok=True)
     import csv
     out_csv = analysis / f"{out_name}.csv"
     with out_csv.open("w", newline="", encoding="utf-8") as f:
@@ -348,5 +369,6 @@ def judge_corpus(data_dir: Path, judge_names: list[str], *, prompt: str | None =
         w.writeheader()
         w.writerows(rows)
     (analysis / f"{out_name}_raw.json").write_text(json.dumps(raw, indent=1), encoding="utf-8")
+    ckpt_path.unlink(missing_ok=True)  # completed + written — clear the checkpoint
     print(f"\nWrote {len(rows)} judged pieces → {out_csv}")
     return rows
