@@ -179,7 +179,7 @@ def cmd_judge(args) -> int:
     judge_corpus(Path(args.data_dir), judges, prompt=args.prompt or None,
                  limit=args.limit, workers=args.workers,
                  exclude_self=not args.no_exclude_self,
-                 include_note=args.include_note)
+                 include_note=args.include_note, out_name=args.out_name)
     return 0
 
 
@@ -228,6 +228,8 @@ def build_parser() -> argparse.ArgumentParser:
     pj.add_argument("--include-note", action="store_true",
                     help="show the composer's note + add intent dimension (noted condition; "
                          "default is blind music-only — run both to test for text bias)")
+    pj.add_argument("--out-name", default=None,
+                    help="output basename under analysis/ (default: judge / judge_noted)")
     pj.add_argument("--data-dir", default="docs/data")
     pj.set_defaults(func=cmd_judge)
 
