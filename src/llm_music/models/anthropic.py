@@ -30,9 +30,11 @@ class AnthropicClient:
 
             # Bound each request so a hung call can't pin a worker thread forever
             # (a stalled run got stuck with all workers blocked for 38 min, no timeout).
-            # Generous (10 min) so reasoning/thinking models get their full think time —
-            # the cap is a hang backstop, NOT a budget on legitimate reasoning.
-            self._client = Anthropic(timeout=600.0, max_retries=2)
+            # Thinking models have long SILENT periods (sonnet-4.6-thinking can go
+            # >600s with no streamed token before answering free-form ABC), which trips
+            # a 600s read-timeout into an endless retry loop — so give them 30 min.
+            # Non-thinking stays at 10 min (a true hang backstop).
+            self._client = Anthropic(timeout=1800.0 if self.thinking else 600.0, max_retries=2)
         return self._client
 
     def complete(self, system: str, user: str, json_mode: bool = False) -> str:  # noqa: ARG002 (opus returns clean JSON)
