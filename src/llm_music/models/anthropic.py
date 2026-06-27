@@ -13,8 +13,11 @@ class AnthropicClient:
         self.name = name
         self.model_id = model_id
         self.thinking = thinking
-        # Thinking tokens count toward max_tokens, so give the answer headroom.
-        self.max_tokens = 32000 if thinking else max_tokens
+        # Thinking tokens count toward max_tokens. Some models over-think hard tasks
+        # (sonnet-4.6-thinking spends ~31k thinking on free-form ABC) and at 32k they
+        # hit the cap mid-thought and emit NO answer. 64k leaves room for thinking +
+        # the answer; adaptive thinking only uses what it needs, so this is a ceiling.
+        self.max_tokens = 64000 if thinking else max_tokens
         self._client = None  # lazily constructed so import never needs a key
 
     def _ensure_client(self):
