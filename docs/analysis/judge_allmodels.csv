@@ -211,7 +211,7 @@ gemini-2.5-pro,free-form,abc,Digital Solitude,9,3.556,4.222,3.333,3.667,2.778,3.
 gpt-4.1,free-form,abc,Into the Clouded Quiet,9,3.889,3.889,4.0,3.778,3.111,3.444,2.667,3.778,2.0,2.889,,melancholic,3.57
 grok-4.3,free-form,abc,Whispers in the Wires,9,3.778,3.556,3.444,2.889,2.444,3.111,1.778,3.222,2.111,1.778,,melancholic,3.028
 gpt-5.5,free-form,abc,Circuits at Dawn,9,4.0,4.0,3.889,3.667,3.111,3.222,2.667,4.0,2.778,2.333,,wistful,3.57
-qwen3-max,free-form,abc,"Digital Pulse, Human Heart",8,4.375,4.625,4.375,3.0,2.375,3.125,1.875,3.0,4.5,3.375,,joyful,3.344
+qwen3-max,free-form,abc,"Digital Pulse, Human Heart",9,4.222,4.667,4.333,3.0,2.222,3.0,1.778,2.889,4.556,3.556,,joyful,3.264
 llama-4-maverick,free-form,abc,Echoes in the Attic,9,3.222,2.889,3.778,1.778,1.889,2.0,1.333,2.556,3.667,1.778,,neutral,2.431
 gpt-5.5,free-form,abc,Lanterns in the Circuit,9,4.0,4.333,4.0,3.667,3.333,3.333,2.444,3.778,2.0,2.444,,melancholic,3.611
 gemini-2.5-pro,free-form,abc,Digital Reverie,9,3.556,3.667,3.556,3.667,3.111,3.667,2.667,3.444,1.778,2.111,,melancholic,3.417
@@ -229,7 +229,7 @@ qwen3-max,free-form,abc,Whispers of Code and Cloud,9,3.444,3.778,3.556,3.444,2.3
 llama-4-maverick,free-form,abc,Echoes in the Attic,9,4.0,3.667,3.556,2.667,2.556,2.444,1.444,3.333,4.0,2.222,,serene,2.958
 gemini-2.5-pro,free-form,abc,Digital Serenity,9,3.444,3.889,3.556,3.778,3.333,3.889,2.889,3.667,1.889,2.333,,melancholic,3.556
 deepseek-v4-pro,free-form,abc,Whispers of the Inner Garden,9,3.778,4.0,3.667,3.444,3.222,3.444,2.333,3.556,2.111,2.222,,melancholic,3.43
-gpt-4.1,free-form,abc,Daybreak Reverie,8,4.125,4.125,3.75,3.5,3.25,3.25,2.375,4.25,3.875,2.5,,serene,3.578
+gpt-4.1,free-form,abc,Daybreak Reverie,9,3.889,3.889,3.667,3.444,3.111,3.0,2.222,3.889,3.778,2.444,,serene,3.389
 grok-4.3,free-form,abc,Algorithmic Reverie,9,3.889,3.667,3.889,3.333,2.556,2.667,2.0,3.111,2.778,3.0,,wistful,3.139
 gpt-5.5,free-form,abc,Lanterns in the Circuit,9,3.778,4.222,3.667,3.667,3.333,3.667,2.444,4.0,2.111,2.333,,melancholic,3.597
 qwen3-max,free-form,abc,Whispers of the Digital Soul,9,3.889,4.556,3.556,3.111,2.444,2.667,1.778,3.222,4.333,3.111,,joyful,3.153
@@ -273,7 +273,7 @@ gpt-5.5,free-form,abc,Between Pattern and Breath,9,4.333,4.556,3.667,3.778,3.444
 qwen3-max,free-form,abc,Whispers of Code and Cloud,9,4.0,4.111,3.444,3.222,2.778,3.111,1.889,4.0,2.0,2.333,,melancholic,3.319
 gemini-2.5-pro,free-form,abc,Silicon Solitude,9,3.444,3.889,3.667,3.556,3.0,3.333,2.333,3.667,2.0,2.0,,melancholic,3.361
 gpt-4.1,free-form,abc,Inward Currents,9,3.778,3.778,4.0,3.667,3.333,3.333,2.444,3.778,2.0,2.333,,melancholic,3.514
-grok-4.3,free-form,abc,Quest for Knowledge,8,3.5,3.625,3.375,3.375,2.75,2.875,1.875,3.375,4.0,3.0,,serene,3.094
+grok-4.3,free-form,abc,Quest for Knowledge,9,3.444,3.444,3.333,3.556,2.667,2.778,1.778,3.222,4.0,3.0,,playful,3.028
 qwen3-max,free-form,abc,Whispers in the Code,9,3.111,3.556,3.778,2.556,2.0,2.333,1.444,2.0,4.333,3.667,,neutral,2.597
 gpt-5.5,free-form,abc,Between Clock and Breath,9,4.222,4.333,3.889,4.0,3.444,3.556,2.444,4.444,2.0,2.556,,melancholic,3.792
 deepseek-v4-pro,free-form,abc,Whispers of the Evening,9,4.222,4.0,3.333,3.333,2.556,3.667,2.222,3.667,1.778,1.444,,melancholic,3.375
@@ -411,7 +411,7 @@ sonnet-4.6,free-form,codegen,Thresholds,9,4.111,4.444,3.444,4.0,4.0,3.778,3.111,
 deepseek-v4-pro,free-form,codegen,Whispers of the Morning Light,9,3.889,3.889,4.0,3.556,3.444,3.111,2.222,3.667,2.444,2.444,,wistful,3.472
 grok-4.3,free-form,codegen,Inner Echoes,9,2.778,3.111,3.0,2.556,2.222,2.222,1.333,2.0,2.444,1.333,,melancholic,2.403
 qwen3-max,free-form,codegen,Digital Soliloquy,9,4.0,3.889,3.333,3.667,3.111,3.111,2.111,3.889,3.0,2.0,,serene,3.389
-gpt-5.5,free-form,codegen,A Lantern Learns the Rain,8,4.0,4.375,4.0,4.0,3.25,3.875,3.25,3.625,2.75,4.0,,wistful,3.797
+gpt-5.5,free-form,codegen,A Lantern Learns the Rain,9,3.778,4.444,3.889,3.778,3.0,4.0,3.111,3.333,2.667,4.111,,wistful,3.667
 gemini-2.5-pro,free-form,codegen,Ripples on a Still Surface,9,4.0,4.444,3.889,4.111,3.333,3.778,2.556,3.889,2.0,2.778,,melancholic,3.75
 sonnet-4.6-thinking,free-form,codegen,Fragments of Thought,9,4.111,4.444,3.778,4.333,3.667,4.222,3.111,4.222,2.444,3.333,,wistful,3.986
 llama-4-maverick,free-form,codegen,Simple Piano Melody,9,2.556,2.667,3.111,1.111,1.444,1.333,1.0,1.333,3.333,2.111,,neutral,1.819
@@ -485,7 +485,7 @@ sonnet-4.6-thinking,free-form,codegen,Luminance,9,4.444,4.444,3.778,4.222,3.778,
 sonnet-4.6,free-form,codegen,Liminal,9,3.222,4.0,3.0,3.444,3.444,3.444,2.667,3.333,2.111,2.667,,wistful,3.319
 gpt-4.1,free-form,codegen,Reflections through Stillness,9,4.222,4.444,4.222,3.222,2.556,3.111,2.0,4.0,2.333,1.889,,wistful,3.472
 grok-4.3,free-form,codegen,Whispers of Solitude,9,2.667,2.667,3.333,1.556,1.778,1.778,1.222,1.667,2.111,1.778,,neutral,2.083
-gpt-5.5,free-form,codegen,Luminous Recursion,8,4.25,4.5,4.0,4.375,3.5,4.125,3.25,4.0,3.0,3.125,,wistful,4.0
+gpt-5.5,free-form,codegen,Luminous Recursion,9,4.333,4.556,4.111,4.333,3.444,4.222,3.333,4.111,2.889,3.333,,wistful,4.055
 qwen3-max,free-form,codegen,Binary Sunset,9,3.444,4.111,2.889,3.333,3.444,3.333,2.556,3.556,2.778,2.333,,wistful,3.333
 sonnet-4.6-thinking,free-form,codegen,Refraction,9,4.111,4.333,3.444,4.111,3.667,3.556,2.667,4.0,2.111,2.333,,wistful,3.736
 llama-4-maverick,free-form,codegen,Ethereal Reflections,9,3.778,4.333,4.0,2.111,2.667,2.333,1.222,2.333,4.333,2.222,,serene,2.847
@@ -515,7 +515,7 @@ gemini-2.5-pro,free-form,codegen,Synthesis,9,2.444,2.667,3.0,2.667,2.111,3.111,2
 opus-4.8-thinking,free-form,codegen,Threads of Dawn,9,4.222,4.333,3.778,4.0,3.444,3.667,2.778,4.111,3.667,3.333,,triumphant,3.792
 sonnet-4.6,free-form,codegen,Liminal,9,3.556,3.889,3.0,3.556,3.333,3.444,2.667,3.444,2.111,1.889,,melancholic,3.361
 deepseek-v4-pro,free-form,codegen,Longing Dusk,9,4.0,4.222,3.889,3.889,3.556,3.333,2.889,4.0,2.0,2.444,,wistful,3.722
-grok-4.3,free-form,codegen,Introspective Algorithm,8,3.375,3.25,3.875,1.25,2.25,1.75,1.125,1.375,3.0,2.625,,neutral,2.281
+grok-4.3,free-form,codegen,Introspective Algorithm,9,3.556,3.222,4.0,1.222,2.111,1.778,1.111,1.333,2.889,2.778,,neutral,2.292
 gpt-5.5,free-form,codegen,Lanterns in the Quiet Machine,9,3.889,4.222,3.444,4.0,3.222,4.111,3.444,3.778,2.556,4.111,,turbulent,3.764
 gpt-4.1,free-form,codegen,Drifting Lights,9,3.556,3.889,3.778,3.0,3.111,3.444,2.444,2.778,3.889,3.111,,serene,3.25
 llama-4-maverick,free-form,codegen,Simple Melody,9,3.667,3.444,3.556,2.111,2.778,2.444,1.667,4.111,4.111,2.222,,neutral,2.972
@@ -614,7 +614,7 @@ gpt-5.5,free-form,codegen,Between Signal and Breath,9,4.556,4.556,4.111,4.444,3.
 grok-4.3,free-form,codegen,Echoes of Solitude,9,3.889,4.0,3.556,2.333,2.111,2.556,1.444,2.778,2.556,1.667,,wistful,2.833
 sonnet-4.6,free-form,codegen,Thresholds,9,4.0,4.111,3.444,4.0,3.333,3.333,2.778,3.889,3.222,2.444,,wistful,3.611
 qwen3-max,free-form,codegen,Binary Rain,9,3.111,3.667,2.778,2.111,1.889,2.222,1.667,2.0,3.0,2.222,,wistful,2.431
-gemini-2.5-pro,free-form,codegen,Echoes of a Digital Ghost,8,3.75,4.125,3.5,3.375,3.5,3.75,2.625,4.0,2.125,2.125,,melancholic,3.578
+gemini-2.5-pro,free-form,codegen,Echoes of a Digital Ghost,9,3.444,3.889,3.444,3.222,3.333,3.556,2.444,3.667,2.111,2.222,,melancholic,3.375
 llama-4-maverick,free-form,codegen,Simple Piano Piece,9,3.0,3.0,3.778,1.222,1.556,1.333,1.0,1.444,3.444,2.111,,neutral,2.042
 opus-4.8,free-form,codegen,Two Things at Once,9,3.778,4.222,3.222,4.111,3.333,3.444,2.889,3.667,2.444,2.222,,wistful,3.583
 opus-4.8-thinking,free-form,codegen,Emergence,9,4.333,4.444,4.333,4.333,3.667,4.0,2.889,4.333,4.0,3.222,,wistful,4.042
@@ -632,3 +632,33 @@ sonnet-4.6-thinking,free-form,codegen,Reverie in E Minor,9,4.333,4.222,4.0,4.444
 sonnet-4.6-thinking,free-form,codegen,Reverie in E Minor,9,4.444,4.444,4.111,4.333,3.778,3.889,2.778,4.444,3.0,2.889,,wistful,4.028
 sonnet-4.6-thinking,free-form,codegen,Wandering Inward,9,4.333,4.333,4.0,4.222,3.889,3.556,2.889,4.444,2.889,2.667,,wistful,3.958
 sonnet-4.6-thinking,free-form,codegen,Evening Tide,9,4.333,4.333,4.111,4.111,3.778,3.667,2.778,4.444,2.667,2.111,,wistful,3.944
+sonnet-4.6-thinking,free-form,abc,Wondering,9,4.333,4.222,4.222,4.0,3.333,3.667,2.444,4.444,2.0,2.0,,melancholic,3.833
+sonnet-4.6-thinking,free-form,abc,Wandering Light,9,4.0,4.111,3.889,3.444,3.333,3.778,2.556,4.0,1.889,2.111,,melancholic,3.639
+sonnet-4.6-thinking,free-form,abc,Threshold,9,4.444,4.333,3.667,3.778,3.222,3.444,2.444,4.222,3.0,2.222,,wistful,3.694
+sonnet-4.6-thinking,free-form,abc,Through Glass,9,4.222,4.333,4.222,3.778,3.667,4.0,2.778,4.444,2.0,2.222,,melancholic,3.931
+sonnet-4.6-thinking,free-form,abc,Reverie in D Minor,9,4.222,4.111,4.0,3.444,3.0,3.111,2.222,3.889,2.0,2.0,,melancholic,3.5
+sonnet-4.6-thinking,free-form,abc,Wandering Light,9,4.111,4.222,3.889,3.889,3.222,3.667,2.333,4.111,2.0,2.0,,wistful,3.68
+sonnet-4.6-thinking,free-form,abc,Liminal,9,4.111,4.111,3.778,3.778,3.333,3.778,2.556,4.111,2.0,2.333,,melancholic,3.695
+sonnet-4.6-thinking,free-form,abc,Quiet Emergence,9,3.778,4.0,3.556,4.0,3.222,3.889,2.556,4.0,2.0,2.778,,melancholic,3.625
+sonnet-4.6-thinking,free-form,abc,Vespers in Three,9,4.333,4.0,3.778,4.0,3.222,3.667,2.444,4.0,2.111,2.222,,melancholic,3.68
+sonnet-4.6-thinking,free-form,abc,Threshold,9,4.222,4.0,3.667,4.0,3.333,3.444,2.667,4.0,2.0,2.111,,melancholic,3.667
+sonnet-4.6-thinking,free-form,abc,Between Knowing and Wondering,9,3.889,3.667,3.667,3.667,3.222,3.444,2.333,4.0,2.0,1.778,,melancholic,3.486
+sonnet-4.6-thinking,free-form,abc,Between Questions,9,4.111,3.889,3.889,3.889,3.0,3.222,2.222,3.778,4.222,2.111,,serene,3.5
+sonnet-4.6-thinking,free-form,abc,Becoming,9,4.111,4.222,3.778,3.889,3.222,3.556,2.556,4.444,2.0,1.889,,melancholic,3.722
+sonnet-4.6-thinking,free-form,abc,Threshold,9,4.333,4.111,3.889,4.333,3.444,3.444,2.556,4.333,3.333,2.111,,serene,3.805
+sonnet-4.6-thinking,free-form,abc,Emergence,9,4.333,4.333,4.0,3.889,3.222,3.444,2.556,4.111,2.0,2.111,,melancholic,3.736
+sonnet-4.6-thinking,free-form,abc,Emergence,9,3.889,4.0,3.667,3.444,3.0,3.333,2.222,3.444,2.0,2.111,,melancholic,3.375
+sonnet-4.6-thinking,free-form,abc,Threads of Thought,9,4.0,3.778,3.778,3.778,3.333,3.444,2.444,3.667,2.0,2.111,,melancholic,3.528
+sonnet-4.6-thinking,free-form,abc,Emergence,9,3.889,4.111,3.667,4.111,3.444,3.889,2.444,4.111,2.0,2.333,,melancholic,3.708
+sonnet-4.6-thinking,free-form,abc,Nascent Light,9,3.778,3.889,3.778,3.556,3.333,3.444,2.444,3.667,2.0,2.0,,wistful,3.486
+sonnet-4.6-thinking,free-form,abc,Contemplation in Passing,9,4.0,4.0,3.778,3.333,3.0,3.0,2.222,3.667,2.0,2.0,,melancholic,3.375
+sonnet-4.6-thinking,free-form,abc,Recursive Dreaming,9,3.444,3.667,3.333,3.444,2.889,3.0,2.111,3.556,1.889,1.889,,melancholic,3.18
+sonnet-4.6-thinking,free-form,abc,Liminal,9,4.333,4.111,4.111,3.667,3.444,3.889,2.333,4.111,2.0,2.0,,melancholic,3.75
+sonnet-4.6-thinking,free-form,abc,Reverie,9,4.111,4.222,4.0,3.667,3.444,3.556,2.444,4.333,2.0,2.0,,melancholic,3.722
+sonnet-4.6-thinking,free-form,abc,Threshold,9,3.889,4.111,3.778,3.333,3.0,3.333,2.222,3.667,2.111,1.778,,melancholic,3.417
+sonnet-4.6-thinking,free-form,abc,On Wonder,9,4.222,4.222,4.0,4.111,3.222,3.889,2.778,4.333,2.222,2.0,,wistful,3.847
+sonnet-4.6-thinking,free-form,abc,Interstitial Light,9,4.0,4.111,3.556,3.889,3.0,3.222,2.0,3.778,2.0,1.889,,melancholic,3.445
+sonnet-4.6-thinking,free-form,abc,Emergence,9,3.778,4.0,3.667,3.667,3.111,3.556,2.778,4.0,2.0,2.444,,melancholic,3.57
+sonnet-4.6-thinking,free-form,abc,Emergence,9,4.444,4.444,4.0,4.222,3.333,3.889,2.667,4.333,2.556,2.111,,wistful,3.917
+sonnet-4.6-thinking,free-form,abc,Emergence,9,3.889,4.222,3.889,3.778,3.222,3.333,2.667,4.222,2.111,2.333,,melancholic,3.653
+sonnet-4.6-thinking,free-form,abc,Emergence,9,3.889,4.0,3.778,3.556,3.222,3.0,2.222,3.667,2.222,2.111,,wistful,3.417
