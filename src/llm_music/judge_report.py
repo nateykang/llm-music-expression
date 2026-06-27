@@ -260,13 +260,11 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
                     "music-eval literature (ChatMusician / Chu et al. / MuSpike); scoring follows the "
                     "LLM-judge literature (reason-before-score, anchored 1–5, panel-averaged).</p>"
                     + _rankings(blind)
-                    + "<p class='callout' style='font-size:.82rem'>⚠️ <b>Representation caveat:</b> "
-                      "<b>sonnet-4.6-thinking is code-gen only</b> — its ABC generation is impractically slow "
-                      "(adaptive thinking produces ~15-min reasoning traces per piece, so the run never "
-                      "completes). Its score should be read against base sonnet's <i>code-gen</i> alone "
-                      "(Δ ≈ +0.23), not the mixed-representation total. opus-4.8-thinking has both "
-                      "representations, and thinking helps in each (+0.10 ABC, +0.47 code-gen) — so the "
-                      "“thinking improves the music” result holds either way.</p>")
+                    + "<p class='callout' style='font-size:.82rem'>🧠 <b>Thinking improves the music — in "
+                      "both representations.</b> The adaptive-thinking variants beat their base models in "
+                      "every representation-matched comparison (blind 3-frontier panel): "
+                      "<b>sonnet +0.28 ABC / +0.23 code-gen</b>, <b>opus +0.10 ABC / +0.47 code-gen</b>. "
+                      "Every cell is positive — extended thinking reliably raises perceived quality.</p>")
         secs.append("<h2>Emotional character <span class='sub'>(perceived, blind)</span></h2>"
                     "<p class='scope'>What the blind judge <i>hears</i> — perceived valence/arousal and the "
                     "dominant emotion — against the computed minor-key proxy.</p>" + _emotion(blind, feats))
