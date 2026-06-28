@@ -242,6 +242,28 @@ def _text_bias(blind, noted):
     return _table(cols, out), len(rows)
 
 
+# ---------- generation-mode toggle ----------
+TOGGLE = [("abc", "ABC"), ("code", "code-gen"), ("all", "both")]
+
+
+def _mode_filter(items, mode):
+    """Filter raw pieces / feature rows by generation mode. ABC groups abc + smt-abc
+    (both notation-based); code = code-gen; all = everything."""
+    if mode == "all":
+        return items
+    if mode == "abc":
+        return [x for x in items if x.get("mode") in ("abc", "smt-abc")]
+    return [x for x in items if x.get("mode") == "codegen"]
+
+
+def _paned(fn):
+    """Render content 3× (one per generation mode) into toggle-able panes; 'both'
+    is shown by default, the others hidden until the toggle switches them in."""
+    return "".join(
+        f"<div class='mode-pane' data-mode='{m}'{'' if m == 'all' else ' hidden'}>{fn(m)}</div>"
+        for m, _ in TOGGLE)
+
+
 # ---------- page ----------
 def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
     feats = []
@@ -250,16 +272,14 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
     rawp = analysis_dir / "judge_allmodels_raw.json"
     raw = [p for p in json.loads(rawp.read_text(encoding="utf-8")) if p["prompt"] == "free-form"] \
         if rawp.exists() else []
-    blind = _panel_rows(raw, PANEL)  # blind 3-frontier panel, derived from the all-9 data
-
     secs = []
-    if blind:
+    if raw:
         secs.append("<h2>Which models write the best music <span class='sub'>(blind panel)</span></h2>"
                     "<p class='scope'>A blind 3-frontier panel (gpt-5.5 · gemini · opus) rates each piece "
                     "from the notation alone — no title, composer note, or model name. Dimensions follow the "
                     "music-eval literature (ChatMusician / Chu et al. / MuSpike); scoring follows the "
                     "LLM-judge literature (reason-before-score, anchored 1–5, panel-averaged).</p>"
-                    + _rankings(blind)
+                    + _paned(lambda m: _rankings(_panel_rows(_mode_filter(raw, m), PANEL)))
                     + "<p class='callout' style='font-size:.82rem'>🧠 <b>Thinking improves the music — in "
                       "both representations.</b> The adaptive-thinking variants beat their base models in "
                       "every representation-matched comparison (blind 3-frontier panel): "
@@ -267,21 +287,21 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
                       "Every cell is positive — extended thinking reliably raises perceived quality.</p>")
         secs.append("<h2>Emotional character <span class='sub'>(perceived, blind)</span></h2>"
                     "<p class='scope'>What the blind judge <i>hears</i> — perceived valence/arousal and the "
-                    "dominant emotion — against the computed minor-key proxy.</p>" + _emotion(blind, feats))
-    if raw:
-        comp_html, _ = _competence_selfbias(raw)
+                    "dominant emotion — against the computed minor-key proxy.</p>"
+                    + _paned(lambda m: _emotion(_panel_rows(_mode_filter(raw, m), PANEL), _mode_filter(feats, m))))
         secs.append("<h2>Can each model judge music? <span class='sub'>(all-9 study)</span></h2>"
                     "<p class='scope'>With every model judging every piece, this shows each model's "
                     "competence (agreement with the consensus), its leniency, and — leniency-corrected — "
                     "whether it favors its own work. No model meaningfully over-rates itself; competence "
-                    "and leniency vary widely.</p>" + comp_html)
+                    "and leniency vary widely.</p>"
+                    + _paned(lambda m: _competence_selfbias(_mode_filter(raw, m))[0]))
         secs.append("<h2>Self-bias by trait <span class='sub'>(leniency-corrected)</span></h2>"
                     "<p class='scope'>Where each model judges its <i>own</i> music differently than it judges "
                     "everyone else's. <span style='color:rgb(46,140,67)'>green = kinder to itself</span>, "
                     "<span style='color:rgb(197,80,70)'>red = harder on itself</span>. The pattern: weak "
                     "models over-credit themselves exactly where they're weakest (grok→harmony, llama→emotion); "
                     "strong models are calibrated. Small n per model — read patterns, not single cells.</p>"
-                    + _per_trait(raw))
+                    + _paned(lambda m: _per_trait(_mode_filter(raw, m))))
     # Text bias is only meaningful against a GOAL prompt (does the brief make the
     # judge over-credit adherence) — not free-form. _text_bias() is kept for that
     # steering-phase comparison; intentionally not shown on the free-form page.
@@ -313,6 +333,14 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
   h2 {{ margin-top: 2.4rem; }}
   .callout {{ background: #f3ede4; border-left: 3px solid {ACCENT}; padding: .7rem .9rem;
              border-radius: 0 7px 7px 0; font-size: .9rem; margin: .8rem 0 0; }}
+  .mode-toggle {{ position: sticky; top: 0; z-index: 10; background: {BG}; display: flex;
+    gap: 8px; align-items: center; padding: .6rem 0; margin-bottom: .5rem;
+    border-bottom: 1px solid #e7ddd2; }}
+  .mode-toggle .lbl {{ font-weight: 600; color: {INK}; font-size: .9rem; }}
+  .mode-toggle button {{ font: inherit; font-size: .85rem; padding: 4px 13px; border-radius: 7px;
+    border: 1px solid #cbb99a; background: #fff; color: {INK}; cursor: pointer; }}
+  .mode-toggle button[aria-pressed=true] {{ background: {ACCENT}; color: {BG}; border-color: {ACCENT}; }}
+  .mode-pane[hidden] {{ display: none; }}
 </style>
 </head><body>
 <nav class="tabs">
@@ -325,9 +353,22 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
   <p class="scope">An LLM-as-judge layer over the generated pieces: blind quality + emotion ratings,
      each model's competence as a critic, and its self-bias. Rubric dimensions follow the music-eval
      literature; the protocol (reason-before-score, anchored scales, blind panel) follows the LLM-judge
-     literature. Pilot scope: 200 free-form pieces. Generated by <code>llm-music judge-report</code>.</p>
+     literature. Scope: {len(raw)} free-form pieces. Generated by <code>llm-music judge-report</code>.</p>
+  <div class="mode-toggle">
+    <span class="lbl">Generation</span>
+    <button data-mode="abc">ABC</button>
+    <button data-mode="code">code-gen</button>
+    <button data-mode="all" aria-pressed="true">both</button>
+  </div>
   {body}
 </div>
+<script>
+  function setMode(m){{
+    document.querySelectorAll('.mode-pane').forEach(p => {{ p.hidden = p.dataset.mode !== m; }});
+    document.querySelectorAll('.mode-toggle button').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === m));
+  }}
+  document.querySelectorAll('.mode-toggle button').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+</script>
 </body></html>"""
     out_path.write_text(doc, encoding="utf-8")
     return out_path
