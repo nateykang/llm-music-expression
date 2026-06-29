@@ -328,7 +328,7 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
   th {{ color: {MUTED}; font-weight: 600; position: relative; }}
   .tip {{ border-bottom: 1px dotted {MUTED}; cursor: help; outline: none; }}
   th .tip:hover::after, th .tip:focus::after {{
-    content: attr(data-tip); position: absolute; left: 0; top: 145%; z-index: 30;
+    content: attr(data-tip); position: absolute; left: 0; bottom: 100%; margin-bottom: 6px; z-index: 30;
     width: 240px; white-space: normal; text-align: left; font-weight: 400;
     font-size: .76rem; line-height: 1.45; color: {BG}; background: {INK};
     padding: .55rem .65rem; border-radius: 7px; box-shadow: 0 6px 20px rgba(0,0,0,.2); }}
