@@ -290,7 +290,15 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
                       "both representations.</b> The adaptive-thinking variants beat their base models in "
                       "every representation-matched comparison (blind 3-frontier panel): "
                       "<b>sonnet +0.28 ABC / +0.23 code-gen</b>, <b>opus +0.10 ABC / +0.47 code-gen</b>. "
-                      "Every cell is positive — extended thinking reliably raises perceived quality.</p>")
+                      "Every cell is positive — extended thinking reliably raises perceived quality.</p>"
+                    + "<p class='scope' style='font-size:.8rem; margin-top:.6rem'>⚙️ <b>Caveat — generation "
+                      "reliability varies by model and representation, so per-model n differs.</b> The "
+                      "adaptive-thinking variants spend most of their token budget <i>thinking</i>: "
+                      "sonnet-4.6-thinking needed a <b>64k-token cap</b> and a <b>30-min read-timeout</b> to "
+                      "produce ABC at all — it reasons ~31k tokens before writing a single note, and fails "
+                      "entirely under default limits. gemini is the weakest at code-gen (only 23/30 free-form "
+                      "runs succeeded — its generated music21 code crashes). So these are real findings, but "
+                      "they came from models that took substantial engineering to run.</p>")
         secs.append("<h2>Emotional character <span class='sub'>(perceived, blind)</span></h2>"
                     "<p class='scope'>What the blind judge <i>hears</i> — perceived valence/arousal and the "
                     "dominant emotion — against the computed minor-key proxy.</p>"
