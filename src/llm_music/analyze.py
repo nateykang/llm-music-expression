@@ -32,7 +32,8 @@ FIELDS = [
     "key_declared_tonic", "key_declared_mode", "key_mode_best", "mode_match",
     "scale_consistency", "pitch_class_entropy", "pitch_entropy", "pitch_in_scale_rate",
     "consonance_rate", "chord_tone_rate", "chord_tonal_distance", "structureness",
-    "polyphony", "n_voices", "empty_beat_rate", "groove_consistency",
+    "polyphony", "n_voices", "n_instruments", "velocity_mean", "dynamics_range",
+    "empty_beat_rate", "groove_consistency",
     "pitch_interval", "ioi", "rhythm_entropy",
     "n_pitches_used", "pitch_range",
     "tempo_bpm", "n_notes", "length_seconds", "note_density",
@@ -233,6 +234,22 @@ def _structureness(score):
     return round(sum(best) / len(best), 4)
 
 
+def _dynamics_instrumentation(mus):
+    """From the MIDI: note-velocity spread (dynamics) and distinct GM programs
+    (instrumentation) — expressive info present in the symbolic score but invisible
+    to the pitch/harmony/rhythm metrics. Returns (velocity_mean, dynamics_range,
+    n_instruments)."""
+    vels = [n.velocity for t in mus.tracks for n in t.notes]
+    if not vels:
+        return None, None, None
+    vs = sorted(vels)
+    n = len(vs)
+    p10, p90 = vs[int(0.10 * (n - 1))], vs[int(0.90 * (n - 1))]  # robust dynamic span
+    progs = {("drum" if getattr(t, "is_drum", False) else t.program)
+             for t in mus.tracks if t.notes}
+    return round(sum(vels) / n, 1), p90 - p10, len(progs)
+
+
 def extract_features(piece: dict, batch_dir: Path) -> dict | None:
     with tempfile.TemporaryDirectory(prefix="llm_music_an_") as td:
         mus, score = _load(piece, batch_dir, Path(td))
@@ -256,6 +273,7 @@ def _compute_features(mus, score, meta) -> dict | None:
     pitch_interval, ioi, rhythm_entropy = _sequence_metrics(mus)
     chord_tonal_distance = _chord_tonal_distance(score)
     structureness = _structureness(score)
+    velocity_mean, dynamics_range, n_instruments = _dynamics_instrumentation(mus)
 
     # Degenerate pieces (empty / all-rest, e.g. a hollow generation) can't be
     # key-analyzed — record them with unknown tonality rather than dropping them.
@@ -308,7 +326,8 @@ def _compute_features(mus, score, meta) -> dict | None:
         "consonance_rate": consonance_rate, "chord_tone_rate": chord_tone_rate,
         "chord_tonal_distance": chord_tonal_distance, "structureness": structureness,
         "polyphony": safe(muspy.polyphony),
-        "n_voices": len(mus.tracks),
+        "n_voices": len(mus.tracks), "n_instruments": n_instruments,
+        "velocity_mean": velocity_mean, "dynamics_range": dynamics_range,
         "empty_beat_rate": safe(muspy.empty_beat_rate),
         "groove_consistency": safe(muspy.groove_consistency, resolution),
         "pitch_interval": pitch_interval, "ioi": ioi, "rhythm_entropy": rhythm_entropy,

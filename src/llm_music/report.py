@@ -80,6 +80,13 @@ COLUMNS = [
     ("structureness", "structure", "Self-similarity: how strongly each bar resembles some OTHER bar "
         "(duration-weighted pitch-class histograms, cosine, averaged). ~1.0 = highly repetitive/structured; "
         "low = through-composed with no recurring material. Bach chorales ≈ 0.9.", "f2"),
+    ("dynamics_range", "dynamics", "Spread of note velocities in the rendered MIDI (90th − 10th percentile, "
+        "0–127). 0 = flat; higher = louder/softer contrast. Dynamics ARE in the symbolic score (velocity, "
+        "p/f markings) but the pitch metrics miss them. Caveat: for ABC, abc2midi adds beat-stress accents, "
+        "so part of the spread is the renderer, not the model.", "f0"),
+    ("n_instruments", "instruments", "Distinct General-MIDI instrument programs (a string quartet vs a solo "
+        "piano). Instrumentation richness — specified in the symbolic score (program/voice assignments) but "
+        "invisible to the pitch/harmony metrics.", "f1"),
     ("note_density", "note density", "Average note onsets per beat (a beat = one quarter note), so it is "
         "tempo-invariant — rhythmic busyness, not real-time speed. ~1 = about one note per beat; higher = "
         "runs or chords. (Our descriptor, not from a specific paper.)", "f2"),
@@ -112,6 +119,8 @@ def _cell(v, kind):
         return f"{v * 100:.0f}%"
     if kind == "f0":
         return f"{v:.0f}"
+    if kind == "f1":
+        return f"{v:.1f}"
     return f"{v:.2f}"
 
 
@@ -152,6 +161,7 @@ def load_features(data_dir: Path) -> list[dict]:
                           "pitch_range", "polyphony", "n_voices",
                           "consonance_rate", "chord_tone_rate", "mode_match",
                           "chord_tonal_distance", "structureness",
+                          "n_instruments", "velocity_mean", "dynamics_range",
                           "pitch_interval", "ioi", "rhythm_entropy", "pitch_entropy"):
                     r[k] = _f(r.get(k))
                 rows.append(r)
@@ -190,6 +200,8 @@ def summarize(rows: list[dict]) -> list[dict]:
             "chord_tone": _agg(rs, "chord_tone_rate")[0],
             "chord_tonal_distance": _agg(rs, "chord_tonal_distance")[0],
             "structureness": _agg(rs, "structureness")[0],
+            "dynamics_range": _agg(rs, "dynamics_range")[0],
+            "n_instruments": _agg(rs, "n_instruments")[0],
             "note_density": _agg(rs, "note_density")[0],
             "length": _agg(rs, "length_seconds")[0],
             "pitch_range": _agg(rs, "pitch_range")[0],
