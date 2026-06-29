@@ -116,17 +116,18 @@ def _cell(v, kind):
 
 
 def _table_html(rows, columns):
-    head = "<tr>" + "".join(
+    head = "<thead><tr>" + "".join(
         f"<th><span class='tip' tabindex='0' data-tip=\"{html.escape(tip)}\">"
         f"{html.escape(lbl).replace(' ', '&nbsp;')}</span></th>"
-        for _, lbl, tip, _ in columns) + "</tr>"
-    body = ""
+        for _, lbl, tip, _ in columns) + "</tr></thead>"
+    body = "<tbody>"
     for r in rows:
         ref = " class='ref'" if r.get("model") == "Bach chorales" else ""
         body += f"<tr{ref}>" + "".join(
             f"<td class='{'m' if key in ('model', 'gen') else ''}'>{_cell(r.get(key), kind)}</td>"
             for key, _, _, kind in columns) + "</tr>"
-    return f"<div class='tscroll'><table>{head}{body}</table></div>"
+    body += "</tbody>"
+    return f"<div class='tscroll'><table class='sortable'>{head}{body}</table></div>"
 
 
 def _f(v):
@@ -522,7 +523,7 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
   th {{ color: {MUTED}; font-weight: 600; position: relative; }}
   .tip {{ border-bottom: 1px dotted {MUTED}; cursor: help; outline: none; }}
   th .tip:hover::after, th .tip:focus::after {{
-    content: attr(data-tip); position: absolute; left: 0; top: 145%; z-index: 30;
+    content: attr(data-tip); position: absolute; left: 0; bottom: 100%; margin-bottom: 6px; z-index: 30;
     width: 240px; white-space: normal; text-align: left; font-weight: 400;
     font-size: .76rem; line-height: 1.45; color: {BG}; background: {INK};
     padding: .55rem .65rem; border-radius: 7px; box-shadow: 0 6px 20px rgba(0,0,0,.2);
@@ -531,6 +532,9 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
   th:nth-last-child(-n+3) .tip:focus::after {{ left: auto; right: 0; }}
   td.m, th:first-child {{ text-align: left; font-weight: 600; }}
   tr.ref td {{ font-style: italic; color: {ACCENT}; background: #f3ede4; border-bottom: 2px solid #d8c9b5; }}
+  table.sortable th {{ cursor: pointer; user-select: none; white-space: nowrap; }}
+  table.sortable th[data-dir=asc]::after {{ content: ' ▲'; font-size: .6em; opacity: .6; }}
+  table.sortable th[data-dir=desc]::after {{ content: ' ▼'; font-size: .6em; opacity: .6; }}
   figure {{ margin: 1.5rem 0; }}
   figcaption {{ color: {MUTED}; font-size: .85rem; margin-top: .4rem; }}
   .charts {{ display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2rem; }}
@@ -604,6 +608,35 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
   var btns=document.querySelectorAll('#rep-toggle button');
   for(var k=0;k<btns.length;k++)(function(b){{ b.onclick=function(){{ setRep(b.getAttribute('data-rep')); }}; }})(btns[k]);
   setRep('text');
+
+  // click a column header to sort rows by it (toggles asc/desc); Bach reference row
+  // stays pinned on top, empty cells sink to the bottom.
+  function makeSortable(table){{
+    var head=table.tHead, body=table.tBodies[0];
+    if(!head||!body) return;
+    var cells=head.rows[0].cells;
+    for(var i=0;i<cells.length;i++)(function(th,idx){{
+      th.onclick=function(){{
+        var asc=th.getAttribute('data-dir')!=='asc';
+        for(var h=0;h<cells.length;h++) cells[h].removeAttribute('data-dir');
+        th.setAttribute('data-dir', asc?'asc':'desc');
+        var num=function(c){{ var n=parseFloat(c.textContent.trim().replace(/[%,+\\s]/g,'')); return isNaN(n)?null:n; }};
+        var rows=Array.prototype.slice.call(body.rows);
+        var refs=rows.filter(function(r){{return r.classList.contains('ref');}});
+        var data=rows.filter(function(r){{return !r.classList.contains('ref');}});
+        data.sort(function(a,b){{
+          var ka=num(a.cells[idx]), kb=num(b.cells[idx]);
+          if(ka===null&&kb===null){{ var c=a.cells[idx].textContent.trim().localeCompare(b.cells[idx].textContent.trim()); return asc?c:-c; }}
+          if(ka===null) return 1;
+          if(kb===null) return -1;
+          return asc?ka-kb:kb-ka;
+        }});
+        refs.concat(data).forEach(function(r){{ body.appendChild(r); }});
+      }};
+    }})(cells[i], i);
+  }}
+  var st=document.querySelectorAll('table.sortable');
+  for(var s=0;s<st.length;s++) makeSortable(st[s]);
 }})();
 </script>
 </body></html>"""
