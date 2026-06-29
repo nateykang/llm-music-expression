@@ -65,12 +65,13 @@ def _tip(label, tip):
 
 def _table(cols, rows):
     """cols = [(label, tip)]; rows = list of cell-HTML lists (first cell left-aligned)."""
-    head = "<tr>" + "".join(_tip(l, t) for l, t in cols) + "</tr>"
-    body = ""
+    head = "<thead><tr>" + "".join(_tip(l, t) for l, t in cols) + "</tr></thead>"
+    body = "<tbody>"
     for cells in rows:
         body += "<tr>" + "".join(
             f"<td class='{'m' if i == 0 else ''}'>{c}</td>" for i, c in enumerate(cells)) + "</tr>"
-    return f"<div class='tscroll'><table>{head}{body}</table></div>"
+    body += "</tbody>"
+    return f"<div class='tscroll'><table class='sortable'>{head}{body}</table></div>"
 
 
 def _heat(v, scale=0.55):
@@ -191,17 +192,18 @@ def _per_trait(raw):
                 (own if author == j else oth)[j][d].append(sj - mean(peers))
     judges = [m for m in SHORT if own.get(m)]
     judges.sort(key=lambda m: -len(own[m].get("harmony", [])))
-    head = "<tr><th>trait</th>" + "".join(f"<th>{SHORT[m]}</th>" for m in judges) + "</tr>"
-    body = ""
+    head = "<thead><tr><th>trait</th>" + "".join(f"<th>{SHORT[m]}</th>" for m in judges) + "</tr></thead>"
+    body = "<tbody>"
     for d in DIMS:
         body += f"<tr><td class='m'>{d}</td>"
         for m in judges:
             v = (mean(own[m][d]) - mean(oth[m][d])) if own[m].get(d) and oth[m].get(d) else None
             body += _heat(v)
         body += "</tr>"
-    nrow = "<tr><td class='m sub'>n own</td>" + "".join(
-        f"<td class='sub'>{len(own[m].get('harmony', []))}</td>" for m in judges) + "</tr>"
-    return f"<div class='tscroll'><table class='heat'>{head}{body}{nrow}</table></div>"
+    body += "</tbody>"
+    nrow = ("<tfoot><tr><td class='m sub'>n own</td>" + "".join(
+        f"<td class='sub'>{len(own[m].get('harmony', []))}</td>" for m in judges) + "</tr></tfoot>")
+    return f"<div class='tscroll'><table class='heat sortable'>{head}{body}{nrow}</table></div>"
 
 
 def _panel_rows(raw, panel):
@@ -341,6 +343,9 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
     border: 1px solid #cbb99a; background: #fff; color: {INK}; cursor: pointer; }}
   .mode-toggle button[aria-pressed=true] {{ background: {ACCENT}; color: {BG}; border-color: {ACCENT}; }}
   .mode-pane[hidden] {{ display: none; }}
+  table.sortable th {{ cursor: pointer; user-select: none; white-space: nowrap; }}
+  table.sortable th[data-dir=asc]::after {{ content: ' ▲'; font-size: .6em; opacity: .6; }}
+  table.sortable th[data-dir=desc]::after {{ content: ' ▼'; font-size: .6em; opacity: .6; }}
 </style>
 </head><body>
 <nav class="tabs">
@@ -368,6 +373,28 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
     document.querySelectorAll('.mode-toggle button').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === m));
   }}
   document.querySelectorAll('.mode-toggle button').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+
+  // click a column header to sort rows by it (toggles asc/desc); empty cells sink last.
+  function makeSortable(table){{
+    const head = table.tHead, body = table.tBodies[0];
+    if(!head || !body) return;
+    [...head.rows[0].cells].forEach((th, i) => {{
+      th.addEventListener('click', () => {{
+        const asc = th.dataset.dir !== 'asc';
+        [...head.rows[0].cells].forEach(h => h.removeAttribute('data-dir'));
+        th.dataset.dir = asc ? 'asc' : 'desc';
+        const num = c => {{ const n = parseFloat(c.textContent.trim().replace(/[%,+\\s]/g, '')); return isNaN(n) ? null : n; }};
+        [...body.rows].sort((a, b) => {{
+          const ka = num(a.cells[i]), kb = num(b.cells[i]);
+          if(ka === null && kb === null) {{ const c = a.cells[i].textContent.trim().localeCompare(b.cells[i].textContent.trim()); return asc ? c : -c; }}
+          if(ka === null) return 1;
+          if(kb === null) return -1;
+          return asc ? ka - kb : kb - ka;
+        }}).forEach(r => body.appendChild(r));
+      }});
+    }});
+  }}
+  document.querySelectorAll('table.sortable').forEach(makeSortable);
 </script>
 </body></html>"""
     out_path.write_text(doc, encoding="utf-8")
