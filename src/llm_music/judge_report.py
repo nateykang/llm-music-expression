@@ -190,8 +190,12 @@ def _per_trait(raw):
                 if sj is None or not peers:
                     continue
                 (own if author == j else oth)[j][d].append(sj - mean(peers))
-    judges = [m for m in SHORT if own.get(m)]
-    judges.sort(key=lambda m: -len(own[m].get("harmony", [])))
+    # Columns = all judges (from the panels), in a FIXED canonical order, so they line
+    # up identically across the generation-mode toggle. (Previously sorted by per-mode
+    # own-piece count, which reshuffled the columns when you switched modes.) A model
+    # with no own pieces in a given mode just shows empty cells, keeping alignment.
+    all_judges = {j for p in raw for j in p["panel"]}
+    judges = [m for m in SHORT if m in all_judges]
     head = "<thead><tr><th>trait</th>" + "".join(f"<th>{SHORT[m]}</th>" for m in judges) + "</tr></thead>"
     body = "<tbody>"
     for d in DIMS:
