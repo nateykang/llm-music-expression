@@ -32,7 +32,8 @@ FIELDS = [
     "key_declared_tonic", "key_declared_mode", "key_mode_best", "mode_match",
     "scale_consistency", "pitch_class_entropy", "pitch_entropy", "pitch_in_scale_rate",
     "consonance_rate", "chord_tone_rate", "chord_tonal_distance", "structureness",
-    "polyphony", "n_voices", "n_instruments", "velocity_mean", "dynamics_range",
+    "polyphony", "n_voices", "n_instruments", "instrument_rarity",
+    "velocity_mean", "dynamics_range",
     "empty_beat_rate", "groove_consistency",
     "pitch_interval", "ioi", "rhythm_entropy",
     "n_pitches_used", "pitch_range",
@@ -238,16 +239,43 @@ def _dynamics_instrumentation(mus):
     """From the MIDI: note-velocity spread (dynamics) and distinct GM programs
     (instrumentation) — expressive info present in the symbolic score but invisible
     to the pitch/harmony/rhythm metrics. Returns (velocity_mean, dynamics_range,
-    n_instruments)."""
+    n_instruments, programs)."""
     vels = [n.velocity for t in mus.tracks for n in t.notes]
     if not vels:
-        return None, None, None
+        return None, None, None, set()
     vs = sorted(vels)
     n = len(vs)
     p10, p90 = vs[int(0.10 * (n - 1))], vs[int(0.90 * (n - 1))]  # robust dynamic span
     progs = {("drum" if getattr(t, "is_drum", False) else t.program)
              for t in mus.tracks if t.notes}
-    return round(sum(vels) / n, 1), p90 - p10, len(progs)
+    return round(sum(vels) / n, 1), p90 - p10, len(progs), progs
+
+
+_IDF_CACHE = None
+
+
+def _instrument_idf():
+    """Lazy-load the GigaMIDI instrument-rarity (IDF) weight table (program -> weight,
+    weight = -log(fraction of corpus files using it)). {} if not yet built."""
+    global _IDF_CACHE
+    if _IDF_CACHE is None:
+        path = Path(__file__).resolve().parents[2] / "docs/analysis/instrument_idf.json"
+        try:
+            _IDF_CACHE = json.loads(path.read_text(encoding="utf-8"))["weights"]
+        except Exception:
+            _IDF_CACHE = {}
+    return _IDF_CACHE
+
+
+def _instrument_rarity(progs):
+    """Rarity-weighted instrumentation score: sum of inverse-frequency (IDF) weights
+    over the piece's distinct instruments. Common instruments (piano) add little; rare
+    ones (koto, sitar, organ) add a lot — the 'guzheng is worth more points' idea,
+    grounded in real corpus frequencies. None if no IDF table or no instruments."""
+    idf = _instrument_idf()
+    if not idf or not progs:
+        return None
+    return round(sum(idf.get(str(p), 0.0) for p in progs), 2)
 
 
 def extract_features(piece: dict, batch_dir: Path) -> dict | None:
@@ -273,7 +301,8 @@ def _compute_features(mus, score, meta) -> dict | None:
     pitch_interval, ioi, rhythm_entropy = _sequence_metrics(mus)
     chord_tonal_distance = _chord_tonal_distance(score)
     structureness = _structureness(score)
-    velocity_mean, dynamics_range, n_instruments = _dynamics_instrumentation(mus)
+    velocity_mean, dynamics_range, n_instruments, _progs = _dynamics_instrumentation(mus)
+    instrument_rarity = _instrument_rarity(_progs)
 
     # Degenerate pieces (empty / all-rest, e.g. a hollow generation) can't be
     # key-analyzed — record them with unknown tonality rather than dropping them.
@@ -327,6 +356,7 @@ def _compute_features(mus, score, meta) -> dict | None:
         "chord_tonal_distance": chord_tonal_distance, "structureness": structureness,
         "polyphony": safe(muspy.polyphony),
         "n_voices": len(mus.tracks), "n_instruments": n_instruments,
+        "instrument_rarity": instrument_rarity,
         "velocity_mean": velocity_mean, "dynamics_range": dynamics_range,
         "empty_beat_rate": safe(muspy.empty_beat_rate),
         "groove_consistency": safe(muspy.groove_consistency, resolution),

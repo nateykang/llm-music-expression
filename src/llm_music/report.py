@@ -87,6 +87,10 @@ COLUMNS = [
     ("n_instruments", "instruments", "Distinct General-MIDI instrument programs (a string quartet vs a solo "
         "piano). Instrumentation richness — specified in the symbolic score (program/voice assignments) but "
         "invisible to the pitch/harmony metrics.", "f1"),
+    ("instrument_rarity", "instr. rarity", "Rarity-weighted instrumentation: sum of −log(frequency) weights "
+        "over the piece's distinct instruments, where frequency is how often each GM instrument appears in the "
+        "GigaMIDI corpus (~6k files). Common picks (piano, guitar) add little; rare ones (koto, sitar, organ, "
+        "harp) add a lot — rewards reaching beyond the default piano. Higher = bolder/more exotic palette.", "f2"),
     ("note_density", "note density", "Average note onsets per beat (a beat = one quarter note), so it is "
         "tempo-invariant — rhythmic busyness, not real-time speed. ~1 = about one note per beat; higher = "
         "runs or chords. (Our descriptor, not from a specific paper.)", "f2"),
@@ -161,7 +165,7 @@ def load_features(data_dir: Path) -> list[dict]:
                           "pitch_range", "polyphony", "n_voices",
                           "consonance_rate", "chord_tone_rate", "mode_match",
                           "chord_tonal_distance", "structureness",
-                          "n_instruments", "velocity_mean", "dynamics_range",
+                          "n_instruments", "instrument_rarity", "velocity_mean", "dynamics_range",
                           "pitch_interval", "ioi", "rhythm_entropy", "pitch_entropy"):
                     r[k] = _f(r.get(k))
                 rows.append(r)
@@ -202,6 +206,7 @@ def summarize(rows: list[dict]) -> list[dict]:
             "structureness": _agg(rs, "structureness")[0],
             "dynamics_range": _agg(rs, "dynamics_range")[0],
             "n_instruments": _agg(rs, "n_instruments")[0],
+            "instrument_rarity": _agg(rs, "instrument_rarity")[0],
             "note_density": _agg(rs, "note_density")[0],
             "length": _agg(rs, "length_seconds")[0],
             "pitch_range": _agg(rs, "pitch_range")[0],
