@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 import tempfile
 import warnings
 from pathlib import Path
@@ -33,6 +34,7 @@ FIELDS = [
     "scale_consistency", "pitch_class_entropy", "pitch_entropy", "pitch_in_scale_rate",
     "consonance_rate", "chord_tone_rate", "chord_tonal_distance", "structureness",
     "polyphony", "n_voices", "n_instruments", "instrument_rarity",
+    "n_dynamic_marks", "dynamic_span", "dynamic_changes",
     "velocity_mean", "dynamics_range",
     "empty_beat_rate", "groove_consistency",
     "pitch_interval", "ioi", "rhythm_entropy",
@@ -278,6 +280,41 @@ def _instrument_rarity(progs):
     return round(sum(idf.get(str(p), 0.0) for p in progs), 2)
 
 
+# Dynamic levels on a 1-10 scale (mp=5, mf=6 are adjacent; pp..ff spans 5).
+_DYN_LEVELS = {"pppp": 1, "ppp": 2, "pp": 3, "p": 4, "mp": 5, "mf": 6,
+               "f": 7, "ff": 8, "fff": 9, "ffff": 10}
+# ABC dynamic decorations, longest-first so 'pp' wins over 'p' and 'ff' over 'f'.
+_ABC_DYN = re.compile(r"!(pppp|ppp|pp|mp|mf|p|ffff|fff|ff|f)!")
+# Crescendo/diminuendo wedges (opening mark only, so each wedge counts once).
+_ABC_WEDGE = re.compile(r"!(?:crescendo|diminuendo|cresc|dim)\(!")
+
+
+def _dynamic_markings(piece, score):
+    """Dynamics the MODEL WROTE — not abc2midi's beat-stress accents. The ordered
+    sequence of p/f/mf markings (code-gen: music21 Dynamic objects; ABC: parsed from
+    the raw text, since the ABC score is rebuilt from rendered MIDI and loses them)
+    becomes: span (softest..loudest on the 1-10 scale) and how often the level
+    changes. Returns (n_dynamic_marks, dynamic_span, dynamic_changes)."""
+    seq, n_wedge = [], 0
+    if piece.get("abc"):
+        seq = [_DYN_LEVELS[m] for m in _ABC_DYN.findall(piece["abc"])]
+        n_wedge = len(_ABC_WEDGE.findall(piece["abc"]))
+    elif score is not None:
+        from music21 import dynamics
+
+        for d in score.recurse().getElementsByClass(dynamics.Dynamic):
+            v = (d.value or "").lower()
+            if v in _DYN_LEVELS:
+                seq.append(_DYN_LEVELS[v])
+        n_wedge = len(list(score.recurse().getElementsByClass(dynamics.DynamicWedge)))
+    n_marks = len(seq) + n_wedge
+    if n_marks == 0:
+        return 0, 0, 0
+    span = (max(seq) - min(seq)) if seq else 0
+    changes = sum(seq[i] != seq[i - 1] for i in range(1, len(seq))) + n_wedge
+    return n_marks, span, changes
+
+
 def extract_features(piece: dict, batch_dir: Path) -> dict | None:
     with tempfile.TemporaryDirectory(prefix="llm_music_an_") as td:
         mus, score = _load(piece, batch_dir, Path(td))
@@ -303,6 +340,7 @@ def _compute_features(mus, score, meta) -> dict | None:
     structureness = _structureness(score)
     velocity_mean, dynamics_range, n_instruments, _progs = _dynamics_instrumentation(mus)
     instrument_rarity = _instrument_rarity(_progs)
+    n_dynamic_marks, dynamic_span, dynamic_changes = _dynamic_markings(meta, score)
 
     # Degenerate pieces (empty / all-rest, e.g. a hollow generation) can't be
     # key-analyzed — record them with unknown tonality rather than dropping them.
@@ -357,6 +395,8 @@ def _compute_features(mus, score, meta) -> dict | None:
         "polyphony": safe(muspy.polyphony),
         "n_voices": len(mus.tracks), "n_instruments": n_instruments,
         "instrument_rarity": instrument_rarity,
+        "n_dynamic_marks": n_dynamic_marks, "dynamic_span": dynamic_span,
+        "dynamic_changes": dynamic_changes,
         "velocity_mean": velocity_mean, "dynamics_range": dynamics_range,
         "empty_beat_rate": safe(muspy.empty_beat_rate),
         "groove_consistency": safe(muspy.groove_consistency, resolution),

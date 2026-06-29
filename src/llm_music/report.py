@@ -80,10 +80,14 @@ COLUMNS = [
     ("structureness", "structure", "Self-similarity: how strongly each bar resembles some OTHER bar "
         "(duration-weighted pitch-class histograms, cosine, averaged). ~1.0 = highly repetitive/structured; "
         "low = through-composed with no recurring material. Bach chorales ≈ 0.9.", "f2"),
-    ("dynamics_range", "dynamics", "Spread of note velocities in the rendered MIDI (90th − 10th percentile, "
-        "0–127). 0 = flat; higher = louder/softer contrast. Dynamics ARE in the symbolic score (velocity, "
-        "p/f markings) but the pitch metrics miss them. Caveat: for ABC, abc2midi adds beat-stress accents, "
-        "so part of the spread is the renderer, not the model.", "f0"),
+    ("dynamic_span", "dyn. span", "Dynamics the model actually WROTE: softest→loudest distance over its "
+        "p/f/mf markings on a 1–10 scale (pp↔ff = 5; mp↔mf = 1; 0 = no written dynamics). Parsed from the "
+        "score's Dynamic objects (code-gen) or the raw ABC text — so it's the model's intent, free of "
+        "abc2midi's beat-stress accents that muddy raw velocity.", "f1"),
+    ("dynamic_changes", "dyn. changes", "How often the written dynamic level changes — count of transitions "
+        "between consecutive p/f/mf markings (plus any crescendo/diminuendo wedges). A piece that swings "
+        "p→f→p scores higher than one stuck at mf. Pairs with span: expressive = wide span AND frequent "
+        "change.", "f1"),
     ("n_instruments", "instruments", "Distinct General-MIDI instrument programs (a string quartet vs a solo "
         "piano). Instrumentation richness — specified in the symbolic score (program/voice assignments) but "
         "invisible to the pitch/harmony metrics.", "f1"),
@@ -166,6 +170,7 @@ def load_features(data_dir: Path) -> list[dict]:
                           "consonance_rate", "chord_tone_rate", "mode_match",
                           "chord_tonal_distance", "structureness",
                           "n_instruments", "instrument_rarity", "velocity_mean", "dynamics_range",
+                          "n_dynamic_marks", "dynamic_span", "dynamic_changes",
                           "pitch_interval", "ioi", "rhythm_entropy", "pitch_entropy"):
                     r[k] = _f(r.get(k))
                 rows.append(r)
@@ -204,7 +209,8 @@ def summarize(rows: list[dict]) -> list[dict]:
             "chord_tone": _agg(rs, "chord_tone_rate")[0],
             "chord_tonal_distance": _agg(rs, "chord_tonal_distance")[0],
             "structureness": _agg(rs, "structureness")[0],
-            "dynamics_range": _agg(rs, "dynamics_range")[0],
+            "dynamic_span": _agg(rs, "dynamic_span")[0],
+            "dynamic_changes": _agg(rs, "dynamic_changes")[0],
             "n_instruments": _agg(rs, "n_instruments")[0],
             "instrument_rarity": _agg(rs, "instrument_rarity")[0],
             "note_density": _agg(rs, "note_density")[0],
