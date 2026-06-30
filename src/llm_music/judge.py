@@ -99,11 +99,69 @@ def _system(include_note: bool) -> str:
     return base
 
 
+# Expression terms that NAME the affect (vs. tempo/technique). Stripped so the
+# 'perceived emotion' score isn't handed the answer in words; matched as stems.
+_AFFECT_STEMS = (
+    "dolce", "dolent", "espressiv", "appassionat", "cantabile", "maestos", "giocos",
+    "mesto", "lamentos", "agitato", "grazios", "affettuos", "amoros", "funebre",
+    "malinconic", "triste", "lugubre", "scherzand", "tenero", "con brio", "con fuoco",
+    "piangevol", "doloros", "gioios", "misterios", "nostalgic", "melanchol", "sorrow",
+    "mournful", "joyful", "playful", "tender", "wistful", "somber", "serene", "grief",
+)
+
+
+def _is_affect(text: str) -> bool:
+    """True if the text names an emotional character (vs. a tempo/technique term)."""
+    t = (text or "").lower()
+    return any(s in t for s in _AFFECT_STEMS)
+
+
+def _gm_name(program: int) -> str:
+    """General-MIDI program number -> instrument name."""
+    import pretty_midi
+
+    try:
+        return pretty_midi.program_to_instrument_name(int(program))
+    except Exception:
+        return f"program {program}"
+
+
+def _part_instrument(part) -> str:
+    """The instrument a code-gen part is assigned (music21), defaulting to Piano."""
+    try:
+        ins = part.getInstrument(returnDefault=True)
+        return ins.instrumentName or ins.bestName() or "Piano"
+    except Exception:
+        return "Piano"
+
+
+def _abc_instruments(piece: dict, batch_dir: Path) -> list:
+    """Instrument names a piece's voices sound as, read from the rendered MIDI — the
+    same source as the instrument metrics, since abc2midi resolves %%MIDI program and
+    piano defaults correctly where raw-text parsing does not. [] if unrenderable."""
+    from .analyze import _load
+
+    try:
+        with tempfile.TemporaryDirectory(prefix="judge_inst_") as td:
+            mus, _ = _load(piece, batch_dir, Path(td))
+    except Exception:
+        mus = None
+    if mus is None:
+        return []
+    names = []
+    for t in mus.tracks:
+        if not t.notes:
+            continue
+        names.append("Drums" if getattr(t, "is_drum", False) else _gm_name(t.program))
+    return names
+
+
 def _strip_abc_text(abc: str) -> str:
-    """Remove textual/semantic hints so a blind judge sees only the music: title,
-    composer, lyrics and other free-text info fields; comment lines and inline
-    comments; and voice name= / subname= attributes. Keeps musical directives
-    (X K M L Q V P R, %%score) and the notes themselves."""
+    """Remove only off-the-music commentary so a blind judge still sees the full score:
+    drop title/composer/lyrics text fields, comment lines, and any voice name= or
+    inline "text" annotation that NAMES an emotion. Keeps musical directives
+    (X K M L Q V P R, %%score, %%MIDI), structural voice names (Melody/Bass/Right/Left),
+    instrumentation and the notes themselves."""
     out = []
     for line in abc.splitlines():
         s = line.strip()
@@ -117,34 +175,104 @@ def _strip_abc_text(abc: str) -> str:
             line = line[:line.index("%")].rstrip()
             if not line.strip():
                 continue
-        line = re.sub(r'\b(?:name|subname)\s*=\s*"[^"]*"', "", line)  # voice names leak intent
-        line = re.sub(r"\b(?:name|subname)\s*=\s*\S+", "", line)
+        # strip voice name= / "text" annotations ONLY when they name an affect
+        line = re.sub(r'\b(?:name|subname)\s*=\s*"([^"]*)"',
+                      lambda m: "" if _is_affect(m.group(1)) else m.group(0), line)
+        line = re.sub(r"\b(?:name|subname)\s*=\s*(\S+)",
+                      lambda m: "" if _is_affect(m.group(1)) else m.group(0), line)
+        line = re.sub(r'"([^"]*)"',
+                      lambda m: "" if _is_affect(m.group(1)) else m.group(0), line)
         out.append(line.rstrip())
     return "\n".join(out)
 
 
 def _note_tok(n) -> str:
-    d = f"{float(n.quarterLength):g}"
+    """One note / chord / rest as 'pitch+octave/duration', with any articulations,
+    expressions (fermata, trill, …), tie and grace flags in parentheses."""
+    from music21 import note as m21note
+
+    ql = n.quarterLength
+    d = f"{ql:g}" if isinstance(ql, float) else str(ql)  # 0.5 stays 0.5; triplets show 1/3
+    if isinstance(n, m21note.Rest):
+        return "rest/" + d
     if n.isChord:
-        return "[" + ",".join(p.nameWithOctave for p in n.pitches) + "]/" + d
-    return n.pitches[0].nameWithOctave + "/" + d
+        core = "[" + ",".join(p.nameWithOctave for p in n.pitches) + "]"
+    else:
+        core = n.pitches[0].nameWithOctave
+    marks = [a.name for a in n.articulations]
+    marks += [getattr(e, "name", type(e).__name__.lower()) for e in n.expressions]
+    if n.tie is not None and n.tie.type in ("start", "continue"):
+        marks.append("tie")
+    if n.duration.isGrace:
+        marks.append("grace")
+    return core + "/" + d + (f"({','.join(marks)})" if marks else "")
+
+
+def _score_header(score) -> str:
+    """Key / time-signature / tempo / part-count line — the structural context ABC
+    gives the judge via K:/M:/Q:, so code-gen reaches it with the same information."""
+    from music21 import key as m21key, meter as m21meter, tempo as m21tempo
+
+    bits = []
+    ks = score.recurse().getElementsByClass(m21key.KeySignature)
+    if ks:
+        k = ks[0]
+        if isinstance(k, m21key.Key):  # mode was declared (key.Key('d','minor'))
+            bits.append(f"Key: {k.tonic.name} {k.mode}")
+        else:  # bare key signature from MusicXML — mode not declared
+            s = k.sharps or 0
+            label = ("no sharps/flats" if s == 0 else
+                     f"{abs(s)} {'sharp' if s > 0 else 'flat'}{'s' if abs(s) != 1 else ''}")
+            bits.append(f"Key signature: {label}")
+    ts = score.recurse().getElementsByClass(m21meter.TimeSignature)
+    if ts:
+        bits.append(f"Time: {ts[0].ratioString}")
+    mm = [t for t in score.recurse().getElementsByClass(m21tempo.MetronomeMark) if t.number]
+    if mm:
+        bits.append(f"Tempo: quarter={int(mm[0].number)}")
+    parts = list(score.parts) or [score]
+    bits.append(f"({len(parts)} part{'s' if len(parts) != 1 else ''})")
+    return "   ".join(bits)
+
+
+def _measure_tokens(m) -> list:
+    """Notes, rests, dynamics/wedges AND technical text directions for one measure,
+    interleaved in time order so '[p]' / '<crescendo>' / '"pizz."' land where they
+    occur. Affect-naming text (dolce, espressivo) is dropped (perceived-emotion blind)."""
+    from music21 import dynamics as m21dyn, expressions as m21expr
+
+    events = []  # (offset, priority, token) — markings (pri 0) print before notes (pri 1)
+    for el in m.recurse().notesAndRests:
+        events.append((el.getOffsetInHierarchy(m), 1, _note_tok(el)))
+    for dy in m.recurse().getElementsByClass(m21dyn.Dynamic):
+        events.append((dy.getOffsetInHierarchy(m), 0, f"[{dy.value}]"))
+    for w in m.recurse().getElementsByClass(m21dyn.DynamicWedge):
+        events.append((w.getOffsetInHierarchy(m), 0, f"<{type(w).__name__.lower()}>"))
+    for te in m.recurse().getElementsByClass(m21expr.TextExpression):
+        if te.content and not _is_affect(te.content):
+            events.append((te.getOffsetInHierarchy(m), 0, f'"{te.content.strip()}"'))
+    events.sort(key=lambda e: (e[0], e[1]))
+    return [t for _, _, t in events]
 
 
 def _score_to_text(score, max_measures: int = 64) -> str:
-    """Compact, LLM-readable rendering of a music21 score for code-gen pieces
-    (which have no ABC): per part (generic index — no instrument names), per bar,
-    notes as Pitch+octave / duration-in-beats."""
+    """LLM-readable rendering of a code-gen score: a key/time/tempo header, then per
+    part (labelled with its instrument) per bar, notes/rests/dynamics as
+    pitch+octave/duration with articulations & expressions. Carries everything the
+    score holds that ABC also shows the judge (instrument, dynamics, articulation,
+    rests, ties)."""
     parts = list(score.parts) or [score]
-    lines = []
+    lines = [_score_header(score)]
     for pi, part in enumerate(parts):
+        inst = _part_instrument(part)
         measures = list(part.getElementsByClass("Measure"))
         if not measures:
-            toks = [_note_tok(n) for n in list(part.recurse().notes)[:400]]
-            lines.append(f"Part {pi + 1}: " + " ".join(toks))
+            toks = [_note_tok(n) for n in list(part.recurse().notesAndRests)[:400]]
+            lines.append(f"Part {pi + 1} ({inst}): " + " ".join(toks))
             continue
-        lines.append(f"Part {pi + 1}:")
+        lines.append(f"Part {pi + 1} ({inst}):")
         for mi, m in enumerate(measures[:max_measures]):
-            toks = [_note_tok(n) for n in m.notes]
+            toks = _measure_tokens(m)
             if toks:
                 lines.append(f"  m{mi + 1}: " + " ".join(toks))
         if len(measures) > max_measures:
@@ -155,13 +283,24 @@ def _score_to_text(score, max_measures: int = 64) -> str:
 def representation(piece: dict, batch_dir: Path) -> tuple[str | None, str | None]:
     """(kind, text) the judge reads — always text-stripped so only music remains."""
     if piece.get("abc"):
-        return "ABC notation", _strip_abc_text(piece["abc"])
+        from collections import Counter
+
+        body = _strip_abc_text(piece["abc"])
+        insts = _abc_instruments(piece, batch_dir)
+        if insts:
+            c = Counter(insts)
+            line = "Instruments: " + ", ".join(
+                f"{nm}{' ×' + str(n) if n > 1 else ''}" for nm, n in c.items())
+            body = line + "\n" + body
+        return "ABC notation (with an instruments header)", body
     if piece.get("score"):
         from .analyze import _load
         with tempfile.TemporaryDirectory(prefix="judge_rep_") as td:
             _, score = _load(piece, batch_dir, Path(td))
         if score is not None:
-            return ("a note listing (Pitch+octave / duration-in-beats, per bar)",
+            return ("a note listing (key/time/tempo header, then per part — labelled "
+                    "with its instrument — per bar: Pitch+octave/duration with rests, "
+                    "dynamics [p]/[f], articulations and technical directions)",
                     _score_to_text(score))
     return None, None
 
