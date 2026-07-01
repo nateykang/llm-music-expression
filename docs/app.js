@@ -127,15 +127,27 @@ function familyKey(m) {
   return JSON.stringify([[...m.models].sort(), [...m.prompts].sort()]);
 }
 
-// The "primary" family for browsing = the comparison with the most generation
-// modes (the full code/abc/smt-abc set); recency breaks ties (newest-first input).
+// The "primary" family for browsing = the canonical comparison: most generation
+// modes (the full code/abc/smt-abc set), then richest grid (most prompts, then
+// models) so a big multi-prompt sweep wins over a newer one-off example that
+// happens to also span all three modes. Order-independent (small examples added
+// later don't hijack the default landing view).
 function primaryFamily(metas) {
   const groups = {};
   for (const m of metas) (groups[familyKey(m)] = groups[familyKey(m)] || []).push(m);
-  let best = [], bestModes = 0;
+  const score = (fam) => [
+    new Set(fam.map((x) => x.mode)).size,        // 1. most generation modes
+    new Set(fam.flatMap((x) => x.prompts)).size, // 2. then most prompts
+    new Set(fam.flatMap((x) => x.models)).size,  // 3. then most models
+  ];
+  let best = [], bestScore = [-1, -1, -1];
   for (const fam of Object.values(groups)) {
-    const modes = new Set(fam.map((x) => x.mode)).size;
-    if (modes > bestModes) { best = fam; bestModes = modes; }
+    const s = score(fam);
+    if (s[0] > bestScore[0] ||
+        (s[0] === bestScore[0] && s[1] > bestScore[1]) ||
+        (s[0] === bestScore[0] && s[1] === bestScore[1] && s[2] > bestScore[2])) {
+      best = fam; bestScore = s;
+    }
   }
   return best;
 }

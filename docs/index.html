@@ -27,9 +27,10 @@
   </header>
 
   <nav class="controls">
-    <!-- Experiment/batch picker stays hidden on Browse: the Generation toggle is
-         the primary navigator here. Large one-off sweeps live in Results & analysis. -->
-    <label id="batch-label" hidden>Experiment
+    <!-- Experiment/batch picker: switch between generated batches (the canonical
+         multi-prompt family, standalone examples, and one-off sweeps). Within a
+         batch, the Prompt / Generation / Model selectors navigate its pieces. -->
+    <label id="batch-label">Experiment
       <select id="batch"></select>
     </label>
     <label id="mode-label" hidden>Generation
@@ -79,6 +80,6 @@
     <section id="compare-grid" hidden></section>
   </main>
 
-  <script src="app.js?v=23" defer></script>
+  <script src="app.js?v=24" defer></script>
 </body>
 </html>

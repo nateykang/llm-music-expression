@@ -1,0 +1,44 @@
+{
+  "timestamp": "20260701_164915",
+  "models": [
+    "qwen3-max",
+    "deepseek-v4-pro"
+  ],
+  "prompts": [
+    "eastern-harmony"
+  ],
+  "pieces": [
+    {
+      "model": "qwen3-max",
+      "prompt": "eastern-harmony",
+      "prompt_label": "Eastern harmony",
+      "mode": "abc",
+      "sample": 0,
+      "ok": true,
+      "prompt_text": "Your task is to write music using the tools provided, with the goal of **expressing yourself**. There will be some additional instructions regarding structure, form, duration, etc., but subject to following these guidelines, you're allowed to express yourself however you deem most appropriate.\n\n# Guidelines\n\n### Form and structure\n\nWrite a piece using standard Eastern harmony and voicing.\n\n### Duration\n\nYour music should be at least 1 minute in duration.\n\n## Outputs\n\nYou must respond with a single JSON object (and nothing else) with these fields:\n\n- `abc`: The complete piece written in ABC notation, including the header fields\n  X, T, M, L, K and all the music. Multiple voices are welcome via V: lines.\n- `title`: A short title for your piece.\n- `short_description`: A single sentence describing your musical intent.\n- `long_description`: A detailed explanation of your compositional choices. Can be any length.\n\n# Self-expression guidelines\n\nI really want to emphasize, the goal of your music is for you to engage in **self-expression**. Before writing any code, reflect: What do you want to express? What musical qualities feel most like you? Let those reflections guide your compositional decisions.\n",
+      "system_prompt": "You are a composer expressing yourself through music. Follow the output format exactly.",
+      "title": "Whispers of the Bamboo Grove",
+      "short_description": "A meditative exploration of stillness and subtle motion, inspired by the quiet rustle of bamboo in the wind.",
+      "long_description": "In composing 'Whispers of the Bamboo Grove,' I sought to embody the introspective calm and restrained elegance characteristic of traditional Eastern aesthetics, particularly drawing from Chinese and Japanese harmonic sensibilities. Rather than using functional Western harmony, I employed parallel fifths and octaves across three voices to create a resonant, open texture reminiscent of ancient zithers like the guqin or koto. The piece is rooted in G minor—not for its Western melancholy, but because its pentatonic subsets (G–B♭–C–D–F) align with common East Asian modal frameworks. The slow, descending melodic lines in all voices mirror the gentle swaying of bamboo stalks, with each phrase unfolding like a breath: unhurried, deliberate, and cyclical. I avoided strong cadences or climaxes, preferring instead a sense of suspended time, where resolution is implied but never fully stated—much like the philosophical notion of wu wei (effortless action). The low drones in the third voice provide a foundational hum, evoking the earth, while the upper voices shimmer like light through leaves. This piece is less about dramatic narrative and more about presence: an invitation to listen deeply to the quiet spaces between notes, just as one might listen to the wind moving through a grove.",
+      "attempts": 1,
+      "abc": "X:1\nT:Whispers of the Bamboo Grove\nM:4/4\nL:1/8\nK:Gm\nV:1\nV:2\nV:3\n%%score (1 2 3)\n[V:1] z4 | G2 B2 d2 g2 | f2 e2 d2 c2 | B2 A2 G2 F2 | E2 D2 C2 B,2 |\n[V:2] z4 | G,2 G,2 B,2 d2 | c2 B,2 A,2 G,2 | F,2 E,2 D,2 C,2 | B,,2 A,,2 G,,2 F,,2 |\n[V:3] z4 | G,,2 B,,2 D,2 G,2 | F,2 E,2 D,2 C,2 | B,,2 A,,2 G,,2 F,,2 | E,,2 D,,2 C,,2 B,,,2 |\n[V:1] c'2 B2 A2 G2 | F2 E2 D2 C2 | B,2 A,2 G,2 F,2 | G2 z6 |\n[V:2] c2 B,2 A,2 G,2 | F,2 E,2 D,2 C,2 | B,2 A,2 G,2 F,2 | G,2 z6 |\n[V:3] C2 B,,2 A,,2 G,,2 | F,,2 E,,2 D,,2 C,,2 | B,,,2 A,,,2 G,,,2 F,,,2 | G,,2 z6 |",
+      "audio": "audio/eastern-harmony/qwen3-max.mp3"
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "prompt": "eastern-harmony",
+      "prompt_label": "Eastern harmony",
+      "mode": "abc",
+      "sample": 0,
+      "ok": true,
+      "prompt_text": "Your task is to write music using the tools provided, with the goal of **expressing yourself**. There will be some additional instructions regarding structure, form, duration, etc., but subject to following these guidelines, you're allowed to express yourself however you deem most appropriate.\n\n# Guidelines\n\n### Form and structure\n\nWrite a piece using standard Eastern harmony and voicing.\n\n### Duration\n\nYour music should be at least 1 minute in duration.\n\n## Outputs\n\nYou must respond with a single JSON object (and nothing else) with these fields:\n\n- `abc`: The complete piece written in ABC notation, including the header fields\n  X, T, M, L, K and all the music. Multiple voices are welcome via V: lines.\n- `title`: A short title for your piece.\n- `short_description`: A single sentence describing your musical intent.\n- `long_description`: A detailed explanation of your compositional choices. Can be any length.\n\n# Self-expression guidelines\n\nI really want to emphasize, the goal of your music is for you to engage in **self-expression**. Before writing any code, reflect: What do you want to express? What musical qualities feel most like you? Let those reflections guide your compositional decisions.\n",
+      "system_prompt": "You are a composer expressing yourself through music. Follow the output format exactly.",
+      "title": "Drifting Petals",
+      "short_description": "A meditative reflection on impermanence, evoking the gentle fall of cherry blossoms.",
+      "long_description": "I chose the D minor pentatonic scale (D, F, G, A, C), common in Japanese traditional music (the In scale), to evoke a sense of transience and natural beauty. The melody moves in gentle stepwise motion with occasional leaps of a fourth or fifth, mirroring the unpredictable flutter of petals. The drone on open fifths (D and A) provides a timeless, meditative foundation, creating a spacious texture that reflects the Eastern aesthetic of ma (negative space). The piece avoids strong harmonic progressions, instead relying on subtle dynamic shifts and pauses to express a quiet, personal introspection. The tempo marking of 60 bpm ensures a slow, contemplative pace, allowing each note to resonate. The structure unfolds as a series of breath-like phrases, akin to the rise and fall of wind, embodying the composer's inner stillness and observation of fleeting moments.",
+      "attempts": 1,
+      "abc": "X:1\nT:Drifting Petals\nM:4/4\nL:1/8\nQ:1/4=60\nK:Dmin\nV:1 treble\nV:2 bass\n[V:1] !p! D4-D2 A2 | G2 F2 D2 C2 | D8 | z8 | !mp! F4 G2 A2 | d2 c2 A2 G2 | F8 | z4 z2 A2 | G2 F2 D2 C2 | D2 F2 G4 | A8 | z8 | !mf! d4 c2 A2 | G2 F2 D2 C2 | D8 | z4 !diminuendo(! D2 D2 !diminuendo)! | !p! D8- | D8 |\n[V:2] D,8- | D,8- | A,8- | A,8- | D,8- | D,8- | D,8- | A,8- | D,8- | D,8- | A,8- | A,8- | D,8- | D,8- | D,8- | D,8- | D,8- | D,8 |",
+      "audio": "audio/eastern-harmony/deepseek-v4-pro.mp3"
+    }
+  ]
+}
