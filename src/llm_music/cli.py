@@ -193,6 +193,16 @@ def cmd_judge_report(args) -> int:
     return 0
 
 
+def cmd_audio_report(args) -> int:
+    from .audio_report import render_audio_html
+
+    data_dir = Path(args.data_dir)
+    analysis = data_dir.parent / "analysis"
+    out = render_audio_html(analysis, data_dir, data_dir.parent / "audio.html")
+    print(f"Wrote audio page → {out}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="llm-music", description=__doc__)
     sub = p.add_subparsers(dest="command", required=True)
@@ -246,6 +256,10 @@ def build_parser() -> argparse.ArgumentParser:
     pjr = sub.add_parser("judge-report", help="build the LLM-judge analysis page (judge.html)")
     pjr.add_argument("--data-dir", default="docs/data")
     pjr.set_defaults(func=cmd_judge_report)
+
+    par = sub.add_parser("audio-report", help="build the audio-emotion analysis page (audio.html)")
+    par.add_argument("--data-dir", default="docs/data")
+    par.set_defaults(func=cmd_audio_report)
 
     prp = sub.add_parser("report", help="build the analysis dashboard (results.html + charts)")
     prp.add_argument("--data-dir", default="docs/data",

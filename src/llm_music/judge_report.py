@@ -363,6 +363,7 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
   <a href="index.html">Browse outputs</a>
   <a href="results.html">Results &amp; analysis</a>
   <a href="judge.html" class="active">LLM judge</a>
+  <a href="audio.html">Audio emotion</a>
 </nav>
 <div class="wrap">
   <h1>How LLMs judge music — and themselves</h1>
