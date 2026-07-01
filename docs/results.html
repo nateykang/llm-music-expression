@@ -36,6 +36,10 @@
             color: #2b2420; border-radius: 6px; cursor: pointer; }
   .kv-btn:hover { border-color: #c9b69f; }
   .kv-btn[aria-pressed=true] { background: #7a5a3a; color: #fff; border-color: #7a5a3a; }
+  .kv-overlay { font-size: .85rem; color: #6b5d52; margin: 0 0 .3rem; }
+  .kv-overlay input { vertical-align: -1px; margin-right: 5px; }
+  .kv-btn.kv-corpus { border-color: #7a5a3a; font-weight: 600; }
+  .kv-btn.kv-corpus[aria-pressed=true] { background: #4a3320; border-color: #4a3320; }
   .kv-stat { font-size: .9rem; color: #6b5d52; margin: .6rem 0; min-height: 20px; }
   .kv-legend { display: flex; gap: 16px; font-size: .8rem; color: #6b5d52; margin-bottom: 8px; }
   .kv-sw { width: 11px; height: 11px; border-radius: 2px; display: inline-block; vertical-align: -1px; margin-right: 5px; }
@@ -73,9 +77,10 @@
 
   
 <h2>Key choices <span class='sub'>(circle of fifths — major on C, relative minors on A)</span></h2>
-<p class="scope">Which keys each model chooses in free-form. Toggle representation — ABC uses the model's declared K:, code-gen uses music21's detected key. Click a model to filter. (Note the "default" models swing toward minor in code-gen, where there's no lazy K:C default.)</p>
+<p class="scope">Which keys each model chooses in free-form, as a share of its pieces (a PDF). Toggle representation — ABC uses the model's declared K:, code-gen uses music21's detected key. Click a model to filter, click <b>Corpus</b> to see the real-music prior (GigaMIDI, detected the same way), or tick <b>overlay</b> to lay that prior over the selected model.</p>
 <div class="keyviz">
-  <div id="kv-models" class="kv-row" style="margin-bottom:.5rem;"></div>
+  <div id="kv-models" class="kv-row" style="margin-bottom:.4rem;"></div>
+  <div id="kv-overlay" class="kv-overlay" style="display:none;"><label><input type="checkbox"> Overlay the corpus prior (dashed) on the selected model</label></div>
   <div id="kv-stat" class="kv-stat"></div>
   <div class="kv-legend"><span><span class="kv-sw" style="background:#BA7517;"></span>major (top label)</span><span><span class="kv-sw" style="background:#378ADD;"></span>minor (bottom label)</span><span style="margin-left:auto;">← flats · sharps →</span></div>
   <div class="kv-chartwrap"><canvas id="kv-chart" role="img" aria-label="Key choices along the circle of fifths, major in amber and minor in blue"></canvas></div>
@@ -83,26 +88,50 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 (function(){
-  const TEXT={"opus-4.8": {"Dm": 29, "D": 3}, "sonnet-4.6": {"Dm": 29, "Db": 1, "C": 1, "Em": 1}, "gpt-5.5": {"Dm": 32}, "gpt-4.1": {"Em": 5, "Eb": 1, "Dm": 11, "Db": 1, "Gm": 2, "Am": 6, "D": 3, "G": 1, "C": 1, "F": 1}, "opus-4.8-thinking": {"Dm": 21, "Am": 9}, "llama-4-maverick": {"C": 30}, "grok-4.3": {"Am": 8, "C": 17, "Dm": 3, "Cm": 2}, "deepseek-v4-pro": {"Dm": 6, "Em": 1, "C": 14, "Cm": 2, "G": 2, "Am": 2, "D": 1, "Gm": 1}, "qwen3-max": {"C": 26, "Gm": 3, "Am": 1}, "gemini-2.5-pro": {"Am": 7, "Cm": 17, "C": 1, "Gm": 1, "Dm": 4}, "sonnet-4.6-thinking": {"Am": 10, "Dm": 18, "G": 1, "C": 1}}, CODE={"opus-4.8": {"Dm": 25, "Em": 3, "Am": 3}, "sonnet-4.6": {"Em": 16, "Bm": 1, "A": 2, "Dm": 9, "Cm": 1, "F": 1, "Am": 1}, "gpt-5.5": {"Em": 25, "Am": 4, "Dm": 2}, "gpt-4.1": {"Em": 10, "A": 2, "E": 3, "D": 4, "Am": 5, "Dm": 2, "C": 2, "F#m": 1}, "grok-4.3": {"C": 4, "F": 1, "Am": 17, "Em": 6, "E": 1, "Cm": 1}, "opus-4.8-thinking": {"Em": 1, "Dm": 27, "Am": 1, "D": 1}, "deepseek-v4-pro": {"A": 1, "Dm": 5, "Am": 10, "C": 1, "Em": 8, "D": 1, "Eb": 2, "Gm": 1, "Cm": 1}, "qwen3-max": {"C": 6, "Am": 7, "Em": 7, "F": 1, "Cm": 8, "G": 1}, "llama-4-maverick": {"C": 14, "F": 7, "Am": 8, "G": 1}, "gemini-2.5-pro": {"Cm": 15, "C": 3, "Am": 2, "G": 1, "F#m": 1, "Em": 1}, "sonnet-4.6-thinking": {"Dm": 8, "Em": 21, "Cm": 1}}, ALL={"opus-4.8": {"Dm": 54, "D": 3, "Em": 3, "Am": 3}, "sonnet-4.6": {"Em": 17, "Dm": 38, "Db": 1, "C": 1, "Bm": 1, "A": 2, "Cm": 1, "F": 1, "Am": 1}, "gpt-5.5": {"Em": 25, "Dm": 34, "Am": 4}, "gpt-4.1": {"Em": 15, "Eb": 1, "Dm": 13, "Db": 1, "Gm": 2, "Am": 11, "D": 7, "G": 1, "C": 3, "F": 1, "A": 2, "E": 3, "F#m": 1}, "opus-4.8-thinking": {"Dm": 48, "Am": 10, "Em": 1, "D": 1}, "llama-4-maverick": {"C": 44, "F": 7, "Am": 8, "G": 1}, "grok-4.3": {"Am": 25, "C": 21, "Dm": 3, "Cm": 3, "F": 1, "Em": 6, "E": 1}, "deepseek-v4-pro": {"Dm": 11, "Em": 9, "C": 15, "Cm": 3, "G": 2, "Am": 12, "D": 2, "Gm": 2, "A": 1, "Eb": 2}, "qwen3-max": {"C": 32, "Gm": 3, "Am": 8, "Em": 7, "F": 1, "Cm": 8, "G": 1}, "gemini-2.5-pro": {"Am": 9, "Cm": 32, "C": 4, "Gm": 1, "Dm": 4, "G": 1, "F#m": 1, "Em": 1}, "sonnet-4.6-thinking": {"Dm": 26, "Em": 21, "Cm": 1, "Am": 10, "G": 1, "C": 1}}, MODELS=["gpt-5.5", "opus-4.8", "opus-4.8-thinking", "sonnet-4.6", "gpt-4.1", "gemini-2.5-pro", "grok-4.3", "deepseek-v4-pro", "qwen3-max", "llama-4-maverick", "sonnet-4.6-thinking"];
+  const TEXT={"opus-4.8": {"Dm": 29, "D": 3}, "sonnet-4.6": {"Dm": 29, "Db": 1, "C": 1, "Em": 1}, "gpt-5.5": {"Dm": 32}, "gpt-4.1": {"Em": 5, "Eb": 1, "Dm": 11, "Db": 1, "Gm": 2, "Am": 6, "D": 3, "G": 1, "C": 1, "F": 1}, "opus-4.8-thinking": {"Dm": 21, "Am": 9}, "llama-4-maverick": {"C": 30}, "grok-4.3": {"Am": 8, "C": 17, "Dm": 3, "Cm": 2}, "deepseek-v4-pro": {"Dm": 6, "Em": 1, "C": 14, "Cm": 2, "G": 2, "Am": 2, "D": 1, "Gm": 1}, "qwen3-max": {"C": 26, "Gm": 3, "Am": 1}, "gemini-2.5-pro": {"Am": 7, "Cm": 17, "C": 1, "Gm": 1, "Dm": 4}, "sonnet-4.6-thinking": {"Am": 10, "Dm": 18, "G": 1, "C": 1}}, CODE={"opus-4.8": {"Dm": 25, "Em": 3, "Am": 3}, "sonnet-4.6": {"Em": 16, "Bm": 1, "A": 2, "Dm": 9, "Cm": 1, "F": 1, "Am": 1}, "gpt-5.5": {"Em": 25, "Am": 4, "Dm": 2}, "gpt-4.1": {"Em": 10, "A": 2, "E": 3, "D": 4, "Am": 5, "Dm": 2, "C": 2, "F#m": 1}, "grok-4.3": {"C": 4, "F": 1, "Am": 17, "Em": 6, "E": 1, "Cm": 1}, "opus-4.8-thinking": {"Em": 1, "Dm": 27, "Am": 1, "D": 1}, "deepseek-v4-pro": {"A": 1, "Dm": 5, "Am": 10, "C": 1, "Em": 8, "D": 1, "Eb": 2, "Gm": 1, "Cm": 1}, "qwen3-max": {"C": 6, "Am": 7, "Em": 7, "F": 1, "Cm": 8, "G": 1}, "llama-4-maverick": {"C": 14, "F": 7, "Am": 8, "G": 1}, "gemini-2.5-pro": {"Cm": 15, "C": 3, "Am": 2, "G": 1, "F#m": 1, "Em": 1}, "sonnet-4.6-thinking": {"Dm": 8, "Em": 21, "Cm": 1}}, ALL={"opus-4.8": {"Dm": 54, "D": 3, "Em": 3, "Am": 3}, "sonnet-4.6": {"Em": 17, "Dm": 38, "Db": 1, "C": 1, "Bm": 1, "A": 2, "Cm": 1, "F": 1, "Am": 1}, "gpt-5.5": {"Em": 25, "Dm": 34, "Am": 4}, "gpt-4.1": {"Em": 15, "Eb": 1, "Dm": 13, "Db": 1, "Gm": 2, "Am": 11, "D": 7, "G": 1, "C": 3, "F": 1, "A": 2, "E": 3, "F#m": 1}, "opus-4.8-thinking": {"Dm": 48, "Am": 10, "Em": 1, "D": 1}, "llama-4-maverick": {"C": 44, "F": 7, "Am": 8, "G": 1}, "grok-4.3": {"Am": 25, "C": 21, "Dm": 3, "Cm": 3, "F": 1, "Em": 6, "E": 1}, "deepseek-v4-pro": {"Dm": 11, "Em": 9, "C": 15, "Cm": 3, "G": 2, "Am": 12, "D": 2, "Gm": 2, "A": 1, "Eb": 2}, "qwen3-max": {"C": 32, "Gm": 3, "Am": 8, "Em": 7, "F": 1, "Cm": 8, "G": 1}, "gemini-2.5-pro": {"Am": 9, "Cm": 32, "C": 4, "Gm": 1, "Dm": 4, "G": 1, "F#m": 1, "Em": 1}, "sonnet-4.6-thinking": {"Dm": 26, "Em": 21, "Cm": 1, "Am": 10, "G": 1, "C": 1}}, MODELS=["gpt-5.5", "opus-4.8", "opus-4.8-thinking", "sonnet-4.6", "gpt-4.1", "gemini-2.5-pro", "grok-4.3", "deepseek-v4-pro", "qwen3-max", "llama-4-maverick", "sonnet-4.6-thinking"], REF={"major": [1.917, 2.4, 3.733, 4.533, 7.067, 11.033, 8.783, 7.383, 6.917, 5.983, 2.183, 1.917], "minor": [1.317, 2.083, 3.617, 3.2, 4.417, 6.4, 6.383, 2.717, 1.683, 0.0, 0.0, 0.0], "n": 6000};
   const majorKeys=["Db","Ab","Eb","Bb","F","C","G","D","A","E","B","F#"];
   const minorKeys=["Bbm","Fm","Cm","Gm","Dm","Am","Em","Bm","F#m","C#m","G#m","D#m"];
   const pp=t=>t.replace('b','\u266d').replace('#','\u266f');
   const majorPretty=majorKeys.map(pp);
   const minorPretty=minorKeys.map(t=>pp(t.slice(0,-1))+'m');
   const xlabels=majorPretty.map((mj,i)=>[mj,minorPretty[i]]);
-  let scope='text', current='All';
+  let scope='text', current='All', overlay=false;
   const base=()=>scope==='code'?CODE:scope==='all'?ALL:TEXT;
-  function srcFor(sel){const D=base();if(sel!=='All')return D[sel]||{};const t={};for(const m in D)for(const k in D[m])t[k]=(t[k]||0)+D[m][k];return t;}
-  const major=sel=>{const s=srcFor(sel);return majorKeys.map(t=>s[t]||0);};
-  const minor=sel=>{const s=srcFor(sel);return minorKeys.map(t=>s[t]||0);};
-  function updateStat(sel){const M=major(sel),N=minor(sel);const tot=M.reduce((a,b)=>a+b,0)+N.reduce((a,b)=>a+b,0)||1;const ms=N.reduce((a,b)=>a+b,0);let fav='',fmax=-1;M.forEach((v,i)=>{if(v>fmax){fmax=v;fav=majorPretty[i];}});N.forEach((v,i)=>{if(v>fmax){fmax=v;fav=minorPretty[i];}});document.getElementById('kv-stat').textContent=(sel==='All'?'all models':sel)+' \u00b7 '+tot+' pieces \u00b7 '+Math.round(100*ms/tot)+'% minor \u00b7 favourite: '+fav+' ('+fmax+')';}
-  function styleBtns(box,val,attr){Array.prototype.forEach.call(box.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',b.dataset[attr]===val);});}
-  function render(){chart.data.datasets[0].data=major(current);chart.data.datasets[1].data=minor(current);chart.update();updateStat(current);styleBtns(document.getElementById('kv-models'),current,'m');}
+  function counts(sel){const D=base();if(sel!=='All')return D[sel]||{};const t={};for(const m in D)for(const k in D[m])t[k]=(t[k]||0)+D[m][k];return t;}
+  // percentage arrays for a selection ('Corpus' -> the reference PDF)
+  function pct(sel){
+    if(sel==='Corpus'&&REF){var mf=REF.minor.reduce((a,b)=>a+b,0);return {maj:REF.major.slice(),min:REF.minor.slice(),tot:REF.n,minor:mf};}
+    const s=counts(sel);let tot=0;for(const k in s)tot+=s[k];tot=tot||1;
+    const maj=majorKeys.map(t=>100*(s[t]||0)/tot), min=minorKeys.map(t=>100*(s[t]||0)/tot);
+    return {maj:maj,min:min,tot:tot,minor:min.reduce((a,b)=>a+b,0)};
+  }
+  function updateStat(sel){
+    const d=pct(sel);let fav='',fmax=-1;
+    d.maj.forEach((v,i)=>{if(v>fmax){fmax=v;fav=majorPretty[i];}});
+    d.min.forEach((v,i)=>{if(v>fmax){fmax=v;fav=minorPretty[i];}});
+    const who=sel==='Corpus'?('corpus reference \u00b7 '+d.tot+' MIDI files'):((sel==='All'?'all models':sel)+' \u00b7 '+d.tot+' pieces');
+    document.getElementById('kv-stat').textContent=who+' \u00b7 '+Math.round(d.minor)+'% minor \u00b7 peak: '+fav+' ('+Math.round(fmax)+'%)';
+  }
+  function styleBtns(){Array.prototype.forEach.call(document.getElementById('kv-models').querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',b.dataset.m===current);});}
+  function render(){
+    const d=pct(current);
+    chart.data.datasets[0].data=d.maj; chart.data.datasets[1].data=d.min;
+    const showRef=overlay&&REF&&current!=='Corpus';
+    chart.data.datasets[2].hidden=!showRef; chart.data.datasets[3].hidden=!showRef;
+    chart.update(); updateStat(current); styleBtns();
+  }
   window.__kvSetScope=function(rep){scope=rep;render();};
   const bw=document.getElementById('kv-models');
-  ['All'].concat(MODELS).forEach(function(m){const b=document.createElement('button');b.className='kv-btn';b.textContent=m;b.dataset.m=m;b.onclick=function(){current=m;render();};bw.appendChild(b);});
-  const countLabels={id:'countLabels',afterDatasetsDraw:function(ch){var x=ch.ctx;var total=0;ch.data.datasets.forEach(function(ds){ds.data.forEach(function(v){total+=v;});});if(!total)return;x.save();x.font='11px -apple-system,system-ui,sans-serif';x.fillStyle='#6b5d52';x.textAlign='center';ch.data.datasets.forEach(function(ds,di){var meta=ch.getDatasetMeta(di);meta.data.forEach(function(bar,i){var v=ds.data[i];if(v>0){var p=100*v/total;x.fillText(p<0.5?'<1%':Math.round(p)+'%',bar.x,bar.y-4);}});});x.restore();}};Chart.register(countLabels);
-  const chart=new Chart(document.getElementById('kv-chart'),{type:'bar',data:{labels:xlabels,datasets:[{label:'major',data:major('All'),backgroundColor:'#BA7517',borderWidth:0,borderRadius:2},{label:'minor',data:minor('All'),backgroundColor:'#378ADD',borderWidth:0,borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},plugins:{legend:{display:false},tooltip:{callbacks:{title:function(items){const i=items[0].dataIndex;return items[0].dataset.label==='minor'?minorPretty[i]+' minor':majorPretty[i]+' major';},label:function(ctx){const M=major(current),N=minor(current);const tot=M.reduce((a,b)=>a+b,0)+N.reduce((a,b)=>a+b,0)||1;const v=ctx.parsed.y;return v+' piece'+(v===1?'':'s')+' \u00b7 '+Math.round(100*v/tot)+'%';}}}},scales:{x:{grid:{display:false},ticks:{color:'#6b5d52',font:{size:12},autoSkip:false}},y:{beginAtZero:true,ticks:{precision:0,color:'#6b5d52'},grid:{color:'rgba(0,0,0,0.08)'}}}}});
+  var btns=['All'].concat(MODELS); if(REF) btns.push('Corpus');
+  btns.forEach(function(m){const b=document.createElement('button');b.className='kv-btn'+(m==='Corpus'?' kv-corpus':'');b.textContent=(m==='Corpus'?'Corpus (real music)':m);b.dataset.m=m;b.onclick=function(){current=m;render();};bw.appendChild(b);});
+  if(REF){const ov=document.getElementById('kv-overlay');ov.style.display='';ov.querySelector('input').onchange=function(){overlay=this.checked;render();};}
+  const countLabels={id:'countLabels',afterDatasetsDraw:function(ch){var x=ch.ctx;x.save();x.font='11px -apple-system,system-ui,sans-serif';x.fillStyle='#6b5d52';x.textAlign='center';[0,1].forEach(function(di){var ds=ch.data.datasets[di];var meta=ch.getDatasetMeta(di);meta.data.forEach(function(bar,i){var v=ds.data[i];if(v>0.4){x.fillText(Math.round(v)+'%',bar.x,bar.y-4);}});});x.restore();}};Chart.register(countLabels);
+  const chart=new Chart(document.getElementById('kv-chart'),{type:'bar',data:{labels:xlabels,datasets:[
+    {label:'major',data:pct('All').maj,backgroundColor:'#BA7517',borderWidth:0,borderRadius:2,order:2},
+    {label:'minor',data:pct('All').min,backgroundColor:'#378ADD',borderWidth:0,borderRadius:2,order:2},
+    {label:'corpus major',type:'line',data:REF?REF.major:[],borderColor:'#7a4e10',borderDash:[5,3],borderWidth:2,pointRadius:0,backgroundColor:'transparent',hidden:true,order:1},
+    {label:'corpus minor',type:'line',data:REF?REF.minor:[],borderColor:'#1f5c96',borderDash:[5,3],borderWidth:2,pointRadius:0,backgroundColor:'transparent',hidden:true,order:1}
+  ]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},plugins:{legend:{display:false},tooltip:{callbacks:{title:function(items){const i=items[0].dataIndex;return items[0].dataset.label.indexOf('minor')>=0?minorPretty[i]+' minor':majorPretty[i]+' major';},label:function(ctx){return (ctx.dataset.label.indexOf('corpus')>=0?'corpus prior: ':'')+Math.round(ctx.parsed.y)+'%';}}}},scales:{x:{grid:{display:false},ticks:{color:'#6b5d52',font:{size:12},autoSkip:false}},y:{beginAtZero:true,title:{display:true,text:'% of pieces',color:'#6b5d52'},ticks:{color:'#6b5d52'},grid:{color:'rgba(0,0,0,0.08)'}}}}});
   render();
 })();
 </script>

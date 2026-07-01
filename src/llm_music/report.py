@@ -397,6 +397,10 @@ KEY_WIDGET_CSS = """
             color: #2b2420; border-radius: 6px; cursor: pointer; }
   .kv-btn:hover { border-color: #c9b69f; }
   .kv-btn[aria-pressed=true] { background: #7a5a3a; color: #fff; border-color: #7a5a3a; }
+  .kv-overlay { font-size: .85rem; color: #6b5d52; margin: 0 0 .3rem; }
+  .kv-overlay input { vertical-align: -1px; margin-right: 5px; }
+  .kv-btn.kv-corpus { border-color: #7a5a3a; font-weight: 600; }
+  .kv-btn.kv-corpus[aria-pressed=true] { background: #4a3320; border-color: #4a3320; }
   .kv-stat { font-size: .9rem; color: #6b5d52; margin: .6rem 0; min-height: 20px; }
   .kv-legend { display: flex; gap: 16px; font-size: .8rem; color: #6b5d52; margin-bottom: 8px; }
   .kv-sw { width: 11px; height: 11px; border-radius: 2px; display: inline-block; vertical-align: -1px; margin-right: 5px; }
@@ -405,9 +409,10 @@ KEY_WIDGET_CSS = """
 
 KEY_WIDGET_TMPL = """
 <h2>Key choices <span class='sub'>(circle of fifths — major on C, relative minors on A)</span></h2>
-<p class="scope">Which keys each model chooses in free-form. Toggle representation — ABC uses the model's declared K:, code-gen uses music21's detected key. Click a model to filter. (Note the "default" models swing toward minor in code-gen, where there's no lazy K:C default.)</p>
+<p class="scope">Which keys each model chooses in free-form, as a share of its pieces (a PDF). Toggle representation — ABC uses the model's declared K:, code-gen uses music21's detected key. Click a model to filter, click <b>Corpus</b> to see the real-music prior (GigaMIDI, detected the same way), or tick <b>overlay</b> to lay that prior over the selected model.</p>
 <div class="keyviz">
-  <div id="kv-models" class="kv-row" style="margin-bottom:.5rem;"></div>
+  <div id="kv-models" class="kv-row" style="margin-bottom:.4rem;"></div>
+  <div id="kv-overlay" class="kv-overlay" style="display:none;"><label><input type="checkbox"> Overlay the corpus prior (dashed) on the selected model</label></div>
   <div id="kv-stat" class="kv-stat"></div>
   <div class="kv-legend"><span><span class="kv-sw" style="background:#BA7517;"></span>major (top label)</span><span><span class="kv-sw" style="background:#378ADD;"></span>minor (bottom label)</span><span style="margin-left:auto;">← flats · sharps →</span></div>
   <div class="kv-chartwrap"><canvas id="kv-chart" role="img" aria-label="Key choices along the circle of fifths, major in amber and minor in blue"></canvas></div>
@@ -415,30 +420,77 @@ KEY_WIDGET_TMPL = """
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 (function(){
-  const TEXT=__TEXT__, CODE=__CODE__, ALL=__ALL__, MODELS=__MODELS__;
+  const TEXT=__TEXT__, CODE=__CODE__, ALL=__ALL__, MODELS=__MODELS__, REF=__REF__;
   const majorKeys=["Db","Ab","Eb","Bb","F","C","G","D","A","E","B","F#"];
   const minorKeys=["Bbm","Fm","Cm","Gm","Dm","Am","Em","Bm","F#m","C#m","G#m","D#m"];
   const pp=t=>t.replace('b','\\u266d').replace('#','\\u266f');
   const majorPretty=majorKeys.map(pp);
   const minorPretty=minorKeys.map(t=>pp(t.slice(0,-1))+'m');
   const xlabels=majorPretty.map((mj,i)=>[mj,minorPretty[i]]);
-  let scope='text', current='All';
+  let scope='text', current='All', overlay=false;
   const base=()=>scope==='code'?CODE:scope==='all'?ALL:TEXT;
-  function srcFor(sel){const D=base();if(sel!=='All')return D[sel]||{};const t={};for(const m in D)for(const k in D[m])t[k]=(t[k]||0)+D[m][k];return t;}
-  const major=sel=>{const s=srcFor(sel);return majorKeys.map(t=>s[t]||0);};
-  const minor=sel=>{const s=srcFor(sel);return minorKeys.map(t=>s[t]||0);};
-  function updateStat(sel){const M=major(sel),N=minor(sel);const tot=M.reduce((a,b)=>a+b,0)+N.reduce((a,b)=>a+b,0)||1;const ms=N.reduce((a,b)=>a+b,0);let fav='',fmax=-1;M.forEach((v,i)=>{if(v>fmax){fmax=v;fav=majorPretty[i];}});N.forEach((v,i)=>{if(v>fmax){fmax=v;fav=minorPretty[i];}});document.getElementById('kv-stat').textContent=(sel==='All'?'all models':sel)+' \\u00b7 '+tot+' pieces \\u00b7 '+Math.round(100*ms/tot)+'% minor \\u00b7 favourite: '+fav+' ('+fmax+')';}
-  function styleBtns(box,val,attr){Array.prototype.forEach.call(box.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',b.dataset[attr]===val);});}
-  function render(){chart.data.datasets[0].data=major(current);chart.data.datasets[1].data=minor(current);chart.update();updateStat(current);styleBtns(document.getElementById('kv-models'),current,'m');}
+  function counts(sel){const D=base();if(sel!=='All')return D[sel]||{};const t={};for(const m in D)for(const k in D[m])t[k]=(t[k]||0)+D[m][k];return t;}
+  // percentage arrays for a selection ('Corpus' -> the reference PDF)
+  function pct(sel){
+    if(sel==='Corpus'&&REF){var mf=REF.minor.reduce((a,b)=>a+b,0);return {maj:REF.major.slice(),min:REF.minor.slice(),tot:REF.n,minor:mf};}
+    const s=counts(sel);let tot=0;for(const k in s)tot+=s[k];tot=tot||1;
+    const maj=majorKeys.map(t=>100*(s[t]||0)/tot), min=minorKeys.map(t=>100*(s[t]||0)/tot);
+    return {maj:maj,min:min,tot:tot,minor:min.reduce((a,b)=>a+b,0)};
+  }
+  function updateStat(sel){
+    const d=pct(sel);let fav='',fmax=-1;
+    d.maj.forEach((v,i)=>{if(v>fmax){fmax=v;fav=majorPretty[i];}});
+    d.min.forEach((v,i)=>{if(v>fmax){fmax=v;fav=minorPretty[i];}});
+    const who=sel==='Corpus'?('corpus reference \\u00b7 '+d.tot+' MIDI files'):((sel==='All'?'all models':sel)+' \\u00b7 '+d.tot+' pieces');
+    document.getElementById('kv-stat').textContent=who+' \\u00b7 '+Math.round(d.minor)+'% minor \\u00b7 peak: '+fav+' ('+Math.round(fmax)+'%)';
+  }
+  function styleBtns(){Array.prototype.forEach.call(document.getElementById('kv-models').querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',b.dataset.m===current);});}
+  function render(){
+    const d=pct(current);
+    chart.data.datasets[0].data=d.maj; chart.data.datasets[1].data=d.min;
+    const showRef=overlay&&REF&&current!=='Corpus';
+    chart.data.datasets[2].hidden=!showRef; chart.data.datasets[3].hidden=!showRef;
+    chart.update(); updateStat(current); styleBtns();
+  }
   window.__kvSetScope=function(rep){scope=rep;render();};
   const bw=document.getElementById('kv-models');
-  ['All'].concat(MODELS).forEach(function(m){const b=document.createElement('button');b.className='kv-btn';b.textContent=m;b.dataset.m=m;b.onclick=function(){current=m;render();};bw.appendChild(b);});
-  const countLabels={id:'countLabels',afterDatasetsDraw:function(ch){var x=ch.ctx;var total=0;ch.data.datasets.forEach(function(ds){ds.data.forEach(function(v){total+=v;});});if(!total)return;x.save();x.font='11px -apple-system,system-ui,sans-serif';x.fillStyle='#6b5d52';x.textAlign='center';ch.data.datasets.forEach(function(ds,di){var meta=ch.getDatasetMeta(di);meta.data.forEach(function(bar,i){var v=ds.data[i];if(v>0){var p=100*v/total;x.fillText(p<0.5?'<1%':Math.round(p)+'%',bar.x,bar.y-4);}});});x.restore();}};Chart.register(countLabels);
-  const chart=new Chart(document.getElementById('kv-chart'),{type:'bar',data:{labels:xlabels,datasets:[{label:'major',data:major('All'),backgroundColor:'#BA7517',borderWidth:0,borderRadius:2},{label:'minor',data:minor('All'),backgroundColor:'#378ADD',borderWidth:0,borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},plugins:{legend:{display:false},tooltip:{callbacks:{title:function(items){const i=items[0].dataIndex;return items[0].dataset.label==='minor'?minorPretty[i]+' minor':majorPretty[i]+' major';},label:function(ctx){const M=major(current),N=minor(current);const tot=M.reduce((a,b)=>a+b,0)+N.reduce((a,b)=>a+b,0)||1;const v=ctx.parsed.y;return v+' piece'+(v===1?'':'s')+' \\u00b7 '+Math.round(100*v/tot)+'%';}}}},scales:{x:{grid:{display:false},ticks:{color:'#6b5d52',font:{size:12},autoSkip:false}},y:{beginAtZero:true,ticks:{precision:0,color:'#6b5d52'},grid:{color:'rgba(0,0,0,0.08)'}}}}});
+  var btns=['All'].concat(MODELS); if(REF) btns.push('Corpus');
+  btns.forEach(function(m){const b=document.createElement('button');b.className='kv-btn'+(m==='Corpus'?' kv-corpus':'');b.textContent=(m==='Corpus'?'Corpus (real music)':m);b.dataset.m=m;b.onclick=function(){current=m;render();};bw.appendChild(b);});
+  if(REF){const ov=document.getElementById('kv-overlay');ov.style.display='';ov.querySelector('input').onchange=function(){overlay=this.checked;render();};}
+  const countLabels={id:'countLabels',afterDatasetsDraw:function(ch){var x=ch.ctx;x.save();x.font='11px -apple-system,system-ui,sans-serif';x.fillStyle='#6b5d52';x.textAlign='center';[0,1].forEach(function(di){var ds=ch.data.datasets[di];var meta=ch.getDatasetMeta(di);meta.data.forEach(function(bar,i){var v=ds.data[i];if(v>0.4){x.fillText(Math.round(v)+'%',bar.x,bar.y-4);}});});x.restore();}};Chart.register(countLabels);
+  const chart=new Chart(document.getElementById('kv-chart'),{type:'bar',data:{labels:xlabels,datasets:[
+    {label:'major',data:pct('All').maj,backgroundColor:'#BA7517',borderWidth:0,borderRadius:2,order:2},
+    {label:'minor',data:pct('All').min,backgroundColor:'#378ADD',borderWidth:0,borderRadius:2,order:2},
+    {label:'corpus major',type:'line',data:REF?REF.major:[],borderColor:'#7a4e10',borderDash:[5,3],borderWidth:2,pointRadius:0,backgroundColor:'transparent',hidden:true,order:1},
+    {label:'corpus minor',type:'line',data:REF?REF.minor:[],borderColor:'#1f5c96',borderDash:[5,3],borderWidth:2,pointRadius:0,backgroundColor:'transparent',hidden:true,order:1}
+  ]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},plugins:{legend:{display:false},tooltip:{callbacks:{title:function(items){const i=items[0].dataIndex;return items[0].dataset.label.indexOf('minor')>=0?minorPretty[i]+' minor':majorPretty[i]+' major';},label:function(ctx){return (ctx.dataset.label.indexOf('corpus')>=0?'corpus prior: ':'')+Math.round(ctx.parsed.y)+'%';}}}},scales:{x:{grid:{display:false},ticks:{color:'#6b5d52',font:{size:12},autoSkip:false}},y:{beginAtZero:true,title:{display:true,text:'% of pieces',color:'#6b5d52'},ticks:{color:'#6b5d52'},grid:{color:'rgba(0,0,0,0.08)'}}}}});
   render();
 })();
 </script>
 """
+
+
+def _key_reference():
+    """Corpus (GigaMIDI) key distribution aligned to the circle-of-fifths order, as
+    percentages — the training-prior approximation to overlay on the models. Returns
+    {'major':[...12], 'minor':[...12], 'n':N} or None if not built yet."""
+    p = Path(__file__).resolve().parents[2] / "docs/analysis/key_distribution.json"
+    try:
+        d = json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    s2f = {"C#": "Db", "G#": "Ab", "D#": "Eb", "A#": "Bb"}  # sharps → circle-of-fifths flats
+    pos = {}
+    for k, prob in d.get("keys", {}).items():
+        parts = k.split()
+        if len(parts) != 2:
+            continue
+        tonic, mode = s2f.get(parts[0], parts[0]), parts[1]
+        lab = tonic if mode == "major" else tonic + "m"
+        pos[lab] = pos.get(lab, 0.0) + prob
+    return {"major": [round(100 * pos.get(t, 0.0), 3) for t in MAJOR_FIFTHS],
+            "minor": [round(100 * pos.get(t, 0.0), 3) for t in MINOR_FIFTHS],
+            "n": d.get("n_files")}
 
 
 def _key_widget_html(dists):
@@ -450,7 +502,8 @@ def _key_widget_html(dists):
             .replace("__TEXT__", json.dumps(text))
             .replace("__CODE__", json.dumps(code))
             .replace("__ALL__", json.dumps(allb))
-            .replace("__MODELS__", json.dumps(present)))
+            .replace("__MODELS__", json.dumps(present))
+            .replace("__REF__", json.dumps(_key_reference())))
 
 
 # --- reliability (from manifests, not features.csv) ---------------------------
