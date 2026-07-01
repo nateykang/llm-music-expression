@@ -545,14 +545,12 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
   th, td {{ text-align: right; padding: .35rem .55rem; border-bottom: 1px solid #e7ddd2; }}
   th {{ color: {MUTED}; font-weight: 600; position: relative; }}
   .tip {{ border-bottom: 1px dotted {MUTED}; cursor: help; outline: none; }}
-  th .tip:hover::after, th .tip:focus::after {{
-    content: attr(data-tip); position: absolute; left: 0; bottom: 100%; margin-bottom: 6px; z-index: 30;
-    width: 240px; white-space: normal; text-align: left; font-weight: 400;
-    font-size: .76rem; line-height: 1.45; color: {BG}; background: {INK};
+  #tipbox {{
+    position: fixed; z-index: 100; width: 240px; white-space: normal; text-align: left;
+    font-weight: 400; font-size: .76rem; line-height: 1.45; color: {BG}; background: {INK};
     padding: .55rem .65rem; border-radius: 7px; box-shadow: 0 6px 20px rgba(0,0,0,.2);
+    pointer-events: none; display: none;
   }}
-  th:nth-last-child(-n+3) .tip:hover::after,
-  th:nth-last-child(-n+3) .tip:focus::after {{ left: auto; right: 0; }}
   td.m, th:first-child {{ text-align: left; font-weight: 600; }}
   tr.ref td {{ font-style: italic; color: {ACCENT}; background: #f3ede4; border-bottom: 2px solid #d8c9b5; }}
   table.sortable th {{ cursor: pointer; user-select: none; white-space: nowrap; }}
@@ -660,6 +658,22 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
   }}
   var st=document.querySelectorAll('table.sortable');
   for(var s=0;s<st.length;s++) makeSortable(st[s]);
+}})();
+(function(){{
+  var box=document.createElement('div'); box.id='tipbox'; document.body.appendChild(box);
+  function show(el){{
+    var t=el.getAttribute('data-tip'); if(!t) return;
+    box.textContent=t; box.style.display='block';
+    var r=el.getBoundingClientRect();
+    box.style.left=Math.max(6, Math.min(r.left, window.innerWidth-252))+'px';
+    var top=r.top-box.offsetHeight-6; if(top<6) top=r.bottom+6;
+    box.style.top=top+'px';
+  }}
+  function hide(){{ box.style.display='none'; }}
+  document.addEventListener('mouseover', function(e){{ var el=e.target.closest&&e.target.closest('.tip'); if(el) show(el); }});
+  document.addEventListener('mouseout', function(e){{ if(e.target.closest&&e.target.closest('.tip')) hide(); }});
+  document.addEventListener('focusin', function(e){{ var el=e.target.closest&&e.target.closest('.tip'); if(el) show(el); }});
+  document.addEventListener('focusout', hide);
 }})();
 </script>
 </body></html>"""

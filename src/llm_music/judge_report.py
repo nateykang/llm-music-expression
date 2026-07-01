@@ -335,12 +335,11 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
   th, td {{ text-align: right; padding: .35rem .55rem; border-bottom: 1px solid #e7ddd2; }}
   th {{ color: {MUTED}; font-weight: 600; position: relative; }}
   .tip {{ border-bottom: 1px dotted {MUTED}; cursor: help; outline: none; }}
-  th .tip:hover::after, th .tip:focus::after {{
-    content: attr(data-tip); position: absolute; left: 0; bottom: 100%; margin-bottom: 6px; z-index: 30;
-    width: 240px; white-space: normal; text-align: left; font-weight: 400;
-    font-size: .76rem; line-height: 1.45; color: {BG}; background: {INK};
-    padding: .55rem .65rem; border-radius: 7px; box-shadow: 0 6px 20px rgba(0,0,0,.2); }}
-  th:nth-last-child(-n+3) .tip:hover::after, th:nth-last-child(-n+3) .tip:focus::after {{ left:auto; right:0; }}
+  #tipbox {{
+    position: fixed; z-index: 100; width: 240px; white-space: normal; text-align: left;
+    font-weight: 400; font-size: .76rem; line-height: 1.45; color: {BG}; background: {INK};
+    padding: .55rem .65rem; border-radius: 7px; box-shadow: 0 6px 20px rgba(0,0,0,.2);
+    pointer-events: none; display: none; }}
   td.m, th:first-child {{ text-align: left; font-weight: 600; }}
   td.sub {{ color: {MUTED}; font-size: .8rem; }}
   table.heat td {{ text-align: center; }}
@@ -407,6 +406,22 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
     }});
   }}
   document.querySelectorAll('table.sortable').forEach(makeSortable);
+  (function(){{
+    var box=document.createElement('div'); box.id='tipbox'; document.body.appendChild(box);
+    function show(el){{
+      var t=el.getAttribute('data-tip'); if(!t) return;
+      box.textContent=t; box.style.display='block';
+      var r=el.getBoundingClientRect();
+      box.style.left=Math.max(6, Math.min(r.left, window.innerWidth-252))+'px';
+      var top=r.top-box.offsetHeight-6; if(top<6) top=r.bottom+6;
+      box.style.top=top+'px';
+    }}
+    function hide(){{ box.style.display='none'; }}
+    document.addEventListener('mouseover', function(e){{ var el=e.target.closest&&e.target.closest('.tip'); if(el) show(el); }});
+    document.addEventListener('mouseout', function(e){{ if(e.target.closest&&e.target.closest('.tip')) hide(); }});
+    document.addEventListener('focusin', function(e){{ var el=e.target.closest&&e.target.closest('.tip'); if(el) show(el); }});
+    document.addEventListener('focusout', hide);
+  }})();
 </script>
 </body></html>"""
     out_path.write_text(doc, encoding="utf-8")
