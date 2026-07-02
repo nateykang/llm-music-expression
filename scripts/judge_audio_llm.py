@@ -86,16 +86,22 @@ def gemini_judge(system, user, audio_bytes, attempts=3):
             v = parse_verdict(_extract_json(r.text))
             if v:
                 return v
-        except Exception:
-            pass
+        except Exception as e:
+            # A daily-cap 429 won't clear on retry — bail immediately so we don't
+            # burn 3x the request budget against the RPD limit.
+            if "RESOURCE_EXHAUSTED" in str(e) or "429" in str(e):
+                return None
         time.sleep(min(2 ** a, 8))
     return None
 
 
 def openai_judge(system, user, audio_bytes, attempts=3):
+    # Routed through OpenRouter (same underlying openai/gpt-audio model) so it draws
+    # from the OpenRouter balance rather than the primary OpenAI account.
     import openai
 
-    c = openai.OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    c = openai.OpenAI(api_key=os.environ["OPENROUTER_API_KEY"],
+                      base_url="https://openrouter.ai/api/v1")
     content = [{"type": "text", "text": user}]
     if audio_bytes is not None:
         content.append({"type": "input_audio",
@@ -103,7 +109,7 @@ def openai_judge(system, user, audio_bytes, attempts=3):
     msgs = [{"role": "system", "content": system}, {"role": "user", "content": content}]
     for a in range(attempts):
         try:
-            r = c.chat.completions.create(model="gpt-audio", modalities=["text"], messages=msgs)
+            r = c.chat.completions.create(model="openai/gpt-audio", messages=msgs)
             v = parse_verdict(_extract_json(r.choices[0].message.content))
             if v:
                 return v
