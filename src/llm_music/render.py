@@ -7,11 +7,31 @@ the browser), only the pre-baked audio file is skipped.
 
 from __future__ import annotations
 
+import logging
 import shutil
 import subprocess
+from functools import lru_cache
 from pathlib import Path
 
 from .config import find_soundfont
+
+log = logging.getLogger(__name__)
+
+
+@lru_cache(maxsize=None)
+def _warn_once(msg: str) -> None:
+    """Warn once per distinct message — batch runs render hundreds of pieces and
+    a missing tool would otherwise flood the log with the same line."""
+    log.warning(msg)
+
+
+def _tail(text, limit: int = 500) -> str:
+    """Last `limit` chars of subprocess output (str or bytes), for error messages."""
+    if not text:
+        return ""
+    if isinstance(text, bytes):
+        text = text.decode("utf-8", "replace")
+    return text.strip()[-limit:]
 
 
 def write_score(score, midi_path: Path, musicxml_path: Path) -> None:
@@ -157,20 +177,29 @@ def _prepare_abc_for_audio(abc: str) -> str:
 def abc_to_midi(abc: str, work_dir: Path) -> "Path | None":
     """Convert ABC text to MIDI with abc2midi (the reference ABC->MIDI tool).
     Returns the MIDI path, or None if abc2midi is unavailable or fails."""
-    import subprocess as _sp
-
     abc2midi = shutil.which("abc2midi")
     if not abc2midi:
+        _warn_once("abc2midi not found — ABC audio baking skipped "
+                   "(install with `brew install abcmidi`)")
         return None
     work_dir.mkdir(parents=True, exist_ok=True)
     abc_file = work_dir / "piece.abc"
     abc_file.write_text(_prepare_abc_for_audio(abc), encoding="utf-8")
     midi_path = work_dir / "piece.mid"
     try:
-        _sp.run([abc2midi, str(abc_file), "-o", str(midi_path)],
-                capture_output=True, text=True, timeout=60)
-    except _sp.TimeoutExpired:
+        proc = subprocess.run([abc2midi, str(abc_file), "-o", str(midi_path)],
+                              capture_output=True, text=True, timeout=60)
+    except subprocess.TimeoutExpired as e:
+        log.warning("abc2midi timed out after 60s (%s): %s",
+                    abc_file, _tail(e.stderr) or _tail(e.stdout))
         return None
+    if proc.returncode != 0 or not midi_path.exists():
+        # abc2midi exits non-zero even on recoverable warnings, so keep the MIDI
+        # if it was produced — but surface what it complained about either way.
+        detail = _tail(proc.stderr) or _tail(proc.stdout)
+        log.warning("abc2midi %s (exit %d): %s",
+                    "failed" if not midi_path.exists() else "warned",
+                    proc.returncode, detail or "no output")
     return midi_path if midi_path.exists() else None
 
 
@@ -198,6 +227,11 @@ def midi_to_audio(midi_path: Path, audio_path: Path, timeout: int = 120) -> bool
     soundfont = find_soundfont()
     lame = shutil.which("lame")
     if not fluidsynth or not soundfont or not lame:
+        missing = [name for name, ok in
+                   (("fluidsynth", fluidsynth), ("a SoundFont", soundfont), ("lame", lame))
+                   if not ok]
+        _warn_once(f"audio baking skipped — missing {', '.join(missing)} "
+                   "(see scripts/setup_soundfont.sh)")
         return False
 
     audio_path.parent.mkdir(parents=True, exist_ok=True)
@@ -210,11 +244,18 @@ def midi_to_audio(midi_path: Path, audio_path: Path, timeout: int = 120) -> bool
                 capture_output=True, text=True, timeout=timeout,
             )
             if r1.returncode != 0 or not os.path.exists(wav):
+                log.warning("fluidsynth failed on %s (exit %d): %s", midi_path,
+                            r1.returncode, _tail(r1.stderr) or _tail(r1.stdout))
                 return False
             r2 = subprocess.run(
                 [lame, "--quiet", "-V", "4", wav, str(audio_path)],
                 capture_output=True, text=True, timeout=timeout,
             )
-        except subprocess.TimeoutExpired:
+            if r2.returncode != 0:
+                log.warning("lame failed on %s (exit %d): %s", midi_path,
+                            r2.returncode, _tail(r2.stderr) or _tail(r2.stdout))
+        except subprocess.TimeoutExpired as e:
+            log.warning("audio render timed out after %ds on %s: %s", timeout,
+                        midi_path, _tail(e.stderr) or _tail(e.stdout))
             return False
     return audio_path.exists()

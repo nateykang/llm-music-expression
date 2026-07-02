@@ -66,13 +66,14 @@ run still leaves a valid, viewable partial batch.
 ### Prompts
 
 Prompts mirror [sara-fish's set](https://github.com/sara-fish/llm-musical-self-expression)
-verbatim. The shared frame lives in [`prompts/prompt.md`](prompts/prompt.md); the
-eleven form/structure instructions are one row each in
+verbatim, plus an added `eastern-harmony` form. The shared frame lives in
+[`prompts/prompt.md`](prompts/prompt.md); the twelve form/structure instructions
+are one row each in
 [`prompts/form_instructions.csv`](prompts/form_instructions.csv):
 
 ```
-free-form · piano-piece · harp-piece · western-harmony · fugue · stab-voicing
-string-quartet · orchestral · melody-accomp · modern · postmodern
+free-form · piano-piece · harp-piece · western-harmony · eastern-harmony · fugue
+stab-voicing · string-quartet · orchestral · melody-accomp · modern · postmodern
 ```
 
 Codegen mode also injects a music21 cheat-sheet ([`prompts/toolkit.md`](prompts/toolkit.md))

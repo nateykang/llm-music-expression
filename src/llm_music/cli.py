@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import logging
 import sys
 import tempfile
 import threading
@@ -205,6 +206,8 @@ def cmd_audio_report(args) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="llm-music", description=__doc__)
+    p.add_argument("-q", "--quiet", action="store_true",
+                   help="only log warnings and errors")
     sub = p.add_subparsers(dest="command", required=True)
 
     common = argparse.ArgumentParser(add_help=False)
@@ -270,6 +273,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    logging.basicConfig(level=logging.WARNING if args.quiet else logging.INFO,
+                        format="%(levelname)s %(name)s: %(message)s")
     return args.func(args)
 
 

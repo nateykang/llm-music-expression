@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import csv
-import time
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -11,6 +11,9 @@ from .config import PROMPTS_DIR
 from .models.base import LLMClient
 from .modes import MODES
 from .render import midi_to_audio
+from .retry import backoff_sleep, is_retryable
+
+log = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = (
     "You are a composer expressing yourself through music. Follow the output "
@@ -37,29 +40,6 @@ class PieceResult:
     abc: str = ""
     error: str | None = None
     errors: list[str] = field(default_factory=list)
-
-
-def _is_retryable(exc: Exception) -> bool:
-    """Whether re-issuing the same request could plausibly succeed.
-
-    Transient (retry): network errors, timeouts, 429 rate limits, 5xx.
-    Permanent (give up): 400/401/403/404 — bad/unknown/unverified model, bad
-    key, malformed request. Retrying these just burns attempts (e.g. an
-    unverified org requesting `o3` 400s five times in a row).
-    """
-    # Transient markers that can show up without a clean 5xx status — notably
-    # Anthropic's "overloaded" (HTTP 529, often surfaced via the streaming path).
-    msg = str(exc).lower()
-    if any(k in msg for k in ("overload", "rate limit", "rate_limit", "ratelimit",
-                              "timeout", "timed out", "temporarily", "try again",
-                              "502", "503", "504", "529", "connection")):
-        return True
-    status = getattr(exc, "status_code", None) or getattr(exc, "status", None)
-    if status is None:
-        return True  # no HTTP status -> likely a network/transport hiccup
-    if status in (408, 409, 429) or status >= 500:
-        return True
-    return False
 
 
 def _form_row(prompt_name: str) -> dict:
@@ -124,9 +104,13 @@ def generate_piece(
         except Exception as e:  # API/network failure
             prior_error = f"API error: {e}"
             result.errors.append(prior_error)
-            if not _is_retryable(e):
+            if not is_retryable(e):
+                log.warning("%s × %s: permanent API error, giving up: %s",
+                            client.name, prompt_name, e)
                 break  # e.g. 400 unknown/unverified model, bad key — retrying won't help
-            time.sleep(min(2 ** attempt, 20))  # exponential backoff (esp. for overload)
+            log.warning("%s × %s: attempt %d/%d failed (%s), backing off",
+                        client.name, prompt_name, attempt, max_attempts, e)
+            backoff_sleep(attempt)  # exponential backoff (esp. for overload)
             continue
 
         outcome = mode_mod.generate(response, work_dir)

@@ -14,10 +14,11 @@ def _all_ids() -> list[str]:
         return [row["id"] for row in csv.DictReader(f)]
 
 
-def test_all_eleven_prompts_present():
+def test_all_twelve_prompts_present():
+    # sara-fish's eleven forms plus the added eastern-harmony.
     ids = _all_ids()
-    assert len(ids) == 11
-    assert "free-form" in ids and "postmodern" in ids
+    assert len(ids) == 12
+    assert "free-form" in ids and "postmodern" in ids and "eastern-harmony" in ids
 
 
 @pytest.mark.parametrize("prompt_id", _all_ids())

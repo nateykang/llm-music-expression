@@ -21,13 +21,17 @@ computed proxies), and a single dominant emotion label.
 from __future__ import annotations
 
 import json
+import logging
 import re
 import tempfile
 import threading
-import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
+
+from .retry import backoff_sleep, is_retryable
+
+log = logging.getLogger(__name__)
 
 # Craft/quality dimensions (1-5) — these average into the headline "overall".
 # (key, label, question, low-anchor, high-anchor)
@@ -255,7 +259,7 @@ def _measure_tokens(m) -> list:
     return [t for _, _, t in events]
 
 
-def _score_to_text(score, max_measures: int = 64) -> str:
+def _score_to_text(score, max_measures: int = 64, label: str = "") -> str:
     """LLM-readable rendering of a code-gen score: a key/time/tempo header, then per
     part (labelled with its instrument) per bar, notes/rests/dynamics as
     pitch+octave/duration with articulations & expressions. Carries everything the
@@ -276,6 +280,9 @@ def _score_to_text(score, max_measures: int = 64) -> str:
             if toks:
                 lines.append(f"  m{mi + 1}: " + " ".join(toks))
         if len(measures) > max_measures:
+            log.warning("judge input truncated%s: part %d has %d measures, "
+                        "judging the first %d",
+                        f" ({label})" if label else "", pi + 1, len(measures), max_measures)
             lines.append(f"  … ({len(measures) - max_measures} more measures)")
     return "\n".join(lines)
 
@@ -298,10 +305,11 @@ def representation(piece: dict, batch_dir: Path) -> tuple[str | None, str | None
         with tempfile.TemporaryDirectory(prefix="judge_rep_") as td:
             _, score = _load(piece, batch_dir, Path(td))
         if score is not None:
+            label = f"{piece.get('model', '?')} × {piece.get('prompt', '?')}"
             return ("a note listing (key/time/tempo header, then per part — labelled "
                     "with its instrument — per bar: Pitch+octave/duration with rests, "
                     "dynamics [p]/[f], articulations and technical directions)",
-                    _score_to_text(score))
+                    _score_to_text(score, label=label))
     return None, None
 
 
@@ -363,18 +371,27 @@ def judge_piece(client, piece: dict, batch_dir: Path, include_note: bool = False
     if rep_text is None:
         return None
     user = build_user(piece, rep_kind, rep_text, include_note)
+    who = f"{getattr(client, 'name', '?')} on {piece.get('model', '?')} × {piece.get('prompt', '?')}"
     obj = None
     for a in range(attempts):
         try:
             raw = client.complete(_system(include_note), user, json_mode=True)
             obj = _extract_json(raw)
-        except Exception:
+            if obj is None:
+                log.warning("judge %s: no parseable JSON in response (attempt %d/%d)",
+                            who, a + 1, attempts)
+        except Exception as e:
             obj = None
+            if not is_retryable(e):
+                log.warning("judge %s: permanent API error, giving up: %s", who, e)
+                return None
+            log.warning("judge %s: attempt %d/%d failed: %s", who, a + 1, attempts, e)
         if obj:
             break
         if a < attempts - 1:
-            time.sleep(min(2 ** a, 8))
+            backoff_sleep(a, cap=8.0)
     if not obj:
+        log.warning("judge %s: no verdict after %d attempts", who, attempts)
         return None
     out = {}
     keys = QUALITY_KEYS + AFFECT_KEYS + (["intent"] if include_note else [])

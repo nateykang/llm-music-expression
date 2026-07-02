@@ -14,6 +14,9 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
+from .render import _tail
+
+
 @dataclass
 class SandboxResult:
     ok: bool
@@ -49,8 +52,14 @@ def run_music21_code(code: str, out_dir: Path, timeout: int = 60) -> SandboxResu
                 text=True,
                 timeout=timeout,
             )
-        except subprocess.TimeoutExpired:
-            return SandboxResult(False, None, None, f"timed out after {timeout}s")
+        except subprocess.TimeoutExpired as e:
+            # TimeoutExpired carries the output captured before the kill (as
+            # bytes, even with text=True) — include it so a hang isn't opaque.
+            detail = _tail(e.stderr) or _tail(e.stdout)
+            msg = f"timed out after {timeout}s"
+            if detail:
+                msg += f"; output before timeout: {detail}"
+            return SandboxResult(False, None, None, msg)
 
     if proc.returncode != 0:
         err = (proc.stderr or proc.stdout or "").strip()
