@@ -101,13 +101,31 @@ async function init() {
 
   // Pool every batch's ok pieces, tagged with their folder + timestamp. Failed
   // generations are dropped — reliability stats live on the Results tab.
-  const manifests = await Promise.all(
+  const manifests = (await Promise.all(
     batches.map((b) => fetchJSON(`data/${b}/data.json`).then((m) => ({ dir: b, m })).catch(() => null))
-  );
-  for (const it of manifests.filter(Boolean)) {
+  )).filter(Boolean);
+
+  // Only offer pieces whose pre-rendered MP3 is actually servable. Manifests
+  // list an audio path for everything, but the sampling batches keep their
+  // audio out of git, so the published site 404s on them (local checkouts have
+  // the files and pass). Audio is excluded per batch dir, so one HEAD probe per
+  // batch decides for all its pieces.
+  const servable = {};
+  await Promise.all(manifests.map(async (it) => {
+    const sample = (it.m.pieces || []).find((p) => p.ok && p.audio);
+    if (!sample) { servable[it.dir] = false; return; }
+    try {
+      servable[it.dir] = (await fetch(`data/${it.dir}/${sample.audio}`, { method: "HEAD" })).ok;
+    } catch (e) {
+      servable[it.dir] = false;
+    }
+  }));
+
+  for (const it of manifests) {
+    if (!servable[it.dir]) continue;
     const when = batchDate(it.dir);
     for (const p of it.m.pieces || []) {
-      if (!p.ok) continue;
+      if (!p.ok || !p.audio) continue;
       PROMPT_LABELS[p.prompt] = p.prompt_label || p.prompt;
       PIECES.push(Object.assign({}, p, { _dir: `data/${it.dir}`, _when: when }));
     }
