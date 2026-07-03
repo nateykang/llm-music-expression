@@ -19,6 +19,9 @@ MODEL_REGISTRY: dict[str, tuple] = {
     "opus-4.8-thinking": ("anthropic", "claude-opus-4-8", {"thinking": {"type": "adaptive"}}),
     "sonnet-4.6": ("anthropic", "claude-sonnet-4-6"),
     "sonnet-4.6-thinking": ("anthropic", "claude-sonnet-4-6", {"thinking": {"type": "adaptive"}}),
+    # Fable 5 — Anthropic's most capable model; thinking is always on (adaptive is
+    # the only accepted config; budget_tokens is rejected).
+    "fable-5": ("anthropic", "claude-fable-5", {"thinking": {"type": "adaptive"}}),
     # OpenAI (confirmed available on this org; extend as new ones ship)
     "gpt-5.5": ("openai", "gpt-5.5"),
     "gpt-5.2": ("openai", "gpt-5.2"),

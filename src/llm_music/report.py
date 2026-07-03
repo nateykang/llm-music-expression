@@ -31,7 +31,7 @@ MINOR_FIFTHS = ["Bbm", "Fm", "Cm", "Gm", "Dm", "Am", "Em", "Bm", "F#m", "C#m", "
 KEY_MAJOR = "#BA7517"
 KEY_MINOR = "#378ADD"
 # Preferred model order for the key widget (others appended as found).
-KEY_MODEL_ORDER = ["gpt-5.5", "opus-4.8", "opus-4.8-thinking", "sonnet-4.6", "gpt-4.1",
+KEY_MODEL_ORDER = ["fable-5", "gpt-5.5", "opus-4.8", "opus-4.8-thinking", "sonnet-4.6", "gpt-4.1",
                    "gemini-2.5-pro", "grok-4.3", "deepseek-v4-pro", "qwen3-max", "llama-4-maverick"]
 
 

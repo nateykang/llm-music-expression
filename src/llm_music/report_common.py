@@ -24,7 +24,7 @@ CARD = "#ffffff"
 BORDER = "#e4e0d8"
 
 # Display shortening for model names in dense tables.
-SHORT = {"gpt-5.5": "gpt-5.5", "gemini-2.5-pro": "gemini", "opus-4.8": "opus",
+SHORT = {"fable-5": "fable", "gpt-5.5": "gpt-5.5", "gemini-2.5-pro": "gemini", "opus-4.8": "opus",
          "opus-4.8-thinking": "opus-think", "sonnet-4.6": "sonnet",
          "sonnet-4.6-thinking": "sonnet-think", "deepseek-v4-pro": "deepseek",
          "gpt-4.1": "gpt-4.1", "grok-4.3": "grok", "qwen3-max": "qwen",
