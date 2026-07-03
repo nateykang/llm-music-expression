@@ -15,14 +15,12 @@ import html
 import json
 from collections import defaultdict
 from pathlib import Path
-from statistics import mean, pstdev
+from statistics import mean
 
-# Site palette (matches docs/style.css).
-BG = "#faf8f5"
-INK = "#2b2420"
-MUTED = "#6b5d52"
-ACCENT = "#7a5a3a"
-# Warm qualitative palette for per-model series.
+from .report_common import (ACCENT, BG, INK, MUTED, REP_TOGGLE, cell, fnum,
+                            page, paned, table, toggle)
+
+# Warm qualitative palette for per-model chart series.
 PALETTE = ["#7a5a3a", "#b5651d", "#3a6b5a", "#8a3a4a", "#4a5a7a",
            "#9a7a3a", "#5a7a4a", "#7a4a6a", "#3a7a7a", "#aa5a3a"]
 
@@ -36,11 +34,10 @@ KEY_MINOR = "#378ADD"
 KEY_MODEL_ORDER = ["gpt-5.5", "opus-4.8", "opus-4.8-thinking", "sonnet-4.6", "gpt-4.1",
                    "gemini-2.5-pro", "grok-4.3", "deepseek-v4-pro", "qwen3-max", "llama-4-maverick"]
 
-# Page-wide representation toggle: ABC (declared K:) vs code-gen (music21-detected).
-REPS = [("text", "ABC"), ("code", "code-gen"), ("all", "both")]
-
 
 def _rep_filter(rows, rep):
+    """Representation filter matching REP_TOGGLE keys: text = ABC/SMT-ABC
+    (declared K:), code = code-gen (music21-detected), all = both."""
     if rep == "all":
         return rows
     want_code = rep == "code"
@@ -116,44 +113,15 @@ REL_COLUMNS = [
 ]
 
 
-def _cell(v, kind):
-    if v is None:
-        return "—"
-    if kind == "text":
-        return html.escape(str(v))
-    if kind == "int":
-        return str(int(v))
-    if kind == "pct":
-        return f"{v * 100:.0f}%"
-    if kind == "f0":
-        return f"{v:.0f}"
-    if kind == "f1":
-        return f"{v:.1f}"
-    return f"{v:.2f}"
-
-
-def _table_html(rows, columns):
-    head = "<thead><tr>" + "".join(
-        f"<th><span class='tip' tabindex='0' data-tip=\"{html.escape(tip)}\">"
-        f"{html.escape(lbl).replace(' ', '&nbsp;')}</span></th>"
-        for _, lbl, tip, _ in columns) + "</tr></thead>"
-    body = "<tbody>"
+def _spec_table(rows, columns, left=1):
+    """Spec-driven table: columns = (row-key, label, tip, format); the Bach
+    reference row is classed 'ref' so it pins on top when sorting."""
+    cols = [(lbl, tp) for _, lbl, tp, _ in columns]
+    out = []
     for r in rows:
-        ref = " class='ref'" if r.get("model") == "Bach chorales" else ""
-        body += f"<tr{ref}>" + "".join(
-            f"<td class='{'m' if key in ('model', 'gen') else ''}'>{_cell(r.get(key), kind)}</td>"
-            for key, _, _, kind in columns) + "</tr>"
-    body += "</tbody>"
-    return f"<div class='tscroll'><table class='sortable'>{head}{body}</table></div>"
-
-
-def _f(v):
-    """Parse a CSV cell to float, or None (NaN -> None so it drops from averages)."""
-    try:
-        x = float(v)
-    except (TypeError, ValueError):
-        return None
-    return None if x != x else x  # NaN check
+        cells = [cell(r.get(key), kind) for key, _, _, kind in columns]
+        out.append((cells, "ref" if r.get("model") == "Bach chorales" else ""))
+    return table(cols, out, left=left)
 
 
 def load_features(data_dir: Path) -> list[dict]:
@@ -172,7 +140,7 @@ def load_features(data_dir: Path) -> list[dict]:
                           "n_instruments", "instrument_rarity", "velocity_mean", "dynamics_range",
                           "n_dynamic_marks", "dynamic_span", "dynamic_changes",
                           "pitch_interval", "ioi", "rhythm_entropy", "pitch_entropy"):
-                    r[k] = _f(r.get(k))
+                    r[k] = fnum(r.get(k))
                 rows.append(r)
     return rows
 
@@ -393,18 +361,24 @@ def make_key_chart(ff, out_dir):
 KEY_WIDGET_CSS = """
   .keyviz { margin: 1rem 0 1.5rem; }
   .kv-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-  .kv-btn { font-size: 13px; padding: 5px 10px; border: 1px solid #e0d5c8; background: #fff;
-            color: #2b2420; border-radius: 6px; cursor: pointer; }
+  .kv-btn { font-size: 13px; padding: 5px 10px; border: 1px solid var(--border); background: #fff;
+            color: var(--fg); border-radius: 6px; cursor: pointer; }
   .kv-btn:hover { border-color: #c9b69f; }
-  .kv-btn[aria-pressed=true] { background: #7a5a3a; color: #fff; border-color: #7a5a3a; }
-  .kv-overlay { font-size: .85rem; color: #6b5d52; margin: 0 0 .3rem; }
+  .kv-btn[aria-pressed=true] { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .kv-overlay { font-size: .85rem; color: var(--muted); margin: 0 0 .3rem; }
   .kv-overlay input { vertical-align: -1px; margin-right: 5px; }
-  .kv-btn.kv-corpus { border-color: #7a5a3a; font-weight: 600; }
+  .kv-btn.kv-corpus { border-color: var(--accent); font-weight: 600; }
   .kv-btn.kv-corpus[aria-pressed=true] { background: #4a3320; border-color: #4a3320; }
-  .kv-stat { font-size: .9rem; color: #6b5d52; margin: .6rem 0; min-height: 20px; }
-  .kv-legend { display: flex; gap: 16px; font-size: .8rem; color: #6b5d52; margin-bottom: 8px; }
+  .kv-stat { font-size: .9rem; color: var(--muted); margin: .6rem 0; min-height: 20px; }
+  .kv-legend { display: flex; gap: 16px; font-size: .8rem; color: var(--muted); margin-bottom: 8px; }
   .kv-sw { width: 11px; height: 11px; border-radius: 2px; display: inline-block; vertical-align: -1px; margin-right: 5px; }
   .kv-chartwrap { position: relative; width: 100%; height: 320px; }
+"""
+
+CHART_CSS = """
+  .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2rem; }
+  .chart img { width: 100%; border: 1px solid var(--border); border-radius: 8px; }
+  @media (max-width: 760px) { .charts { grid-template-columns: 1fr; } }
 """
 
 KEY_WIDGET_TMPL = """
@@ -452,18 +426,18 @@ KEY_WIDGET_TMPL = """
     chart.data.datasets[2].hidden=!showRef; chart.data.datasets[3].hidden=!showRef;
     chart.update(); updateStat(current); styleBtns();
   }
-  window.__kvSetScope=function(rep){scope=rep;render();};
+  window.__onModeChange=function(rep){scope=rep;render();};
   const bw=document.getElementById('kv-models');
   var btns=['All'].concat(MODELS); if(REF) btns.push('Corpus');
   btns.forEach(function(m){const b=document.createElement('button');b.className='kv-btn'+(m==='Corpus'?' kv-corpus':'');b.textContent=(m==='Corpus'?'Corpus (real music)':m);b.dataset.m=m;b.onclick=function(){current=m;render();};bw.appendChild(b);});
   if(REF){const ov=document.getElementById('kv-overlay');ov.style.display='';ov.querySelector('input').onchange=function(){overlay=this.checked;render();};}
-  const countLabels={id:'countLabels',afterDatasetsDraw:function(ch){var x=ch.ctx;x.save();x.font='11px -apple-system,system-ui,sans-serif';x.fillStyle='#6b5d52';x.textAlign='center';[0,1].forEach(function(di){var ds=ch.data.datasets[di];var meta=ch.getDatasetMeta(di);meta.data.forEach(function(bar,i){var v=ds.data[i];if(v>0.4){x.fillText(Math.round(v)+'%',bar.x,bar.y-4);}});});x.restore();}};Chart.register(countLabels);
+  const countLabels={id:'countLabels',afterDatasetsDraw:function(ch){var x=ch.ctx;x.save();x.font='11px -apple-system,system-ui,sans-serif';x.fillStyle='#6b665d';x.textAlign='center';[0,1].forEach(function(di){var ds=ch.data.datasets[di];var meta=ch.getDatasetMeta(di);meta.data.forEach(function(bar,i){var v=ds.data[i];if(v>0.4){x.fillText(Math.round(v)+'%',bar.x,bar.y-4);}});});x.restore();}};Chart.register(countLabels);
   const chart=new Chart(document.getElementById('kv-chart'),{type:'bar',data:{labels:xlabels,datasets:[
     {label:'major',data:pct('All').maj,backgroundColor:'#BA7517',borderWidth:0,borderRadius:2,order:2},
     {label:'minor',data:pct('All').min,backgroundColor:'#378ADD',borderWidth:0,borderRadius:2,order:2},
     {label:'corpus major',type:'line',data:REF?REF.major:[],borderColor:'#7a4e10',borderDash:[5,3],borderWidth:2,pointRadius:0,backgroundColor:'transparent',hidden:true,order:1},
     {label:'corpus minor',type:'line',data:REF?REF.minor:[],borderColor:'#1f5c96',borderDash:[5,3],borderWidth:2,pointRadius:0,backgroundColor:'transparent',hidden:true,order:1}
-  ]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},plugins:{legend:{display:false},tooltip:{callbacks:{title:function(items){const i=items[0].dataIndex;return items[0].dataset.label.indexOf('minor')>=0?minorPretty[i]+' minor':majorPretty[i]+' major';},label:function(ctx){return (ctx.dataset.label.indexOf('corpus')>=0?'corpus prior: ':'')+Math.round(ctx.parsed.y)+'%';}}}},scales:{x:{grid:{display:false},ticks:{color:'#6b5d52',font:{size:12},autoSkip:false}},y:{beginAtZero:true,title:{display:true,text:'% of pieces',color:'#6b5d52'},ticks:{color:'#6b5d52'},grid:{color:'rgba(0,0,0,0.08)'}}}}});
+  ]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},plugins:{legend:{display:false},tooltip:{callbacks:{title:function(items){const i=items[0].dataIndex;return items[0].dataset.label.indexOf('minor')>=0?minorPretty[i]+' minor':majorPretty[i]+' major';},label:function(ctx){return (ctx.dataset.label.indexOf('corpus')>=0?'corpus prior: ':'')+Math.round(ctx.parsed.y)+'%';}}}},scales:{x:{grid:{display:false},ticks:{color:'#6b665d',font:{size:12},autoSkip:false}},y:{beginAtZero:true,title:{display:true,text:'% of pieces',color:'#6b665d'},ticks:{color:'#6b665d'},grid:{color:'rgba(0,0,0,0.08)'}}}}});
   render();
 })();
 </script>
@@ -510,8 +484,6 @@ def _key_widget_html(dists):
 
 def load_reliability(data_dir: Path) -> list[dict]:
     """Per (model, generation method): validity/retry stats from batch manifests."""
-    from statistics import mean
-
     agg: dict[tuple, list] = {}
     for f in sorted(data_dir.glob("*/data.json")):
         try:
@@ -537,8 +509,7 @@ def load_reliability(data_dir: Path) -> list[dict]:
 
 def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
                 reliability: list[dict] | None = None, dists: dict | None = None,
-                bach_rows: list[dict] | None = None) -> None:
-    summary = summarize(rows)
+                bach_rows: list[dict] | None = None) -> Path:
     n_pieces = len(rows)
     n_models = len({r["model"] for r in rows})
     n_batches = len({r["_batch"] for r in rows})
@@ -551,21 +522,20 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
     # so their n and metrics shouldn't be blended by default.
     bach = [summarize(bach_rows)[0]] if bach_rows else []  # human reference row (rep-independent)
 
-    def table(base_rows, caption):
-        panes = "".join(
-            f"<div class='rep-pane' data-rep='{rep}'{'' if rep == 'text' else ' hidden'}>"
-            f"{_table_html(bach + summarize(_rep_filter(base_rows, rep)), COLUMNS)}</div>"
-            for rep, _lbl in REPS)
+    def summary_table(base_rows, caption):
+        panes = paned(lambda rep: _spec_table(bach + summarize(_rep_filter(base_rows, rep)), COLUMNS),
+                      REP_TOGGLE, default="text")
         return f"<figure><figcaption>{caption}</figcaption>{panes}</figure>"
 
     key_widget = _key_widget_html(dists) if dists and any(dists.values()) else ""
 
     rel_section = ""
     if reliability:
-        rel_panes = "".join(
-            f"<div class='rep-pane' data-rep='{rep}'{'' if rep == 'text' else ' hidden'}>"
-            f"{_table_html([x for x in reliability if rep == 'all' or (x.get('gen') == 'codegen') == (rep == 'code')], REL_COLUMNS)}</div>"
-            for rep, _lbl in REPS)
+        rel_panes = paned(
+            lambda rep: _spec_table(
+                [x for x in reliability if rep == "all" or (x.get("gen") == "codegen") == (rep == "code")],
+                REL_COLUMNS, left=2),
+            REP_TOGGLE, default="text")
         rel_section = (
             "<h2>Reliability <span class='sub'>(format-success &amp; retries, per method)</span></h2>"
             "<figure><figcaption>How often each model produced a valid generation, and how many "
@@ -581,70 +551,26 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
     )
 
     ff_section = (f"<h2>Free-form defaults <span class='sub'>(the purest bias probe)</span></h2>"
-                  f"{table(ff, 'What each model reaches for when asked only to express itself.')}"
+                  f"{summary_table(ff, 'What each model reaches for when asked only to express itself.')}"
                   if ff else "")
 
-    doc = f"""<!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Results — LLM musical inductive biases</title>
-<link rel="stylesheet" href="style.css?v=22">
-<style>
-  .wrap {{ max-width: 980px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }}
-  .sub {{ color: {MUTED}; font-weight: 400; font-size: .8em; }}
-  .scope {{ color: {MUTED}; font-size: .9rem; margin: .25rem 0 1.5rem; }}
-  .tscroll {{ overflow-x: auto; }}
-  table {{ border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: .9rem; }}
-  th, td {{ text-align: right; padding: .35rem .55rem; border-bottom: 1px solid #e7ddd2; }}
-  th {{ color: {MUTED}; font-weight: 600; position: relative; }}
-  .tip {{ border-bottom: 1px dotted {MUTED}; cursor: help; outline: none; }}
-  #tipbox {{
-    position: fixed; z-index: 100; width: 240px; white-space: normal; text-align: left;
-    font-weight: 400; font-size: .76rem; line-height: 1.45; color: {BG}; background: {INK};
-    padding: .55rem .65rem; border-radius: 7px; box-shadow: 0 6px 20px rgba(0,0,0,.2);
-    pointer-events: none; display: none;
-  }}
-  td.m, th:first-child {{ text-align: left; font-weight: 600; }}
-  tr.ref td {{ font-style: italic; color: {ACCENT}; background: #f3ede4; border-bottom: 2px solid #d8c9b5; }}
-  table.sortable th {{ cursor: pointer; user-select: none; white-space: nowrap; }}
-  table.sortable th[data-dir=asc]::after {{ content: ' ▲'; font-size: .6em; opacity: .6; }}
-  table.sortable th[data-dir=desc]::after {{ content: ' ▼'; font-size: .6em; opacity: .6; }}
-  figure {{ margin: 1.5rem 0; }}
-  figcaption {{ color: {MUTED}; font-size: .85rem; margin-top: .4rem; }}
-  .charts {{ display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2rem; }}
-  .chart img {{ width: 100%; border: 1px solid #e7ddd2; border-radius: 8px; }}
-  @media (max-width: 760px) {{ .charts {{ grid-template-columns: 1fr; }} }}
-  nav.top a {{ color: {ACCENT}; text-decoration: none; font-weight: 600; }}
-{KEY_WIDGET_CSS}
-</style>
-</head><body>
-<nav class="tabs">
-  <a href="index.html">Browse outputs</a>
-  <a href="results.html" class="active">Results &amp; analysis</a>
-  <a href="judge.html">LLM judge</a>
-  <a href="audio.html">Audio emotion</a>
-</nav>
-<div class="wrap">
-  <h1>What do LLMs default to, musically?</h1>
+    rep_toggle = toggle(REP_TOGGLE, default="text", label="Representation",
+                        note='ABC and code-gen are separate runs — "both" blends them.')
+    all_table = summary_table(rows, 'Aggregated over every prompt for the selected representation. '
+                                    '"n" is how many pieces that model contributed.')
+
+    body = f"""<h1>What do LLMs default to, musically?</h1>
   <p class="scope">Summary metrics across <b>{n_pieces} generated pieces</b>
      ({n_models} models, {n_batches} experiments, code-gen + ABC + SMT-ABC).
      Metrics are standard symbolic-music descriptors (MusPy + music21); affect is a
      valence/arousal proxy (Russell circumplex). Generated by <code>llm-music report</code>.</p>
 
-  <div class="kv-row" style="margin:0 0 1.5rem; align-items:center; gap:10px; position:sticky; top:0; background:{BG}; padding:.5rem 0; z-index:5;">
-    <span style="font-size:.9rem; color:{INK}; font-weight:500;">Representation</span>
-    <span id="rep-toggle" class="kv-row">
-      <button class="kv-btn" data-rep="text" aria-pressed="true">ABC</button>
-      <button class="kv-btn" data-rep="code">code-gen</button>
-      <button class="kv-btn" data-rep="all">both</button>
-    </span>
-    <span style="font-size:.8rem; color:{MUTED};">ABC and code-gen are separate runs — "both" blends them.</span>
-  </div>
+  {rep_toggle}
 
   {ff_section}
 
   <h2>All pieces, by model</h2>
-  {table(rows, 'Aggregated over every prompt for the selected representation. "n" is how many pieces that model contributed.')}
+  {all_table}
 
   {key_widget}
 
@@ -668,68 +594,11 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
     <a href="https://arxiv.org/abs/2404.06393">MuPT</a>).
   </p>
 
-  <p class="scope" style="margin-top:2rem">Note: the charts below aggregate all
-     representations; the toggle above drives the tables and the key-choice chart.</p>
-</div>
-<script>
-(function(){{
-  function setRep(rep){{
-    var panes=document.querySelectorAll('.rep-pane');
-    for(var i=0;i<panes.length;i++) panes[i].hidden = panes[i].getAttribute('data-rep')!==rep;
-    var btns=document.querySelectorAll('#rep-toggle button');
-    for(var j=0;j<btns.length;j++) btns[j].setAttribute('aria-pressed', btns[j].getAttribute('data-rep')===rep);
-    if(window.__kvSetScope) window.__kvSetScope(rep);
-  }}
-  var btns=document.querySelectorAll('#rep-toggle button');
-  for(var k=0;k<btns.length;k++)(function(b){{ b.onclick=function(){{ setRep(b.getAttribute('data-rep')); }}; }})(btns[k]);
-  setRep('text');
+  <p class="scope" style="margin-top:2rem">Note: the charts above aggregate all
+     representations; the toggle at the top drives the tables and the key-choice chart.</p>"""
 
-  // click a column header to sort rows by it (toggles asc/desc); Bach reference row
-  // stays pinned on top, empty cells sink to the bottom.
-  function makeSortable(table){{
-    var head=table.tHead, body=table.tBodies[0];
-    if(!head||!body) return;
-    var cells=head.rows[0].cells;
-    for(var i=0;i<cells.length;i++)(function(th,idx){{
-      th.onclick=function(){{
-        var asc=th.getAttribute('data-dir')!=='asc';
-        for(var h=0;h<cells.length;h++) cells[h].removeAttribute('data-dir');
-        th.setAttribute('data-dir', asc?'asc':'desc');
-        var num=function(c){{ var n=parseFloat(c.textContent.trim().replace(/[%,+\\s]/g,'')); return isNaN(n)?null:n; }};
-        var rows=Array.prototype.slice.call(body.rows);
-        var refs=rows.filter(function(r){{return r.classList.contains('ref');}});
-        var data=rows.filter(function(r){{return !r.classList.contains('ref');}});
-        data.sort(function(a,b){{
-          var ka=num(a.cells[idx]), kb=num(b.cells[idx]);
-          if(ka===null&&kb===null){{ var c=a.cells[idx].textContent.trim().localeCompare(b.cells[idx].textContent.trim()); return asc?c:-c; }}
-          if(ka===null) return 1;
-          if(kb===null) return -1;
-          return asc?ka-kb:kb-ka;
-        }});
-        refs.concat(data).forEach(function(r){{ body.appendChild(r); }});
-      }};
-    }})(cells[i], i);
-  }}
-  var st=document.querySelectorAll('table.sortable');
-  for(var s=0;s<st.length;s++) makeSortable(st[s]);
-}})();
-(function(){{
-  var box=document.createElement('div'); box.id='tipbox'; document.body.appendChild(box);
-  function show(el){{
-    var t=el.getAttribute('data-tip'); if(!t) return;
-    box.textContent=t; box.style.display='block';
-    var r=el.getBoundingClientRect();
-    box.style.left=Math.max(6, Math.min(r.left, window.innerWidth-252))+'px';
-    var top=r.top-box.offsetHeight-6; if(top<6) top=r.bottom+6;
-    box.style.top=top+'px';
-  }}
-  function hide(){{ box.style.display='none'; }}
-  document.addEventListener('mouseover', function(e){{ var el=e.target.closest&&e.target.closest('.tip'); if(el) show(el); }});
-  document.addEventListener('mouseout', function(e){{ if(e.target.closest&&e.target.closest('.tip')) hide(); }});
-  document.addEventListener('focusin', function(e){{ var el=e.target.closest&&e.target.closest('.tip'); if(el) show(el); }});
-  document.addEventListener('focusout', hide);
-}})();
-</script>
-</body></html>"""
-    out_path.write_text(doc, encoding="utf-8")
-
+    out_path.write_text(
+        page("Results — LLM musical inductive biases", "results.html", body,
+             extra_css=CHART_CSS + KEY_WIDGET_CSS),
+        encoding="utf-8")
+    return out_path

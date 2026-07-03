@@ -10,7 +10,6 @@ per-trait self-bias heatmap, and the text-bias comparison.
 from __future__ import annotations
 
 import csv
-import html
 import json
 from collections import Counter, defaultdict
 from math import sqrt
@@ -18,22 +17,11 @@ from pathlib import Path
 from statistics import mean
 
 from .judge import QUALITY_KEYS
-from .report import ACCENT, BG, INK, MUTED
+from .report_common import (MODE_TOGGLE, SHORT, fnum, group_by_model, heat,
+                            mode_filter, page, paned, table, toggle)
 
 DIMS = QUALITY_KEYS + ["valence", "arousal"]
-SHORT = {"gpt-5.5": "gpt-5.5", "gemini-2.5-pro": "gemini", "opus-4.8": "opus",
-         "opus-4.8-thinking": "opus-think", "sonnet-4.6": "sonnet",
-         "deepseek-v4-pro": "deepseek", "gpt-4.1": "gpt-4.1", "grok-4.3": "grok",
-         "qwen3-max": "qwen", "llama-4-maverick": "llama"}
 PANEL = ["gpt-5.5", "gemini-2.5-pro", "opus-4.8"]
-
-
-def _f(x):
-    try:
-        v = float(x)
-        return None if v != v else v
-    except (TypeError, ValueError):
-        return None
 
 
 def _pearson(a, b):
@@ -57,39 +45,11 @@ def _load_csv(p: Path):
         if p.exists() else []
 
 
-# ---------- HTML helpers ----------
-def _tip(label, tip):
-    return (f"<th><span class='tip' tabindex='0' data-tip=\"{html.escape(tip)}\">"
-            f"{html.escape(label).replace(' ', '&nbsp;')}</span></th>") if tip else f"<th>{html.escape(label)}</th>"
-
-
-def _table(cols, rows):
-    """cols = [(label, tip)]; rows = list of cell-HTML lists (first cell left-aligned)."""
-    head = "<thead><tr>" + "".join(_tip(l, t) for l, t in cols) + "</tr></thead>"
-    body = "<tbody>"
-    for cells in rows:
-        body += "<tr>" + "".join(
-            f"<td class='{'m' if i == 0 else ''}'>{c}</td>" for i, c in enumerate(cells)) + "</tr>"
-    body += "</tbody>"
-    return f"<div class='tscroll'><table class='sortable'>{head}{body}</table></div>"
-
-
-def _heat(v, scale=0.55):
-    if v is None:
-        return "<td>—</td>"
-    a = min(0.5, abs(v) / scale * 0.5)
-    rgb = "46,160,67" if v >= 0 else "207,90,80"
-    return f"<td style='background:rgba({rgb},{a:.2f})'>{v:+.2f}</td>"
-
-
 # ---------- sections ----------
 def _by_model(rows, keys):
-    g = defaultdict(list)
-    for r in rows:
-        g[r["model"]].append(r)
     out = {}
-    for m, rs in g.items():
-        out[m] = {k: mean([_f(r[k]) for r in rs if _f(r.get(k)) is not None] or [float("nan")]) for k in keys}
+    for m, rs in group_by_model(rows).items():
+        out[m] = {k: mean([fnum(r[k]) for r in rs if fnum(r.get(k)) is not None] or [float("nan")]) for k in keys}
         out[m]["n"] = len(rs)
     return out
 
@@ -106,7 +66,7 @@ def _rankings(blind):
         cells = [SHORT.get(m, m), str(d["n"]), f"<b>{d['overall']:.2f}</b>"]
         cells += [f"{d[k]:.2f}" for k in QUALITY_KEYS]
         rows.append(cells)
-    return _table(cols, rows)
+    return table(cols, rows)
 
 
 def _emotion(blind, feats):
@@ -140,7 +100,7 @@ def _emotion(blind, feats):
     note = (f"<p class='callout'>Blind perceived valence tracks the computed minor-key rate at "
             f"<b>r = {r:+.2f}</b> (n={len(pairs)} models) — a judge that never saw the key hears "
             f"minor-heavy models as darker. The computed proxy and human-style perception agree.</p>")
-    return _table(cols, rows) + note
+    return table(cols, rows) + note
 
 
 def _competence_selfbias(raw):
@@ -174,7 +134,7 @@ def _competence_selfbias(raw):
         n = sum(1 for a, qd in pieces if a == j and j in qd)
         rows.append([SHORT.get(j, j), f"{comp[j]:.2f}", f"{lvl[j]:.2f}",
                      f"{sb:+.2f}" if sb is not None else "—", str(n)])
-    return _table(cols, rows), pieces
+    return table(cols, rows), pieces
 
 
 def _per_trait(raw):
@@ -202,7 +162,7 @@ def _per_trait(raw):
         body += f"<tr><td class='m'>{d}</td>"
         for m in judges:
             v = (mean(own[m][d]) - mean(oth[m][d])) if own[m].get(d) and oth[m].get(d) else None
-            body += _heat(v)
+            body += heat(v)
         body += "</tr>"
     body += "</tbody>"
     nrow = ("<tfoot><tr><td class='m sub'>n own</td>" + "".join(
@@ -241,37 +201,15 @@ def _text_bias(blind, noted):
             ("type", None)]
     out = []
     for d in DIMS:
-        ds = [_f(n[d]) - _f(b[d]) for b, n in rows if _f(n.get(d)) is not None and _f(b.get(d)) is not None]
+        ds = [fnum(n[d]) - fnum(b[d]) for b, n in rows if fnum(n.get(d)) is not None and fnum(b.get(d)) is not None]
         if ds:
             t = "quality" if d in QUALITY_KEYS else "affect"
             out.append([d, f"{mean(ds):+.3f}", t])
-    return _table(cols, out), len(rows)
-
-
-# ---------- generation-mode toggle ----------
-TOGGLE = [("abc", "ABC"), ("code", "code-gen"), ("all", "both")]
-
-
-def _mode_filter(items, mode):
-    """Filter raw pieces / feature rows by generation mode. ABC groups abc + smt-abc
-    (both notation-based); code = code-gen; all = everything."""
-    if mode == "all":
-        return items
-    if mode == "abc":
-        return [x for x in items if x.get("mode") in ("abc", "smt-abc")]
-    return [x for x in items if x.get("mode") == "codegen"]
-
-
-def _paned(fn):
-    """Render content 3× (one per generation mode) into toggle-able panes; 'both'
-    is shown by default, the others hidden until the toggle switches them in."""
-    return "".join(
-        f"<div class='mode-pane' data-mode='{m}'{'' if m == 'all' else ' hidden'}>{fn(m)}</div>"
-        for m, _ in TOGGLE)
+    return table(cols, out), len(rows)
 
 
 # ---------- page ----------
-def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
+def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path) -> Path:
     feats = []
     for fp in sorted(data_dir.glob("*/features.csv")):
         feats += [r for r in csv.DictReader(fp.open(encoding="utf-8")) if r["prompt"] == "free-form"]
@@ -285,7 +223,7 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
                     "from the notation alone — no title, composer note, or model name. Dimensions follow the "
                     "music-eval literature (ChatMusician / Chu et al. / MuSpike); scoring follows the "
                     "LLM-judge literature (reason-before-score, anchored 1–5, panel-averaged).</p>"
-                    + _paned(lambda m: _rankings(_panel_rows(_mode_filter(raw, m), PANEL)))
+                    + paned(lambda m: _rankings(_panel_rows(mode_filter(raw, m), PANEL)))
                     + "<p class='callout' style='font-size:.82rem'>🧠 <b>Thinking improves the music — in "
                       "both representations.</b> The adaptive-thinking variants beat their base models in "
                       "every representation-matched comparison (blind 3-frontier panel): "
@@ -302,128 +240,32 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path):
         secs.append("<h2>Emotional character <span class='sub'>(perceived, blind)</span></h2>"
                     "<p class='scope'>What the blind judge <i>hears</i> — perceived valence/arousal and the "
                     "dominant emotion — against the computed minor-key proxy.</p>"
-                    + _paned(lambda m: _emotion(_panel_rows(_mode_filter(raw, m), PANEL), _mode_filter(feats, m))))
+                    + paned(lambda m: _emotion(_panel_rows(mode_filter(raw, m), PANEL), mode_filter(feats, m))))
         secs.append("<h2>Can each model judge music? <span class='sub'>(all-9 study)</span></h2>"
                     "<p class='scope'>With every model judging every piece, this shows each model's "
                     "competence (agreement with the consensus), its leniency, and — leniency-corrected — "
                     "whether it favors its own work. No model meaningfully over-rates itself; competence "
                     "and leniency vary widely.</p>"
-                    + _paned(lambda m: _competence_selfbias(_mode_filter(raw, m))[0]))
+                    + paned(lambda m: _competence_selfbias(mode_filter(raw, m))[0]))
         secs.append("<h2>Self-bias by trait <span class='sub'>(leniency-corrected)</span></h2>"
                     "<p class='scope'>Where each model judges its <i>own</i> music differently than it judges "
                     "everyone else's. <span style='color:rgb(46,140,67)'>green = kinder to itself</span>, "
                     "<span style='color:rgb(197,80,70)'>red = harder on itself</span>. The pattern: weak "
                     "models over-credit themselves exactly where they're weakest (grok→harmony, llama→emotion); "
                     "strong models are calibrated. Small n per model — read patterns, not single cells.</p>"
-                    + _paned(lambda m: _per_trait(_mode_filter(raw, m))))
+                    + paned(lambda m: _per_trait(mode_filter(raw, m))))
     # Text bias is only meaningful against a GOAL prompt (does the brief make the
     # judge over-credit adherence) — not free-form. _text_bias() is kept for that
     # steering-phase comparison; intentionally not shown on the free-form page.
 
-    body = "\n".join(secs) or "<p>No judge results found. Run <code>llm-music judge</code> first.</p>"
-    doc = f"""<!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LLM judge — musical inductive biases</title>
-<link rel="stylesheet" href="style.css?v=22">
-<style>
-  .wrap {{ max-width: 980px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }}
-  .sub {{ color: {MUTED}; font-weight: 400; font-size: .8em; }}
-  .scope {{ color: {MUTED}; font-size: .9rem; margin: .25rem 0 1.25rem; }}
-  .tscroll {{ overflow-x: auto; }}
-  table {{ border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: .9rem; }}
-  th, td {{ text-align: right; padding: .35rem .55rem; border-bottom: 1px solid #e7ddd2; }}
-  th {{ color: {MUTED}; font-weight: 600; position: relative; }}
-  .tip {{ border-bottom: 1px dotted {MUTED}; cursor: help; outline: none; }}
-  #tipbox {{
-    position: fixed; z-index: 100; width: 240px; white-space: normal; text-align: left;
-    font-weight: 400; font-size: .76rem; line-height: 1.45; color: {BG}; background: {INK};
-    padding: .55rem .65rem; border-radius: 7px; box-shadow: 0 6px 20px rgba(0,0,0,.2);
-    pointer-events: none; display: none; }}
-  td.m, th:first-child {{ text-align: left; font-weight: 600; }}
-  td.sub {{ color: {MUTED}; font-size: .8rem; }}
-  table.heat td {{ text-align: center; }}
-  h2 {{ margin-top: 2.4rem; }}
-  .callout {{ background: #f3ede4; border-left: 3px solid {ACCENT}; padding: .7rem .9rem;
-             border-radius: 0 7px 7px 0; font-size: .9rem; margin: .8rem 0 0; }}
-  .mode-toggle {{ position: sticky; top: 0; z-index: 10; background: {BG}; display: flex;
-    gap: 8px; align-items: center; padding: .6rem 0; margin-bottom: .5rem;
-    border-bottom: 1px solid #e7ddd2; }}
-  .mode-toggle .lbl {{ font-weight: 600; color: {INK}; font-size: .9rem; }}
-  .mode-toggle button {{ font: inherit; font-size: .85rem; padding: 4px 13px; border-radius: 7px;
-    border: 1px solid #cbb99a; background: #fff; color: {INK}; cursor: pointer; }}
-  .mode-toggle button[aria-pressed=true] {{ background: {ACCENT}; color: {BG}; border-color: {ACCENT}; }}
-  .mode-pane[hidden] {{ display: none; }}
-  table.sortable th {{ cursor: pointer; user-select: none; white-space: nowrap; }}
-  table.sortable th[data-dir=asc]::after {{ content: ' ▲'; font-size: .6em; opacity: .6; }}
-  table.sortable th[data-dir=desc]::after {{ content: ' ▼'; font-size: .6em; opacity: .6; }}
-</style>
-</head><body>
-<nav class="tabs">
-  <a href="index.html">Browse outputs</a>
-  <a href="results.html">Results &amp; analysis</a>
-  <a href="judge.html" class="active">LLM judge</a>
-  <a href="audio.html">Audio emotion</a>
-</nav>
-<div class="wrap">
-  <h1>How LLMs judge music — and themselves</h1>
+    secs_html = "\n".join(secs) or "<p>No judge results found. Run <code>llm-music judge</code> first.</p>"
+    body = f"""<h1>How LLMs judge music — and themselves</h1>
   <p class="scope">An LLM-as-judge layer over the generated pieces: blind quality + emotion ratings,
      each model's competence as a critic, and its self-bias. Rubric dimensions follow the music-eval
      literature; the protocol (reason-before-score, anchored scales, blind panel) follows the LLM-judge
      literature. Scope: {len(raw)} free-form pieces. Generated by <code>llm-music judge-report</code>.</p>
-  <div class="mode-toggle">
-    <span class="lbl">Generation</span>
-    <button data-mode="abc">ABC</button>
-    <button data-mode="code">code-gen</button>
-    <button data-mode="all" aria-pressed="true">both</button>
-  </div>
-  {body}
-</div>
-<script>
-  function setMode(m){{
-    document.querySelectorAll('.mode-pane').forEach(p => {{ p.hidden = p.dataset.mode !== m; }});
-    document.querySelectorAll('.mode-toggle button').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === m));
-  }}
-  document.querySelectorAll('.mode-toggle button').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
-
-  // click a column header to sort rows by it (toggles asc/desc); empty cells sink last.
-  function makeSortable(table){{
-    const head = table.tHead, body = table.tBodies[0];
-    if(!head || !body) return;
-    [...head.rows[0].cells].forEach((th, i) => {{
-      th.addEventListener('click', () => {{
-        const asc = th.dataset.dir !== 'asc';
-        [...head.rows[0].cells].forEach(h => h.removeAttribute('data-dir'));
-        th.dataset.dir = asc ? 'asc' : 'desc';
-        const num = c => {{ const n = parseFloat(c.textContent.trim().replace(/[%,+\\s]/g, '')); return isNaN(n) ? null : n; }};
-        [...body.rows].sort((a, b) => {{
-          const ka = num(a.cells[i]), kb = num(b.cells[i]);
-          if(ka === null && kb === null) {{ const c = a.cells[i].textContent.trim().localeCompare(b.cells[i].textContent.trim()); return asc ? c : -c; }}
-          if(ka === null) return 1;
-          if(kb === null) return -1;
-          return asc ? ka - kb : kb - ka;
-        }}).forEach(r => body.appendChild(r));
-      }});
-    }});
-  }}
-  document.querySelectorAll('table.sortable').forEach(makeSortable);
-  (function(){{
-    var box=document.createElement('div'); box.id='tipbox'; document.body.appendChild(box);
-    function show(el){{
-      var t=el.getAttribute('data-tip'); if(!t) return;
-      box.textContent=t; box.style.display='block';
-      var r=el.getBoundingClientRect();
-      box.style.left=Math.max(6, Math.min(r.left, window.innerWidth-252))+'px';
-      var top=r.top-box.offsetHeight-6; if(top<6) top=r.bottom+6;
-      box.style.top=top+'px';
-    }}
-    function hide(){{ box.style.display='none'; }}
-    document.addEventListener('mouseover', function(e){{ var el=e.target.closest&&e.target.closest('.tip'); if(el) show(el); }});
-    document.addEventListener('mouseout', function(e){{ if(e.target.closest&&e.target.closest('.tip')) hide(); }});
-    document.addEventListener('focusin', function(e){{ var el=e.target.closest&&e.target.closest('.tip'); if(el) show(el); }});
-    document.addEventListener('focusout', hide);
-  }})();
-</script>
-</body></html>"""
-    out_path.write_text(doc, encoding="utf-8")
+  {toggle(MODE_TOGGLE)}
+  {secs_html}"""
+    out_path.write_text(page("LLM judge — musical inductive biases", "judge.html", body),
+                        encoding="utf-8")
     return out_path
