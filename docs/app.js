@@ -387,32 +387,41 @@ function escapeHtml(s) {
 
 function mountAudio(slot, piece, dir, visual) {
   slot.innerHTML = "";
-  // ABC audio is pre-baked to MP3 (abc2midi -> FluidSynth), played below like
-  // code-gen. Only fall back to the abcjs synth if no MP3 was produced.
-  if (piece.abc && !piece.audio) {
-    if (!visual || !window.ABCJS || !ABCJS.synth.supportsAudio()) {
-      slot.innerHTML = `<p class="note">No audio — the ABC couldn't be parsed.</p>`;
-      return;
-    }
-    const ctrl = document.createElement("div");
-    slot.appendChild(ctrl);
-    const sc = new ABCJS.synth.SynthController();
-    activeSynths.push(sc); // so a later switch can stop it (Web Audio, not <audio>)
-    // onStart fires when this synth begins playing -> pause every other player.
-    sc.load(ctrl, { onStart: () => pauseOthers(null, sc) }, { displayPlay: true, displayProgress: true, displayWarp: false });
-    sc.setTune(visual, false, { soundFontUrl: SOUNDFONT }).catch(() => {
-      slot.innerHTML = `<p class="note">Could not load audio.</p>`;
-    });
-    return;
-  }
+  // ABC audio is pre-baked to MP3 (abc2midi -> FluidSynth), played like code-gen.
   if (piece.audio) {
     const a = document.createElement("audio");
     a.controls = true;
     a.src = `${dir}/${piece.audio}`;
+    // The sampling batches keep their MP3s out of git (size), so the published
+    // site 404s on them even though the manifest lists an audio path. Fall back
+    // to the abcjs in-browser synth (ABC) or an honest note (code-gen).
+    a.addEventListener("error", () => { if (a.isConnected) mountFallbackAudio(slot, piece, visual); });
     slot.appendChild(a);
-  } else {
-    slot.innerHTML = `<p class="note">No pre-rendered audio.</p>`;
+    return;
   }
+  mountFallbackAudio(slot, piece, visual);
+}
+
+function mountFallbackAudio(slot, piece, visual) {
+  slot.innerHTML = "";
+  if (!piece.abc) {
+    slot.innerHTML = `<p class="note">No pre-rendered audio for this sampled piece
+      (large sampling batches keep their audio out of the published site).</p>`;
+    return;
+  }
+  if (!visual || !window.ABCJS || !ABCJS.synth.supportsAudio()) {
+    slot.innerHTML = `<p class="note">No audio — the ABC couldn't be parsed.</p>`;
+    return;
+  }
+  const ctrl = document.createElement("div");
+  slot.appendChild(ctrl);
+  const sc = new ABCJS.synth.SynthController();
+  activeSynths.push(sc); // so a later switch can stop it (Web Audio, not <audio>)
+  // onStart fires when this synth begins playing -> pause every other player.
+  sc.load(ctrl, { onStart: () => pauseOthers(null, sc) }, { displayPlay: true, displayProgress: true, displayWarp: false });
+  sc.setTune(visual, false, { soundFontUrl: SOUNDFONT }).catch(() => {
+    slot.innerHTML = `<p class="note">Could not load audio.</p>`;
+  });
 }
 const SOUNDFONT = "https://paulrosen.github.io/midi-js-soundfonts/abcjs/";
 
@@ -428,8 +437,15 @@ async function renderScoreInto(target, piece, dir) {
   }
   setStatus("");
   try {
-    const xml = await (await fetch(`${dir}/${piece.score}`)).text();
-    tk.loadData(xml);
+    const r = await fetch(`${dir}/${piece.score}`);
+    if (!r.ok) {
+      // Large sampling batches keep scores/audio out of git — the manifest
+      // lists the path but the published site doesn't carry the file.
+      target.innerHTML = `<p class="note">Score not published for this sampled piece
+        (large sampling batches keep their files out of the published site).</p>`;
+      return;
+    }
+    tk.loadData(await r.text());
     let svg = "";
     const pages = tk.getPageCount();
     for (let i = 1; i <= pages; i++) svg += tk.renderToSVG(i);
