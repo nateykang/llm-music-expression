@@ -1,0 +1,50 @@
+# Deploys docs/ to GitHub Pages, replacing the automatic "pages build and
+# deployment" workflow. Two reasons for a custom workflow:
+#   1. The automatic one has no retry — its deploy step occasionally fails on
+#      GitHub-side transients (five failures in this repo's history), each one
+#      historically cured by an empty re-trigger commit.
+#   2. `concurrency` queues deploys so rapid back-to-back pushes (batch data
+#      lands in bursts here) can't race each other.
+# Requires Settings -> Pages -> Source = "GitHub Actions" (one-time flip).
+
+name: Deploy site to Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ["docs/**", ".github/workflows/pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; don't cancel an in-flight one — every push lands.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url || steps.deploy-retry.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+      - name: Wait before retry
+        if: steps.deploy.outcome == 'failure'
+        run: sleep 45
+      - name: Deploy to GitHub Pages (retry)
+        id: deploy-retry
+        if: steps.deploy.outcome == 'failure'
+        uses: actions/deploy-pages@v4
