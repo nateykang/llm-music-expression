@@ -1,8 +1,10 @@
-"""Rendering helpers: music21 Score -> MIDI/MusicXML, and MIDI -> audio.
+"""Rendering helpers: ABC -> MIDI (abc2midi) and MIDI -> audio (FluidSynth).
 
-Audio rendering uses FluidSynth + a SoundFont. If either is unavailable the
-pipeline degrades gracefully: scores still render (Verovio engraves MusicXML in
-the browser), only the pre-baked audio file is skipped.
+Audio rendering uses FluidSynth + a SoundFont, then lame for MP3. If any tool is
+unavailable the pipeline degrades gracefully: scores still render (Verovio/abcjs
+engrave client-side), only the pre-baked audio file is skipped. Code-gen MIDI is
+produced by the sandbox (derived from the MusicXML); this module only turns
+existing MIDI into MP3 and ABC text into MIDI.
 """
 
 from __future__ import annotations
@@ -34,95 +36,6 @@ def _tail(text, limit: int = 500) -> str:
     return text.strip()[-limit:]
 
 
-def write_score(score, midi_path: Path, musicxml_path: Path) -> None:
-    """Write a music21 Score to MIDI and MusicXML (used by ABC mode).
-
-    music21's ABC export is fragile in two ways that otherwise burn generation
-    retries:
-      1. the parser inserts the same context object (e.g. a TimeSignature) into
-         two Streams, so ``.write()`` raises "already found in this Stream";
-      2. multi-voice ABC can yield Parts without Measure objects, so MIDI's
-         repeat expansion raises "cannot process repeats on Stream that does not
-         have measures".
-
-    We try a direct write first, and on failure fall back to a normalized
-    variant: dedupe duplicate instances, run ``makeNotation`` to guarantee
-    measures, and (for MIDI only) strip repeats so playback export can't choke.
-    Repeats are kept in the engraved MusicXML.
-    """
-    midi_path.parent.mkdir(parents=True, exist_ok=True)
-    musicxml_path.parent.mkdir(parents=True, exist_ok=True)
-
-    ensure_clefs(score)
-    _write_one(score, "musicxml", musicxml_path, strip_repeats=False)
-    _write_one(score, "midi", midi_path, strip_repeats=True)
-
-
-def _write_one(score, fmt: str, path: Path, strip_repeats: bool) -> None:
-    try:
-        score.write(fmt, fp=str(path))
-        return
-    except Exception:
-        safe = _normalize_for_export(score, strip_repeats=strip_repeats)
-        safe.write(fmt, fp=str(path))  # let a second failure propagate
-
-
-def _normalize_for_export(score, strip_repeats: bool):
-    """Return an export-safe deepcopy: deduped, measured, optionally repeat-free."""
-    import copy
-
-    clean = copy.deepcopy(score)
-
-    # (1) Drop duplicate object *instances* (deepcopy keeps shared refs shared).
-    seen: set[int] = set()
-    for container in clean.recurse(streamsOnly=True, includeSelf=True):
-        for el in list(container):
-            if id(el) in seen:
-                container.remove(el)
-            else:
-                seen.add(id(el))
-
-    # (2) Strip repeat marks/barlines so MIDI export won't try to expand them.
-    if strip_repeats:
-        from music21 import bar, repeat
-
-        for el in list(clean.recurse().getElementsByClass(repeat.RepeatMark)):
-            if el.activeSite is not None:
-                el.activeSite.remove(el)
-        for b in list(clean.recurse().getElementsByClass(bar.Repeat)):
-            if b.activeSite is not None:
-                b.activeSite.remove(b)
-
-    # (3) Guarantee measures exist.
-    try:
-        clean = clean.makeNotation(inPlace=False)
-    except Exception:
-        pass
-    return clean
-
-
-def ensure_clefs(score) -> None:
-    """Give every part a clef if it lacks one.
-
-    Models often omit clefs; music21's MusicXML export then emits a part with no
-    clef (Verovio falls back to treble, which is wrong for a bass/LH staff).
-    Insert a best-guess clef from each part's pitch range so the engraving is
-    correct. In-place; safe to call on any Score/Part.
-    """
-    from music21 import clef
-
-    parts = list(getattr(score, "parts", [])) or [score]
-    for p in parts:
-        if list(p.recurse().getElementsByClass(clef.Clef)):
-            continue
-        try:
-            best = clef.bestClef(p, recurse=True)
-        except Exception:
-            continue
-        target = p.recurse().getElementsByClass("Measure").first() or p
-        target.insert(0, best)
-
-
 # General MIDI program by instrument-name keyword (mirrors the frontend so the
 # pre-baked audio and the abcjs notation agree on instruments).
 _GM_BY_NAME = [
@@ -145,17 +58,29 @@ def _gm_program(name: str):
     return None
 
 
-def _prepare_abc_for_audio(abc: str) -> str:
+def _prepare_abc_for_audio(abc: str, gchords: bool = True) -> str:
     """Normalize ABC so abc2midi renders it faithfully: fix bare [V1] -> [V:V1]
     voice markers (else abc2midi reads a chord), and inject a %%MIDI program per
-    named voice when the model gave none (else everything defaults to piano)."""
+    named voice when the model gave none (else everything defaults to piano).
+
+    `gchords`: abc2midi plays "Em"/"G" chord symbols as strummed accompaniment by
+    default. The baked audio keeps that ON (deliberate: the symbols are part of
+    the notation, so a listener hears them performed — and the whole corpus was
+    synthesized this way). Pass gchords=False to add %%MIDI gchordoff, so feature
+    extraction measures only the notes the model actually wrote."""
     import re
 
     # abc2midi treats a blank line as end-of-tune, so a blank line between the
     # header/voice declarations and the music (or between sections — several models
     # do this) silently truncates the tune to ZERO notes. Our pieces are single
     # tunes, so drop blank lines first.
-    abc = "\n".join(ln for ln in abc.splitlines() if ln.strip())
+    lines = [ln for ln in abc.splitlines() if ln.strip()]
+    if not gchords:
+        for i, ln in enumerate(lines):
+            if ln.lstrip().startswith("K:"):
+                lines.insert(i + 1, "%%MIDI gchordoff")
+                break
+    abc = "\n".join(lines)
 
     voices = list(dict.fromkeys(re.findall(r"(?m)^\s*V:\s*(\S+)", abc)))
     for v in voices:
@@ -174,9 +99,10 @@ def _prepare_abc_for_audio(abc: str) -> str:
     return abc
 
 
-def abc_to_midi(abc: str, work_dir: Path) -> "Path | None":
+def abc_to_midi(abc: str, work_dir: Path, gchords: bool = True) -> "Path | None":
     """Convert ABC text to MIDI with abc2midi (the reference ABC->MIDI tool).
-    Returns the MIDI path, or None if abc2midi is unavailable or fails."""
+    Returns the MIDI path, or None if abc2midi is unavailable or fails.
+    See _prepare_abc_for_audio for the `gchords` switch."""
     abc2midi = shutil.which("abc2midi")
     if not abc2midi:
         _warn_once("abc2midi not found — ABC audio baking skipped "
@@ -184,7 +110,7 @@ def abc_to_midi(abc: str, work_dir: Path) -> "Path | None":
         return None
     work_dir.mkdir(parents=True, exist_ok=True)
     abc_file = work_dir / "piece.abc"
-    abc_file.write_text(_prepare_abc_for_audio(abc), encoding="utf-8")
+    abc_file.write_text(_prepare_abc_for_audio(abc, gchords=gchords), encoding="utf-8")
     midi_path = work_dir / "piece.mid"
     try:
         proc = subprocess.run([abc2midi, str(abc_file), "-o", str(midi_path)],

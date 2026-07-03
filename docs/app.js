@@ -318,10 +318,12 @@ async function mountScore(scoreEl, piece, dir) {
 
 // abcjs plays every voice as piano unless told the instrument. Bind a General
 // MIDI program after each named voice header so timbres match the notation.
+// Keyword list and order mirror _GM_BY_NAME in src/llm_music/render.py (substring
+// match, first hit wins) so the abcjs synth fallback agrees with the baked audio.
 const GM_BY_NAME = [
   [/contrabass|double ?bass/, 43], [/violoncello|cello/, 42], [/viola/, 41], [/violin/, 40],
   [/harp/, 46], [/piccolo/, 72], [/flute/, 73], [/oboe/, 68], [/clarinet/, 71], [/bassoon/, 70],
-  [/trumpet/, 56], [/trombone/, 57], [/tuba/, 58], [/\bhorn/, 60], [/timpani/, 47],
+  [/trumpet/, 56], [/trombone/, 57], [/tuba/, 58], [/horn/, 60], [/timpani/, 47],
   [/guitar/, 24], [/organ/, 19], [/harpsichord/, 6], [/sax/, 65], [/piano|keyboard/, 0],
   [/soprano|alto|tenor|bass|choir|voice|vocal/, 52],
 ];
@@ -330,12 +332,17 @@ function gmProgram(name) {
   for (const [re, p] of GM_BY_NAME) if (re.test(n)) return p;
   return null;
 }
-// Some models write inline voice switches as [V1] — but ABC requires [V:V1], and
-// abcjs reads a bare [ as a chord, scrambling the voices. Fix only markers whose
-// id matches a DECLARED voice (V:<id> header), so real chords like [CEG] are safe.
+// Mirror the backend's _prepare_abc_for_audio normalization so the engraved
+// notation and the baked audio read the same tune:
+// 1. abcjs (like abc2midi) treats a blank line as end-of-tune, so a model's
+//    mid-tune blank line would render only the first section while the audio
+//    (blank-stripped before abc2midi) plays everything. Drop blank lines.
+// 2. Some models write inline voice switches as [V1] — but ABC requires [V:V1],
+//    and abcjs reads a bare [ as a chord, scrambling the voices. Fix only markers
+//    whose id matches a DECLARED voice (V:<id> header), so chords like [CEG] are safe.
 function normalizeAbc(abc) {
-  const voices = [...new Set([...abc.matchAll(/^\s*V:\s*(\S+)/gm)].map((m) => m[1]))];
-  let out = abc;
+  let out = abc.split("\n").filter((l) => l.trim()).join("\n");
+  const voices = [...new Set([...out.matchAll(/^\s*V:\s*(\S+)/gm)].map((m) => m[1]))];
   for (const v of voices) {
     const esc = v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     out = out.replace(new RegExp(`\\[${esc}\\]`, "g"), `[V:${v}]`);
@@ -344,6 +351,9 @@ function normalizeAbc(abc) {
 }
 
 function withInstruments(abc) {
+  // If the model wrote its own %%MIDI program lines, respect them everywhere —
+  // the backend audio baker skips injection in that case too.
+  if (abc.includes("%%MIDI program")) return abc;
   return abc.split("\n").flatMap((line) => {
     // ABC voice names may be quoted (name="Violin I") or a bare token
     // (name=Soprano) — handle both, else we miss the name and default to piano.

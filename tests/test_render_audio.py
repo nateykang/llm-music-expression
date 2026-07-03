@@ -10,6 +10,23 @@ def _reset_warn_once():
     render._warn_once.cache_clear()
 
 
+def test_prepare_abc_gchords_switch():
+    abc = 'X:1\nM:4/4\nK:C\n"Em" C D E F |\n'
+    on = render._prepare_abc_for_audio(abc, gchords=True)
+    off = render._prepare_abc_for_audio(abc, gchords=False)
+    assert "%%MIDI gchordoff" not in on
+    # the off switch lands right after the K: header line
+    lines = off.splitlines()
+    assert lines[lines.index("K:C") + 1] == "%%MIDI gchordoff"
+
+
+def test_prepare_abc_strips_blank_lines_and_fixes_voice_markers():
+    abc = "X:1\nK:C\nV:RH\n[RH] C D |\n\nE F |\n"
+    out = render._prepare_abc_for_audio(abc)
+    assert "\n\n" not in out
+    assert "[V:RH]" in out and "[RH]" not in out
+
+
 def test_abc_to_midi_missing_tool_logs_once(tmp_path, monkeypatch, caplog):
     monkeypatch.setattr(render.shutil, "which", lambda name: None)
     _reset_warn_once()

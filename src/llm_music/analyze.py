@@ -61,7 +61,12 @@ def _load(piece: dict, batch_dir: Path, work_dir: Path):
     elif piece.get("abc"):  # ABC: render to MIDI with abc2midi (the canonical tool)
         from .render import abc_to_midi
 
-        produced = abc_to_midi(piece["abc"], work_dir)
+        # gchords=False: abc2midi's auto-accompaniment from "Em"-style chord
+        # symbols belongs in the AUDIO (a performance of the notated symbols) but
+        # not in the symbolic features — with it on, a 2-voice piece with chord
+        # symbols measures as 4 voices and its polyphony/consonance include notes
+        # the model never wrote.
+        produced = abc_to_midi(piece["abc"], work_dir, gchords=False)
         if not produced:
             return None, None
         midi = produced
