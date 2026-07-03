@@ -27,13 +27,10 @@
   </header>
 
   <nav class="controls">
-    <!-- Experiment/batch picker: switch between generated batches (the canonical
-         multi-prompt family, standalone examples, and one-off sweeps). Within a
-         batch, the Prompt / Generation / Model selectors navigate its pieces. -->
-    <label id="batch-label">Experiment
-      <select id="batch"></select>
-    </label>
-    <label id="mode-label" hidden>Generation
+    <!-- The three selectors cross-filter the pooled pieces from every batch:
+         each dropdown lists the values available given the other two. The
+         "Piece" picker appears only when a combination has several samples. -->
+    <label id="mode-label">Generation
       <select id="mode"></select>
     </label>
     <label>Prompt
@@ -42,10 +39,13 @@
     <label id="model-label">Model
       <select id="model"></select>
     </label>
+    <label id="variant-label" hidden>Piece
+      <select id="variant"></select>
+    </label>
     <label class="toggle">Compare models
       <input type="checkbox" id="compare" />
     </label>
-    <label class="toggle" id="compare-gen-label" hidden>Compare methods
+    <label class="toggle" id="compare-gen-label">Compare methods
       <input type="checkbox" id="compare-gen" />
     </label>
   </nav>
@@ -65,6 +65,7 @@
     <section id="single">
       <section id="meta">
         <h2 id="title">—</h2>
+        <p id="when" class="note"></p>
         <p id="short" class="short"></p>
         <div id="audio-slot"></div>
         <details id="long-wrap">
@@ -80,6 +81,6 @@
     <section id="compare-grid" hidden></section>
   </main>
 
-  <script src="app.js?v=25" defer></script>
+  <script src="app.js?v=26" defer></script>
 </body>
 </html>

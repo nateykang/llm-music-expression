@@ -1,23 +1,31 @@
-// Static viewer: load baked batches, engrave MusicXML live with Verovio, play audio.
+// Static viewer: load every baked batch into one pool, engrave MusicXML live
+// with Verovio (code-gen) or ABC with abcjs, play the pre-baked audio.
+//
+// There is no batch/"experiment" picker: the three selectors (Generation,
+// Prompt, Model) cross-filter the pooled pieces — each dropdown lists the
+// values available given the other two. When several pieces exist for one
+// (prompt, method, model) cell (the sampling runs), a contextual "Piece"
+// variant picker appears.
 
 const els = {
-  batch: document.getElementById("batch"),
+  mode: document.getElementById("mode"),
   prompt: document.getElementById("prompt"),
   model: document.getElementById("model"),
+  variant: document.getElementById("variant"),
+  variantLabel: document.getElementById("variant-label"),
+  modeLabel: document.getElementById("mode-label"),
+  modelLabel: document.getElementById("model-label"),
   title: document.getElementById("title"),
   short: document.getElementById("short"),
   long: document.getElementById("long"),
+  when: document.getElementById("when"),
   audioSlot: document.getElementById("audio-slot"),
   score: document.getElementById("score"),
   status: document.getElementById("status"),
-  modelLabel: document.getElementById("model-label"),
   compare: document.getElementById("compare"),
   single: document.getElementById("single"),
   grid: document.getElementById("compare-grid"),
-  mode: document.getElementById("mode"),
-  modeLabel: document.getElementById("mode-label"),
   compareGen: document.getElementById("compare-gen"),
-  compareGenLabel: document.getElementById("compare-gen-label"),
   promptPanel: document.getElementById("prompt-panel"),
   promptMode: document.getElementById("prompt-mode"),
   sysPrompt: document.getElementById("sys-prompt"),
@@ -25,7 +33,10 @@ const els = {
 };
 
 let tk = null; // Verovio toolkit
-let manifest = null; // current batch data.json
+let PIECES = []; // every ok piece from every batch, newest batch first
+let PROMPT_LABELS = {}; // prompt id -> human label
+const SEL = { mode: null, prompt: null, model: null };
+const MODE_ORDER = ["codegen", "abc", "smt-abc"];
 
 // --- Verovio init (WASM loads asynchronously) ---------------------------------
 const verovioReady = new Promise((resolve) => {
@@ -54,6 +65,17 @@ function pauseOthers(exceptAudio, exceptSynth) {
   }
 }
 
+// "20260622_195241__models_7_prompts_1" -> Date
+function batchDate(dir) {
+  const m = dir.match(/^(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})__/);
+  if (!m) return new Date(0);
+  const [, y, mo, d, h, mi, s] = m;
+  return new Date(+y, +mo - 1, +d, +h, +mi, +s);
+}
+function fmtWhen(d) {
+  return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+}
+
 async function init() {
   // When a native <audio> starts, pause every other player (audio + synths).
   document.addEventListener("play", (e) => pauseOthers(e.target, null), true);
@@ -61,7 +83,7 @@ async function init() {
   verovioReady.then((toolkit) => {
     tk = toolkit;
     tk.setOptions({ pageWidth: 1800, scale: 40, adjustPageHeight: true, footer: "none", header: "none" });
-    onSelectChange(); // in case a piece was already selected before the engraver loaded
+    if (SEL.mode) onSelectChange(); // re-engrave if a piece was selected before the engraver loaded
   });
 
   let batches = [];
@@ -76,125 +98,103 @@ async function init() {
     setStatus("No batches found yet. Run the CLI to generate some.");
     return;
   }
-  fillSelect(els.batch, batches, batchLabel);
-  // Browse focuses on the canonical comparison: the Generation toggle (code/abc/
-  // smt-abc) over one model×prompt grid. The experiment picker stays hidden here —
-  // large one-off sweeps live in the Results & analysis tab.
 
-  // Per-batch grid (mode + models × prompts) so loadBatch can group batches that
-  // share a models×prompts grid into a "comparison family" and scope the
-  // Generation toggle to the loaded batch's family.
-  const metas = await Promise.all(
-    batches.map((b) =>
-      fetchJSON(`data/${b}/data.json`)
-        .then((m) => ({
-          dir: b,
-          mode: m.pieces?.[0]?.mode,
-          models: unique((m.pieces || []).map((p) => p.model)),
-          prompts: unique((m.pieces || []).map((p) => p.prompt)),
-        }))
-        .catch(() => null)
-    )
+  // Pool every batch's ok pieces, tagged with their folder + timestamp. Failed
+  // generations are dropped — reliability stats live on the Results tab.
+  const manifests = await Promise.all(
+    batches.map((b) => fetchJSON(`data/${b}/data.json`).then((m) => ({ dir: b, m })).catch(() => null))
   );
-  batchMetas = metas.filter(Boolean);
+  for (const it of manifests.filter(Boolean)) {
+    const when = batchDate(it.dir);
+    for (const p of it.m.pieces || []) {
+      if (!p.ok) continue;
+      PROMPT_LABELS[p.prompt] = p.prompt_label || p.prompt;
+      PIECES.push(Object.assign({}, p, { _dir: `data/${it.dir}`, _when: when }));
+    }
+  }
+  PIECES.sort((a, b) => (b._when - a._when) || ((a.sample || 0) - (b.sample || 0)));
+  if (!PIECES.length) {
+    setStatus("No successful pieces found in any batch.");
+    return;
+  }
 
-  // Default to the canonical comparison family's code-gen batch (not the newest
-  // one-off sweep), so Browse opens on the full code/abc/smt-abc toggle.
-  const primary = primaryFamily(batchMetas);
-  const preferred = primary.find((m) => m.mode === "codegen") || primary[0];
-  if (preferred) els.batch.value = preferred.dir;
-
-  els.batch.onchange = loadBatch;
-  els.mode.onchange = () => { els.batch.value = modeToBatch[els.mode.value]; loadBatch(); };
-  els.prompt.onchange = async () => { refreshModels(); await onSelectChange(); };
-  els.model.onchange = onSelectChange;
+  els.mode.onchange = () => refreshSelectors("mode");
+  els.prompt.onchange = () => refreshSelectors("prompt");
+  els.model.onchange = () => refreshSelectors("model");
+  els.variant.onchange = onSelectChange;
   // The two compare views are mutually exclusive.
   els.compare.onchange = () => { if (els.compare.checked) els.compareGen.checked = false; onSelectChange(); };
   els.compareGen.onchange = () => { if (els.compareGen.checked) els.compare.checked = false; onSelectChange(); };
-  await loadBatch();
+
+  seedDefaults();
+  await refreshSelectors(null);
 }
 
-// Friendly labels for the generation-mode toggle.
+// Friendly labels for the generation-method selector.
 function modeLabel(mode) {
   return { codegen: "Code (music21)", abc: "ABC notation", "smt-abc": "SMT-ABC (synchronized)" }[mode] || mode;
 }
-let modeToBatch = {};
-let batchMetas = []; // [{dir, mode, models, prompts}] for every batch
 
-// Batches with the same models×prompts grid form a "comparison family" — the
-// same run done in different generation modes (code/abc/smt-abc).
-function familyKey(m) {
-  return JSON.stringify([[...m.models].sort(), [...m.prompts].sort()]);
+// --- cross-filtering selectors -------------------------------------------------
+
+function matches(prompt, mode, model) {
+  return PIECES.filter(
+    (p) =>
+      (!prompt || p.prompt === prompt) &&
+      (!mode || p.mode === mode) &&
+      (!model || p.model === model)
+  );
 }
 
-// The "primary" family for browsing = the canonical comparison: most generation
-// modes (the full code/abc/smt-abc set), then richest grid (most prompts, then
-// models) so a big multi-prompt sweep wins over a newer one-off example that
-// happens to also span all three modes. Order-independent (small examples added
-// later don't hijack the default landing view).
-function primaryFamily(metas) {
-  const groups = {};
-  for (const m of metas) (groups[familyKey(m)] = groups[familyKey(m)] || []).push(m);
-  const score = (fam) => [
-    new Set(fam.map((x) => x.mode)).size,        // 1. most generation modes
-    new Set(fam.flatMap((x) => x.prompts)).size, // 2. then most prompts
-    new Set(fam.flatMap((x) => x.models)).size,  // 3. then most models
-  ];
-  let best = [], bestScore = [-1, -1, -1];
-  for (const fam of Object.values(groups)) {
-    const s = score(fam);
-    if (s[0] > bestScore[0] ||
-        (s[0] === bestScore[0] && s[1] > bestScore[1]) ||
-        (s[0] === bestScore[0] && s[1] === bestScore[1] && s[2] > bestScore[2])) {
-      best = fam; bestScore = s;
+// Values available for dimension `k` given the other dimensions in `sel`.
+function optionsFor(k, sel) {
+  const pool = matches(
+    k === "prompt" ? null : sel.prompt,
+    k === "mode" ? null : sel.mode,
+    k === "model" ? null : sel.model
+  );
+  const vals = unique(pool.map((p) => (k === "prompt" ? p.prompt : k === "mode" ? p.mode : p.model)));
+  if (k === "mode") {
+    return MODE_ORDER.filter((m) => vals.includes(m)).concat(vals.filter((v) => !MODE_ORDER.includes(v)));
+  }
+  if (k === "prompt") {
+    return vals.sort((a, b) =>
+      a === "free-form" ? -1 : b === "free-form" ? 1
+        : (PROMPT_LABELS[a] || a).localeCompare(PROMPT_LABELS[b] || b));
+  }
+  return vals.sort();
+}
+
+function seedDefaults() {
+  const modes = optionsFor("mode", SEL);
+  SEL.mode = modes.includes("codegen") ? "codegen" : modes[0];
+  const prompts = optionsFor("prompt", SEL);
+  SEL.prompt = prompts.includes("free-form") ? "free-form" : prompts[0];
+  SEL.model = optionsFor("model", SEL)[0];
+}
+
+// Rebuild all three dropdowns so each lists the values available given the
+// OTHER two selections. When the touched control invalidates the combination,
+// re-snap the other two (keeping their old values where still possible).
+function refreshSelectors(touched) {
+  if (touched && els[touched].value) SEL[touched] = els[touched].value;
+  if (touched && !matches(SEL.prompt, SEL.mode, SEL.model).length) {
+    const free = ["mode", "prompt", "model"].filter((k) => k !== touched);
+    const old = Object.assign({}, SEL);
+    for (const k of free) SEL[k] = null;
+    for (const k of free) {
+      const opts = optionsFor(k, SEL);
+      SEL[k] = opts.includes(old[k]) ? old[k] : opts[0];
     }
   }
-  return best;
-}
-
-const _manifests = {}; // dir -> manifest (cached; the other generation method needs it too)
-async function getManifest(dir) {
-  if (!_manifests[dir]) {
-    const m = await fetchJSON(`${dir}/data.json`);
-    m._dir = dir;
-    m._labels = {};
-    for (const p of m.pieces) m._labels[p.prompt] = p.prompt_label || p.prompt;
-    _manifests[dir] = m;
+  const labelFns = { mode: modeLabel, prompt: (id) => PROMPT_LABELS[id] || id, model: null };
+  for (const k of ["mode", "prompt", "model"]) {
+    const opts = optionsFor(k, Object.assign({}, SEL, { [k]: null }));
+    fillSelect(els[k], opts, labelFns[k]);
+    els[k].value = SEL[k];
   }
-  return _manifests[dir];
-}
-
-async function loadBatch() {
-  const dir = els.batch.value;
-  manifest = await getManifest(`data/${dir}`);
-
-  // Scope the Generation toggle to this batch's comparison family: sibling batches
-  // with the same models×prompts grid but a different generation mode. A run with
-  // no siblings (e.g. a one-off model sweep) hides the toggle entirely.
-  const cur = batchMetas.find((m) => m.dir === dir);
-  const fam = cur ? batchMetas.filter((m) => familyKey(m) === familyKey(cur)) : [];
-  modeToBatch = {};
-  for (const m of fam) if (m.mode && !(m.mode in modeToBatch)) modeToBatch[m.mode] = m.dir; // newest-first
-  const modes = Object.keys(modeToBatch);
-  const hasSiblings = modes.length > 1;
-  if (hasSiblings) {
-    fillSelect(els.mode, modes, modeLabel);
-    els.mode.value = cur.mode;
-  }
-  els.modeLabel.hidden = !hasSiblings;
-  els.compareGenLabel.hidden = !hasSiblings;
-  if (!hasSiblings) els.compareGen.checked = false;
-
-  fillSelect(els.prompt, unique(manifest.pieces.map((p) => p.prompt)), (id) => manifest._labels[id]);
-  refreshModels();
-  await onSelectChange();
-}
-
-function refreshModels() {
-  const models = unique(
-    manifest.pieces.filter((p) => p.prompt === els.prompt.value).map((p) => p.model)
-  );
-  fillSelect(els.model, models);
+  els.variant.value = "0"; // a new selection starts at its newest piece
+  return onSelectChange();
 }
 
 // abcjs synths play through Web Audio (not an <audio> element), so they keep
@@ -208,14 +208,14 @@ function stopAllMedia() {
 
 async function onSelectChange() {
   stopAllMedia(); // switching pieces/views must stop whatever's currently playing
-  updatePromptPanel();
-  const byModel = els.compare.checked;       // compare models (fix prompt+method)
-  const byMethod = els.compareGen.checked;    // compare methods (fix prompt+model)
+  const byModel = els.compare.checked;    // compare models (fix prompt+method)
+  const byMethod = els.compareGen.checked; // compare methods (fix prompt+model)
   const grid = byModel || byMethod;
   // In compare-models the model selector is irrelevant; in compare-methods the
   // generation selector is (we show every method); single view shows both.
   els.modelLabel.hidden = byModel;
-  els.modeLabel.hidden = byMethod || Object.keys(modeToBatch).length < 2;
+  els.modeLabel.hidden = byMethod;
+  els.variantLabel.hidden = true; // renderSingle re-shows it when a cell has variants
   els.single.hidden = grid;
   els.grid.hidden = !grid;
   if (byMethod) await renderCompareMethods();
@@ -224,34 +224,54 @@ async function onSelectChange() {
 }
 
 async function renderSingle() {
-  const piece = current();
-  if (!piece) return;
+  const list = matches(SEL.prompt, SEL.mode, SEL.model);
+  if (!list.length) { setStatus("No piece for this selection."); return; }
+  let idx = 0;
+  if (list.length > 1) {
+    idx = Math.min(parseInt(els.variant.value, 10) || 0, list.length - 1);
+    els.variant.innerHTML = "";
+    list.forEach((p, i) => {
+      const o = document.createElement("option");
+      o.value = String(i);
+      o.textContent = `${i + 1} of ${list.length} · ${fmtWhen(p._when)}`;
+      els.variant.appendChild(o);
+    });
+    els.variant.value = String(idx);
+    els.variantLabel.hidden = false;
+  }
+  const piece = list[idx];
+  updatePromptPanel(piece);
   els.title.textContent = piece.title || "Untitled";
   els.short.textContent = piece.short_description || "";
   els.long.textContent = piece.long_description || "";
-  await mountMedia(els.score, els.audioSlot, piece, manifest._dir);
+  els.when.textContent = `generated ${fmtWhen(piece._when)}`;
+  await mountMedia(els.score, els.audioSlot, piece, piece._dir);
 }
 
-// One column per model for the currently selected prompt + generation method.
+// One column per model available for the current prompt + generation method.
 async function renderCompare() {
-  const pieces = manifest.pieces.filter((p) => p.prompt === els.prompt.value);
   els.grid.innerHTML = "";
-  for (const piece of pieces) {
-    await addCompareCard(piece, manifest._dir, piece.model);
+  let first = null;
+  for (const m of optionsFor("model", Object.assign({}, SEL, { model: null }))) {
+    const piece = matches(SEL.prompt, SEL.mode, m)[0];
+    if (!piece) continue;
+    first = first || piece;
+    await addCompareCard(piece, piece._dir, m);
   }
+  updatePromptPanel(first);
 }
 
-// One column per generation method (code-gen / ABC) for the current model + prompt.
+// One column per generation method available for the current prompt + model.
 async function renderCompareMethods() {
   els.grid.innerHTML = "";
-  for (const mode of Object.keys(modeToBatch)) {
-    const m = await getManifest(`data/${modeToBatch[mode]}`);
-    const piece = m.pieces.find(
-      (p) => p.prompt === els.prompt.value && p.model === els.model.value
-    );
+  let first = null;
+  for (const mo of optionsFor("mode", Object.assign({}, SEL, { mode: null }))) {
+    const piece = matches(SEL.prompt, mo, SEL.model)[0];
     if (!piece) continue;
-    await addCompareCard(piece, m._dir, modeLabel(mode));
+    first = first || piece;
+    await addCompareCard(piece, piece._dir, modeLabel(mo));
   }
+  updatePromptPanel(first);
 }
 
 // Build one comparison card (shared by both compare views).
@@ -260,7 +280,7 @@ async function addCompareCard(piece, dir, header) {
   card.className = "compare-card";
   card.innerHTML = `
     <h3 class="model-name">${header}</h3>
-    <p class="piece-title">${piece.ok ? (piece.title || "Untitled") : "—"}</p>
+    <p class="piece-title">${piece.title || "Untitled"} <span class="note">· ${fmtWhen(piece._when)}</span></p>
     <p class="short">${piece.short_description || ""}</p>
     <div class="audio-slot"></div>
     <details><summary>Model's reflection</summary><p>${piece.long_description || ""}</p></details>
@@ -271,17 +291,13 @@ async function addCompareCard(piece, dir, header) {
 
 // Mount notation + audio for a piece, picking the engine by generation method:
 // ABC pieces carry raw ABC (abcjs engraves + plays it); code-gen pieces carry a
-// MusicXML score + pre-baked ogg (Verovio + <audio>).
+// MusicXML score + pre-baked audio (Verovio + <audio>).
 async function mountMedia(scoreEl, audioSlot, piece, dir) {
   const visual = await mountScore(scoreEl, piece, dir);
   mountAudio(audioSlot, piece, dir, visual);
 }
 
 async function mountScore(scoreEl, piece, dir) {
-  if (!piece.ok) {
-    scoreEl.innerHTML = `<p class="note">${piece.error ? "Generation failed: " + piece.error : "No score available."}</p>`;
-    return null;
-  }
   if (piece.abc) {
     if (!window.ABCJS) { scoreEl.innerHTML = `<p class="note">Loading ABC engraver…</p>`; return null; }
     scoreEl.innerHTML = "";
@@ -402,8 +418,8 @@ const SOUNDFONT = "https://paulrosen.github.io/midi-js-soundfonts/abcjs/";
 
 // Engrave one piece's MusicXML into a target element (code-gen path).
 async function renderScoreInto(target, piece, dir) {
-  if (!piece.ok || !piece.score) {
-    target.innerHTML = `<p class="note">${piece.error ? "Generation failed: " + piece.error : "No score available."}</p>`;
+  if (!piece.score) {
+    target.innerHTML = `<p class="note">No score available.</p>`;
     return;
   }
   if (!tk) {
@@ -424,9 +440,8 @@ async function renderScoreInto(target, piece, dir) {
 }
 
 // The prompt text is identical across models for a given prompt+mode, so show it
-// once in a shared panel reflecting the currently selected prompt.
-function updatePromptPanel() {
-  const piece = manifest && manifest.pieces.find((p) => p.prompt === els.prompt.value);
+// once in a shared panel reflecting the currently shown piece.
+function updatePromptPanel(piece) {
   if (!piece || !piece.prompt_text) {
     els.promptPanel.hidden = true;
     return;
@@ -437,26 +452,7 @@ function updatePromptPanel() {
   els.userPrompt.textContent = piece.prompt_text;
 }
 
-// "20260617_131005__models_3_prompts_3" -> "Jun 17, 2026, 1:10 PM · 3 models × 3 prompts"
-function batchLabel(dir) {
-  const m = dir.match(/^(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})__models_(\d+)_prompts_(\d+)$/);
-  if (!m) return dir;
-  const [, y, mo, d, h, mi, , nModels, nPrompts] = m;
-  const date = new Date(+y, +mo - 1, +d, +h, +mi);
-  const when = date.toLocaleString(undefined, {
-    month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit",
-  });
-  const plural = (n, w) => `${n} ${w}${n === "1" ? "" : "s"}`;
-  return `${when} · ${plural(nModels, "model")} × ${plural(nPrompts, "prompt")}`;
-}
-
 // --- helpers ------------------------------------------------------------------
-function current() {
-  if (!manifest) return null;
-  return manifest.pieces.find(
-    (p) => p.prompt === els.prompt.value && p.model === els.model.value
-  );
-}
 function fillSelect(sel, items, labelFn) {
   const prev = sel.value;
   sel.innerHTML = "";
