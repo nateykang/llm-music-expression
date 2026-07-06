@@ -54,6 +54,12 @@ def main():
         return
     human = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
     key = json.loads(KEY.read_text(encoding="utf-8"))
+    # every pid must name one distinct piece, else correlations pair wrong rows
+    idents = [(v["model"], v.get("mode", ""), v.get("sample", ""), v.get("batch", ""), v["title"])
+              for v in key.values()]
+    if len(set(idents)) != len(idents):
+        sys.exit("sample_key.json maps two pids to the same piece — regenerate it "
+                 "with build_validation.py before scoring")
 
     dims = ["coherence", "harmony", "rhythm", "structure", "melody", "emotion",
             "creativity", "naturalness", "valence", "arousal"]

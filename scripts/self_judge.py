@@ -58,9 +58,11 @@ def main():
     args = ap.parse_args()
 
     tasks = pilot_tasks(args.prompt, args.limit)
-    # the pilot's "others" scores, keyed by piece identity
+    # the pilot's "others" scores, keyed by full piece identity — sample included,
+    # since models reuse titles across samples and a title-only key collides.
     raw = json.loads((ROOT / "docs/analysis/judge_raw.json").read_text(encoding="utf-8"))
-    others = {(p["model"], p["prompt"], p.get("mode", ""), p.get("title", "")): p["panel"] for p in raw}
+    others = {(p["model"], p["prompt"], p.get("mode", ""), p.get("sample", 0),
+               p.get("batch", "")): p["panel"] for p in raw}
 
     # only panelist-authored pieces need a self-judgment
     jobs = [(pc, bd) for pc, bd in tasks if pc["model"] in PANEL]
@@ -71,18 +73,18 @@ def main():
 
     def work(item):
         pc, bd = item
-        return pc, judge_piece(clients[pc["model"]], pc, bd, include_note=False)
+        return pc, bd, judge_piece(clients[pc["model"]], pc, bd, include_note=False)
 
     with ThreadPoolExecutor(max_workers=args.workers) as ex:
         for fut in as_completed([ex.submit(work, j) for j in jobs]):
-            pc, self_v = fut.result()
+            pc, bd, self_v = fut.result()
             with lock:
                 done += 1
                 if done % 10 == 0 or done == len(jobs):
                     print(f"  [{done}/{len(jobs)}]", flush=True)
             if not self_v:
                 continue
-            key = (pc["model"], pc["prompt"], pc.get("mode", ""), pc.get("title", ""))
+            key = (pc["model"], pc["prompt"], pc.get("mode", ""), pc.get("sample", 0), bd.name)
             panel = others.get(key, {})
             peer = [mean_quality(v) for jn, v in panel.items() if jn != pc["model"]]
             peer = [x for x in peer if x is not None]
@@ -90,6 +92,7 @@ def main():
             if sq is None or not peer:
                 continue
             rows.append({"model": pc["model"], "title": pc["title"],
+                         "sample": pc.get("sample", 0), "batch": bd.name,
                          "self": round(sq, 3), "others": round(sum(peer) / len(peer), 3),
                          "self_label": self_v.get("emotion_label", ""),
                          "self_dims": {k: self_v[k]["score"] for k in QUALITY_KEYS if k in self_v}})

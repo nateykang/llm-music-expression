@@ -41,11 +41,16 @@ def main():
     self_rows = json.loads((ROOT / "docs/analysis/self_judge.json").read_text(encoding="utf-8"))
 
     # score_by[judge][author] = list of per-piece mean-quality
+    # Pieces are keyed with sample+batch (models reuse titles across samples); a
+    # (model, title) fallback map serves legacy self_judge.json rows without a
+    # sample, but only where the title is unambiguous.
     score_by = defaultdict(lambda: defaultdict(list))
-    raw_by_piece = {}
+    raw_by_full, raw_by_title = {}, {}
     for p in raw:
         author = p["model"]
-        raw_by_piece[(author, p["title"])] = p["panel"]
+        raw_by_full[(author, p["title"], p.get("sample", 0), p.get("batch", ""))] = p["panel"]
+        tkey = (author, p["title"])
+        raw_by_title[tkey] = None if tkey in raw_by_title else p["panel"]  # None = ambiguous
         for j, verdict in p["panel"].items():
             qv = q(verdict)
             if qv is not None:
@@ -53,8 +58,15 @@ def main():
     for r in self_rows:  # diagonal
         score_by[r["model"]][r["model"]].append(r["self"])
 
-    authors = ["gpt-5.5", "gemini-2.5-pro", "opus-4.8", "opus-4.8-thinking", "sonnet-4.6",
-               "deepseek-v4-pro", "gpt-4.1", "grok-4.3", "qwen3-max", "llama-4-maverick"]
+    def piece_panel(r):
+        if "sample" in r:
+            return raw_by_full.get((r["model"], r["title"], r.get("sample", 0), r.get("batch", "")), {})
+        return raw_by_title.get((r["model"], r["title"])) or {}
+
+    known = ["gpt-5.5", "gemini-2.5-pro", "opus-4.8", "opus-4.8-thinking", "sonnet-4.6",
+             "deepseek-v4-pro", "gpt-4.1", "grok-4.3", "qwen3-max", "llama-4-maverick"]
+    seen = {p["model"] for p in raw}
+    authors = [a for a in known if a in seen] + sorted(seen - set(known))
 
     # ---- judge × author matrix ----
     print("=== JUDGE × AUTHOR mean-quality matrix (diagonal = self, in [brackets]) ===")
@@ -110,7 +122,7 @@ def main():
     perdim = {j: defaultdict(list) for j in PANEL}
     for r in self_rows:
         author = r["model"]
-        panel = raw_by_piece.get((author, r["title"]), {})
+        panel = piece_panel(r)
         peers = {jj: v for jj, v in panel.items() if jj != author}
         for d in QUALITY_KEYS:
             sd = (r.get("self_dims") or {}).get(d)

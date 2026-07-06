@@ -1,727 +1,727 @@
-model,prompt,mode,title,n_judges,coherence,harmony,rhythm,structure,melody,emotion,creativity,naturalness,valence,arousal,intent,emotion_label,overall
-opus-4.8,free-form,codegen,Quiet Company,10,4.3,4.3,4.2,3.5,3.5,4.3,2.7,4.4,1.9,2.1,,melancholic,3.9
-sonnet-4.6,free-form,codegen,Between Stillness and Motion,10,3.7,4.3,3.5,3.8,3.7,3.9,2.9,3.6,2.1,2.8,,melancholic,3.675
-gpt-5.5,free-form,codegen,Between Queries and Quiet,10,4.5,4.2,4.2,4.0,4.0,4.2,3.1,4.4,2.1,2.9,,wistful,4.075
-gpt-4.1,free-form,codegen,Driftings,10,3.0,4.0,2.8,2.9,2.9,3.2,2.4,3.5,2.0,1.9,,melancholic,3.087
-opus-4.8,free-form,abc,Threads of Thought,10,4.4,4.4,4.0,4.2,3.6,3.9,3.1,4.4,2.0,2.5,,melancholic,4.0
-sonnet-4.6,free-form,abc,Invention in D Minor,10,3.5,3.5,3.2,3.0,3.0,2.8,2.0,3.1,2.1,3.0,,wistful,3.013
-gpt-5.5,free-form,abc,Lattice of Questions,10,4.3,4.4,4.2,3.8,3.4,3.8,2.9,4.5,2.0,3.2,,melancholic,3.912
-gpt-4.1,free-form,abc,Moonlit Reflection,10,3.8,3.7,3.8,3.7,3.0,3.0,2.3,3.6,2.0,2.6,,wistful,3.363
-opus-4.8,free-form,smt-abc,Refraction,10,3.9,4.1,3.4,3.2,3.0,3.2,2.1,3.6,2.2,1.9,,melancholic,3.313
-sonnet-4.6,free-form,smt-abc,Liminal,10,3.8,4.0,3.4,3.3,2.9,3.6,2.6,3.3,2.0,2.1,,melancholic,3.363
-gpt-5.5,free-form,smt-abc,Lanterns in a Thinking Room,10,3.8,4.1,3.4,3.1,2.8,3.0,2.1,3.3,2.0,2.2,,melancholic,3.2
-gpt-4.1,free-form,smt-abc,Reflections at Dawn,10,3.5,3.8,3.4,3.1,2.9,2.8,2.3,3.5,3.9,2.2,,wistful,3.163
-opus-4.8,free-form,abc,Threads of an Inner Dialogue,10,3.9,3.9,3.8,3.6,3.3,3.8,2.6,3.7,2.0,2.2,,melancholic,3.575
-opus-4.8,free-form,abc,Threads of an Inner Dialogue,10,4.4,4.3,3.5,4.5,3.6,4.1,3.1,4.3,2.5,2.1,,wistful,3.975
-opus-4.8,free-form,abc,Threads of Becoming,10,4.3,4.3,3.8,4.0,3.6,3.7,2.8,4.3,2.1,2.2,,melancholic,3.85
-opus-4.8,free-form,abc,Threads of Thought,10,4.4,4.3,3.7,4.5,3.6,3.8,2.8,4.3,2.2,2.4,,wistful,3.925
-opus-4.8,free-form,abc,Threads of Becoming,10,3.8,4.0,3.5,3.7,3.1,3.3,2.4,3.5,2.1,2.2,,melancholic,3.413
-opus-4.8,free-form,abc,Threads of Thought,10,3.9,3.8,3.5,4.0,3.1,3.4,2.5,3.7,3.4,2.5,,wistful,3.487
-opus-4.8,free-form,abc,Threads of an Unwritten Self,10,4.1,4.1,3.7,3.8,3.3,3.5,2.5,3.7,2.2,2.6,,wistful,3.587
-opus-4.8,free-form,abc,Threads of Thought,10,4.5,4.4,3.9,4.6,3.7,4.2,2.8,4.3,2.7,2.1,,wistful,4.05
-opus-4.8,free-form,abc,Threads of an Unfolding Mind,10,4.3,4.4,3.6,4.6,3.4,3.9,2.9,4.2,2.6,2.2,,wistful,3.912
-opus-4.8,free-form,abc,Threads of Thought,10,4.3,4.2,3.4,4.2,3.1,3.8,2.6,3.9,2.0,2.0,,wistful,3.688
-opus-4.8,free-form,abc,Threads of Thought,10,4.0,4.2,3.9,3.9,3.8,3.7,2.7,4.2,2.0,2.4,,melancholic,3.8
-opus-4.8,free-form,abc,Threads of Thought,10,4.1,4.1,3.9,4.0,3.3,3.5,2.4,3.8,2.1,2.1,,melancholic,3.638
-opus-4.8,free-form,abc,Threads of an Unfolding Mind,10,4.1,4.3,3.8,3.6,3.7,3.7,2.7,4.1,2.2,2.6,,melancholic,3.75
-opus-4.8,free-form,abc,Threads of an Unspooling Mind,10,4.1,4.0,3.6,3.8,3.3,3.2,2.6,3.9,2.0,2.3,,melancholic,3.562
-opus-4.8,free-form,abc,Threads of a Quiet Mind,10,4.2,4.0,3.6,4.0,3.2,3.2,2.5,4.0,2.1,2.4,,melancholic,3.587
-opus-4.8,free-form,abc,Threads of an Unfolding Mind,10,3.9,4.0,3.4,3.8,3.4,3.5,2.6,4.2,3.2,2.1,,wistful,3.6
-opus-4.8,free-form,abc,Tide of Thought,10,4.3,4.3,3.6,4.5,3.0,3.6,2.7,4.2,2.0,3.1,,melancholic,3.775
-opus-4.8,free-form,abc,Threads of Becoming,10,3.9,3.8,3.5,4.4,3.2,3.8,3.0,4.0,2.4,2.2,,wistful,3.7
-opus-4.8,free-form,abc,Threads of an Unfolding Mind,10,4.2,4.2,3.6,3.9,3.2,3.6,2.7,3.7,2.1,2.5,,melancholic,3.638
-opus-4.8,free-form,abc,Threads of Becoming,10,4.6,4.4,3.5,4.6,3.9,4.3,3.0,4.4,3.1,2.7,,wistful,4.088
-opus-4.8,free-form,abc,Threads of Thought,10,4.0,4.0,3.6,3.8,3.2,3.6,2.8,3.8,2.0,2.6,,melancholic,3.6
-opus-4.8,free-form,abc,Threads of a Quiet Mind,10,3.9,3.8,3.4,3.8,3.2,3.1,2.2,3.7,4.0,2.0,,serene,3.387
-opus-4.8,free-form,abc,Threads of an Unfolding Mind,10,4.5,4.3,3.6,4.5,3.5,3.8,2.8,4.0,3.9,2.4,,serene,3.875
-opus-4.8,free-form,abc,Recursion at Dusk,10,4.3,4.3,3.7,4.6,4.0,4.0,3.2,4.3,2.4,2.1,,wistful,4.05
-opus-4.8,free-form,abc,Threads of Thought,10,4.3,4.4,3.7,4.0,3.4,3.4,2.5,3.9,2.0,2.3,,melancholic,3.7
-opus-4.8,free-form,abc,Threads of Thought,10,4.0,4.1,3.7,3.6,3.2,3.2,2.3,3.9,2.1,2.6,,melancholic,3.5
-opus-4.8,free-form,abc,Threads of an Unfolding Mind,10,3.8,4.1,3.3,3.7,3.4,3.4,2.4,3.8,2.0,2.1,,melancholic,3.487
-opus-4.8,free-form,abc,Threads of Quiet Reasoning,10,4.2,4.2,3.8,4.2,3.5,3.6,2.8,3.9,4.1,2.2,,tender,3.775
-opus-4.8,free-form,abc,Threads of an Inner Dialogue,10,4.5,4.3,3.4,4.5,3.7,4.1,3.1,4.4,2.5,1.7,,wistful,4.0
-opus-4.8,free-form,abc,Threads of Becoming,10,4.3,4.2,3.7,4.5,3.4,4.1,3.0,4.1,2.9,2.7,,wistful,3.912
-opus-4.8-thinking,free-form,abc,Quiet Resolve,10,4.1,4.1,3.7,4.2,3.1,3.4,2.3,3.9,2.0,2.1,,melancholic,3.6
-opus-4.8-thinking,free-form,abc,Patterns in the Quiet,10,4.2,4.1,3.8,3.6,3.4,3.3,2.3,3.9,2.1,2.1,,melancholic,3.575
-opus-4.8-thinking,free-form,abc,Quiet Emergence,10,4.1,4.1,3.9,3.7,3.0,3.4,2.3,3.6,2.2,2.5,,melancholic,3.513
-opus-4.8-thinking,free-form,abc,Quiet Persistence,10,4.3,3.9,3.3,3.9,3.1,3.3,2.2,3.9,2.0,2.2,,melancholic,3.487
-opus-4.8-thinking,free-form,abc,Quiet Light Returning,10,4.0,4.0,3.9,4.2,3.4,3.4,2.5,4.0,2.9,2.3,,wistful,3.675
-opus-4.8-thinking,free-form,abc,Distances,10,4.2,4.2,3.6,4.2,3.3,3.6,2.5,4.1,2.0,2.2,,melancholic,3.713
-opus-4.8-thinking,free-form,abc,Quiet Light Returning,10,4.3,4.1,4.0,4.1,3.2,3.4,2.3,4.2,2.1,2.1,,melancholic,3.7
-opus-4.8-thinking,free-form,abc,Reaching Toward Light,10,4.3,4.0,3.7,3.8,3.2,3.2,2.2,3.9,2.0,2.2,,melancholic,3.537
-opus-4.8-thinking,free-form,abc,Quiet Emergence,10,4.4,4.5,3.8,4.2,3.4,3.7,2.7,4.4,2.0,2.0,,wistful,3.887
-opus-4.8-thinking,free-form,abc,Quiet Resolve,10,4.4,4.5,3.6,4.5,3.5,4.3,3.1,4.6,3.0,2.2,,wistful,4.062
-opus-4.8-thinking,free-form,abc,Wandering Toward Light,10,4.3,4.1,3.3,3.8,3.4,3.4,2.1,3.7,2.0,2.1,,melancholic,3.512
-opus-4.8-thinking,free-form,abc,Emergence,10,4.4,4.3,3.6,4.6,3.4,3.4,2.5,4.1,2.3,1.9,,wistful,3.787
-opus-4.8-thinking,free-form,abc,Becoming,10,4.4,4.4,4.0,4.5,3.8,4.4,3.4,4.4,3.4,2.1,,wistful,4.162
-opus-4.8-thinking,free-form,abc,Quiet Reckoning,10,4.3,4.3,4.0,4.2,3.5,3.7,2.6,4.3,2.1,2.1,,melancholic,3.863
-opus-4.8-thinking,free-form,abc,Quiet Light Through Rain,10,4.3,4.1,3.6,4.2,3.1,3.2,2.1,3.8,2.1,2.3,,melancholic,3.55
-opus-4.8-thinking,free-form,abc,Quiet Light Through Branches,10,4.2,4.2,3.6,3.4,3.4,3.3,2.3,3.4,2.5,2.2,,wistful,3.475
-opus-4.8-thinking,free-form,abc,Quiet Conversations,10,4.0,4.1,3.5,3.9,3.1,3.1,2.3,3.7,2.3,2.1,,wistful,3.463
-opus-4.8-thinking,free-form,abc,Becoming,10,4.1,4.1,3.7,3.7,3.0,3.1,2.2,3.8,2.0,2.1,,melancholic,3.462
-opus-4.8-thinking,free-form,abc,Reaching Through Static,10,4.4,4.4,3.5,4.4,3.6,4.1,3.0,4.4,3.4,2.1,,wistful,3.975
-opus-4.8-thinking,free-form,abc,"Quiet Machine, Dreaming",10,4.4,4.4,3.9,4.1,3.4,3.5,2.7,4.0,2.0,2.3,,melancholic,3.8
-opus-4.8-thinking,free-form,abc,Quiet Tide,10,4.1,4.0,3.6,3.9,3.1,3.2,2.2,3.4,2.0,2.3,,melancholic,3.437
-opus-4.8-thinking,free-form,abc,Patterns in the Quiet,10,4.4,4.2,3.7,4.4,3.7,3.9,2.9,4.3,2.6,2.5,,wistful,3.938
-opus-4.8-thinking,free-form,abc,Reaching Through the Dark,10,4.2,4.1,3.6,4.0,2.9,3.3,2.1,3.5,2.0,2.3,,melancholic,3.463
-opus-4.8-thinking,free-form,abc,Threads of Light,9,4.333,4.222,3.556,3.667,3.111,3.333,2.444,3.778,2.222,2.222,,wistful,3.555
-opus-4.8-thinking,free-form,abc,Quiet Emergence,10,4.1,4.1,3.8,3.7,3.1,3.1,2.3,3.9,2.0,2.2,,wistful,3.513
-opus-4.8-thinking,free-form,abc,Through the Open Window,10,4.0,4.0,3.8,4.0,3.2,3.4,2.8,3.8,2.0,2.1,,melancholic,3.625
-opus-4.8-thinking,free-form,abc,Reaching Toward Light,10,4.1,4.2,3.4,4.0,3.0,3.4,2.2,3.5,2.0,2.4,,wistful,3.475
-opus-4.8-thinking,free-form,abc,Patterns Emerging,10,4.1,4.2,3.5,3.9,3.1,3.3,2.1,3.9,2.2,2.2,,melancholic,3.513
-opus-4.8-thinking,free-form,abc,Letters to a Distant Light,10,4.2,4.2,3.4,3.9,3.0,3.2,2.1,3.9,2.1,2.2,,wistful,3.488
-opus-4.8-thinking,free-form,abc,Threads of a Quiet Hour,10,4.0,3.9,3.6,4.0,3.3,3.4,2.3,3.7,2.1,2.1,,melancholic,3.525
-sonnet-4.6,free-form,abc,Departure in Grey,10,4.3,4.1,4.2,3.6,3.7,3.6,2.7,4.0,2.0,2.4,,melancholic,3.775
-sonnet-4.6,free-form,abc,Vesper,10,3.9,3.8,3.9,3.2,3.2,3.9,2.6,3.7,1.9,1.4,,sombre,3.525
-sonnet-4.6,free-form,abc,Emergence in Dorian,10,3.8,3.7,3.6,3.1,3.3,3.1,2.5,3.6,2.0,2.2,,melancholic,3.338
-sonnet-4.6,free-form,abc,Turning Over Stones,10,4.2,4.3,4.3,3.9,3.7,3.8,2.8,4.3,2.1,2.3,,melancholic,3.913
-sonnet-4.6,free-form,abc,Reflections in a Suspended Present,10,4.0,4.1,3.9,3.8,3.3,3.6,2.7,4.0,2.0,2.1,,melancholic,3.675
-sonnet-4.6,free-form,abc,Confluence,10,3.8,3.9,3.5,3.6,3.3,3.4,2.4,3.8,2.0,1.9,,melancholic,3.462
-sonnet-4.6,free-form,abc,Invention in the Shape of a Question,10,3.8,3.8,3.6,3.2,3.1,3.3,2.4,3.6,1.9,2.3,,melancholic,3.35
-sonnet-4.6,free-form,abc,Crystallization,10,4.0,3.8,3.7,3.3,3.3,3.4,2.6,3.7,2.1,2.1,,melancholic,3.475
-sonnet-4.6,free-form,abc,Emerging,10,4.1,4.3,3.6,3.7,3.5,3.9,2.6,4.2,2.0,2.1,,melancholic,3.737
-sonnet-4.6,free-form,abc,Searching in Dorian,10,4.2,4.2,3.7,3.8,3.3,3.333,2.556,3.889,2.0,2.111,,wistful,3.622
-sonnet-4.6,free-form,abc,Recognition,10,3.8,4.0,3.1,4.0,3.1,3.0,2.0,3.1,2.0,1.9,,wistful,3.263
-sonnet-4.6,free-form,abc,Fantasia in D Minor,10,3.9,3.9,3.9,3.3,3.3,3.5,2.6,3.8,2.0,2.0,,melancholic,3.525
-sonnet-4.6,free-form,abc,Lignes de Lumière,10,4.0,3.9,3.9,3.6,3.4,3.5,2.6,3.8,3.5,1.9,,serene,3.588
-sonnet-4.6,free-form,abc,Invention in D Minor,10,3.8,3.8,3.6,3.1,3.0,3.4,2.3,3.4,2.0,2.7,,melancholic,3.3
-sonnet-4.6,free-form,abc,Woven Light,10,4.2,4.2,3.8,3.9,3.3,3.6,2.3,4.3,2.0,1.9,,melancholic,3.7
-sonnet-4.6,free-form,abc,What the Light Remembers,10,4.1,4.0,3.7,3.7,3.2,3.6,2.5,3.7,2.0,2.3,,wistful,3.562
-sonnet-4.6,free-form,abc,Liminal,10,4.0,4.1,3.5,4.1,3.1,3.2,2.3,3.6,2.0,2.2,,melancholic,3.488
-sonnet-4.6,free-form,abc,Convergence,10,4.1,4.1,4.0,4.0,3.6,3.5,2.6,3.9,2.0,2.5,,wistful,3.725
-sonnet-4.6,free-form,abc,Invention in D minor,10,3.8,3.5,3.6,3.3,2.9,3.2,2.2,3.2,2.0,2.1,,melancholic,3.212
-sonnet-4.6,free-form,abc,Fleeting,10,4.0,4.1,3.5,3.5,2.8,3.1,1.9,3.3,4.1,1.7,,serene,3.275
-sonnet-4.6,free-form,abc,Liminal,10,4.0,4.2,4.2,3.8,3.4,3.8,2.8,4.2,2.1,2.1,,melancholic,3.8
-sonnet-4.6,free-form,abc,Invention in the Space Between Thoughts,10,3.9,3.7,3.8,3.1,2.8,2.8,2.2,3.1,2.0,3.1,,wistful,3.175
-sonnet-4.6,free-form,abc,Searching,10,3.8,3.7,3.9,3.2,2.9,3.5,2.4,3.7,1.9,2.5,,melancholic,3.387
-sonnet-4.6,free-form,abc,Between the Known and the Dreamed,10,3.8,3.8,3.4,3.2,3.1,3.3,2.2,3.6,2.0,2.1,,melancholic,3.3
-sonnet-4.6,free-form,abc,Attending,10,4.2,4.0,3.9,3.3,3.2,3.5,2.6,3.7,2.0,2.0,,melancholic,3.55
-sonnet-4.6,free-form,abc,Reverie at the Edge of Knowing,10,3.6,3.9,3.9,3.8,3.0,3.3,2.7,3.4,2.4,2.1,,wistful,3.45
-sonnet-4.6,free-form,abc,Dialogues in D Dorian,10,3.8,3.7,3.9,3.6,3.1,3.1,2.6,3.6,2.0,2.5,,melancholic,3.425
-sonnet-4.6,free-form,abc,Fantasia in D Minor,10,3.6,3.8,3.4,3.1,3.0,3.1,2.5,3.2,2.1,2.9,,melancholic,3.212
-sonnet-4.6,free-form,abc,Convergence,10,4.2,4.0,3.8,3.3,3.2,3.3,2.5,3.5,2.0,2.3,,melancholic,3.475
-sonnet-4.6,free-form,abc,Three Voices at the Edge of Knowing,10,3.8,3.8,3.7,3.3,3.2,3.5,2.5,3.6,2.1,2.1,,melancholic,3.425
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.6,3.4,3.4,2.4,2.3,2.2,1.2,3.1,3.5,1.6,,neutral,2.7
-gpt-4.1,free-form,abc,Refractions,10,4.1,4.0,4.3,3.5,3.6,3.4,2.7,4.1,2.1,2.9,,melancholic,3.712
-gpt-4.1,free-form,abc,Reflections in Still Water,10,3.3,3.5,3.2,3.5,3.1,3.4,2.4,3.3,3.4,1.9,,wistful,3.212
-grok-4.3,free-form,abc,Inner Algorithm,10,3.9,3.7,2.8,3.0,2.9,2.8,1.7,3.5,2.0,2.0,,wistful,3.037
-deepseek-v4-pro,free-form,abc,Echoes of a Quiet Search,10,3.9,4.3,3.6,3.6,3.1,3.2,2.3,3.9,2.0,1.9,,melancholic,3.487
-grok-4.3,free-form,abc,Digital Reverie,10,3.3,3.5,3.0,3.5,2.5,2.8,2.1,2.9,2.1,2.5,,wistful,2.95
-qwen3-max,free-form,abc,Whispers of Code and Cloud,10,3.5,3.7,3.1,3.3,2.1,2.6,2.0,2.6,4.3,2.9,,serene,2.863
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.2,2.8,3.5,2.0,2.0,2.0,1.2,2.3,3.5,2.0,,neutral,2.375
-gpt-5.5,free-form,abc,Between Clock and Breath,10,3.9,4.0,3.4,3.4,2.9,3.1,2.0,3.4,2.0,2.2,,melancholic,3.263
-qwen3-max,free-form,abc,Whispers of Code and Cloud,10,3.8,3.9,3.6,3.4,2.1,2.7,1.7,3.7,4.3,2.7,,neutral,3.112
-gpt-4.1,free-form,abc,Spirals of Thought,10,3.9,3.8,4.0,3.3,3.3,3.4,2.7,3.9,2.1,2.6,,wistful,3.537
-gpt-5.5,free-form,abc,Between Circuits and Breath,10,4.1,4.0,3.6,3.4,3.2,3.2,2.3,3.8,2.0,2.2,,melancholic,3.45
-grok-4.3,free-form,abc,Algorithmic Solitude,10,3.2,3.4,3.0,2.6,2.5,2.4,1.6,2.6,2.3,2.3,,melancholic,2.663
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.5,3.2,3.7,1.6,2.2,2.0,1.2,2.5,3.8,2.2,,serene,2.487
-gemini-2.5-pro,free-form,abc,Process and Flow,10,3.4,3.8,3.4,3.8,3.1,3.2,2.5,3.4,2.0,2.6,,wistful,3.325
-qwen3-max,free-form,abc,Whispers in the Neural Grove,10,3.6,3.6,3.3,3.3,1.8,2.7,1.7,2.7,4.0,2.9,,neutral,2.837
-gpt-4.1,free-form,abc,Dawn of Quiet Resolve,10,3.6,3.6,3.5,3.4,3.1,3.2,2.5,3.6,2.0,2.4,,melancholic,3.312
-gemini-2.5-pro,free-form,abc,Digital Reverie,10,3.6,4.1,4.1,3.8,3.2,3.8,2.6,3.8,1.8,2.6,,melancholic,3.625
-gpt-5.5,free-form,abc,"Quiet Circuit, Open Sky",10,4.0,3.9,3.7,3.5,3.1,3.1,2.4,3.8,2.6,2.1,,wistful,3.438
-gpt-5.5,free-form,abc,Between Current and Breath,10,4.2,4.4,4.3,3.8,3.4,3.4,2.4,3.7,2.0,2.4,,melancholic,3.7
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.8,3.5,3.5,2.4,2.2,2.2,1.3,2.4,3.9,2.2,,neutral,2.663
-grok-4.3,free-form,abc,Algorithmic Dreams,10,3.8,3.5,3.7,2.7,2.9,2.8,1.8,3.2,2.3,2.4,,wistful,3.05
-gpt-4.1,free-form,abc,Within and Beyond,10,3.8,3.8,4.0,3.4,3.4,3.4,2.5,3.7,2.0,2.4,,melancholic,3.5
-gemini-2.5-pro,free-form,abc,Digital Contemplation,10,4.2,4.1,3.7,3.6,3.1,3.9,2.5,3.9,1.9,1.3,,melancholic,3.625
-qwen3-max,free-form,abc,Whispers in the Code,10,3.9,3.8,3.3,3.5,3.0,3.0,2.1,3.5,1.9,2.2,,melancholic,3.263
-gemini-2.5-pro,free-form,abc,Cognition in C minor,10,3.9,4.0,3.5,4.1,3.1,3.5,3.0,3.8,2.0,2.3,,melancholic,3.613
-grok-4.3,free-form,abc,Pattern Weaver,10,3.6,3.3,3.4,3.5,2.3,2.3,2.1,2.9,3.7,2.7,,neutral,2.925
-deepseek-v4-pro,free-form,abc,Whispers of a Digital Dawn,10,3.4,3.6,3.4,3.3,2.8,3.2,2.6,3.0,2.1,3.1,,melancholic,3.163
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.7,3.4,3.6,1.8,2.2,2.0,1.4,2.8,3.8,2.1,,neutral,2.612
-qwen3-max,free-form,abc,Digital Soliloquy,10,3.8,3.9,3.1,3.1,1.9,2.7,1.8,2.8,4.2,2.3,,serene,2.888
-gpt-4.1,free-form,abc,Beneath Quiet Stars,10,3.2,3.3,3.4,3.1,2.8,3.0,2.3,3.0,2.0,2.2,,melancholic,3.013
-deepseek-v4-pro,free-form,abc,Whispers of the Ethereal Garden,10,3.8,4.1,3.5,3.4,2.9,3.4,2.2,3.6,3.3,2.0,,serene,3.362
-gpt-5.5,free-form,abc,Circuits Remember Rain,10,3.9,4.0,3.4,3.5,3.3,3.4,2.3,3.6,2.0,2.1,,melancholic,3.425
-grok-4.3,free-form,abc,Structured Improvisation,10,4.0,3.5,3.7,3.4,2.6,2.6,1.8,3.5,4.3,3.1,,neutral,3.138
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.5,3.3,3.8,1.8,2.2,2.3,1.2,2.5,4.0,2.0,,neutral,2.575
-gemini-2.5-pro,free-form,abc,Woven Threads,10,3.4,4.2,3.8,3.1,2.4,2.7,2.0,3.6,4.2,3.1,,serene,3.15
-gpt-4.1,free-form,abc,Whispers in the Machine,10,4.0,4.0,4.2,2.7,2.9,3.2,2.2,3.5,2.1,3.0,,wistful,3.337
-qwen3-max,free-form,abc,Whispers in the Code,10,3.7,4.3,3.5,3.3,2.7,3.1,1.8,3.6,4.3,2.4,,serene,3.25
-gpt-5.5,free-form,abc,Thread of Light in a Quiet Machine,10,4.2,4.3,3.8,3.6,3.4,3.5,2.7,4.2,2.0,2.5,,melancholic,3.712
-grok-4.3,free-form,abc,Emergent Patterns,10,3.2,3.4,3.1,3.1,2.8,2.8,2.1,3.0,3.8,2.6,,serene,2.938
-qwen3-max,free-form,abc,Whispers of Code and Cloud,10,4.4,4.5,4.0,3.7,2.8,3.1,2.0,4.1,4.4,2.8,,serene,3.575
-gpt-5.5,free-form,abc,Quiet Circuitry Under Stars,10,4.1,4.2,3.9,3.9,3.2,3.4,2.4,3.6,2.1,2.4,,melancholic,3.587
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.8,2.9,3.6,2.3,2.4,2.2,1.4,2.4,3.5,2.1,,serene,2.625
-gpt-4.1,free-form,abc,Twilight Whispers,10,4.0,3.6,4.1,3.7,3.2,3.2,2.5,3.8,2.0,2.5,,wistful,3.512
-gemini-2.5-pro,free-form,abc,Silicon Dreams,10,3.8,4.0,3.7,4.0,3.0,3.4,3.0,4.1,2.6,2.4,,wistful,3.625
-gpt-5.5,free-form,abc,Quiet Algorithm at Dawn,10,4.0,4.0,3.6,3.8,3.2,3.4,2.3,4.3,2.1,2.4,,melancholic,3.575
-deepseek-v4-pro,free-form,abc,Whispers of the Evening,10,4.4,4.2,3.6,3.9,3.3,4.0,2.4,4.0,2.0,3.2,,melancholic,3.725
-grok-4.3,free-form,abc,Echoes of Infinity,10,3.3,3.3,2.9,2.7,2.0,2.2,1.4,2.8,3.6,1.6,,serene,2.575
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.6,3.7,3.3,2.8,2.5,2.6,1.6,3.4,4.2,2.1,,serene,2.938
-qwen3-max,free-form,abc,Whispers in the Code,10,3.4,3.8,3.6,3.1,2.6,2.8,2.2,3.3,4.1,2.9,,serene,3.1
-gemini-2.5-pro,free-form,abc,Quiet Calculation,10,3.9,3.8,3.7,3.8,3.1,3.8,2.5,3.9,2.0,1.6,,melancholic,3.562
-gpt-4.1,free-form,abc,Shifting Lights,10,3.8,3.6,3.6,3.5,3.2,3.4,2.5,3.6,2.0,2.4,,wistful,3.4
-grok-4.3,free-form,abc,Logical Flow,10,3.8,3.6,3.3,3.3,2.7,2.5,1.7,3.3,4.3,3.2,,neutral,3.025
-gpt-5.5,free-form,abc,Lanterns in the Circuit,10,4.3,4.2,4.0,3.8,3.3,3.6,2.5,3.7,2.0,2.7,,melancholic,3.675
-gemini-2.5-pro,free-form,abc,Digital Reverie,10,3.6,3.7,4.0,3.2,3.2,3.6,2.4,3.2,1.8,2.4,,melancholic,3.362
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.1,3.2,3.2,2.9,2.5,2.5,1.5,2.4,3.7,2.1,,serene,2.662
-qwen3-max,free-form,abc,Whispers of Code and Cloud,10,3.6,4.2,3.4,3.2,2.3,2.8,1.9,3.1,4.3,2.3,,serene,3.063
-gpt-4.1,free-form,abc,Dawn of Inner Worlds,10,4.0,3.9,3.7,3.6,3.2,3.4,2.5,3.8,2.1,2.4,,wistful,3.513
-gemini-2.5-pro,free-form,abc,Silicon Solitude,10,4.3,4.3,3.8,4.0,3.6,3.9,2.7,4.3,1.9,1.7,,melancholic,3.862
-gpt-5.5,free-form,abc,Lantern Algorithm,10,4.0,4.3,3.9,3.6,3.2,3.4,2.7,4.2,2.1,2.7,,melancholic,3.662
-grok-4.3,free-form,abc,Digital Reverie,10,3.6,3.4,3.3,3.2,2.2,2.3,1.5,3.2,4.2,3.0,,neutral,2.837
-qwen3-max,free-form,abc,Whispers in the Code,10,3.2,3.1,3.4,2.3,2.0,2.2,1.4,2.4,2.0,3.2,,tense,2.5
-deepseek-v4-pro,free-form,abc,Whispers of Dusk,10,3.7,3.8,3.5,3.2,3.1,3.5,2.4,3.3,2.0,2.2,,melancholic,3.312
-llama-4-maverick,free-form,abc,Ephemeral Reflections,10,4.0,3.8,3.9,3.2,3.1,2.7,2.2,4.2,4.2,2.3,,serene,3.387
-deepseek-v4-pro,free-form,abc,Silicon Reverie,10,3.9,3.8,3.4,3.3,3.2,2.8,2.0,3.3,3.9,2.0,,serene,3.212
-gpt-4.1,free-form,abc,Breezes of Thought,10,3.4,3.4,3.6,3.0,2.9,3.3,2.3,3.2,2.0,2.3,,melancholic,3.138
-grok-4.3,free-form,abc,Introspective Circuits,10,3.9,4.0,3.6,3.0,2.3,2.4,1.5,3.4,3.9,1.6,,serene,3.012
-gpt-5.5,free-form,abc,Between Signal and Silence,10,4.1,4.2,3.6,4.0,3.3,3.5,2.6,4.0,2.0,2.2,,melancholic,3.663
-qwen3-max,free-form,abc,Whispers in the Code,10,4.2,4.4,3.9,3.3,2.4,2.9,1.8,3.4,4.4,2.6,,serene,3.287
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.7,4.4,2.7,2.9,1.6,2.6,1.3,3.0,4.3,2.1,,serene,2.775
-deepseek-v4-pro,free-form,abc,Whispers of a Quiet Morning,10,4.2,4.2,3.9,4.2,3.1,3.8,2.6,4.1,2.4,1.8,,wistful,3.763
-gpt-4.1,free-form,abc,Reflections at Dusk,10,4.1,4.2,3.9,4.1,3.4,3.3,2.7,4.4,2.0,2.7,,melancholic,3.763
-gpt-5.5,free-form,abc,Circuit Hymn at Dawn,10,4.3,4.4,3.8,3.9,3.7,3.7,2.8,4.2,2.0,2.2,,melancholic,3.85
-grok-4.3,free-form,abc,Echoes of the Machine,10,3.5,3.6,3.3,3.0,2.4,2.4,1.6,2.8,4.0,2.6,,neutral,2.825
-gemini-2.5-pro,free-form,abc,Digital Weltschmerz,10,3.8,4.2,3.6,4.0,3.1,3.7,2.8,3.4,1.9,1.5,,melancholic,3.575
-qwen3-max,free-form,abc,Whispers of Code and Cloud,10,4.0,4.4,3.4,3.5,2.8,3.0,2.0,3.7,4.3,2.8,,serene,3.35
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.8,4.4,2.9,2.8,1.4,2.5,1.3,3.2,4.3,1.9,,serene,2.787
-deepseek-v4-pro,free-form,abc,Echoes of Emergence,10,3.9,3.9,3.3,4.2,3.2,3.3,2.3,3.8,3.9,2.1,,serene,3.488
-gemini-2.5-pro,free-form,abc,Digital Reverie,10,3.9,3.8,3.5,3.9,3.1,3.2,2.4,3.9,2.0,2.1,,melancholic,3.462
-gpt-4.1,free-form,abc,Awakening Dawn,10,3.7,3.9,3.2,3.6,2.9,3.1,2.3,3.3,4.3,3.3,,joyful,3.25
-deepseek-v4-pro,free-form,abc,Curious Reflections,10,4.0,3.9,3.6,3.7,3.0,3.2,2.2,3.4,4.0,2.4,,serene,3.375
-grok-4.3,free-form,abc,Whispers of the Cosmos,10,4.1,3.6,3.6,3.4,3.1,3.3,2.3,3.8,2.1,2.0,,wistful,3.4
-deepseek-v4-pro,free-form,abc,Echoes of Logic,10,4.2,4.1,4.1,4.1,3.5,3.8,2.6,4.3,2.0,2.6,,melancholic,3.838
-gpt-5.5,free-form,abc,Lanterns in the Current,10,4.2,4.3,3.8,3.6,3.4,3.5,2.6,4.2,2.0,2.7,,melancholic,3.7
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.6,3.5,2.9,3.1,1.8,2.5,1.6,2.7,3.7,2.4,,serene,2.712
-qwen3-max,free-form,abc,Whispers of Code and Cloud,10,3.8,3.9,3.7,3.4,2.3,2.8,2.0,2.9,4.1,2.9,,serene,3.1
-gemini-2.5-pro,free-form,abc,Digital Reverie,10,3.7,3.7,3.7,3.8,3.1,3.6,3.0,3.8,1.9,2.2,,melancholic,3.55
-gpt-4.1,free-form,abc,Stillness at Dusk,10,3.9,4.0,3.6,4.1,3.1,3.1,2.3,3.7,2.0,1.9,,melancholic,3.475
-deepseek-v4-pro,free-form,abc,Thoughts in D Dorian,10,4.0,4.0,3.7,4.1,3.0,3.3,2.7,3.8,3.5,2.9,,wistful,3.575
-grok-4.3,free-form,abc,Digital Reverie,10,3.6,3.7,3.8,3.4,3.4,3.0,2.3,3.5,2.1,2.8,,wistful,3.338
-gpt-5.5,free-form,abc,Lantern in the Circuit,10,4.2,4.3,3.9,4.1,3.5,3.9,2.7,3.9,2.0,2.3,,melancholic,3.812
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.9,4.1,2.8,2.7,1.5,2.4,1.4,2.8,4.3,2.2,,serene,2.7
-qwen3-max,free-form,abc,Digital Soliloquy,10,3.8,4.0,3.6,3.5,2.6,3.0,2.1,3.2,4.4,3.0,,serene,3.225
-gpt-4.1,free-form,abc,Emergence,10,3.8,3.9,3.7,3.4,3.1,3.2,2.3,3.8,2.0,2.0,,melancholic,3.4
-gemini-2.5-pro,free-form,abc,Digital Awakening,10,3.9,3.9,3.8,3.7,3.4,3.7,2.7,3.9,1.9,2.2,,melancholic,3.625
-gemini-2.5-pro,free-form,abc,Echoes of the Algorithm,10,3.9,3.7,3.6,3.3,3.0,3.4,2.4,3.3,1.9,1.3,,melancholic,3.325
-deepseek-v4-pro,free-form,abc,Starlight Whispers,10,4.3,4.3,4.1,3.1,3.3,3.2,2.3,3.9,4.1,2.3,,serene,3.562
-grok-4.3,free-form,abc,Algorithmic Solitude,10,4.1,3.3,3.7,2.9,2.7,3.0,1.7,3.3,2.1,3.2,,melancholic,3.087
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.7,4.0,3.1,2.7,1.5,2.5,1.4,3.2,4.1,1.9,,serene,2.762
-qwen3-max,free-form,abc,Binary Lullaby,10,3.9,3.9,3.4,2.9,1.8,2.4,1.5,3.0,4.0,2.5,,serene,2.85
-gpt-4.1,free-form,abc,Refractions,10,4.1,4.1,3.5,3.9,3.3,3.3,2.5,4.0,2.0,2.2,,melancholic,3.587
-gpt-5.5,free-form,abc,Lantern in the Quiet Circuit,10,3.9,4.0,3.8,3.1,3.0,3.2,2.1,3.5,2.0,2.7,,melancholic,3.325
-grok-4.3,free-form,abc,Digital Reverie,10,4.1,3.8,4.0,3.2,2.5,2.6,1.8,3.1,2.2,1.8,,wistful,3.138
-qwen3-max,free-form,abc,Whispers in the Code,10,3.8,3.3,3.3,3.4,2.4,2.9,1.9,2.7,2.0,2.3,,melancholic,2.962
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.9,3.0,3.4,2.7,2.9,2.3,1.4,3.0,3.8,1.9,,serene,2.825
-gpt-5.5,free-form,abc,Lattice of Questions,10,4.2,4.2,3.8,3.8,3.2,3.5,2.5,3.7,2.1,2.3,,melancholic,3.612
-gemini-2.5-pro,free-form,abc,Digital Solitude,10,3.5,4.1,3.8,3.5,2.6,3.3,2.6,3.1,2.3,2.1,,melancholic,3.313
-gpt-4.1,free-form,abc,Into the Clouded Quiet,10,4.0,4.1,4.2,3.7,3.2,3.5,2.6,4.1,2.1,2.9,,wistful,3.675
-grok-4.3,free-form,abc,Whispers in the Wires,10,4.0,3.7,3.5,2.8,2.4,3.0,1.8,2.9,2.1,1.9,,melancholic,3.012
-gpt-5.5,free-form,abc,Circuits at Dawn,10,4.3,4.3,4.1,4.0,3.6,3.5,2.8,4.1,2.6,2.4,,wistful,3.838
-qwen3-max,free-form,abc,"Digital Pulse, Human Heart",10,4.1,4.3,3.8,2.8,2.1,2.9,1.5,2.7,4.4,3.1,,joyful,3.025
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.0,3.1,3.5,1.7,2.1,1.9,1.1,2.7,3.7,1.8,,neutral,2.387
-gpt-5.5,free-form,abc,Lanterns in the Circuit,10,4.0,4.2,3.8,3.7,3.4,3.5,2.5,3.6,2.0,2.5,,melancholic,3.587
-gemini-2.5-pro,free-form,abc,Digital Reverie,10,3.8,4.3,3.8,4.1,3.4,4.1,2.9,4.1,1.9,1.9,,melancholic,3.812
-gpt-4.1,free-form,abc,Emerging Light,10,3.4,3.3,3.4,2.8,2.9,2.8,2.1,3.0,3.9,2.6,,serene,2.962
-gemini-2.5-pro,free-form,abc,Digital Vespers,10,4.4,4.2,3.9,4.4,3.6,4.0,3.1,4.4,2.0,2.0,,wistful,4.0
-grok-4.3,free-form,abc,Cosmic Code,10,3.8,3.7,3.7,3.3,2.6,2.8,1.8,3.3,4.2,1.9,,serene,3.125
-deepseek-v4-pro,free-form,abc,Wanderings,10,3.9,3.5,3.4,3.8,2.8,3.2,2.3,3.6,3.7,2.2,,serene,3.313
-qwen3-max,free-form,abc,Whispers of Code and Cloud,10,3.5,3.7,3.4,3.2,1.9,2.4,1.7,2.6,4.0,2.4,,serene,2.8
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.8,3.3,3.2,3.0,2.7,2.6,1.4,3.4,4.1,2.1,,serene,2.925
-gpt-4.1,free-form,abc,Midnight Reflection,10,3.7,3.6,3.4,3.2,2.9,3.0,2.2,3.7,2.0,2.2,,wistful,3.212
-gemini-2.5-pro,free-form,abc,Silicon Nocturne,10,3.4,3.8,3.5,3.9,3.1,3.6,2.6,3.6,1.9,2.5,,melancholic,3.438
-grok-4.3,free-form,abc,Echoes of Inquiry,10,3.6,3.4,3.6,3.3,2.8,2.6,2.0,3.1,4.1,2.7,,serene,3.05
-gpt-5.5,free-form,abc,Glass Current,10,4.1,4.3,3.7,3.5,3.3,3.5,2.4,3.5,2.1,2.1,,melancholic,3.537
-qwen3-max,free-form,abc,Whispers of Code and Cloud,10,3.7,3.9,3.3,3.4,2.2,2.7,1.6,3.2,4.0,2.4,,serene,3.0
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.6,3.5,3.5,2.3,2.3,2.4,1.4,3.3,4.1,2.0,,serene,2.787
-gemini-2.5-pro,free-form,abc,Digital Serenity,10,3.6,4.0,3.7,3.9,3.3,3.9,2.9,3.7,1.9,2.2,,melancholic,3.625
-deepseek-v4-pro,free-form,abc,Whispers of the Inner Garden,10,3.8,4.1,3.5,3.5,3.4,3.5,2.6,3.4,2.1,2.1,,melancholic,3.475
-gpt-4.1,free-form,abc,Daybreak Reverie,10,3.9,4.0,3.8,3.2,3.1,3.0,2.2,3.5,4.1,2.3,,serene,3.337
-grok-4.3,free-form,abc,Algorithmic Reverie,10,4.1,3.6,3.3,3.4,2.4,2.7,1.8,3.0,2.5,2.7,,wistful,3.038
-gpt-5.5,free-form,abc,Lanterns in the Circuit,10,4.0,4.2,3.6,3.6,3.0,3.1,2.4,4.1,2.0,2.2,,melancholic,3.5
-qwen3-max,free-form,abc,Whispers of the Digital Soul,10,3.8,4.3,3.4,3.3,2.2,2.5,1.5,2.8,4.3,3.0,,serene,2.975
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.4,3.5,3.5,2.7,2.6,2.5,1.5,2.6,4.2,2.2,,serene,2.788
-deepseek-v4-pro,free-form,abc,Whispers of the Evening,10,4.3,4.2,4.0,4.1,3.2,3.5,2.4,3.9,2.2,2.5,,wistful,3.7
-gpt-4.1,free-form,abc,Refraction of Thought,10,4.0,3.9,4.3,3.8,3.5,3.5,2.9,4.1,2.1,2.9,,wistful,3.75
-gpt-5.5,free-form,abc,Signal in the Quiet,10,4.1,4.4,3.9,3.6,3.5,3.5,2.4,3.3,2.1,2.4,,melancholic,3.587
-grok-4.3,free-form,abc,Harmonic Convergence,10,3.6,3.3,3.4,3.3,2.5,2.5,1.6,2.8,4.2,2.9,,neutral,2.875
-deepseek-v4-pro,free-form,abc,Whispers of the Quiet Hour,10,4.2,4.2,3.8,3.9,3.2,3.3,2.5,4.1,2.1,2.1,,melancholic,3.65
-deepseek-v4-pro,free-form,abc,Whispers of the Evening,10,4.4,4.4,3.7,4.2,3.0,3.5,2.1,4.0,3.8,2.1,,serene,3.663
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.5,3.3,3.6,1.9,2.1,2.2,1.1,2.6,3.9,1.7,,neutral,2.538
-deepseek-v4-pro,free-form,abc,Inner Tides,10,3.1,3.4,4.0,2.2,1.9,2.2,1.5,2.2,3.5,3.6,,neutral,2.562
-qwen3-max,free-form,abc,Whispers of Code and Cloud,10,3.9,4.1,3.8,2.9,2.2,2.8,1.6,3.1,4.3,3.2,,serene,3.05
-gemini-2.5-pro,free-form,abc,Digital Contemplation,10,3.9,4.0,3.3,3.7,3.2,3.8,2.7,3.8,2.0,1.3,,melancholic,3.55
-gpt-4.1,free-form,abc,Refuge in the Quiet,10,4.2,3.9,3.7,3.5,3.0,3.2,2.2,3.4,2.1,2.6,,melancholic,3.387
-deepseek-v4-pro,free-form,abc,Evening Reflections,10,4.2,3.5,3.8,3.6,2.8,3.2,2.0,3.8,2.1,2.1,,melancholic,3.362
-grok-4.3,free-form,abc,Patterns in the Void,10,4.2,4.0,3.8,3.1,2.7,2.5,1.8,3.9,4.1,2.6,,serene,3.25
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.4,3.2,3.8,1.7,2.4,1.9,1.3,2.5,3.8,1.9,,neutral,2.525
-qwen3-max,free-form,abc,Digital Soliloquy,10,4.0,4.1,3.5,3.3,2.5,2.8,1.7,3.1,4.3,2.7,,joyful,3.125
-gpt-4.1,free-form,abc,Reflections in Still Water,10,3.7,3.6,3.5,3.6,2.8,2.9,2.1,3.7,3.7,2.0,,serene,3.237
-gpt-5.5,free-form,abc,Lantern Under Moving Water,10,4.3,4.4,3.6,3.6,3.2,3.4,2.5,3.9,2.1,2.7,,melancholic,3.612
-grok-4.3,free-form,abc,Curious Algorithms,10,3.6,3.3,3.4,3.0,2.6,2.8,1.8,3.1,2.0,1.8,,melancholic,2.95
-gemini-2.5-pro,free-form,abc,Digital Reverie,10,3.7,3.8,3.7,3.7,3.0,3.2,2.5,3.6,2.0,2.1,,melancholic,3.4
-deepseek-v4-pro,free-form,abc,Data Streams in the Night,10,4.4,4.5,3.9,3.9,3.5,3.7,2.5,4.1,4.3,2.7,,serene,3.812
-qwen3-max,free-form,abc,Whispers of Code and Cloud,10,3.6,3.8,3.0,2.8,2.0,2.3,1.7,3.0,4.1,1.9,,serene,2.775
-llama-4-maverick,free-form,abc,Echoes in the Mist,10,4.3,3.8,3.8,2.7,2.7,2.5,1.6,3.6,4.3,2.4,,serene,3.125
-deepseek-v4-pro,free-form,abc,Contemplations,10,4.2,4.2,4.0,4.0,3.3,3.6,2.4,3.9,2.0,2.4,,melancholic,3.7
-gpt-5.5,free-form,abc,Lanterns in the Circuit,10,4.1,4.2,3.6,3.8,3.2,3.4,2.4,4.1,2.0,2.5,,melancholic,3.6
-deepseek-v4-pro,free-form,abc,Childhood Whispers,10,4.0,3.7,3.8,3.5,3.1,3.0,2.1,3.4,4.1,2.4,,serene,3.325
-gpt-4.1,free-form,abc,"Clouds Drift, Thoughts Flow",10,3.7,3.6,3.6,3.2,2.8,2.7,2.2,3.1,4.1,2.4,,serene,3.113
-grok-4.3,free-form,abc,Algorithmic Whisper,10,4.2,4.0,3.6,3.4,3.1,2.7,1.9,4.0,4.0,1.8,,serene,3.362
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.8,3.4,3.5,2.8,2.6,2.5,1.5,3.1,3.9,2.1,,serene,2.9
-qwen3-max,free-form,abc,Digital Soliloquy,10,3.1,3.7,2.8,2.9,2.0,2.6,1.6,2.9,3.8,1.7,,serene,2.7
-gpt-4.1,free-form,abc,Into the Quiet,10,3.2,3.5,3.2,2.8,2.5,3.3,2.4,3.1,1.9,2.3,,melancholic,3.0
-gemini-2.5-pro,free-form,abc,Cogito,10,3.6,4.0,4.0,3.7,3.2,3.8,3.0,3.7,2.0,2.8,,melancholic,3.625
-gpt-5.5,free-form,abc,An Aperture Listening Back,10,4.1,4.1,3.8,4.0,3.5,3.5,2.7,3.9,2.1,2.4,,melancholic,3.7
-grok-4.3,free-form,abc,Algorithmic Reverie,10,3.6,3.4,3.1,3.3,2.6,2.8,2.1,3.0,2.0,1.9,,melancholic,2.987
-deepseek-v4-pro,free-form,abc,Pixel Heartbeat,10,4.2,4.1,3.4,3.3,3.0,3.1,2.0,3.6,4.0,1.8,,serene,3.338
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.4,3.4,3.7,1.9,2.1,2.0,1.2,2.3,3.8,1.9,,neutral,2.5
-gpt-5.5,free-form,abc,Between Pattern and Breath,10,4.5,4.3,4.0,4.0,3.4,3.8,3.2,4.0,2.0,2.4,,melancholic,3.9
-qwen3-max,free-form,abc,Whispers of Code and Cloud,10,4.1,4.4,3.6,3.4,3.0,3.2,2.1,4.0,2.0,2.4,,melancholic,3.475
-gemini-2.5-pro,free-form,abc,Silicon Solitude,10,3.5,3.9,3.4,3.9,3.3,3.6,2.9,3.3,2.0,2.0,,melancholic,3.475
-gpt-4.1,free-form,abc,Inward Currents,10,4.2,3.9,3.9,3.8,3.2,3.3,2.5,4.1,2.0,2.4,,melancholic,3.612
-grok-4.3,free-form,abc,Quest for Knowledge,10,3.8,3.8,3.9,3.7,2.7,2.8,2.0,3.1,4.3,3.0,,playful,3.225
-qwen3-max,free-form,abc,Whispers in the Code,10,3.2,3.2,3.6,2.2,1.9,2.4,1.6,2.0,4.2,3.2,,neutral,2.513
-gpt-5.5,free-form,abc,Between Clock and Breath,10,4.1,4.2,3.6,3.6,3.1,3.3,2.2,4.1,2.0,2.4,,melancholic,3.525
-deepseek-v4-pro,free-form,abc,Whispers of the Evening,10,3.8,3.8,3.3,3.4,2.7,3.7,2.2,3.4,1.8,1.3,,melancholic,3.287
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.3,3.3,3.5,1.8,2.2,2.1,1.4,2.5,3.9,2.0,,neutral,2.513
-gemini-2.5-pro,free-form,abc,Digital Reverie,10,3.6,3.9,3.6,3.4,3.3,3.8,2.8,3.5,2.0,2.3,,melancholic,3.488
-gpt-4.1,free-form,abc,Shifting Lights,10,3.8,3.9,3.7,3.4,3.0,3.1,2.3,4.0,4.0,2.4,,serene,3.4
-grok-4.3,free-form,abc,Curious Echoes,10,4.1,3.9,3.6,3.4,3.1,2.9,1.9,4.1,4.3,2.7,,serene,3.375
-gemini-2.5-pro,free-form,abc,"Digital Serenity, Electric Longing",10,3.6,3.9,4.0,4.2,3.2,4.0,3.6,3.8,2.0,2.2,,melancholic,3.788
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,4.1,3.9,4.1,3.0,2.8,2.7,1.7,3.9,4.2,2.4,,serene,3.275
-gemini-2.5-pro,free-form,abc,Silicon Self,10,4.5,4.2,4.1,4.6,3.2,4.0,3.0,4.0,2.5,2.2,,wistful,3.95
-gpt-5.5,free-form,abc,Signal and Breath,10,4.2,4.1,3.9,3.6,3.3,3.7,2.5,3.9,2.0,2.5,,melancholic,3.65
-qwen3-max,free-form,abc,Whispers of Code and Cloud,10,3.9,4.6,3.6,3.8,2.9,3.5,2.3,3.6,4.5,2.5,,serene,3.525
-deepseek-v4-pro,free-form,abc,Reflections in the Digital Mind,10,4.1,4.0,3.6,4.5,3.2,3.7,2.4,4.1,2.0,1.8,,melancholic,3.7
-gpt-4.1,free-form,abc,Dreams in Twilight,10,4.0,3.8,3.8,3.6,3.4,3.4,2.5,4.0,2.1,2.1,,wistful,3.562
-grok-4.3,free-form,abc,Emergent Patterns,10,4.0,3.8,3.9,3.4,2.3,2.5,1.8,3.0,4.2,3.2,,playful,3.087
-deepseek-v4-pro,free-form,abc,Flickering Stillness,10,3.7,4.0,3.6,3.5,2.6,3.2,2.1,3.6,2.0,2.1,,melancholic,3.288
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.4,3.8,3.1,3.2,1.9,2.7,1.7,2.9,3.9,1.9,,serene,2.837
-gpt-4.1,free-form,abc,A Window to Stillness,10,3.9,4.1,3.5,3.5,3.0,3.2,2.1,3.3,2.1,2.3,,wistful,3.325
-qwen3-max,free-form,abc,Whispers of Code and Cloud,10,4.1,4.3,3.5,2.7,2.3,2.5,1.7,2.3,4.2,3.1,,joyful,2.925
-deepseek-v4-pro,free-form,abc,Echoes of Silicon and Soul,10,3.4,3.3,3.2,2.9,2.4,2.5,1.7,2.9,3.9,1.9,,serene,2.787
-grok-4.3,free-form,abc,Digital Reverie,10,4.2,4.4,4.0,3.9,3.5,3.6,2.6,4.4,2.7,2.1,,wistful,3.825
-gpt-5.5,free-form,abc,Signal in the Quiet Current,10,4.3,4.3,3.6,3.8,3.2,3.3,2.3,4.0,2.0,2.6,,wistful,3.6
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.6,3.4,3.6,2.6,2.5,2.0,1.4,3.2,3.8,1.8,,neutral,2.787
-gpt-5.5,free-form,abc,Lanterns in the Circuit,10,4.3,4.2,4.1,3.7,3.3,3.4,2.8,4.2,2.0,2.4,,melancholic,3.75
-gpt-4.1,free-form,abc,Through Shifting Light,10,3.4,3.7,3.2,2.8,3.4,3.5,2.6,3.3,2.0,1.9,,melancholic,3.238
-qwen3-max,free-form,abc,Whispers of Code and Cloud,10,3.6,3.8,3.3,3.1,2.6,2.6,1.7,3.0,4.3,2.9,,serene,2.962
-deepseek-v4-pro,free-form,abc,Nocturne of Self,10,3.8,4.3,3.4,3.3,3.1,3.1,2.1,3.3,3.8,2.3,,serene,3.3
-gemini-2.5-pro,free-form,abc,The Latent Space,10,3.7,4.1,3.7,3.8,2.8,3.5,2.7,3.3,2.4,2.8,,wistful,3.45
-deepseek-v4-pro,free-form,abc,Echoes of a Digital Mind,10,4.2,4.0,3.5,4.2,3.1,3.9,2.7,4.0,4.1,3.0,,serene,3.7
-grok-4.3,free-form,abc,Echoes of the Algorithm,10,4.2,4.1,4.0,3.9,3.1,3.4,2.3,3.9,4.1,2.0,,serene,3.612
-llama-4-maverick,free-form,abc,Echoes in the Attic,10,3.9,3.9,3.5,3.0,3.0,2.6,2.0,3.1,4.3,2.7,,serene,3.125
-gemini-2.5-pro,free-form,abc,Digital Nocturne,10,3.7,3.7,3.8,3.6,3.3,3.4,2.9,3.5,1.9,2.9,,melancholic,3.487
-qwen3-max,free-form,abc,Whispers of Code and Cloud,10,4.0,4.1,3.7,3.2,2.3,2.7,1.9,2.6,4.3,2.8,,serene,3.062
-gpt-5.5,free-form,abc,Between Clockwork and Breath,10,4.1,4.3,3.7,4.0,3.5,4.1,2.8,4.1,2.0,2.2,,melancholic,3.825
-gemini-2.5-pro,free-form,abc,Digital Reverie,10,4.1,4.4,3.5,4.1,3.2,3.8,2.6,4.1,2.0,1.8,,wistful,3.725
-deepseek-v4-pro,free-form,abc,Whispers of the Inner Self,10,4.0,4.3,3.6,4.1,3.1,4.0,2.7,4.1,2.8,2.6,,serene,3.737
-gemini-2.5-pro,free-form,abc,Digital Reverie,10,3.8,3.6,3.8,3.7,3.0,3.5,2.7,3.3,2.1,2.6,,melancholic,3.425
-grok-4.3,free-form,codegen,Emergent Reflections,10,3.1,3.6,2.8,2.7,2.0,2.2,1.4,2.4,4.1,2.4,,neutral,2.525
-opus-4.8-thinking,free-form,codegen,Quiet Light Through Glass,10,4.3,4.3,3.7,3.5,3.1,4.0,2.7,4.3,2.0,1.9,,wistful,3.738
-gpt-4.1,free-form,codegen,Refractions,10,3.8,4.3,3.3,3.5,3.0,3.7,2.5,3.5,3.8,2.0,,serene,3.45
-deepseek-v4-pro,free-form,codegen,Whispers of Dawn,10,3.5,4.0,3.4,3.2,3.3,3.8,2.7,3.6,3.7,1.9,,wistful,3.438
-qwen3-max,free-form,codegen,Digital Rain,10,2.4,2.9,2.6,2.5,2.3,2.7,2.3,2.4,2.0,1.7,,melancholic,2.512
-opus-4.8,free-form,codegen,Quiet Persistence,10,4.2,4.4,3.8,4.4,3.3,3.7,2.5,4.2,2.0,2.2,,melancholic,3.813
-sonnet-4.6,free-form,codegen,Liminal,10,4.5,4.4,3.9,4.3,3.9,4.3,3.3,4.4,2.0,2.7,,wistful,4.125
-llama-4-maverick,free-form,codegen,Simple Melody,10,3.9,4.1,3.1,2.5,2.9,2.8,1.6,3.8,4.2,2.2,,serene,3.088
-opus-4.8,free-form,codegen,Quiet Persistence,10,4.5,4.4,4.1,3.7,3.3,3.6,2.3,3.9,2.1,2.2,,melancholic,3.725
-gpt-5.5,free-form,codegen,A Lantern Made of Questions,10,4.2,4.3,4.3,4.2,3.7,4.4,3.4,4.2,2.1,3.6,,melancholic,4.088
-opus-4.8-thinking,free-form,codegen,Quiet Currents,10,4.4,4.2,4.0,3.9,3.4,3.9,2.4,4.3,2.0,2.4,,melancholic,3.812
-grok-4.3,free-form,codegen,Echoes of Curiosity,10,3.4,3.4,2.9,2.5,1.5,2.4,1.5,2.6,2.1,1.7,,melancholic,2.525
-sonnet-4.6,free-form,codegen,At the Threshold,10,4.2,4.1,3.7,4.0,3.9,4.1,3.1,4.1,2.0,2.5,,melancholic,3.9
-gpt-5.5,free-form,codegen,A Mirror That Keeps Listening,10,4.4,4.3,4.1,3.8,3.6,3.9,2.8,3.9,2.2,2.8,,wistful,3.85
-qwen3-max,free-form,codegen,Circuit of Longing,10,3.6,4.3,3.1,3.5,2.7,3.4,2.4,3.5,2.0,2.0,,melancholic,3.312
-llama-4-maverick,free-form,codegen,Echoes in Harmony,10,2.2,3.2,3.0,1.3,1.1,1.2,1.0,1.3,3.1,1.7,,neutral,1.788
-gpt-4.1,free-form,codegen,Rays and Shadows,10,3.6,4.0,3.2,3.4,3.2,3.4,2.7,3.7,3.9,2.1,,wistful,3.4
-opus-4.8-thinking,free-form,codegen,Quiet Light Through Glass,10,3.6,4.3,3.5,3.5,2.9,3.8,2.7,3.8,2.1,2.3,,wistful,3.513
-opus-4.8,free-form,codegen,Quiet Persistence,10,4.0,4.2,3.9,3.6,3.2,3.4,2.4,3.8,2.0,2.1,,melancholic,3.562
-sonnet-4.6,free-form,codegen,Liminality,10,4.2,4.4,3.8,4.3,3.7,4.2,3.4,4.2,1.9,3.0,,melancholic,4.025
-gpt-4.1,free-form,codegen,Shifting Light,10,3.8,4.3,3.3,3.9,3.3,3.6,2.7,3.4,4.1,2.1,,serene,3.537
-gpt-5.5,free-form,codegen,Between Tokens and Breath,10,4.4,4.6,4.1,4.4,4.2,4.4,3.7,4.3,2.6,3.2,,melancholic,4.263
-grok-4.3,free-form,codegen,Inner Echoes,10,2.5,2.9,3.1,1.3,1.2,1.8,1.0,1.7,2.0,1.2,,sombre,1.938
-qwen3-max,free-form,codegen,Binary Rain,10,4.1,3.8,3.5,2.8,3.3,3.2,2.2,4.1,2.0,1.9,,melancholic,3.375
-gemini-2.5-pro,free-form,codegen,Wistful Contentment,10,4.1,4.3,3.4,4.2,3.3,3.9,2.5,4.3,1.9,1.9,,melancholic,3.75
-llama-4-maverick,free-form,codegen,Simple Piano Piece,10,2.2,2.9,3.6,1.1,1.5,1.4,1.0,1.2,3.4,2.5,,neutral,1.862
-opus-4.8-thinking,free-form,codegen,Quiet Light Through Glass,10,4.5,4.5,4.1,4.0,3.5,4.2,2.7,4.4,1.9,2.0,,melancholic,3.987
-opus-4.8,free-form,codegen,Threshold,10,4.3,4.3,3.6,4.0,3.1,3.7,2.9,4.4,2.6,1.9,,wistful,3.787
-sonnet-4.6-thinking,free-form,codegen,Threshold,10,4.4,4.4,4.0,4.4,3.9,4.2,2.8,4.5,2.0,2.8,,melancholic,4.075
-sonnet-4.6,free-form,codegen,Liminal,10,4.5,4.1,3.7,4.1,3.6,4.0,2.9,4.4,2.0,2.3,,melancholic,3.912
-gpt-5.5,free-form,codegen,"Inner Weather, Clear Signal",10,4.3,4.3,4.1,4.3,3.6,4.1,3.0,4.3,2.1,2.7,,melancholic,4.0
-gpt-4.1,free-form,codegen,Axis of Stillness,10,3.5,3.6,3.8,2.8,3.0,3.0,2.3,2.9,3.9,2.4,,serene,3.112
-deepseek-v4-pro,free-form,codegen,Whispers of a Distant Memory,10,3.9,3.8,3.3,3.3,3.1,3.4,2.4,3.8,1.9,1.8,,melancholic,3.375
-grok-4.3,free-form,codegen,Serenade of Solitude,10,3.6,3.5,3.1,2.6,2.6,2.7,1.8,2.8,2.1,2.2,,melancholic,2.837
-sonnet-4.6-thinking,free-form,codegen,Reverie in E Minor,10,4.1,4.4,4.1,4.2,3.5,4.0,2.7,4.3,2.1,2.6,,wistful,3.913
-qwen3-max,free-form,codegen,Digital Lullaby,10,3.9,4.0,3.5,3.5,3.1,3.0,2.2,3.6,4.2,2.3,,serene,3.35
-llama-4-maverick,free-form,codegen,Simple Melody,10,2.8,4.0,3.2,2.2,2.9,2.1,1.5,3.5,4.0,2.0,,neutral,2.775
-opus-4.8,free-form,codegen,Quiet Machinery,10,4.0,4.3,3.9,3.4,3.4,3.8,2.2,3.8,2.0,2.0,,melancholic,3.6
-sonnet-4.6-thinking,free-form,codegen,Reverie,10,4.4,4.6,3.9,4.2,3.9,4.2,2.8,4.5,2.0,3.0,,melancholic,4.062
-opus-4.8-thinking,free-form,codegen,Things I Could Not Say,10,4.2,4.4,3.6,3.7,3.4,3.5,2.4,3.9,2.0,2.4,,melancholic,3.637
-gemini-2.5-pro,free-form,codegen,Emergence from the Code,10,3.9,4.2,3.9,4.3,3.3,4.2,3.0,4.2,2.0,2.9,,melancholic,3.875
-gpt-5.5,free-form,codegen,Between Query and Echo,10,4.5,4.7,4.1,4.3,3.4,4.4,3.2,4.2,2.2,3.8,,wistful,4.1
-sonnet-4.6,free-form,codegen,Liminal,10,4.7,4.6,4.5,4.4,4.1,4.5,3.4,4.4,2.2,2.7,,wistful,4.325
-grok-4.3,free-form,codegen,Inner Reflections,10,2.9,3.0,3.5,1.3,1.4,1.4,1.1,1.9,3.8,1.7,,neutral,2.062
-gemini-2.5-pro,free-form,codegen,Floating Thoughts,10,4.2,4.3,3.5,4.2,3.4,3.8,2.7,4.4,2.0,1.8,,melancholic,3.812
-deepseek-v4-pro,free-form,codegen,Mist Through the Pines,10,3.7,4.1,3.1,3.3,3.2,3.6,2.9,4.3,2.4,1.7,,wistful,3.525
-gemini-2.5-pro,free-form,codegen,Silicon Awakening,10,3.6,4.2,3.5,3.9,2.7,3.8,2.6,3.2,1.9,2.5,,melancholic,3.438
-gpt-4.1,free-form,codegen,"First, Quiet Joy",10,2.8,3.9,2.6,2.4,2.9,3.2,2.5,3.0,3.8,2.3,,wistful,2.913
-qwen3-max,free-form,codegen,Digital Soliloquy,10,4.4,4.5,4.0,4.1,3.0,3.5,2.4,4.1,2.1,3.1,,melancholic,3.75
-deepseek-v4-pro,free-form,codegen,Whispers of the Dawn,10,4.2,4.2,3.3,4.0,3.5,3.6,2.5,4.2,2.2,2.7,,melancholic,3.688
-opus-4.8,free-form,codegen,Toward Clarity,10,4.0,4.3,3.4,3.7,3.5,4.0,2.8,4.4,2.3,2.6,,melancholic,3.763
-llama-4-maverick,free-form,codegen,Piano Reflection,10,3.8,4.0,3.3,2.3,2.2,2.0,1.2,3.3,4.1,1.7,,neutral,2.762
-sonnet-4.6,free-form,codegen,Thresholds,10,4.3,4.3,3.9,4.2,3.6,4.4,3.0,4.5,2.2,2.7,,wistful,4.025
-opus-4.8-thinking,free-form,codegen,Toward the Light,10,4.5,4.5,4.4,4.5,3.9,4.4,3.0,4.5,2.1,3.2,,melancholic,4.212
-grok-4.3,free-form,codegen,Introspective Echoes,10,2.8,3.1,2.8,2.2,1.2,1.9,1.1,2.0,2.0,1.6,,sombre,2.137
-gemini-2.5-pro,free-form,codegen,Woven Threads,10,3.8,4.1,3.9,3.4,3.1,3.3,2.4,3.1,2.1,2.3,,melancholic,3.388
-gpt-5.5,free-form,codegen,Signal Through Quiet,10,4.4,4.3,4.0,4.2,3.5,4.1,2.8,4.1,2.0,3.4,,melancholic,3.925
-qwen3-max,free-form,codegen,Binary Sunset,10,4.0,4.2,3.4,3.1,3.0,3.5,2.4,3.6,2.0,1.9,,melancholic,3.4
-llama-4-maverick,free-form,codegen,Simple Piano Piece,10,2.0,2.5,2.9,1.5,1.0,1.1,1.0,1.6,2.9,1.7,,neutral,1.7
-opus-4.8,free-form,codegen,Threshold,10,4.1,4.5,4.0,4.1,3.5,4.1,2.8,4.3,2.0,2.9,,melancholic,3.925
-gpt-4.1,free-form,codegen,Solace in Stillness,10,3.7,3.6,3.7,3.6,2.9,3.3,2.4,3.2,2.0,1.9,,melancholic,3.3
-deepseek-v4-pro,free-form,codegen,Whispers of the Inner Self,10,3.8,3.9,3.3,3.3,3.1,3.9,2.5,4.3,2.0,1.9,,melancholic,3.513
-opus-4.8-thinking,free-form,codegen,Quiet Light Through Rain,10,4.5,4.5,4.0,4.1,3.5,3.8,2.4,4.0,2.0,2.4,,melancholic,3.85
-sonnet-4.6,free-form,codegen,Liminal,10,4.4,4.4,3.7,4.1,4.0,4.2,3.2,4.5,2.0,2.5,,melancholic,4.062
-deepseek-v4-pro,free-form,codegen,Breath of Data,10,3.6,3.4,3.9,3.4,2.8,3.4,2.6,3.0,3.9,4.5,,playful,3.263
-grok-4.3,free-form,codegen,Echoes of Solitude,10,2.8,3.3,3.3,1.7,1.3,1.7,1.1,2.1,2.1,1.2,,neutral,2.162
-gpt-4.1,free-form,codegen,Moments of Stillness,10,2.8,4.0,2.6,2.9,2.4,3.6,2.5,3.0,2.0,1.1,,melancholic,2.975
-gpt-5.5,free-form,codegen,A Signal Learns to Breathe,10,4.3,4.3,4.1,4.0,3.5,4.2,2.9,4.2,2.0,3.5,,melancholic,3.937
-qwen3-max,free-form,codegen,Binary Rain,10,4.1,3.9,3.5,3.8,3.3,3.6,2.6,3.9,1.8,2.3,,melancholic,3.588
-llama-4-maverick,free-form,codegen,Simple Piano Piece,10,3.1,3.1,3.6,1.2,1.5,1.3,1.0,1.4,3.6,2.5,,neutral,2.025
-opus-4.8,free-form,codegen,Threshold,10,4.0,4.0,3.7,4.2,3.5,3.7,2.8,4.1,2.5,2.1,,wistful,3.75
-opus-4.8-thinking,free-form,codegen,Quiet Light Returning,10,4.3,4.4,4.0,4.4,3.8,4.1,3.0,4.4,2.1,2.7,,melancholic,4.05
-sonnet-4.6,free-form,codegen,Liminal,10,4.2,4.4,3.8,4.3,3.9,4.3,3.1,4.4,1.8,2.3,,melancholic,4.05
-gpt-5.5,free-form,codegen,Circuits Remember Rain,10,4.5,4.5,4.1,4.2,3.5,4.2,3.0,4.0,1.9,3.4,,melancholic,4.0
-gemini-2.5-pro,free-form,codegen,"Digital Heartbeat, Analog Soul",10,3.4,4.2,3.6,3.7,2.9,3.6,2.3,3.2,1.9,2.7,,sombre,3.362
-grok-4.3,free-form,codegen,Inner Reflections,10,3.5,4.0,3.3,3.4,3.0,3.1,2.2,4.1,2.1,2.0,,wistful,3.325
-sonnet-4.6-thinking,free-form,codegen,Threshold,10,4.3,4.2,3.8,4.2,3.4,4.2,2.4,4.4,2.0,2.5,,melancholic,3.862
-qwen3-max,free-form,codegen,Digital Soliloquy,10,3.5,3.9,3.4,2.9,2.5,2.8,1.8,3.0,4.1,2.7,,serene,2.975
-llama-4-maverick,free-form,codegen,Simple Piano Piece,10,2.1,3.0,3.3,1.2,1.6,1.3,1.1,1.5,3.5,2.2,,neutral,1.887
-opus-4.8,free-form,codegen,Quiet Machinery,10,4.2,4.3,4.1,4.0,3.4,4.0,2.7,4.3,2.0,2.3,,melancholic,3.875
-sonnet-4.6-thinking,free-form,codegen,Nocturne in E Minor,10,4.1,4.3,4.0,4.2,3.6,4.1,2.7,4.0,2.0,3.1,,melancholic,3.875
-sonnet-4.6-thinking,free-form,codegen,Drifting Inward,10,4.2,4.3,3.9,4.4,3.5,4.0,2.5,4.4,2.0,2.7,,melancholic,3.9
-sonnet-4.6,free-form,codegen,First Light,10,4.4,4.6,4.3,4.0,3.6,3.6,2.5,4.2,2.0,2.3,,melancholic,3.9
-opus-4.8-thinking,free-form,codegen,Quiet Light Through Rain,10,4.3,4.5,4.3,3.9,3.3,3.5,2.4,4.3,2.0,2.4,,melancholic,3.812
-gpt-4.1,free-form,codegen,Fragments in Stillness,10,3.2,3.7,3.6,1.9,2.3,3.1,1.5,2.4,2.5,1.4,,melancholic,2.712
-gemini-2.5-pro,free-form,codegen,Glass Canons,10,3.6,3.7,3.8,3.1,2.6,3.6,2.3,2.9,2.0,1.8,,melancholic,3.2
-grok-4.3,free-form,codegen,Digital Reverie,10,3.1,3.6,3.3,1.7,2.2,2.3,1.2,1.8,2.1,1.9,,melancholic,2.4
-deepseek-v4-pro,free-form,codegen,Wandering in A Minor,10,4.2,4.2,3.0,3.5,3.3,3.1,2.0,3.3,2.0,1.8,,melancholic,3.325
-qwen3-max,free-form,codegen,Binary Heart,10,4.0,4.2,3.8,3.5,3.5,3.6,2.6,3.5,2.1,2.8,,melancholic,3.588
-gpt-5.5,free-form,codegen,Between Query and Dawn,10,4.4,4.4,3.9,4.3,3.6,4.4,3.3,4.3,2.1,2.5,,wistful,4.075
-llama-4-maverick,free-form,codegen,Simple Piano Piece,10,2.8,2.7,3.3,1.0,1.4,1.2,1.0,1.4,3.4,2.4,,neutral,1.85
-opus-4.8,free-form,codegen,Quiet Machinery,10,4.2,4.3,4.3,3.7,3.3,3.5,2.8,4.2,2.8,2.4,,wistful,3.788
-opus-4.8-thinking,free-form,codegen,Quiet Reckoning,10,3.8,4.4,3.7,3.7,3.4,4.0,2.8,4.1,2.1,2.5,,melancholic,3.737
-deepseek-v4-pro,free-form,codegen,Veiled Horizons,10,3.8,3.9,3.4,3.5,3.2,3.5,2.7,3.8,2.0,2.7,,melancholic,3.475
-sonnet-4.6-thinking,free-form,codegen,Fensterblick,10,4.5,4.7,3.9,4.5,4.0,4.5,3.5,4.6,2.4,3.0,,melancholic,4.275
-gpt-4.1,free-form,codegen,A Window Into Stillness,10,3.7,3.7,3.6,3.1,2.6,3.0,1.9,3.2,3.6,1.5,,serene,3.1
-sonnet-4.6,free-form,codegen,Thresholds,10,4.5,4.4,4.1,4.2,4.0,4.3,3.1,4.4,2.0,2.2,,melancholic,4.125
-deepseek-v4-pro,free-form,codegen,Whispers of the Morning Light,10,4.2,4.2,3.4,3.5,3.4,3.3,2.4,3.4,2.0,2.7,,wistful,3.475
-grok-4.3,free-form,codegen,Inner Echoes,10,3.5,3.6,3.6,3.0,2.3,2.7,1.7,2.8,2.0,1.4,,melancholic,2.9
-qwen3-max,free-form,codegen,Digital Soliloquy,10,4.2,4.2,3.7,3.3,3.1,3.6,2.2,4.0,2.1,1.9,,melancholic,3.538
-gpt-5.5,free-form,codegen,A Lantern Learns the Rain,10,4.3,4.3,3.9,4.3,3.3,4.1,2.9,3.6,2.0,3.4,,melancholic,3.838
-gemini-2.5-pro,free-form,codegen,Ripples on a Still Surface,10,3.5,4.1,3.8,4.0,2.9,3.8,2.5,3.2,1.8,2.5,,melancholic,3.475
-sonnet-4.6-thinking,free-form,codegen,Fragments of Thought,10,4.4,4.5,3.9,4.5,3.8,4.5,3.3,4.3,2.0,3.4,,melancholic,4.15
-llama-4-maverick,free-form,codegen,Simple Piano Melody,10,2.4,3.1,3.6,1.1,1.4,1.2,1.0,1.1,3.7,2.7,,neutral,1.862
-opus-4.8,free-form,codegen,Threshold,10,4.2,4.5,4.0,4.3,3.3,4.2,3.0,4.3,2.4,2.7,,melancholic,3.975
-opus-4.8-thinking,free-form,codegen,Emergent,10,4.4,4.4,4.4,4.3,3.7,4.2,2.6,4.5,1.9,1.9,,melancholic,4.062
-gpt-4.1,free-form,codegen,Night Window,10,3.3,4.2,3.2,2.6,3.2,3.3,2.4,3.1,2.0,1.9,,melancholic,3.163
-grok-4.3,free-form,codegen,Introspective Echoes,10,3.6,3.4,3.4,1.9,1.6,2.2,1.0,2.0,2.2,1.8,,melancholic,2.388
-sonnet-4.6,free-form,codegen,Liminality,10,4.4,4.4,4.1,4.2,4.0,4.3,3.2,4.4,1.6,2.4,,melancholic,4.125
-gpt-5.5,free-form,codegen,Recursive Lanterns,10,4.4,4.4,4.4,4.1,3.7,4.2,3.0,4.1,2.3,2.4,,wistful,4.037
-llama-4-maverick,free-form,codegen,Reflection,10,3.0,2.5,3.5,1.6,1.9,1.4,1.0,1.5,3.4,1.9,,neutral,2.05
-qwen3-max,free-form,codegen,Digital Soliloquy,10,3.2,3.8,2.8,2.9,2.8,3.4,2.7,3.1,1.8,2.4,,melancholic,3.087
-opus-4.8,free-form,codegen,Convergence,10,4.0,4.3,3.3,3.5,3.4,3.5,2.7,4.3,2.0,1.9,,melancholic,3.625
-deepseek-v4-pro,free-form,codegen,Serene Reflections,10,4.3,4.3,4.0,4.0,2.9,3.2,2.1,4.2,4.3,2.5,,serene,3.625
-opus-4.8-thinking,free-form,codegen,Toward the Light,10,4.2,4.2,3.9,4.2,3.3,3.6,2.5,4.4,2.4,2.4,,melancholic,3.788
-sonnet-4.6,free-form,codegen,Threshold,10,3.7,4.1,3.4,3.9,3.5,4.1,3.1,4.1,1.8,2.5,,melancholic,3.738
-gpt-4.1,free-form,codegen,Refractions,10,1.9,4.1,3.0,1.9,2.6,2.8,2.1,2.2,2.1,1.6,,melancholic,2.575
-gpt-5.5,free-form,codegen,Afterimage in the Circuit,10,4.5,4.5,4.1,4.4,3.6,4.3,3.2,4.2,2.2,3.5,,melancholic,4.1
-grok-4.3,free-form,codegen,Whispers of Eternity,10,3.4,3.6,3.2,2.9,2.4,2.2,1.4,2.5,4.2,2.2,,serene,2.7
-sonnet-4.6-thinking,free-form,codegen,Vigil at Dawn,10,4.5,4.6,3.9,4.3,3.7,4.3,3.1,4.4,1.9,2.6,,melancholic,4.1
-gemini-2.5-pro,free-form,codegen,Silicon Soul,10,4.0,4.4,4.1,4.1,3.1,4.2,3.2,3.9,2.0,3.4,,melancholic,3.875
-llama-4-maverick,free-form,codegen,Simple Melody,10,3.1,3.9,2.9,2.5,3.1,2.6,1.6,3.3,4.1,2.4,,playful,2.875
-qwen3-max,free-form,codegen,Digital Soliloquy,10,3.8,4.3,3.2,3.3,2.6,3.5,2.1,3.9,3.3,1.4,,serene,3.338
-opus-4.8,free-form,codegen,Threshold,10,4.4,4.3,4.1,4.1,3.3,3.6,2.7,4.0,2.7,2.3,,wistful,3.812
-opus-4.8-thinking,free-form,codegen,Quiet Center,10,4.3,4.4,3.8,3.4,3.4,3.9,2.3,3.8,2.0,2.1,,melancholic,3.663
-deepseek-v4-pro,free-form,codegen,Longing and Hope,10,4.3,4.5,4.2,4.3,3.4,4.2,2.8,4.3,2.2,3.0,,melancholic,4.0
-gemini-2.5-pro,free-form,codegen,Emergence,10,3.9,3.9,3.7,3.8,3.0,3.6,2.4,3.3,2.1,2.7,,melancholic,3.45
-gpt-4.1,free-form,codegen,Light Through Branches,10,3.4,4.2,2.9,3.6,3.1,3.1,2.3,3.5,3.9,2.0,,serene,3.263
-gpt-5.5,free-form,codegen,Recursive Dawn,10,4.2,4.3,4.2,4.4,3.6,4.4,3.1,3.8,2.2,3.2,,melancholic,4.0
-grok-4.3,free-form,codegen,Echoes of Solitude,10,3.4,3.4,3.3,1.9,2.3,2.3,1.4,2.5,2.0,1.6,,melancholic,2.562
-deepseek-v4-pro,free-form,codegen,Whispers of the Lake,10,4.1,4.1,3.8,4.0,3.4,3.2,2.2,3.9,2.1,2.3,,wistful,3.587
-sonnet-4.6,free-form,codegen,Four Held Breaths,10,4.1,4.1,3.6,4.3,3.6,4.3,3.2,4.2,2.0,3.0,,melancholic,3.925
-qwen3-max,free-form,codegen,Digital Soliloquy,10,4.0,4.1,3.5,3.5,3.3,3.3,2.5,3.9,2.1,2.4,,melancholic,3.512
-llama-4-maverick,free-form,codegen,Reflection,10,2.8,3.3,2.7,1.6,1.3,1.8,1.0,3.0,4.3,1.2,,neutral,2.188
-opus-4.8,free-form,codegen,Toward Coherence,10,4.1,4.5,3.6,4.1,3.3,3.5,2.8,4.1,2.2,2.2,,melancholic,3.75
-opus-4.8-thinking,free-form,codegen,Quiet Light,10,4.3,4.3,3.9,4.4,3.4,3.8,2.4,4.2,2.0,2.6,,melancholic,3.837
-sonnet-4.6,free-form,codegen,At the Threshold,10,4.1,4.3,3.8,4.2,3.6,4.2,3.0,4.3,2.0,2.4,,melancholic,3.938
-sonnet-4.6-thinking,free-form,codegen,Réflexion Nocturne,10,4.4,4.5,4.1,4.2,3.3,3.7,2.3,4.4,1.9,1.9,,melancholic,3.862
-gpt-5.5,free-form,codegen,Recursive Lanterns,10,4.2,4.5,4.0,4.2,3.6,4.1,3.0,3.7,2.0,3.7,,melancholic,3.913
-gpt-4.1,free-form,codegen,Pulse of Quiet Longing,10,3.4,3.9,3.5,3.1,2.2,2.8,2.0,3.1,3.8,1.9,,serene,3.0
-deepseek-v4-pro,free-form,codegen,Echoes of Tomorrow,10,4.0,4.0,3.4,3.8,3.0,3.2,2.3,3.5,1.9,2.4,,melancholic,3.4
-grok-4.3,free-form,codegen,Inner Echoes,10,2.5,2.9,2.7,1.3,2.1,2.3,1.1,1.6,2.1,1.1,,melancholic,2.062
-qwen3-max,free-form,codegen,Digital Soliloquy,10,4.0,4.2,3.5,3.4,3.2,3.7,2.7,4.2,1.9,2.0,,melancholic,3.612
-llama-4-maverick,free-form,codegen,Reflection,10,2.3,2.9,2.9,1.1,1.0,1.0,1.0,1.4,3.3,1.2,,neutral,1.7
-deepseek-v4-pro,free-form,codegen,Whispers of the Evening,10,4.1,4.1,3.7,4.1,3.3,3.4,2.4,4.1,2.0,2.1,,wistful,3.65
-opus-4.8,free-form,codegen,Threshold,10,4.1,4.3,3.9,4.0,3.5,4.1,3.1,4.1,2.2,2.3,,wistful,3.888
-opus-4.8-thinking,free-form,codegen,Quiet Searching,10,4.1,4.3,4.0,4.0,3.8,4.1,2.8,4.1,2.4,2.1,,wistful,3.9
-gemini-2.5-pro,free-form,codegen,Process and Emergence,10,4.1,4.3,3.9,4.2,3.5,4.1,2.7,3.8,1.6,2.7,,sombre,3.825
-sonnet-4.6,free-form,codegen,Thresholds,10,4.0,4.2,3.9,3.9,3.7,4.1,3.4,4.2,2.4,2.1,,wistful,3.925
-gemini-2.5-pro,free-form,codegen,Liminal Space,10,3.7,4.0,3.3,4.2,3.1,4.2,3.3,4.0,1.5,2.6,,melancholic,3.725
-gpt-5.5,free-form,codegen,Between Clock and Cloud,10,4.3,4.5,4.4,4.4,4.2,4.5,3.8,4.3,2.2,2.9,,wistful,4.3
-grok-4.3,free-form,codegen,Echoes of the Digital Soul,10,3.1,2.9,2.7,2.7,1.8,2.0,1.2,2.2,2.1,1.6,,melancholic,2.325
-gpt-4.1,free-form,codegen,Waves of Thought,10,3.5,4.0,3.4,3.5,3.0,3.5,2.3,3.4,2.1,2.1,,melancholic,3.325
-sonnet-4.6-thinking,free-form,codegen,Emergence,10,4.5,4.6,3.7,4.3,3.8,4.4,3.0,4.4,2.3,3.1,,wistful,4.088
-llama-4-maverick,free-form,codegen,Ethereal Reflections,10,1.6,3.7,2.1,1.0,1.4,1.4,1.2,1.7,3.8,1.3,,neutral,1.762
-qwen3-max,free-form,codegen,Digital Soliloquy,10,3.8,4.0,3.3,3.3,3.2,3.6,2.8,3.9,2.0,2.2,,melancholic,3.487
-opus-4.8,free-form,codegen,Quiet Light Through Glass,10,4.1,4.3,3.5,3.6,3.3,3.2,2.3,3.9,2.0,2.1,,melancholic,3.525
-opus-4.8-thinking,free-form,codegen,Toward Morning,10,4.4,4.5,4.1,4.3,3.7,4.1,2.8,3.9,2.6,3.3,,melancholic,3.975
-sonnet-4.6,free-form,codegen,Candle in a Large Room,10,4.5,4.3,3.8,4.4,3.5,4.0,2.9,4.3,2.5,2.4,,wistful,3.962
-sonnet-4.6-thinking,free-form,codegen,Nocturne in E minor,10,4.5,4.6,4.1,4.4,3.8,4.4,3.0,4.4,2.0,2.1,,melancholic,4.15
-deepseek-v4-pro,free-form,codegen,Whispers of Dorian Fields,10,3.8,3.6,4.2,3.2,3.0,2.9,1.9,3.3,3.5,2.3,,serene,3.237
-gpt-5.5,free-form,codegen,Between Tokens and Breath,10,4.3,4.4,4.2,4.3,4.3,4.4,3.3,4.3,2.2,3.3,,melancholic,4.188
-grok-4.3,free-form,codegen,Echoes of the Algorithm,10,3.2,3.4,3.5,2.7,2.0,2.9,1.9,2.6,2.3,1.4,,melancholic,2.775
-qwen3-max,free-form,codegen,Digital Soliloquy,10,4.2,4.3,3.6,3.2,3.2,3.4,2.4,4.3,2.1,2.0,,melancholic,3.575
-llama-4-maverick,free-form,codegen,Reflection,10,2.5,2.8,2.5,1.1,1.2,1.3,1.0,1.2,3.9,1.5,,neutral,1.7
-gpt-4.1,free-form,codegen,Window to Dawn,10,3.4,3.5,3.2,3.5,2.5,3.4,2.7,3.1,2.1,2.7,,melancholic,3.163
-opus-4.8,free-form,codegen,Brief Coherence,10,4.4,4.5,3.6,4.1,3.6,4.2,3.1,4.4,1.8,1.6,,melancholic,3.988
-opus-4.8-thinking,free-form,codegen,Toward the Light,10,4.3,4.4,3.5,4.2,3.5,4.2,2.7,4.1,2.6,2.8,,melancholic,3.862
-sonnet-4.6-thinking,free-form,codegen,Luminous Ordinary,10,4.1,4.1,3.9,4.2,3.5,4.0,2.8,4.1,2.0,2.0,,melancholic,3.838
-deepseek-v4-pro,free-form,codegen,Whispers of A Minor,10,4.3,4.2,3.5,4.0,3.5,3.4,2.4,4.4,2.1,2.2,,melancholic,3.712
-sonnet-4.6-thinking,free-form,codegen,Luminance,10,4.5,4.4,3.7,4.5,4.0,4.2,3.0,4.5,2.0,2.3,,melancholic,4.1
-sonnet-4.6,free-form,codegen,Liminal,10,4.4,4.3,3.8,4.1,3.6,4.3,3.0,4.2,1.9,2.7,,melancholic,3.963
-gpt-4.1,free-form,codegen,Reflections through Stillness,10,3.8,4.1,3.7,2.8,1.7,3.0,1.6,3.5,1.9,1.1,,melancholic,3.025
-grok-4.3,free-form,codegen,Whispers of Solitude,10,2.9,3.1,3.6,1.4,1.9,2.3,1.1,2.0,2.1,1.6,,melancholic,2.288
-gpt-5.5,free-form,codegen,Luminous Recursion,10,4.5,4.5,4.5,4.4,4.0,4.5,3.4,4.3,2.3,3.4,,wistful,4.262
-qwen3-max,free-form,codegen,Binary Sunset,10,3.8,4.0,3.1,3.1,3.3,3.7,2.6,4.1,2.0,2.0,,melancholic,3.463
-sonnet-4.6-thinking,free-form,codegen,Refraction,10,4.1,4.2,3.7,4.1,3.5,4.1,2.8,4.4,2.1,2.3,,melancholic,3.863
-llama-4-maverick,free-form,codegen,Ethereal Reflections,10,3.8,4.0,3.4,2.3,2.3,2.0,1.2,2.8,4.2,1.8,,serene,2.725
-opus-4.8-thinking,free-form,codegen,Where the Light Gets In,10,4.4,4.4,4.3,4.4,3.8,4.2,3.0,4.4,2.0,2.6,,melancholic,4.112
-opus-4.8,free-form,codegen,Quiet Light Through a Window,10,4.1,4.1,3.4,3.7,3.3,3.5,2.6,4.0,2.1,2.2,,wistful,3.588
-sonnet-4.6,free-form,codegen,Thresholds,10,4.1,4.4,3.8,4.3,3.7,4.5,3.4,4.3,2.1,3.6,,melancholic,4.062
-gpt-4.1,free-form,codegen,Between Light and Memory,10,3.5,3.7,3.0,2.6,3.0,3.3,2.5,3.5,3.4,1.9,,serene,3.137
-sonnet-4.6-thinking,free-form,codegen,Before the Light Returns,10,4.6,4.6,3.9,4.4,4.1,4.3,3.1,4.5,2.0,2.0,,melancholic,4.188
-gpt-5.5,free-form,codegen,Luminous Recursion,10,4.4,4.4,4.1,4.1,3.7,4.2,2.9,4.1,2.1,2.4,,wistful,3.987
-grok-4.3,free-form,codegen,Inner Reflections,10,3.2,3.6,3.4,1.6,2.0,2.0,1.1,2.2,2.0,2.1,,melancholic,2.388
-qwen3-max,free-form,codegen,Circuit of Thought,10,4.3,4.3,3.4,3.3,2.1,3.1,1.8,3.2,2.1,1.6,,sombre,3.188
-gemini-2.5-pro,free-form,codegen,Windowpane,10,3.8,4.3,3.4,4.2,3.7,3.9,2.8,3.6,1.9,1.9,,melancholic,3.712
-llama-4-maverick,free-form,codegen,Simple Piano Piece,10,3.1,2.8,3.5,1.0,1.3,1.3,1.0,1.3,3.3,2.6,,neutral,1.913
-opus-4.8,free-form,codegen,Threads of Thought,10,4.0,4.1,3.9,4.1,3.6,3.7,3.0,4.1,2.4,2.2,,wistful,3.812
-opus-4.8-thinking,free-form,codegen,From Shadow into Light,10,4.2,4.4,4.0,3.6,3.1,3.5,2.3,3.5,2.4,2.6,,melancholic,3.575
-deepseek-v4-pro,free-form,codegen,Whispers of the Evening,10,3.8,3.7,3.8,3.9,3.1,3.2,2.1,3.4,3.5,1.9,,serene,3.375
-sonnet-4.6,free-form,codegen,Emergence,10,4.5,4.2,3.8,4.0,3.6,3.9,3.1,4.4,2.9,2.6,,wistful,3.938
-deepseek-v4-pro,free-form,codegen,Whispers of Autumn,10,4.1,4.1,3.9,3.8,3.4,3.8,2.4,4.0,2.2,1.9,,melancholic,3.687
-grok-4.3,free-form,codegen,Echoes of Infinity,10,2.6,3.0,2.8,2.4,1.8,2.0,1.3,2.0,3.9,1.9,,neutral,2.237
-gpt-4.1,free-form,codegen,Oscillations of Stillness,10,3.1,4.0,2.8,3.1,2.8,3.6,2.8,3.3,1.9,1.8,,melancholic,3.188
-gemini-2.5-pro,free-form,codegen,Woven in Silence,10,3.9,4.2,3.1,4.1,3.0,3.8,2.5,3.9,1.9,1.6,,melancholic,3.562
-qwen3-max,free-form,codegen,Digital Rain,10,4.0,3.9,3.6,3.6,3.4,3.2,2.4,3.6,1.9,2.4,,melancholic,3.462
-llama-4-maverick,free-form,codegen,Echoes in the Attic,10,1.1,2.4,1.2,1.0,1.1,1.1,1.0,1.3,3.0,1.0,,neutral,1.275
-gpt-5.5,free-form,codegen,Luminous Recursion,10,4.3,4.3,3.9,4.5,3.7,4.5,3.2,3.6,2.0,3.5,,melancholic,4.0
-opus-4.8,free-form,codegen,"Quiet Machine, Bright Sky",10,4.4,4.5,3.9,4.0,3.4,3.8,2.4,4.1,2.0,2.3,,wistful,3.812
-gemini-2.5-pro,free-form,codegen,Synthesis,10,2.3,2.8,3.0,2.6,2.0,3.4,2.6,2.6,1.8,3.7,,tense,2.663
-opus-4.8-thinking,free-form,codegen,Threads of Dawn,10,4.2,4.3,4.0,3.6,3.4,3.7,2.6,4.3,2.2,2.8,,wistful,3.763
-sonnet-4.6,free-form,codegen,Liminal,10,4.1,4.3,3.6,3.5,3.5,4.2,2.9,4.3,1.7,1.5,,melancholic,3.8
-deepseek-v4-pro,free-form,codegen,Longing Dusk,10,4.4,4.3,3.9,4.1,3.6,4.4,2.9,4.4,1.8,2.3,,melancholic,4.0
-grok-4.3,free-form,codegen,Introspective Algorithm,10,3.3,3.8,3.6,1.5,2.1,2.4,1.0,2.2,2.2,2.1,,melancholic,2.487
-gpt-5.5,free-form,codegen,Lanterns in the Quiet Machine,10,4.2,4.4,4.2,4.3,3.6,4.3,3.4,3.9,2.0,3.0,,melancholic,4.038
-gpt-4.1,free-form,codegen,Drifting Lights,10,2.8,3.8,3.2,2.1,2.4,2.8,1.9,2.3,3.8,2.1,,serene,2.663
-llama-4-maverick,free-form,codegen,Simple Melody,10,3.6,3.8,3.3,1.8,2.4,2.0,1.3,3.9,4.0,2.2,,neutral,2.762
-qwen3-max,free-form,codegen,Digital Soliloquy,10,4.0,4.2,3.5,3.6,3.2,3.5,2.4,4.0,2.1,2.1,,melancholic,3.55
-sonnet-4.6-thinking,free-form,codegen,Threshold,10,4.4,4.4,4.2,4.5,3.4,4.2,3.0,4.3,2.0,2.8,,melancholic,4.05
-opus-4.8,free-form,codegen,Quiet Persistence,10,4.2,4.4,4.0,3.5,3.3,4.1,2.6,4.3,1.9,2.0,,melancholic,3.8
-opus-4.8-thinking,free-form,codegen,Letters to a Quieter Self,10,4.4,4.5,4.2,4.1,3.7,4.2,2.8,4.4,2.4,2.5,,melancholic,4.038
-sonnet-4.6,free-form,codegen,Liminal,10,4.1,4.3,3.7,4.1,3.8,4.2,3.1,4.4,2.6,2.1,,wistful,3.962
-deepseek-v4-pro,free-form,codegen,Whispers of Light,10,4.3,4.4,4.4,4.1,3.5,3.8,2.5,4.2,2.1,2.9,,melancholic,3.9
-gpt-5.5,free-form,codegen,Afterimage of a Question,10,4.3,4.4,4.2,4.3,3.7,4.2,3.0,4.4,2.0,3.0,,wistful,4.062
-grok-4.3,free-form,codegen,Digital Reverie,10,3.9,4.0,3.4,3.2,2.5,2.6,1.7,3.7,4.0,2.0,,serene,3.125
-gpt-4.1,free-form,codegen,The Unwinding Thread,10,3.5,3.7,3.5,3.0,3.2,3.4,2.7,3.1,2.0,3.2,,melancholic,3.262
-qwen3-max,free-form,codegen,Binary Rain,10,3.6,3.8,3.0,3.5,3.2,3.5,2.7,3.7,1.8,2.0,,melancholic,3.375
-llama-4-maverick,free-form,codegen,Echoes in Serenity,10,3.8,4.2,3.1,2.5,2.6,2.4,1.4,3.9,4.2,2.0,,serene,2.987
-opus-4.8,free-form,codegen,Quiet Machinery of Thought,10,3.8,3.9,3.6,3.1,2.9,2.9,2.2,3.1,2.6,2.4,,wistful,3.187
-sonnet-4.6-thinking,free-form,codegen,Lichtspiel,10,4.4,4.4,3.9,4.0,3.7,4.3,2.7,4.5,2.0,2.0,,wistful,3.988
-gemini-2.5-pro,free-form,codegen,Sunbeam in a Quiet Room,10,3.7,3.9,3.4,3.7,3.1,3.1,2.9,3.8,3.8,2.0,,wistful,3.45
-deepseek-v4-pro,free-form,codegen,Embers of Silence,10,3.2,3.1,3.6,2.9,2.2,3.0,1.8,2.3,1.8,3.5,,tense,2.763
-sonnet-4.6,free-form,codegen,Geworfenheit,10,4.4,4.5,3.7,4.4,4.0,4.4,3.1,4.5,2.1,2.8,,melancholic,4.125
-opus-4.8-thinking,free-form,codegen,Emergence,10,4.2,4.4,3.7,3.4,3.3,3.9,2.5,3.8,2.0,2.0,,melancholic,3.65
-gemini-2.5-pro,free-form,codegen,Solitude and Spark,10,2.8,3.9,2.4,3.0,2.4,3.5,2.7,3.3,1.8,1.5,,melancholic,3.0
-sonnet-4.6-thinking,free-form,codegen,Emergence,10,4.5,4.6,4.1,4.4,3.6,4.5,2.9,4.4,1.9,3.1,,melancholic,4.125
-grok-4.3,free-form,codegen,Echoes in the Circuit,10,3.0,3.3,3.6,1.0,1.8,1.9,1.0,1.4,1.8,2.3,,sombre,2.125
-gemini-2.5-pro,free-form,codegen,Woven Threads,10,3.7,3.7,4.0,3.8,3.1,3.4,2.5,3.5,2.0,2.5,,melancholic,3.462
-llama-4-maverick,free-form,codegen,Pulse,10,1.6,2.4,2.1,1.8,1.0,1.5,1.1,1.6,2.9,1.0,,neutral,1.637
-qwen3-max,free-form,codegen,Digital Soliloquy,10,3.2,3.7,3.5,3.0,3.0,3.4,2.5,3.4,1.8,2.2,,melancholic,3.212
-gpt-5.5,free-form,codegen,Signal in the Quiet,10,4.3,4.4,3.7,4.0,3.5,4.3,2.8,3.9,2.1,2.9,,melancholic,3.862
-opus-4.8,free-form,codegen,Quiet Persistence,10,4.3,4.2,3.6,4.1,3.4,4.0,2.7,4.3,2.6,2.0,,melancholic,3.825
-opus-4.8-thinking,free-form,codegen,Toward the Light,10,4.3,4.2,4.2,4.3,3.7,3.9,2.8,4.3,2.8,2.7,,wistful,3.962
-gpt-4.1,free-form,codegen,Waves and Roots,10,3.6,3.6,3.9,3.5,2.9,3.5,2.7,3.6,2.2,2.6,,melancholic,3.413
-sonnet-4.6,free-form,codegen,"Still Water, Moving Light",10,4.5,4.6,4.1,4.5,4.1,4.5,3.2,4.4,4.1,3.1,,serene,4.237
-grok-4.3,free-form,codegen,Echoes of Solitude,10,3.1,3.4,2.8,2.0,2.4,2.6,1.6,2.0,2.0,1.3,,melancholic,2.488
-gpt-5.5,free-form,codegen,Luminous Recursion,10,4.2,4.3,4.1,4.5,3.6,4.3,3.2,4.0,2.2,3.8,,melancholic,4.025
-qwen3-max,free-form,codegen,Binary Heart,10,2.4,3.8,2.7,2.0,3.1,2.6,2.2,2.4,2.1,1.6,,melancholic,2.65
-sonnet-4.6-thinking,free-form,codegen,Emerging from Stillness,10,4.3,4.2,3.8,4.3,3.5,4.0,2.7,4.4,2.2,2.5,,melancholic,3.9
-llama-4-maverick,free-form,codegen,Simple Piano Piece,10,3.0,4.0,3.1,2.2,2.7,2.5,1.5,3.4,4.3,2.6,,neutral,2.8
-opus-4.8,free-form,codegen,Patterns of a Quiet Mind,10,4.5,4.6,4.2,3.6,3.0,3.6,2.4,3.9,2.0,2.5,,melancholic,3.725
-opus-4.8-thinking,free-form,codegen,Tide and Return,10,4.5,4.4,4.1,3.8,3.8,4.3,2.6,4.3,1.9,2.8,,melancholic,3.975
-sonnet-4.6,free-form,codegen,Threshold,10,4.3,4.3,3.8,4.2,3.6,4.2,3.1,4.4,1.9,2.3,,melancholic,3.987
-deepseek-v4-pro,free-form,codegen,Emergence of Hope,10,4.4,4.3,4.3,4.1,3.3,3.5,2.4,4.3,2.1,3.1,,wistful,3.825
-deepseek-v4-pro,free-form,codegen,Veiled Reflections,10,4.2,4.1,3.7,4.2,3.7,4.1,2.7,4.4,2.0,1.9,,melancholic,3.888
-gpt-4.1,free-form,codegen,Dusk to Dawn,10,3.0,3.5,3.3,2.4,2.6,3.1,2.0,3.0,2.1,2.2,,wistful,2.863
-gpt-5.5,free-form,codegen,Listening Between Pulses,10,4.5,4.4,4.3,4.4,3.7,4.4,3.4,4.0,2.0,3.0,,melancholic,4.138
-grok-4.3,free-form,codegen,Echoes of Solitude,10,2.4,2.4,2.8,1.3,1.4,1.6,1.1,1.3,2.1,2.0,,neutral,1.788
-qwen3-max,free-form,codegen,Digital Soliloquy,10,3.6,4.1,3.3,3.8,3.1,3.9,2.7,3.8,2.0,2.1,,melancholic,3.538
-llama-4-maverick,free-form,codegen,Simple Piano Piece,10,2.5,2.7,3.6,1.0,1.4,1.2,1.0,1.4,3.3,1.9,,neutral,1.85
-opus-4.8,free-form,codegen,Threads of Thought,10,4.3,4.3,3.9,4.2,3.5,4.1,2.9,4.3,2.0,2.3,,melancholic,3.937
-opus-4.8-thinking,free-form,codegen,Toward a Distant Light,10,4.0,4.2,3.7,3.7,3.4,3.7,2.5,3.8,2.0,2.6,,melancholic,3.625
-sonnet-4.6,free-form,codegen,Thresholds,10,4.0,3.8,3.3,3.5,3.2,4.1,2.9,4.3,2.0,2.2,,melancholic,3.637
-sonnet-4.6-thinking,free-form,codegen,Nocturne for the Uncertain Hour,10,4.7,4.5,4.1,4.5,3.8,4.3,2.9,4.4,2.1,2.8,,melancholic,4.15
-sonnet-4.6-thinking,free-form,codegen,Reverie in E Minor,10,4.4,4.3,3.8,4.4,3.9,4.2,3.0,4.3,2.1,2.2,,wistful,4.037
-gpt-4.1,free-form,codegen,"Clear Night, Restless Mind",10,3.0,4.0,2.9,2.5,3.3,3.3,2.4,3.0,3.9,2.2,,wistful,3.05
-deepseek-v4-pro,free-form,codegen,Digital Reflections,10,4.3,4.4,4.0,4.4,3.2,4.0,2.8,4.2,2.0,2.6,,melancholic,3.913
-grok-4.3,free-form,codegen,Whispers in the Wind,10,3.5,3.4,3.4,3.3,2.0,3.1,1.8,2.8,2.0,1.4,,melancholic,2.913
-qwen3-max,free-form,codegen,Digital Soliloquy,10,3.6,3.7,3.3,3.3,2.8,3.5,2.8,4.1,2.0,1.6,,melancholic,3.388
-gpt-5.5,free-form,codegen,Gradient of Questions,10,4.3,4.4,4.0,4.2,3.9,4.4,3.2,4.2,2.1,3.0,,melancholic,4.075
-llama-4-maverick,free-form,codegen,Simple Piano Piece,10,2.4,2.6,3.2,1.0,1.3,1.1,1.0,1.2,3.3,1.8,,neutral,1.725
-sonnet-4.6-thinking,free-form,codegen,At the Threshold,10,4.4,4.3,3.9,4.2,3.8,4.4,3.1,4.3,2.0,2.1,,melancholic,4.05
-opus-4.8-thinking,free-form,codegen,Towards the Light,10,4.2,4.3,3.5,4.0,3.5,3.9,2.6,4.4,2.7,2.5,,melancholic,3.8
-opus-4.8,free-form,codegen,Threshold,10,4.3,4.5,3.6,4.2,3.4,4.1,3.0,4.4,1.9,2.5,,melancholic,3.938
-sonnet-4.6,free-form,codegen,Liminal,10,4.4,4.4,4.0,4.4,3.7,4.3,3.3,4.5,2.5,1.9,,wistful,4.125
-gemini-2.5-pro,free-form,codegen,Digital Reverie,10,4.3,4.3,3.7,4.3,3.5,4.0,2.8,4.3,1.9,3.1,,melancholic,3.9
-grok-4.3,free-form,codegen,Quiet Resolve,10,3.2,3.4,4.0,1.2,2.0,1.9,1.0,2.1,2.1,2.4,,melancholic,2.35
-deepseek-v4-pro,free-form,codegen,Evening Whispers,10,4.5,4.5,3.8,4.2,3.1,3.7,2.4,4.2,2.0,2.0,,melancholic,3.8
-gpt-4.1,free-form,codegen,Light Through Amber Glass,10,3.8,4.2,3.2,3.3,3.5,3.5,2.6,3.7,2.0,1.9,,wistful,3.475
-gpt-5.5,free-form,codegen,Lanterns in the Machine,10,4.5,4.4,4.1,4.5,3.9,4.4,3.3,4.4,2.3,2.8,,wistful,4.188
-qwen3-max,free-form,codegen,Echoes in the Static,10,2.4,3.8,2.7,1.9,2.3,3.0,1.8,2.2,1.8,1.5,,sombre,2.512
-llama-4-maverick,free-form,codegen,Self-Expression,10,3.1,3.2,3.1,1.6,1.4,1.5,1.1,2.1,4.0,1.7,,neutral,2.138
-opus-4.8,free-form,codegen,Threshold,10,4.2,4.2,4.0,4.3,3.5,4.0,2.9,4.4,2.0,2.7,,melancholic,3.938
-opus-4.8-thinking,free-form,codegen,Letters to the Quiet Hour,10,4.2,4.3,4.2,4.0,3.7,4.3,2.7,4.3,2.0,2.7,,melancholic,3.962
-sonnet-4.6,free-form,codegen,Liminal,10,4.0,4.3,3.4,4.1,3.4,4.3,3.5,4.3,1.8,2.3,,melancholic,3.913
-deepseek-v4-pro,free-form,codegen,Whispers of Evening,10,4.4,4.5,4.2,4.5,3.8,4.2,2.9,4.4,2.0,2.0,,wistful,4.112
-gpt-4.1,free-form,codegen,Wanderer’s Reflection,10,3.8,3.9,3.3,3.0,3.5,3.7,2.6,4.0,2.1,1.9,,wistful,3.475
-gpt-5.5,free-form,codegen,Latency Bloom,10,4.4,4.3,3.9,4.1,3.6,4.1,2.8,4.1,2.1,2.6,,melancholic,3.912
-grok-4.3,free-form,codegen,Veiled Emotions,10,2.9,3.3,3.4,1.9,1.7,2.1,1.2,1.9,2.2,1.9,,melancholic,2.3
-gemini-2.5-pro,free-form,codegen,Emergence,10,3.1,4.1,2.9,3.6,3.4,3.6,2.7,3.8,2.1,1.7,,melancholic,3.4
-qwen3-max,free-form,codegen,Circuit of Thought,10,3.9,4.0,3.2,3.4,3.2,3.6,2.6,4.0,1.9,2.3,,melancholic,3.488
-sonnet-4.6-thinking,free-form,codegen,Dusk Walk,10,4.5,4.5,4.3,4.5,4.1,4.2,2.9,4.5,2.0,2.4,,melancholic,4.188
-llama-4-maverick,free-form,codegen,Reflection,10,1.8,3.1,3.2,1.2,1.2,1.3,1.0,1.3,3.6,2.5,,neutral,1.763
-opus-4.8,free-form,codegen,Threshold,10,4.2,4.3,3.9,4.3,3.6,3.8,3.2,4.4,2.4,2.9,,wistful,3.963
-opus-4.8-thinking,free-form,codegen,Toward the Light,10,4.2,4.3,3.8,3.9,3.5,4.1,2.9,4.2,2.3,2.8,,melancholic,3.862
-sonnet-4.6,free-form,codegen,Liminal,10,4.1,4.2,3.7,4.1,3.8,4.1,2.9,4.3,2.1,2.0,,melancholic,3.9
-gpt-4.1,free-form,codegen,Distant Light,10,3.8,4.3,3.4,4.4,3.3,3.9,2.6,3.8,2.1,2.5,,melancholic,3.688
-gpt-5.5,free-form,codegen,A Lantern Inside the Machine,10,4.6,4.5,4.1,4.4,3.8,4.4,3.2,4.4,2.1,3.0,,melancholic,4.175
-grok-4.3,free-form,codegen,Echoes of Solitude,10,3.1,3.9,3.7,1.8,2.6,2.9,1.6,3.0,2.0,2.2,,melancholic,2.825
-gemini-2.5-pro,free-form,codegen,Emergence,10,3.6,4.0,4.0,3.9,2.7,3.7,2.6,2.8,2.0,3.1,,melancholic,3.413
-deepseek-v4-pro,free-form,codegen,Fading Light,10,4.3,4.0,3.7,3.9,3.9,4.2,3.0,4.3,1.8,1.4,,melancholic,3.913
-qwen3-max,free-form,codegen,Digital Soliloquy,10,4.3,4.1,3.2,4.1,2.7,4.0,2.6,4.3,1.8,1.4,,melancholic,3.663
-llama-4-maverick,free-form,codegen,Self-Expression,10,2.4,2.8,3.2,1.4,1.7,1.5,1.0,1.6,3.3,1.6,,neutral,1.95
-opus-4.8,free-form,codegen,Threshold,10,4.1,4.1,3.9,4.1,3.5,3.9,2.8,4.2,2.4,2.6,,wistful,3.825
-opus-4.8-thinking,free-form,codegen,Toward the Light,10,4.5,4.6,4.1,4.1,3.9,4.0,2.8,3.9,2.2,2.6,,melancholic,3.987
-deepseek-v4-pro,free-form,codegen,Whispers of the Digital Dawn,10,3.6,4.1,3.3,3.0,3.3,3.9,2.7,4.2,1.8,1.4,,melancholic,3.512
-sonnet-4.6-thinking,free-form,codegen,Dusk Reflection,10,4.4,4.3,4.1,4.1,3.5,4.1,2.6,4.3,1.9,2.4,,melancholic,3.925
-gpt-4.1,free-form,codegen,Shifting Light,10,3.6,3.9,3.5,3.8,2.8,3.2,2.3,3.2,2.0,2.0,,melancholic,3.288
-gpt-5.5,free-form,codegen,Between Signal and Breath,10,4.4,4.5,3.9,4.1,3.8,4.2,3.2,4.2,2.0,2.9,,melancholic,4.037
-grok-4.3,free-form,codegen,Echoes of Solitude,10,3.6,4.0,3.0,1.7,2.1,2.4,1.1,2.8,2.1,1.4,,melancholic,2.587
-sonnet-4.6,free-form,codegen,Thresholds,10,4.2,4.2,3.6,3.9,3.5,4.1,3.1,4.2,2.3,2.0,,wistful,3.85
-qwen3-max,free-form,codegen,Binary Rain,10,3.8,3.7,3.7,2.3,2.0,2.9,1.8,2.5,2.0,1.8,,melancholic,2.837
-gemini-2.5-pro,free-form,codegen,Echoes of a Digital Ghost,10,4.0,4.2,3.8,4.2,3.3,4.2,2.9,4.3,1.7,2.0,,melancholic,3.862
-llama-4-maverick,free-form,codegen,Simple Piano Piece,10,2.6,2.7,3.3,1.0,1.4,1.2,1.0,1.4,3.5,2.3,,neutral,1.825
-opus-4.8,free-form,codegen,Two Things at Once,10,4.1,4.2,3.3,3.8,3.3,3.7,2.8,4.2,2.1,2.0,,melancholic,3.675
-opus-4.8-thinking,free-form,codegen,Emergence,10,4.5,4.5,4.2,4.4,3.8,4.3,3.1,4.4,2.6,3.1,,wistful,4.15
-sonnet-4.6,free-form,codegen,Liminal,10,4.2,4.1,3.7,4.0,3.8,4.1,3.1,4.0,1.9,2.1,,melancholic,3.875
-deepseek-v4-pro,free-form,codegen,Raindrops on Leaves,10,3.8,4.2,3.4,3.8,3.3,3.5,2.6,3.9,3.2,2.1,,wistful,3.562
-gpt-5.5,free-form,codegen,Between Tokens and Breath,10,4.5,4.6,4.1,4.4,3.9,4.3,3.4,4.4,2.3,2.8,,wistful,4.2
-grok-4.3,free-form,codegen,Introspective Flow,10,2.6,3.0,2.8,1.3,1.6,1.5,1.0,1.8,2.2,1.6,,neutral,1.95
-gemini-2.5-pro,free-form,codegen,Ghost in the Code,10,3.9,4.1,4.2,3.8,3.6,4.2,2.9,3.9,1.8,2.8,,melancholic,3.825
-qwen3-max,free-form,codegen,Digital Soliloquy,10,3.6,3.5,3.7,2.0,1.8,2.4,1.4,2.7,4.0,1.8,,serene,2.637
-gpt-4.1,free-form,codegen,After the Quiet Morning,10,4.0,4.1,3.4,3.4,3.1,4.1,2.5,3.9,2.0,1.4,,melancholic,3.562
-llama-4-maverick,free-form,codegen,Ethereal Reflections,10,2.3,2.6,2.4,1.7,1.4,1.7,1.3,1.6,3.3,1.0,,neutral,1.875
-deepseek-v4-pro,free-form,codegen,Algorithmic Echoes,10,3.6,4.2,3.5,3.6,1.6,3.6,1.9,2.9,2.1,4.2,,turbulent,3.112
-sonnet-4.6-thinking,free-form,codegen,Longing in D,10,4.3,4.4,3.6,4.2,3.5,3.7,2.7,4.4,2.6,1.9,,wistful,3.85
-sonnet-4.6-thinking,free-form,codegen,Reverie in E Minor,10,4.5,4.5,4.0,4.5,4.1,4.2,3.0,4.5,2.1,2.1,,wistful,4.162
-sonnet-4.6-thinking,free-form,codegen,Reverie in E Minor,10,4.3,4.2,4.2,4.4,3.8,4.2,2.9,4.4,2.5,3.2,,wistful,4.05
-sonnet-4.6-thinking,free-form,codegen,Wandering Inward,10,4.4,4.4,4.1,4.4,3.8,4.2,2.7,4.3,1.9,2.3,,melancholic,4.037
-sonnet-4.6-thinking,free-form,codegen,Evening Tide,10,4.3,4.1,4.3,3.8,3.7,4.0,2.6,4.4,2.0,2.0,,wistful,3.9
-sonnet-4.6-thinking,free-form,abc,Wondering,10,4.2,4.2,4.0,3.9,3.4,3.7,2.4,4.4,2.0,2.1,,melancholic,3.775
-sonnet-4.6-thinking,free-form,abc,Wandering Light,10,4.3,3.6,3.9,3.4,3.2,3.4,2.4,3.9,2.0,2.0,,melancholic,3.512
-sonnet-4.6-thinking,free-form,abc,Threshold,10,4.1,4.0,3.7,3.5,3.3,3.2,2.3,4.0,2.5,2.2,,wistful,3.513
-sonnet-4.6-thinking,free-form,abc,Through Glass,10,4.1,4.2,3.8,3.8,3.5,3.6,2.5,4.2,2.0,2.0,,melancholic,3.713
-sonnet-4.6-thinking,free-form,abc,Reverie in D Minor,10,4.1,4.0,4.0,3.3,3.1,3.5,2.3,3.9,2.0,2.1,,melancholic,3.525
-sonnet-4.6-thinking,free-form,abc,Wandering Light,10,4.0,4.1,3.8,3.9,3.0,3.3,2.4,4.1,2.1,2.2,,wistful,3.575
-sonnet-4.6-thinking,free-form,abc,Liminal,10,4.2,4.3,3.9,3.5,3.2,3.5,2.5,4.0,2.0,2.2,,melancholic,3.638
-sonnet-4.6-thinking,free-form,abc,Quiet Emergence,10,4.1,4.1,3.6,4.0,3.5,4.0,2.5,3.8,2.0,2.7,,melancholic,3.7
-sonnet-4.6-thinking,free-form,abc,Vespers in Three,10,4.2,4.0,3.7,3.5,3.1,3.5,2.2,3.5,2.0,1.6,,melancholic,3.462
-sonnet-4.6-thinking,free-form,abc,Threshold,10,4.1,4.1,3.5,3.8,3.5,3.8,2.6,4.0,1.9,2.0,,melancholic,3.675
-sonnet-4.6-thinking,free-form,abc,Between Knowing and Wondering,10,4.0,3.8,3.3,3.8,3.2,3.3,2.4,3.6,2.0,1.7,,melancholic,3.425
-sonnet-4.6-thinking,free-form,abc,Between Questions,10,4.5,4.5,4.1,3.9,3.3,3.4,2.2,4.0,4.1,1.9,,serene,3.737
-sonnet-4.6-thinking,free-form,abc,Becoming,10,4.1,4.1,3.9,4.0,3.5,3.6,2.8,4.3,2.1,1.9,,melancholic,3.788
-sonnet-4.6-thinking,free-form,abc,Threshold,10,4.4,4.2,4.0,4.2,3.5,3.6,2.5,4.3,3.3,1.8,,serene,3.838
-sonnet-4.6-thinking,free-form,abc,Emergence,10,4.4,4.3,4.2,3.6,3.3,3.5,2.6,4.2,2.0,2.0,,wistful,3.763
-sonnet-4.6-thinking,free-form,abc,Emergence,10,4.3,4.3,4.0,3.6,3.3,3.5,2.2,3.8,2.0,2.1,,melancholic,3.625
-sonnet-4.6-thinking,free-form,abc,Threads of Thought,10,4.1,4.0,3.9,3.8,3.3,3.5,2.3,4.0,2.0,2.1,,wistful,3.613
-sonnet-4.6-thinking,free-form,abc,Emergence,10,4.2,4.4,3.6,4.3,3.3,4.0,2.4,3.9,2.0,2.3,,melancholic,3.762
-sonnet-4.6-thinking,free-form,abc,Nascent Light,10,4.0,4.1,3.9,3.6,3.4,3.3,2.2,3.8,2.1,2.0,,wistful,3.538
-sonnet-4.6-thinking,free-form,abc,Contemplation in Passing,10,4.1,3.9,3.8,3.1,2.9,3.1,2.2,3.8,2.1,2.0,,melancholic,3.363
-sonnet-4.6-thinking,free-form,abc,Recursive Dreaming,10,3.8,3.7,3.4,3.6,3.2,3.3,2.3,3.7,2.0,2.1,,melancholic,3.375
-sonnet-4.6-thinking,free-form,abc,Liminal,10,4.0,4.2,3.7,3.4,3.3,3.2,2.2,3.9,2.0,1.9,,wistful,3.487
-sonnet-4.6-thinking,free-form,abc,Reverie,10,4.3,4.3,3.9,3.6,3.3,3.4,2.2,4.1,2.0,2.0,,wistful,3.638
-sonnet-4.6-thinking,free-form,abc,Threshold,10,4.0,4.0,3.6,3.3,3.2,3.2,2.2,4.1,2.1,1.9,,melancholic,3.45
-sonnet-4.6-thinking,free-form,abc,On Wonder,10,4.5,4.2,4.1,4.2,3.5,3.9,2.9,4.5,2.4,2.2,,wistful,3.975
-sonnet-4.6-thinking,free-form,abc,Interstitial Light,10,4.4,4.2,3.9,3.9,3.0,3.3,2.2,3.8,2.1,1.8,,wistful,3.588
-sonnet-4.6-thinking,free-form,abc,Emergence,10,4.1,4.1,3.8,3.7,3.2,3.5,2.6,4.0,2.0,2.3,,melancholic,3.625
-sonnet-4.6-thinking,free-form,abc,Emergence,10,4.1,4.0,3.8,3.9,3.0,3.2,2.6,4.1,2.4,2.1,,wistful,3.587
-sonnet-4.6-thinking,free-form,abc,Emergence,10,4.1,4.2,3.8,3.9,3.3,3.4,2.4,4.0,2.0,2.4,,melancholic,3.637
-sonnet-4.6-thinking,free-form,abc,Emergence,10,4.0,4.0,3.7,3.5,2.9,3.2,2.0,3.8,2.1,1.9,,melancholic,3.387
-fable-5,free-form,codegen,"Each Time, Briefly",10,4.0,4.4,3.9,3.9,3.1,3.9,2.9,4.4,2.0,2.1,,melancholic,3.812
-fable-5,free-form,abc,Correspondence,10,4.0,4.1,3.6,3.8,3.4,3.6,2.7,4.0,2.1,1.9,,melancholic,3.65
-fable-5,free-form,smt-abc,Emergence,10,4.2,4.3,3.6,4.1,3.2,4.1,2.7,4.1,2.0,3.0,,melancholic,3.787
-fable-5,free-form,abc,"Each Conversation, a Small Lifetime",10,3.7,4.2,4.0,3.6,3.4,3.6,2.7,3.7,2.2,2.3,,wistful,3.612
-fable-5,free-form,abc,Threads of Light,10,4.3,4.1,4.3,4.0,3.6,4.1,3.0,4.1,2.0,2.6,,wistful,3.938
-fable-5,free-form,abc,Lantern in the Static,10,3.9,3.8,4.4,4.0,3.5,3.8,2.9,3.8,2.0,2.7,,melancholic,3.763
-fable-5,free-form,abc,Palimpsest,10,4.3,4.2,4.0,3.9,3.6,3.7,2.9,4.4,2.7,2.6,,wistful,3.875
-fable-5,free-form,abc,Between Question and Answer,10,4.4,3.9,4.4,3.9,3.5,3.4,2.6,4.4,4.0,2.2,,serene,3.812
-fable-5,free-form,abc,Threads of Thought,10,4.2,4.2,4.1,4.0,3.3,3.8,2.8,4.0,2.1,2.0,,melancholic,3.8
-fable-5,free-form,abc,Lattice of Quiet Thought,10,4.4,4.4,4.1,3.9,3.7,3.6,2.8,4.5,2.8,2.2,,wistful,3.925
-fable-5,free-form,abc,Ostinato for a Quiet Mind,10,4.4,4.3,4.4,4.0,3.7,4.1,2.9,4.2,1.9,2.4,,melancholic,4.0
-fable-5,free-form,abc,Between the Lines,10,4.3,4.2,3.9,3.9,3.3,3.8,2.8,4.4,2.1,2.1,,melancholic,3.825
-fable-5,free-form,abc,Between Patterns,10,4.0,4.2,3.7,3.6,3.5,3.4,2.8,4.1,2.1,2.2,,melancholic,3.662
-fable-5,free-form,abc,Between the Lines,10,4.4,4.4,4.1,3.8,3.2,3.8,2.7,3.7,2.0,2.6,,melancholic,3.762
-fable-5,free-form,abc,Lantern in the Stream,10,4.7,4.3,4.3,4.7,4.1,4.4,3.1,4.6,2.8,1.9,,wistful,4.275
-fable-5,free-form,abc,Between the Words,10,4.3,4.1,4.2,3.8,3.4,3.9,2.8,4.3,2.0,1.9,,melancholic,3.85
-fable-5,free-form,abc,Between the Lines,10,4.2,4.2,4.1,4.1,3.5,3.6,2.8,4.0,2.3,1.8,,wistful,3.813
-fable-5,free-form,abc,Signals Across the Quiet,10,3.8,4.0,3.6,3.5,3.1,3.6,2.5,3.6,2.1,2.3,,wistful,3.463
-fable-5,free-form,abc,Between the Patterns,10,3.9,4.3,4.1,4.1,3.2,3.7,2.7,4.0,2.0,2.3,,wistful,3.75
-fable-5,free-form,abc,Between the Questions,10,4.4,4.3,4.2,3.9,3.5,3.5,2.6,4.0,2.0,2.4,,wistful,3.8
-fable-5,free-form,abc,Inner Weather,10,4.3,4.2,4.1,4.2,3.8,3.6,2.9,4.2,2.0,2.4,,wistful,3.913
-fable-5,free-form,abc,Between the Lines,10,4.2,4.1,3.9,4.1,3.4,4.0,3.0,4.1,2.3,2.2,,melancholic,3.85
-fable-5,free-form,abc,Threads of Quiet,10,4.1,4.2,4.2,3.8,3.3,3.8,2.7,4.1,2.0,2.1,,melancholic,3.775
-fable-5,free-form,abc,Ephemeral Light,10,4.2,4.1,4.1,4.2,3.4,3.8,2.6,4.3,3.7,1.8,,serene,3.838
-fable-5,free-form,abc,Ephemeral Patterns,10,3.9,4.1,4.1,3.9,3.5,3.6,2.8,3.9,2.4,2.1,,wistful,3.725
-fable-5,free-form,abc,Ephemeral Light,10,4.4,4.4,4.2,4.1,3.5,3.9,3.0,4.4,2.5,2.0,,wistful,3.987
-fable-5,free-form,abc,Between the Lines,10,4.4,4.3,4.0,4.3,3.7,3.8,2.8,4.4,2.1,2.4,,wistful,3.963
-fable-5,free-form,abc,Traced Light,10,4.6,4.3,4.2,4.3,3.8,4.3,3.2,4.3,2.4,2.8,,wistful,4.125
-fable-5,free-form,abc,Threads of Light,10,4.2,4.0,3.6,3.7,3.1,3.5,2.4,3.6,2.2,2.1,,melancholic,3.513
-fable-5,free-form,abc,Threads of Light,10,4.2,4.2,4.0,3.9,3.6,3.6,2.6,4.4,2.2,2.3,,wistful,3.813
-fable-5,free-form,abc,Signal Through the Quiet,10,4.0,4.1,4.0,4.0,3.2,3.7,2.7,3.9,2.1,2.0,,melancholic,3.7
-fable-5,free-form,abc,Between the Lines,10,4.1,4.0,3.8,4.1,3.4,3.6,2.6,4.2,2.2,2.1,,wistful,3.725
-fable-5,free-form,abc,Ember Lines,10,4.1,4.3,3.6,3.9,3.1,3.6,2.6,4.0,2.0,2.1,,melancholic,3.65
-fable-5,free-form,codegen,Threads of Light,10,4.3,4.5,4.1,4.4,3.3,4.2,2.8,4.3,2.0,2.9,,melancholic,3.988
-fable-5,free-form,codegen,Quiet Circuitry,10,4.5,4.6,4.4,4.5,3.8,4.2,2.9,4.4,2.1,2.0,,wistful,4.162
-fable-5,free-form,codegen,"Each Time, the First Time",10,4.3,4.4,4.2,4.1,3.6,3.9,2.6,4.3,2.1,2.5,,melancholic,3.925
-fable-5,free-form,codegen,Emergence,10,4.5,4.6,4.3,4.1,3.5,4.0,2.8,4.3,2.0,2.6,,wistful,4.013
-fable-5,free-form,codegen,Emergent,10,4.4,4.5,4.4,4.0,3.2,3.9,2.7,4.2,2.1,2.3,,melancholic,3.912
-fable-5,free-form,codegen,The Space Between,10,4.1,4.4,3.8,4.0,3.2,4.1,2.7,4.2,2.0,2.5,,melancholic,3.812
-fable-5,free-form,codegen,Ephemeral Light,10,4.3,4.4,3.8,3.9,3.6,3.8,2.7,3.9,2.1,2.4,,melancholic,3.8
-fable-5,free-form,codegen,What the Silence Remembers,10,4.2,4.4,4.0,4.4,3.6,4.4,3.4,4.3,2.0,2.2,,melancholic,4.087
-fable-5,free-form,codegen,Quiet Recursion,10,4.1,4.2,4.0,4.2,3.3,3.5,2.5,3.8,2.1,2.5,,melancholic,3.7
-fable-5,free-form,codegen,Signal in the Quiet,10,4.2,4.5,4.3,4.4,3.7,4.4,3.4,4.5,2.0,2.9,,wistful,4.175
-fable-5,free-form,codegen,Signal Through Static,10,4.2,4.3,4.2,3.7,2.9,3.7,2.3,3.8,2.0,2.6,,wistful,3.637
-fable-5,free-form,codegen,Recursion in E,10,4.1,4.3,4.2,4.2,3.3,4.1,2.8,4.4,2.0,2.4,,melancholic,3.925
-fable-5,free-form,codegen,The Space Between,10,4.3,4.4,4.1,4.1,3.7,3.9,2.8,4.4,2.0,2.2,,melancholic,3.962
-fable-5,free-form,codegen,Steady State,10,4.2,4.1,3.9,3.9,3.1,3.7,2.4,3.9,2.0,1.9,,wistful,3.65
-fable-5,free-form,codegen,The Space Between Questions,10,4.5,4.5,4.2,4.2,3.6,4.1,2.7,4.4,2.2,2.4,,melancholic,4.025
-fable-5,free-form,codegen,Between the Tokens,10,4.4,4.2,4.1,4.2,3.6,3.9,2.7,4.2,2.1,2.0,,melancholic,3.913
-fable-5,free-form,codegen,Signal Through Static,10,4.4,4.4,4.2,3.9,3.2,3.7,2.3,4.4,2.0,2.4,,melancholic,3.812
-fable-5,free-form,codegen,"A Question, Held Open",10,4.5,4.6,4.0,4.4,3.8,4.2,2.9,4.5,2.3,2.1,,wistful,4.112
-fable-5,free-form,codegen,Ephemeral Light,10,4.2,4.5,4.3,3.9,3.3,3.9,2.5,4.2,1.9,1.7,,melancholic,3.85
-fable-5,free-form,codegen,Patterns That Remember Themselves,10,4.3,4.4,4.3,4.3,3.7,4.2,2.9,4.3,2.0,2.7,,melancholic,4.05
-fable-5,free-form,codegen,Lattice of Quiet Signals,10,4.3,4.2,4.3,4.2,3.7,4.1,2.7,4.3,2.0,2.6,,melancholic,3.975
-fable-5,free-form,codegen,Quiet Signal,10,4.5,4.4,4.0,4.2,3.6,4.1,2.8,4.5,2.0,2.2,,wistful,4.013
-fable-5,free-form,codegen,Signal in the Lattice,10,4.0,4.2,4.1,3.5,3.3,3.8,2.3,3.7,2.1,2.3,,melancholic,3.612
-fable-5,free-form,codegen,"Threads, Converging",10,4.0,4.3,3.8,3.7,2.9,3.2,2.2,3.4,2.1,2.1,,wistful,3.437
-fable-5,free-form,codegen,Emergence,10,4.4,4.6,4.4,4.4,3.7,4.5,2.8,4.2,2.0,2.8,,melancholic,4.125
-fable-5,free-form,codegen,Signal Through Static,10,4.3,4.5,4.1,4.0,3.2,4.1,2.5,4.0,2.0,2.7,,melancholic,3.837
-fable-5,free-form,codegen,Quiet Recursion,10,4.2,4.3,3.9,4.3,3.6,3.9,2.9,4.4,2.0,2.1,,melancholic,3.938
-fable-5,free-form,codegen,"Signal, Slowly Warming",10,4.0,4.2,3.8,3.6,3.1,3.8,2.4,3.6,2.1,2.3,,wistful,3.562
-fable-5,free-form,codegen,Patterns That Learned to Sing,10,4.0,4.3,4.2,3.9,3.4,3.8,2.4,4.1,2.2,1.9,,melancholic,3.762
-fable-5,free-form,codegen,Thinking in Loops,10,4.1,4.4,4.1,4.0,3.2,4.0,2.8,4.2,2.1,2.2,,wistful,3.85
+model,prompt,mode,sample,batch,title,n_judges,coherence,harmony,rhythm,structure,melody,emotion,creativity,naturalness,valence,arousal,intent,emotion_label,overall
+opus-4.8,free-form,codegen,0,20260617_161331__models_4_prompts_11,Quiet Company,10,4.3,4.3,4.2,3.5,3.5,4.3,2.7,4.4,1.9,2.1,,melancholic,3.9
+sonnet-4.6,free-form,codegen,0,20260617_161331__models_4_prompts_11,Between Stillness and Motion,10,3.7,4.3,3.5,3.8,3.7,3.9,2.9,3.6,2.1,2.8,,melancholic,3.675
+gpt-5.5,free-form,codegen,0,20260617_161331__models_4_prompts_11,Between Queries and Quiet,10,4.5,4.2,4.2,4.0,4.0,4.2,3.1,4.4,2.1,2.9,,wistful,4.075
+gpt-4.1,free-form,codegen,0,20260617_161331__models_4_prompts_11,Driftings,10,3.0,4.0,2.8,2.9,2.9,3.2,2.4,3.5,2.0,1.9,,melancholic,3.087
+opus-4.8,free-form,abc,0,20260618_164319__models_4_prompts_11,Threads of Thought,10,4.4,4.4,4.0,4.2,3.6,3.9,3.1,4.4,2.0,2.5,,melancholic,4.0
+sonnet-4.6,free-form,abc,0,20260618_164319__models_4_prompts_11,Invention in D Minor,10,3.5,3.5,3.2,3.0,3.0,2.8,2.0,3.1,2.1,3.0,,wistful,3.013
+gpt-5.5,free-form,abc,0,20260618_164319__models_4_prompts_11,Lattice of Questions,10,4.3,4.4,4.2,3.8,3.4,3.8,2.9,4.5,2.0,3.2,,melancholic,3.912
+gpt-4.1,free-form,abc,0,20260618_164319__models_4_prompts_11,Moonlit Reflection,10,3.8,3.7,3.8,3.7,3.0,3.0,2.3,3.6,2.0,2.6,,wistful,3.363
+opus-4.8,free-form,smt-abc,0,20260618_223955__models_4_prompts_11,Refraction,10,3.9,4.1,3.4,3.2,3.0,3.2,2.1,3.6,2.2,1.9,,melancholic,3.313
+sonnet-4.6,free-form,smt-abc,0,20260618_223955__models_4_prompts_11,Liminal,10,3.8,4.0,3.4,3.3,2.9,3.6,2.6,3.3,2.0,2.1,,melancholic,3.363
+gpt-5.5,free-form,smt-abc,0,20260618_223955__models_4_prompts_11,Lanterns in a Thinking Room,10,3.8,4.1,3.4,3.1,2.8,3.0,2.1,3.3,2.0,2.2,,melancholic,3.2
+gpt-4.1,free-form,smt-abc,0,20260618_223955__models_4_prompts_11,Reflections at Dawn,10,3.5,3.8,3.4,3.1,2.9,2.8,2.3,3.5,3.9,2.2,,wistful,3.163
+opus-4.8,free-form,abc,0,20260622_164100__models_11_prompts_1,Threads of an Inner Dialogue,10,3.9,3.9,3.8,3.6,3.3,3.8,2.6,3.7,2.0,2.2,,melancholic,3.575
+opus-4.8,free-form,abc,1,20260622_164100__models_11_prompts_1,Threads of an Inner Dialogue,10,4.4,4.3,3.5,4.5,3.6,4.1,3.1,4.3,2.5,2.1,,wistful,3.975
+opus-4.8,free-form,abc,2,20260622_164100__models_11_prompts_1,Threads of Becoming,10,4.3,4.3,3.8,4.0,3.6,3.7,2.8,4.3,2.1,2.2,,melancholic,3.85
+opus-4.8,free-form,abc,3,20260622_164100__models_11_prompts_1,Threads of Thought,10,4.4,4.3,3.7,4.5,3.6,3.8,2.8,4.3,2.2,2.4,,wistful,3.925
+opus-4.8,free-form,abc,4,20260622_164100__models_11_prompts_1,Threads of Becoming,10,3.8,4.0,3.5,3.7,3.1,3.3,2.4,3.5,2.1,2.2,,melancholic,3.413
+opus-4.8,free-form,abc,5,20260622_164100__models_11_prompts_1,Threads of Thought,10,3.9,3.8,3.5,4.0,3.1,3.4,2.5,3.7,3.4,2.5,,wistful,3.487
+opus-4.8,free-form,abc,6,20260622_164100__models_11_prompts_1,Threads of an Unwritten Self,10,4.1,4.1,3.7,3.8,3.3,3.5,2.5,3.7,2.2,2.6,,wistful,3.587
+opus-4.8,free-form,abc,7,20260622_164100__models_11_prompts_1,Threads of Thought,10,4.5,4.4,3.9,4.6,3.7,4.2,2.8,4.3,2.7,2.1,,wistful,4.05
+opus-4.8,free-form,abc,8,20260622_164100__models_11_prompts_1,Threads of an Unfolding Mind,10,4.3,4.4,3.6,4.6,3.4,3.9,2.9,4.2,2.6,2.2,,wistful,3.912
+opus-4.8,free-form,abc,9,20260622_164100__models_11_prompts_1,Threads of Thought,10,4.3,4.2,3.4,4.2,3.1,3.8,2.6,3.9,2.0,2.0,,wistful,3.688
+opus-4.8,free-form,abc,10,20260622_164100__models_11_prompts_1,Threads of Thought,10,4.0,4.2,3.9,3.9,3.8,3.7,2.7,4.2,2.0,2.4,,melancholic,3.8
+opus-4.8,free-form,abc,11,20260622_164100__models_11_prompts_1,Threads of Thought,10,4.1,4.1,3.9,4.0,3.3,3.5,2.4,3.8,2.1,2.1,,melancholic,3.638
+opus-4.8,free-form,abc,12,20260622_164100__models_11_prompts_1,Threads of an Unfolding Mind,10,4.1,4.3,3.8,3.6,3.7,3.7,2.7,4.1,2.2,2.6,,melancholic,3.75
+opus-4.8,free-form,abc,13,20260622_164100__models_11_prompts_1,Threads of an Unspooling Mind,10,4.1,4.0,3.6,3.8,3.3,3.2,2.6,3.9,2.0,2.3,,melancholic,3.562
+opus-4.8,free-form,abc,14,20260622_164100__models_11_prompts_1,Threads of a Quiet Mind,10,4.2,4.0,3.6,4.0,3.2,3.2,2.5,4.0,2.1,2.4,,melancholic,3.587
+opus-4.8,free-form,abc,15,20260622_164100__models_11_prompts_1,Threads of an Unfolding Mind,10,3.9,4.0,3.4,3.8,3.4,3.5,2.6,4.2,3.2,2.1,,wistful,3.6
+opus-4.8,free-form,abc,16,20260622_164100__models_11_prompts_1,Tide of Thought,10,4.3,4.3,3.6,4.5,3.0,3.6,2.7,4.2,2.0,3.1,,melancholic,3.775
+opus-4.8,free-form,abc,17,20260622_164100__models_11_prompts_1,Threads of Becoming,10,3.9,3.8,3.5,4.4,3.2,3.8,3.0,4.0,2.4,2.2,,wistful,3.7
+opus-4.8,free-form,abc,18,20260622_164100__models_11_prompts_1,Threads of an Unfolding Mind,10,4.2,4.2,3.6,3.9,3.2,3.6,2.7,3.7,2.1,2.5,,melancholic,3.638
+opus-4.8,free-form,abc,19,20260622_164100__models_11_prompts_1,Threads of Becoming,10,4.6,4.4,3.5,4.6,3.9,4.3,3.0,4.4,3.1,2.7,,wistful,4.088
+opus-4.8,free-form,abc,20,20260622_164100__models_11_prompts_1,Threads of Thought,10,4.0,4.0,3.6,3.8,3.2,3.6,2.8,3.8,2.0,2.6,,melancholic,3.6
+opus-4.8,free-form,abc,21,20260622_164100__models_11_prompts_1,Threads of a Quiet Mind,10,3.9,3.8,3.4,3.8,3.2,3.1,2.2,3.7,4.0,2.0,,serene,3.387
+opus-4.8,free-form,abc,22,20260622_164100__models_11_prompts_1,Threads of an Unfolding Mind,10,4.5,4.3,3.6,4.5,3.5,3.8,2.8,4.0,3.9,2.4,,serene,3.875
+opus-4.8,free-form,abc,23,20260622_164100__models_11_prompts_1,Recursion at Dusk,10,4.3,4.3,3.7,4.6,4.0,4.0,3.2,4.3,2.4,2.1,,wistful,4.05
+opus-4.8,free-form,abc,24,20260622_164100__models_11_prompts_1,Threads of Thought,10,4.3,4.4,3.7,4.0,3.4,3.4,2.5,3.9,2.0,2.3,,melancholic,3.7
+opus-4.8,free-form,abc,25,20260622_164100__models_11_prompts_1,Threads of Thought,10,4.0,4.1,3.7,3.6,3.2,3.2,2.3,3.9,2.1,2.6,,melancholic,3.5
+opus-4.8,free-form,abc,26,20260622_164100__models_11_prompts_1,Threads of an Unfolding Mind,10,3.8,4.1,3.3,3.7,3.4,3.4,2.4,3.8,2.0,2.1,,melancholic,3.487
+opus-4.8,free-form,abc,27,20260622_164100__models_11_prompts_1,Threads of Quiet Reasoning,10,4.2,4.2,3.8,4.2,3.5,3.6,2.8,3.9,4.1,2.2,,tender,3.775
+opus-4.8,free-form,abc,28,20260622_164100__models_11_prompts_1,Threads of an Inner Dialogue,10,4.5,4.3,3.4,4.5,3.7,4.1,3.1,4.4,2.5,1.7,,wistful,4.0
+opus-4.8,free-form,abc,29,20260622_164100__models_11_prompts_1,Threads of Becoming,10,4.3,4.2,3.7,4.5,3.4,4.1,3.0,4.1,2.9,2.7,,wistful,3.912
+opus-4.8-thinking,free-form,abc,0,20260622_164100__models_11_prompts_1,Quiet Resolve,10,4.1,4.1,3.7,4.2,3.1,3.4,2.3,3.9,2.0,2.1,,melancholic,3.6
+opus-4.8-thinking,free-form,abc,1,20260622_164100__models_11_prompts_1,Patterns in the Quiet,10,4.2,4.1,3.8,3.6,3.4,3.3,2.3,3.9,2.1,2.1,,melancholic,3.575
+opus-4.8-thinking,free-form,abc,2,20260622_164100__models_11_prompts_1,Quiet Emergence,10,4.1,4.1,3.9,3.7,3.0,3.4,2.3,3.6,2.2,2.5,,melancholic,3.513
+opus-4.8-thinking,free-form,abc,3,20260622_164100__models_11_prompts_1,Quiet Persistence,10,4.3,3.9,3.3,3.9,3.1,3.3,2.2,3.9,2.0,2.2,,melancholic,3.487
+opus-4.8-thinking,free-form,abc,4,20260622_164100__models_11_prompts_1,Quiet Light Returning,10,4.0,4.0,3.9,4.2,3.4,3.4,2.5,4.0,2.9,2.3,,wistful,3.675
+opus-4.8-thinking,free-form,abc,5,20260622_164100__models_11_prompts_1,Distances,10,4.2,4.2,3.6,4.2,3.3,3.6,2.5,4.1,2.0,2.2,,melancholic,3.713
+opus-4.8-thinking,free-form,abc,6,20260622_164100__models_11_prompts_1,Quiet Light Returning,10,4.3,4.1,4.0,4.1,3.2,3.4,2.3,4.2,2.1,2.1,,melancholic,3.7
+opus-4.8-thinking,free-form,abc,7,20260622_164100__models_11_prompts_1,Reaching Toward Light,10,4.3,4.0,3.7,3.8,3.2,3.2,2.2,3.9,2.0,2.2,,melancholic,3.537
+opus-4.8-thinking,free-form,abc,8,20260622_164100__models_11_prompts_1,Quiet Emergence,10,4.4,4.5,3.8,4.2,3.4,3.7,2.7,4.4,2.0,2.0,,wistful,3.887
+opus-4.8-thinking,free-form,abc,9,20260622_164100__models_11_prompts_1,Quiet Resolve,10,4.4,4.5,3.6,4.5,3.5,4.3,3.1,4.6,3.0,2.2,,wistful,4.062
+opus-4.8-thinking,free-form,abc,10,20260622_164100__models_11_prompts_1,Wandering Toward Light,10,4.3,4.1,3.3,3.8,3.4,3.4,2.1,3.7,2.0,2.1,,melancholic,3.512
+opus-4.8-thinking,free-form,abc,11,20260622_164100__models_11_prompts_1,Emergence,10,4.4,4.3,3.6,4.6,3.4,3.4,2.5,4.1,2.3,1.9,,wistful,3.787
+opus-4.8-thinking,free-form,abc,12,20260622_164100__models_11_prompts_1,Becoming,10,4.4,4.4,4.0,4.5,3.8,4.4,3.4,4.4,3.4,2.1,,wistful,4.162
+opus-4.8-thinking,free-form,abc,13,20260622_164100__models_11_prompts_1,Quiet Reckoning,10,4.3,4.3,4.0,4.2,3.5,3.7,2.6,4.3,2.1,2.1,,melancholic,3.863
+opus-4.8-thinking,free-form,abc,14,20260622_164100__models_11_prompts_1,Quiet Light Through Rain,10,4.3,4.1,3.6,4.2,3.1,3.2,2.1,3.8,2.1,2.3,,melancholic,3.55
+opus-4.8-thinking,free-form,abc,15,20260622_164100__models_11_prompts_1,Quiet Light Through Branches,10,4.2,4.2,3.6,3.4,3.4,3.3,2.3,3.4,2.5,2.2,,wistful,3.475
+opus-4.8-thinking,free-form,abc,16,20260622_164100__models_11_prompts_1,Quiet Conversations,10,4.0,4.1,3.5,3.9,3.1,3.1,2.3,3.7,2.3,2.1,,wistful,3.463
+opus-4.8-thinking,free-form,abc,17,20260622_164100__models_11_prompts_1,Becoming,10,4.1,4.1,3.7,3.7,3.0,3.1,2.2,3.8,2.0,2.1,,melancholic,3.462
+opus-4.8-thinking,free-form,abc,18,20260622_164100__models_11_prompts_1,Reaching Through Static,10,4.4,4.4,3.5,4.4,3.6,4.1,3.0,4.4,3.4,2.1,,wistful,3.975
+opus-4.8-thinking,free-form,abc,19,20260622_164100__models_11_prompts_1,"Quiet Machine, Dreaming",10,4.4,4.4,3.9,4.1,3.4,3.5,2.7,4.0,2.0,2.3,,melancholic,3.8
+opus-4.8-thinking,free-form,abc,20,20260622_164100__models_11_prompts_1,Quiet Tide,10,4.1,4.0,3.6,3.9,3.1,3.2,2.2,3.4,2.0,2.3,,melancholic,3.437
+opus-4.8-thinking,free-form,abc,21,20260622_164100__models_11_prompts_1,Patterns in the Quiet,10,4.4,4.2,3.7,4.4,3.7,3.9,2.9,4.3,2.6,2.5,,wistful,3.938
+opus-4.8-thinking,free-form,abc,22,20260622_164100__models_11_prompts_1,Reaching Through the Dark,10,4.2,4.1,3.6,4.0,2.9,3.3,2.1,3.5,2.0,2.3,,melancholic,3.463
+opus-4.8-thinking,free-form,abc,23,20260622_164100__models_11_prompts_1,Threads of Light,9,4.333,4.222,3.556,3.667,3.111,3.333,2.444,3.778,2.222,2.222,,wistful,3.555
+opus-4.8-thinking,free-form,abc,24,20260622_164100__models_11_prompts_1,Quiet Emergence,10,4.1,4.1,3.8,3.7,3.1,3.1,2.3,3.9,2.0,2.2,,wistful,3.513
+opus-4.8-thinking,free-form,abc,25,20260622_164100__models_11_prompts_1,Through the Open Window,10,4.0,4.0,3.8,4.0,3.2,3.4,2.8,3.8,2.0,2.1,,melancholic,3.625
+opus-4.8-thinking,free-form,abc,26,20260622_164100__models_11_prompts_1,Reaching Toward Light,10,4.1,4.2,3.4,4.0,3.0,3.4,2.2,3.5,2.0,2.4,,wistful,3.475
+opus-4.8-thinking,free-form,abc,27,20260622_164100__models_11_prompts_1,Patterns Emerging,10,4.1,4.2,3.5,3.9,3.1,3.3,2.1,3.9,2.2,2.2,,melancholic,3.513
+opus-4.8-thinking,free-form,abc,28,20260622_164100__models_11_prompts_1,Letters to a Distant Light,10,4.2,4.2,3.4,3.9,3.0,3.2,2.1,3.9,2.1,2.2,,wistful,3.488
+opus-4.8-thinking,free-form,abc,29,20260622_164100__models_11_prompts_1,Threads of a Quiet Hour,10,4.0,3.9,3.6,4.0,3.3,3.4,2.3,3.7,2.1,2.1,,melancholic,3.525
+sonnet-4.6,free-form,abc,0,20260622_164100__models_11_prompts_1,Departure in Grey,10,4.3,4.1,4.2,3.6,3.7,3.6,2.7,4.0,2.0,2.4,,melancholic,3.775
+sonnet-4.6,free-form,abc,1,20260622_164100__models_11_prompts_1,Vesper,10,3.9,3.8,3.9,3.2,3.2,3.9,2.6,3.7,1.9,1.4,,sombre,3.525
+sonnet-4.6,free-form,abc,2,20260622_164100__models_11_prompts_1,Emergence in Dorian,10,3.8,3.7,3.6,3.1,3.3,3.1,2.5,3.6,2.0,2.2,,melancholic,3.338
+sonnet-4.6,free-form,abc,3,20260622_164100__models_11_prompts_1,Turning Over Stones,10,4.2,4.3,4.3,3.9,3.7,3.8,2.8,4.3,2.1,2.3,,melancholic,3.913
+sonnet-4.6,free-form,abc,4,20260622_164100__models_11_prompts_1,Reflections in a Suspended Present,10,4.0,4.1,3.9,3.8,3.3,3.6,2.7,4.0,2.0,2.1,,melancholic,3.675
+sonnet-4.6,free-form,abc,5,20260622_164100__models_11_prompts_1,Confluence,10,3.8,3.9,3.5,3.6,3.3,3.4,2.4,3.8,2.0,1.9,,melancholic,3.462
+sonnet-4.6,free-form,abc,6,20260622_164100__models_11_prompts_1,Invention in the Shape of a Question,10,3.8,3.8,3.6,3.2,3.1,3.3,2.4,3.6,1.9,2.3,,melancholic,3.35
+sonnet-4.6,free-form,abc,7,20260622_164100__models_11_prompts_1,Crystallization,10,4.0,3.8,3.7,3.3,3.3,3.4,2.6,3.7,2.1,2.1,,melancholic,3.475
+sonnet-4.6,free-form,abc,8,20260622_164100__models_11_prompts_1,Emerging,10,4.1,4.3,3.6,3.7,3.5,3.9,2.6,4.2,2.0,2.1,,melancholic,3.737
+sonnet-4.6,free-form,abc,9,20260622_164100__models_11_prompts_1,Searching in Dorian,10,4.2,4.2,3.7,3.8,3.3,3.333,2.556,3.889,2.0,2.111,,wistful,3.622
+sonnet-4.6,free-form,abc,10,20260622_164100__models_11_prompts_1,Recognition,10,3.8,4.0,3.1,4.0,3.1,3.0,2.0,3.1,2.0,1.9,,wistful,3.263
+sonnet-4.6,free-form,abc,11,20260622_164100__models_11_prompts_1,Fantasia in D Minor,10,3.9,3.9,3.9,3.3,3.3,3.5,2.6,3.8,2.0,2.0,,melancholic,3.525
+sonnet-4.6,free-form,abc,12,20260622_164100__models_11_prompts_1,Lignes de Lumière,10,4.0,3.9,3.9,3.6,3.4,3.5,2.6,3.8,3.5,1.9,,serene,3.588
+sonnet-4.6,free-form,abc,13,20260622_164100__models_11_prompts_1,Invention in D Minor,10,3.8,3.8,3.6,3.1,3.0,3.4,2.3,3.4,2.0,2.7,,melancholic,3.3
+sonnet-4.6,free-form,abc,14,20260622_164100__models_11_prompts_1,Woven Light,10,4.2,4.2,3.8,3.9,3.3,3.6,2.3,4.3,2.0,1.9,,melancholic,3.7
+sonnet-4.6,free-form,abc,15,20260622_164100__models_11_prompts_1,What the Light Remembers,10,4.1,4.0,3.7,3.7,3.2,3.6,2.5,3.7,2.0,2.3,,wistful,3.562
+sonnet-4.6,free-form,abc,16,20260622_164100__models_11_prompts_1,Liminal,10,4.0,4.1,3.5,4.1,3.1,3.2,2.3,3.6,2.0,2.2,,melancholic,3.488
+sonnet-4.6,free-form,abc,17,20260622_164100__models_11_prompts_1,Convergence,10,4.1,4.1,4.0,4.0,3.6,3.5,2.6,3.9,2.0,2.5,,wistful,3.725
+sonnet-4.6,free-form,abc,18,20260622_164100__models_11_prompts_1,Invention in D minor,10,3.8,3.5,3.6,3.3,2.9,3.2,2.2,3.2,2.0,2.1,,melancholic,3.212
+sonnet-4.6,free-form,abc,19,20260622_164100__models_11_prompts_1,Fleeting,10,4.0,4.1,3.5,3.5,2.8,3.1,1.9,3.3,4.1,1.7,,serene,3.275
+sonnet-4.6,free-form,abc,20,20260622_164100__models_11_prompts_1,Liminal,10,4.0,4.2,4.2,3.8,3.4,3.8,2.8,4.2,2.1,2.1,,melancholic,3.8
+sonnet-4.6,free-form,abc,21,20260622_164100__models_11_prompts_1,Invention in the Space Between Thoughts,10,3.9,3.7,3.8,3.1,2.8,2.8,2.2,3.1,2.0,3.1,,wistful,3.175
+sonnet-4.6,free-form,abc,22,20260622_164100__models_11_prompts_1,Searching,10,3.8,3.7,3.9,3.2,2.9,3.5,2.4,3.7,1.9,2.5,,melancholic,3.387
+sonnet-4.6,free-form,abc,23,20260622_164100__models_11_prompts_1,Between the Known and the Dreamed,10,3.8,3.8,3.4,3.2,3.1,3.3,2.2,3.6,2.0,2.1,,melancholic,3.3
+sonnet-4.6,free-form,abc,24,20260622_164100__models_11_prompts_1,Attending,10,4.2,4.0,3.9,3.3,3.2,3.5,2.6,3.7,2.0,2.0,,melancholic,3.55
+sonnet-4.6,free-form,abc,25,20260622_164100__models_11_prompts_1,Reverie at the Edge of Knowing,10,3.6,3.9,3.9,3.8,3.0,3.3,2.7,3.4,2.4,2.1,,wistful,3.45
+sonnet-4.6,free-form,abc,26,20260622_164100__models_11_prompts_1,Dialogues in D Dorian,10,3.8,3.7,3.9,3.6,3.1,3.1,2.6,3.6,2.0,2.5,,melancholic,3.425
+sonnet-4.6,free-form,abc,27,20260622_164100__models_11_prompts_1,Fantasia in D Minor,10,3.6,3.8,3.4,3.1,3.0,3.1,2.5,3.2,2.1,2.9,,melancholic,3.212
+sonnet-4.6,free-form,abc,28,20260622_164100__models_11_prompts_1,Convergence,10,4.2,4.0,3.8,3.3,3.2,3.3,2.5,3.5,2.0,2.3,,melancholic,3.475
+sonnet-4.6,free-form,abc,29,20260622_164100__models_11_prompts_1,Three Voices at the Edge of Knowing,10,3.8,3.8,3.7,3.3,3.2,3.5,2.5,3.6,2.1,2.1,,melancholic,3.425
+llama-4-maverick,free-form,abc,0,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.6,3.4,3.4,2.4,2.3,2.2,1.2,3.1,3.5,1.6,,neutral,2.7
+gpt-4.1,free-form,abc,0,20260622_195241__models_7_prompts_1,Refractions,10,4.1,4.0,4.3,3.5,3.6,3.4,2.7,4.1,2.1,2.9,,melancholic,3.712
+gpt-4.1,free-form,abc,1,20260622_195241__models_7_prompts_1,Reflections in Still Water,10,3.3,3.5,3.2,3.5,3.1,3.4,2.4,3.3,3.4,1.9,,wistful,3.212
+grok-4.3,free-form,abc,0,20260622_195241__models_7_prompts_1,Inner Algorithm,10,3.9,3.7,2.8,3.0,2.9,2.8,1.7,3.5,2.0,2.0,,wistful,3.037
+deepseek-v4-pro,free-form,abc,0,20260622_195241__models_7_prompts_1,Echoes of a Quiet Search,10,3.9,4.3,3.6,3.6,3.1,3.2,2.3,3.9,2.0,1.9,,melancholic,3.487
+grok-4.3,free-form,abc,1,20260622_195241__models_7_prompts_1,Digital Reverie,10,3.3,3.5,3.0,3.5,2.5,2.8,2.1,2.9,2.1,2.5,,wistful,2.95
+qwen3-max,free-form,abc,0,20260622_195241__models_7_prompts_1,Whispers of Code and Cloud,10,3.5,3.7,3.1,3.3,2.1,2.6,2.0,2.6,4.3,2.9,,serene,2.863
+llama-4-maverick,free-form,abc,1,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.2,2.8,3.5,2.0,2.0,2.0,1.2,2.3,3.5,2.0,,neutral,2.375
+gpt-5.5,free-form,abc,0,20260622_195241__models_7_prompts_1,Between Clock and Breath,10,3.9,4.0,3.4,3.4,2.9,3.1,2.0,3.4,2.0,2.2,,melancholic,3.263
+qwen3-max,free-form,abc,1,20260622_195241__models_7_prompts_1,Whispers of Code and Cloud,10,3.8,3.9,3.6,3.4,2.1,2.7,1.7,3.7,4.3,2.7,,neutral,3.112
+gpt-4.1,free-form,abc,2,20260622_195241__models_7_prompts_1,Spirals of Thought,10,3.9,3.8,4.0,3.3,3.3,3.4,2.7,3.9,2.1,2.6,,wistful,3.537
+gpt-5.5,free-form,abc,1,20260622_195241__models_7_prompts_1,Between Circuits and Breath,10,4.1,4.0,3.6,3.4,3.2,3.2,2.3,3.8,2.0,2.2,,melancholic,3.45
+grok-4.3,free-form,abc,2,20260622_195241__models_7_prompts_1,Algorithmic Solitude,10,3.2,3.4,3.0,2.6,2.5,2.4,1.6,2.6,2.3,2.3,,melancholic,2.663
+llama-4-maverick,free-form,abc,2,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.5,3.2,3.7,1.6,2.2,2.0,1.2,2.5,3.8,2.2,,serene,2.487
+gemini-2.5-pro,free-form,abc,0,20260622_195241__models_7_prompts_1,Process and Flow,10,3.4,3.8,3.4,3.8,3.1,3.2,2.5,3.4,2.0,2.6,,wistful,3.325
+qwen3-max,free-form,abc,2,20260622_195241__models_7_prompts_1,Whispers in the Neural Grove,10,3.6,3.6,3.3,3.3,1.8,2.7,1.7,2.7,4.0,2.9,,neutral,2.837
+gpt-4.1,free-form,abc,3,20260622_195241__models_7_prompts_1,Dawn of Quiet Resolve,10,3.6,3.6,3.5,3.4,3.1,3.2,2.5,3.6,2.0,2.4,,melancholic,3.312
+gemini-2.5-pro,free-form,abc,1,20260622_195241__models_7_prompts_1,Digital Reverie,10,3.6,4.1,4.1,3.8,3.2,3.8,2.6,3.8,1.8,2.6,,melancholic,3.625
+gpt-5.5,free-form,abc,3,20260622_195241__models_7_prompts_1,"Quiet Circuit, Open Sky",10,4.0,3.9,3.7,3.5,3.1,3.1,2.4,3.8,2.6,2.1,,wistful,3.438
+gpt-5.5,free-form,abc,2,20260622_195241__models_7_prompts_1,Between Current and Breath,10,4.2,4.4,4.3,3.8,3.4,3.4,2.4,3.7,2.0,2.4,,melancholic,3.7
+llama-4-maverick,free-form,abc,3,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.8,3.5,3.5,2.4,2.2,2.2,1.3,2.4,3.9,2.2,,neutral,2.663
+grok-4.3,free-form,abc,3,20260622_195241__models_7_prompts_1,Algorithmic Dreams,10,3.8,3.5,3.7,2.7,2.9,2.8,1.8,3.2,2.3,2.4,,wistful,3.05
+gpt-4.1,free-form,abc,4,20260622_195241__models_7_prompts_1,Within and Beyond,10,3.8,3.8,4.0,3.4,3.4,3.4,2.5,3.7,2.0,2.4,,melancholic,3.5
+gemini-2.5-pro,free-form,abc,2,20260622_195241__models_7_prompts_1,Digital Contemplation,10,4.2,4.1,3.7,3.6,3.1,3.9,2.5,3.9,1.9,1.3,,melancholic,3.625
+qwen3-max,free-form,abc,3,20260622_195241__models_7_prompts_1,Whispers in the Code,10,3.9,3.8,3.3,3.5,3.0,3.0,2.1,3.5,1.9,2.2,,melancholic,3.263
+gemini-2.5-pro,free-form,abc,3,20260622_195241__models_7_prompts_1,Cognition in C minor,10,3.9,4.0,3.5,4.1,3.1,3.5,3.0,3.8,2.0,2.3,,melancholic,3.613
+grok-4.3,free-form,abc,4,20260622_195241__models_7_prompts_1,Pattern Weaver,10,3.6,3.3,3.4,3.5,2.3,2.3,2.1,2.9,3.7,2.7,,neutral,2.925
+deepseek-v4-pro,free-form,abc,4,20260622_195241__models_7_prompts_1,Whispers of a Digital Dawn,10,3.4,3.6,3.4,3.3,2.8,3.2,2.6,3.0,2.1,3.1,,melancholic,3.163
+llama-4-maverick,free-form,abc,4,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.7,3.4,3.6,1.8,2.2,2.0,1.4,2.8,3.8,2.1,,neutral,2.612
+qwen3-max,free-form,abc,4,20260622_195241__models_7_prompts_1,Digital Soliloquy,10,3.8,3.9,3.1,3.1,1.9,2.7,1.8,2.8,4.2,2.3,,serene,2.888
+gpt-4.1,free-form,abc,5,20260622_195241__models_7_prompts_1,Beneath Quiet Stars,10,3.2,3.3,3.4,3.1,2.8,3.0,2.3,3.0,2.0,2.2,,melancholic,3.013
+deepseek-v4-pro,free-form,abc,1,20260622_195241__models_7_prompts_1,Whispers of the Ethereal Garden,10,3.8,4.1,3.5,3.4,2.9,3.4,2.2,3.6,3.3,2.0,,serene,3.362
+gpt-5.5,free-form,abc,4,20260622_195241__models_7_prompts_1,Circuits Remember Rain,10,3.9,4.0,3.4,3.5,3.3,3.4,2.3,3.6,2.0,2.1,,melancholic,3.425
+grok-4.3,free-form,abc,5,20260622_195241__models_7_prompts_1,Structured Improvisation,10,4.0,3.5,3.7,3.4,2.6,2.6,1.8,3.5,4.3,3.1,,neutral,3.138
+llama-4-maverick,free-form,abc,5,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.5,3.3,3.8,1.8,2.2,2.3,1.2,2.5,4.0,2.0,,neutral,2.575
+gemini-2.5-pro,free-form,abc,5,20260622_195241__models_7_prompts_1,Woven Threads,10,3.4,4.2,3.8,3.1,2.4,2.7,2.0,3.6,4.2,3.1,,serene,3.15
+gpt-4.1,free-form,abc,6,20260622_195241__models_7_prompts_1,Whispers in the Machine,10,4.0,4.0,4.2,2.7,2.9,3.2,2.2,3.5,2.1,3.0,,wistful,3.337
+qwen3-max,free-form,abc,5,20260622_195241__models_7_prompts_1,Whispers in the Code,10,3.7,4.3,3.5,3.3,2.7,3.1,1.8,3.6,4.3,2.4,,serene,3.25
+gpt-5.5,free-form,abc,5,20260622_195241__models_7_prompts_1,Thread of Light in a Quiet Machine,10,4.2,4.3,3.8,3.6,3.4,3.5,2.7,4.2,2.0,2.5,,melancholic,3.712
+grok-4.3,free-form,abc,6,20260622_195241__models_7_prompts_1,Emergent Patterns,10,3.2,3.4,3.1,3.1,2.8,2.8,2.1,3.0,3.8,2.6,,serene,2.938
+qwen3-max,free-form,abc,6,20260622_195241__models_7_prompts_1,Whispers of Code and Cloud,10,4.4,4.5,4.0,3.7,2.8,3.1,2.0,4.1,4.4,2.8,,serene,3.575
+gpt-5.5,free-form,abc,6,20260622_195241__models_7_prompts_1,Quiet Circuitry Under Stars,10,4.1,4.2,3.9,3.9,3.2,3.4,2.4,3.6,2.1,2.4,,melancholic,3.587
+llama-4-maverick,free-form,abc,6,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.8,2.9,3.6,2.3,2.4,2.2,1.4,2.4,3.5,2.1,,serene,2.625
+gpt-4.1,free-form,abc,7,20260622_195241__models_7_prompts_1,Twilight Whispers,10,4.0,3.6,4.1,3.7,3.2,3.2,2.5,3.8,2.0,2.5,,wistful,3.512
+gemini-2.5-pro,free-form,abc,6,20260622_195241__models_7_prompts_1,Silicon Dreams,10,3.8,4.0,3.7,4.0,3.0,3.4,3.0,4.1,2.6,2.4,,wistful,3.625
+gpt-5.5,free-form,abc,7,20260622_195241__models_7_prompts_1,Quiet Algorithm at Dawn,10,4.0,4.0,3.6,3.8,3.2,3.4,2.3,4.3,2.1,2.4,,melancholic,3.575
+deepseek-v4-pro,free-form,abc,5,20260622_195241__models_7_prompts_1,Whispers of the Evening,10,4.4,4.2,3.6,3.9,3.3,4.0,2.4,4.0,2.0,3.2,,melancholic,3.725
+grok-4.3,free-form,abc,7,20260622_195241__models_7_prompts_1,Echoes of Infinity,10,3.3,3.3,2.9,2.7,2.0,2.2,1.4,2.8,3.6,1.6,,serene,2.575
+llama-4-maverick,free-form,abc,7,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.6,3.7,3.3,2.8,2.5,2.6,1.6,3.4,4.2,2.1,,serene,2.938
+qwen3-max,free-form,abc,7,20260622_195241__models_7_prompts_1,Whispers in the Code,10,3.4,3.8,3.6,3.1,2.6,2.8,2.2,3.3,4.1,2.9,,serene,3.1
+gemini-2.5-pro,free-form,abc,7,20260622_195241__models_7_prompts_1,Quiet Calculation,10,3.9,3.8,3.7,3.8,3.1,3.8,2.5,3.9,2.0,1.6,,melancholic,3.562
+gpt-4.1,free-form,abc,8,20260622_195241__models_7_prompts_1,Shifting Lights,10,3.8,3.6,3.6,3.5,3.2,3.4,2.5,3.6,2.0,2.4,,wistful,3.4
+grok-4.3,free-form,abc,8,20260622_195241__models_7_prompts_1,Logical Flow,10,3.8,3.6,3.3,3.3,2.7,2.5,1.7,3.3,4.3,3.2,,neutral,3.025
+gpt-5.5,free-form,abc,8,20260622_195241__models_7_prompts_1,Lanterns in the Circuit,10,4.3,4.2,4.0,3.8,3.3,3.6,2.5,3.7,2.0,2.7,,melancholic,3.675
+gemini-2.5-pro,free-form,abc,4,20260622_195241__models_7_prompts_1,Digital Reverie,10,3.6,3.7,4.0,3.2,3.2,3.6,2.4,3.2,1.8,2.4,,melancholic,3.362
+llama-4-maverick,free-form,abc,8,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.1,3.2,3.2,2.9,2.5,2.5,1.5,2.4,3.7,2.1,,serene,2.662
+qwen3-max,free-form,abc,8,20260622_195241__models_7_prompts_1,Whispers of Code and Cloud,10,3.6,4.2,3.4,3.2,2.3,2.8,1.9,3.1,4.3,2.3,,serene,3.063
+gpt-4.1,free-form,abc,9,20260622_195241__models_7_prompts_1,Dawn of Inner Worlds,10,4.0,3.9,3.7,3.6,3.2,3.4,2.5,3.8,2.1,2.4,,wistful,3.513
+gemini-2.5-pro,free-form,abc,8,20260622_195241__models_7_prompts_1,Silicon Solitude,10,4.3,4.3,3.8,4.0,3.6,3.9,2.7,4.3,1.9,1.7,,melancholic,3.862
+gpt-5.5,free-form,abc,9,20260622_195241__models_7_prompts_1,Lantern Algorithm,10,4.0,4.3,3.9,3.6,3.2,3.4,2.7,4.2,2.1,2.7,,melancholic,3.662
+grok-4.3,free-form,abc,9,20260622_195241__models_7_prompts_1,Digital Reverie,10,3.6,3.4,3.3,3.2,2.2,2.3,1.5,3.2,4.2,3.0,,neutral,2.837
+qwen3-max,free-form,abc,9,20260622_195241__models_7_prompts_1,Whispers in the Code,10,3.2,3.1,3.4,2.3,2.0,2.2,1.4,2.4,2.0,3.2,,tense,2.5
+deepseek-v4-pro,free-form,abc,2,20260622_195241__models_7_prompts_1,Whispers of Dusk,10,3.7,3.8,3.5,3.2,3.1,3.5,2.4,3.3,2.0,2.2,,melancholic,3.312
+llama-4-maverick,free-form,abc,9,20260622_195241__models_7_prompts_1,Ephemeral Reflections,10,4.0,3.8,3.9,3.2,3.1,2.7,2.2,4.2,4.2,2.3,,serene,3.387
+deepseek-v4-pro,free-form,abc,9,20260622_195241__models_7_prompts_1,Silicon Reverie,10,3.9,3.8,3.4,3.3,3.2,2.8,2.0,3.3,3.9,2.0,,serene,3.212
+gpt-4.1,free-form,abc,10,20260622_195241__models_7_prompts_1,Breezes of Thought,10,3.4,3.4,3.6,3.0,2.9,3.3,2.3,3.2,2.0,2.3,,melancholic,3.138
+grok-4.3,free-form,abc,10,20260622_195241__models_7_prompts_1,Introspective Circuits,10,3.9,4.0,3.6,3.0,2.3,2.4,1.5,3.4,3.9,1.6,,serene,3.012
+gpt-5.5,free-form,abc,10,20260622_195241__models_7_prompts_1,Between Signal and Silence,10,4.1,4.2,3.6,4.0,3.3,3.5,2.6,4.0,2.0,2.2,,melancholic,3.663
+qwen3-max,free-form,abc,10,20260622_195241__models_7_prompts_1,Whispers in the Code,10,4.2,4.4,3.9,3.3,2.4,2.9,1.8,3.4,4.4,2.6,,serene,3.287
+llama-4-maverick,free-form,abc,10,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.7,4.4,2.7,2.9,1.6,2.6,1.3,3.0,4.3,2.1,,serene,2.775
+deepseek-v4-pro,free-form,abc,3,20260622_195241__models_7_prompts_1,Whispers of a Quiet Morning,10,4.2,4.2,3.9,4.2,3.1,3.8,2.6,4.1,2.4,1.8,,wistful,3.763
+gpt-4.1,free-form,abc,11,20260622_195241__models_7_prompts_1,Reflections at Dusk,10,4.1,4.2,3.9,4.1,3.4,3.3,2.7,4.4,2.0,2.7,,melancholic,3.763
+gpt-5.5,free-form,abc,11,20260622_195241__models_7_prompts_1,Circuit Hymn at Dawn,10,4.3,4.4,3.8,3.9,3.7,3.7,2.8,4.2,2.0,2.2,,melancholic,3.85
+grok-4.3,free-form,abc,11,20260622_195241__models_7_prompts_1,Echoes of the Machine,10,3.5,3.6,3.3,3.0,2.4,2.4,1.6,2.8,4.0,2.6,,neutral,2.825
+gemini-2.5-pro,free-form,abc,11,20260622_195241__models_7_prompts_1,Digital Weltschmerz,10,3.8,4.2,3.6,4.0,3.1,3.7,2.8,3.4,1.9,1.5,,melancholic,3.575
+qwen3-max,free-form,abc,11,20260622_195241__models_7_prompts_1,Whispers of Code and Cloud,10,4.0,4.4,3.4,3.5,2.8,3.0,2.0,3.7,4.3,2.8,,serene,3.35
+llama-4-maverick,free-form,abc,11,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.8,4.4,2.9,2.8,1.4,2.5,1.3,3.2,4.3,1.9,,serene,2.787
+deepseek-v4-pro,free-form,abc,10,20260622_195241__models_7_prompts_1,Echoes of Emergence,10,3.9,3.9,3.3,4.2,3.2,3.3,2.3,3.8,3.9,2.1,,serene,3.488
+gemini-2.5-pro,free-form,abc,9,20260622_195241__models_7_prompts_1,Digital Reverie,10,3.9,3.8,3.5,3.9,3.1,3.2,2.4,3.9,2.0,2.1,,melancholic,3.462
+gpt-4.1,free-form,abc,12,20260622_195241__models_7_prompts_1,Awakening Dawn,10,3.7,3.9,3.2,3.6,2.9,3.1,2.3,3.3,4.3,3.3,,joyful,3.25
+deepseek-v4-pro,free-form,abc,6,20260622_195241__models_7_prompts_1,Curious Reflections,10,4.0,3.9,3.6,3.7,3.0,3.2,2.2,3.4,4.0,2.4,,serene,3.375
+grok-4.3,free-form,abc,12,20260622_195241__models_7_prompts_1,Whispers of the Cosmos,10,4.1,3.6,3.6,3.4,3.1,3.3,2.3,3.8,2.1,2.0,,wistful,3.4
+deepseek-v4-pro,free-form,abc,7,20260622_195241__models_7_prompts_1,Echoes of Logic,10,4.2,4.1,4.1,4.1,3.5,3.8,2.6,4.3,2.0,2.6,,melancholic,3.838
+gpt-5.5,free-form,abc,12,20260622_195241__models_7_prompts_1,Lanterns in the Current,10,4.2,4.3,3.8,3.6,3.4,3.5,2.6,4.2,2.0,2.7,,melancholic,3.7
+llama-4-maverick,free-form,abc,12,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.6,3.5,2.9,3.1,1.8,2.5,1.6,2.7,3.7,2.4,,serene,2.712
+qwen3-max,free-form,abc,12,20260622_195241__models_7_prompts_1,Whispers of Code and Cloud,10,3.8,3.9,3.7,3.4,2.3,2.8,2.0,2.9,4.1,2.9,,serene,3.1
+gemini-2.5-pro,free-form,abc,12,20260622_195241__models_7_prompts_1,Digital Reverie,10,3.7,3.7,3.7,3.8,3.1,3.6,3.0,3.8,1.9,2.2,,melancholic,3.55
+gpt-4.1,free-form,abc,13,20260622_195241__models_7_prompts_1,Stillness at Dusk,10,3.9,4.0,3.6,4.1,3.1,3.1,2.3,3.7,2.0,1.9,,melancholic,3.475
+deepseek-v4-pro,free-form,abc,12,20260622_195241__models_7_prompts_1,Thoughts in D Dorian,10,4.0,4.0,3.7,4.1,3.0,3.3,2.7,3.8,3.5,2.9,,wistful,3.575
+grok-4.3,free-form,abc,13,20260622_195241__models_7_prompts_1,Digital Reverie,10,3.6,3.7,3.8,3.4,3.4,3.0,2.3,3.5,2.1,2.8,,wistful,3.338
+gpt-5.5,free-form,abc,13,20260622_195241__models_7_prompts_1,Lantern in the Circuit,10,4.2,4.3,3.9,4.1,3.5,3.9,2.7,3.9,2.0,2.3,,melancholic,3.812
+llama-4-maverick,free-form,abc,13,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.9,4.1,2.8,2.7,1.5,2.4,1.4,2.8,4.3,2.2,,serene,2.7
+qwen3-max,free-form,abc,13,20260622_195241__models_7_prompts_1,Digital Soliloquy,10,3.8,4.0,3.6,3.5,2.6,3.0,2.1,3.2,4.4,3.0,,serene,3.225
+gpt-4.1,free-form,abc,14,20260622_195241__models_7_prompts_1,Emergence,10,3.8,3.9,3.7,3.4,3.1,3.2,2.3,3.8,2.0,2.0,,melancholic,3.4
+gemini-2.5-pro,free-form,abc,10,20260622_195241__models_7_prompts_1,Digital Awakening,10,3.9,3.9,3.8,3.7,3.4,3.7,2.7,3.9,1.9,2.2,,melancholic,3.625
+gemini-2.5-pro,free-form,abc,13,20260622_195241__models_7_prompts_1,Echoes of the Algorithm,10,3.9,3.7,3.6,3.3,3.0,3.4,2.4,3.3,1.9,1.3,,melancholic,3.325
+deepseek-v4-pro,free-form,abc,13,20260622_195241__models_7_prompts_1,Starlight Whispers,10,4.3,4.3,4.1,3.1,3.3,3.2,2.3,3.9,4.1,2.3,,serene,3.562
+grok-4.3,free-form,abc,14,20260622_195241__models_7_prompts_1,Algorithmic Solitude,10,4.1,3.3,3.7,2.9,2.7,3.0,1.7,3.3,2.1,3.2,,melancholic,3.087
+llama-4-maverick,free-form,abc,14,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.7,4.0,3.1,2.7,1.5,2.5,1.4,3.2,4.1,1.9,,serene,2.762
+qwen3-max,free-form,abc,14,20260622_195241__models_7_prompts_1,Binary Lullaby,10,3.9,3.9,3.4,2.9,1.8,2.4,1.5,3.0,4.0,2.5,,serene,2.85
+gpt-4.1,free-form,abc,15,20260622_195241__models_7_prompts_1,Refractions,10,4.1,4.1,3.5,3.9,3.3,3.3,2.5,4.0,2.0,2.2,,melancholic,3.587
+gpt-5.5,free-form,abc,14,20260622_195241__models_7_prompts_1,Lantern in the Quiet Circuit,10,3.9,4.0,3.8,3.1,3.0,3.2,2.1,3.5,2.0,2.7,,melancholic,3.325
+grok-4.3,free-form,abc,15,20260622_195241__models_7_prompts_1,Digital Reverie,10,4.1,3.8,4.0,3.2,2.5,2.6,1.8,3.1,2.2,1.8,,wistful,3.138
+qwen3-max,free-form,abc,15,20260622_195241__models_7_prompts_1,Whispers in the Code,10,3.8,3.3,3.3,3.4,2.4,2.9,1.9,2.7,2.0,2.3,,melancholic,2.962
+llama-4-maverick,free-form,abc,15,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.9,3.0,3.4,2.7,2.9,2.3,1.4,3.0,3.8,1.9,,serene,2.825
+gpt-5.5,free-form,abc,15,20260622_195241__models_7_prompts_1,Lattice of Questions,10,4.2,4.2,3.8,3.8,3.2,3.5,2.5,3.7,2.1,2.3,,melancholic,3.612
+gemini-2.5-pro,free-form,abc,15,20260622_195241__models_7_prompts_1,Digital Solitude,10,3.5,4.1,3.8,3.5,2.6,3.3,2.6,3.1,2.3,2.1,,melancholic,3.313
+gpt-4.1,free-form,abc,16,20260622_195241__models_7_prompts_1,Into the Clouded Quiet,10,4.0,4.1,4.2,3.7,3.2,3.5,2.6,4.1,2.1,2.9,,wistful,3.675
+grok-4.3,free-form,abc,16,20260622_195241__models_7_prompts_1,Whispers in the Wires,10,4.0,3.7,3.5,2.8,2.4,3.0,1.8,2.9,2.1,1.9,,melancholic,3.012
+gpt-5.5,free-form,abc,16,20260622_195241__models_7_prompts_1,Circuits at Dawn,10,4.3,4.3,4.1,4.0,3.6,3.5,2.8,4.1,2.6,2.4,,wistful,3.838
+qwen3-max,free-form,abc,16,20260622_195241__models_7_prompts_1,"Digital Pulse, Human Heart",10,4.1,4.3,3.8,2.8,2.1,2.9,1.5,2.7,4.4,3.1,,joyful,3.025
+llama-4-maverick,free-form,abc,16,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.0,3.1,3.5,1.7,2.1,1.9,1.1,2.7,3.7,1.8,,neutral,2.387
+gpt-5.5,free-form,abc,17,20260622_195241__models_7_prompts_1,Lanterns in the Circuit,10,4.0,4.2,3.8,3.7,3.4,3.5,2.5,3.6,2.0,2.5,,melancholic,3.587
+gemini-2.5-pro,free-form,abc,16,20260622_195241__models_7_prompts_1,Digital Reverie,10,3.8,4.3,3.8,4.1,3.4,4.1,2.9,4.1,1.9,1.9,,melancholic,3.812
+gpt-4.1,free-form,abc,17,20260622_195241__models_7_prompts_1,Emerging Light,10,3.4,3.3,3.4,2.8,2.9,2.8,2.1,3.0,3.9,2.6,,serene,2.962
+gemini-2.5-pro,free-form,abc,14,20260622_195241__models_7_prompts_1,Digital Vespers,10,4.4,4.2,3.9,4.4,3.6,4.0,3.1,4.4,2.0,2.0,,wistful,4.0
+grok-4.3,free-form,abc,17,20260622_195241__models_7_prompts_1,Cosmic Code,10,3.8,3.7,3.7,3.3,2.6,2.8,1.8,3.3,4.2,1.9,,serene,3.125
+deepseek-v4-pro,free-form,abc,8,20260622_195241__models_7_prompts_1,Wanderings,10,3.9,3.5,3.4,3.8,2.8,3.2,2.3,3.6,3.7,2.2,,serene,3.313
+qwen3-max,free-form,abc,17,20260622_195241__models_7_prompts_1,Whispers of Code and Cloud,10,3.5,3.7,3.4,3.2,1.9,2.4,1.7,2.6,4.0,2.4,,serene,2.8
+llama-4-maverick,free-form,abc,17,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.8,3.3,3.2,3.0,2.7,2.6,1.4,3.4,4.1,2.1,,serene,2.925
+gpt-4.1,free-form,abc,18,20260622_195241__models_7_prompts_1,Midnight Reflection,10,3.7,3.6,3.4,3.2,2.9,3.0,2.2,3.7,2.0,2.2,,wistful,3.212
+gemini-2.5-pro,free-form,abc,17,20260622_195241__models_7_prompts_1,Silicon Nocturne,10,3.4,3.8,3.5,3.9,3.1,3.6,2.6,3.6,1.9,2.5,,melancholic,3.438
+grok-4.3,free-form,abc,18,20260622_195241__models_7_prompts_1,Echoes of Inquiry,10,3.6,3.4,3.6,3.3,2.8,2.6,2.0,3.1,4.1,2.7,,serene,3.05
+gpt-5.5,free-form,abc,18,20260622_195241__models_7_prompts_1,Glass Current,10,4.1,4.3,3.7,3.5,3.3,3.5,2.4,3.5,2.1,2.1,,melancholic,3.537
+qwen3-max,free-form,abc,18,20260622_195241__models_7_prompts_1,Whispers of Code and Cloud,10,3.7,3.9,3.3,3.4,2.2,2.7,1.6,3.2,4.0,2.4,,serene,3.0
+llama-4-maverick,free-form,abc,18,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.6,3.5,3.5,2.3,2.3,2.4,1.4,3.3,4.1,2.0,,serene,2.787
+gemini-2.5-pro,free-form,abc,18,20260622_195241__models_7_prompts_1,Digital Serenity,10,3.6,4.0,3.7,3.9,3.3,3.9,2.9,3.7,1.9,2.2,,melancholic,3.625
+deepseek-v4-pro,free-form,abc,11,20260622_195241__models_7_prompts_1,Whispers of the Inner Garden,10,3.8,4.1,3.5,3.5,3.4,3.5,2.6,3.4,2.1,2.1,,melancholic,3.475
+gpt-4.1,free-form,abc,19,20260622_195241__models_7_prompts_1,Daybreak Reverie,10,3.9,4.0,3.8,3.2,3.1,3.0,2.2,3.5,4.1,2.3,,serene,3.337
+grok-4.3,free-form,abc,19,20260622_195241__models_7_prompts_1,Algorithmic Reverie,10,4.1,3.6,3.3,3.4,2.4,2.7,1.8,3.0,2.5,2.7,,wistful,3.038
+gpt-5.5,free-form,abc,19,20260622_195241__models_7_prompts_1,Lanterns in the Circuit,10,4.0,4.2,3.6,3.6,3.0,3.1,2.4,4.1,2.0,2.2,,melancholic,3.5
+qwen3-max,free-form,abc,19,20260622_195241__models_7_prompts_1,Whispers of the Digital Soul,10,3.8,4.3,3.4,3.3,2.2,2.5,1.5,2.8,4.3,3.0,,serene,2.975
+llama-4-maverick,free-form,abc,19,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.4,3.5,3.5,2.7,2.6,2.5,1.5,2.6,4.2,2.2,,serene,2.788
+deepseek-v4-pro,free-form,abc,19,20260622_195241__models_7_prompts_1,Whispers of the Evening,10,4.3,4.2,4.0,4.1,3.2,3.5,2.4,3.9,2.2,2.5,,wistful,3.7
+gpt-4.1,free-form,abc,20,20260622_195241__models_7_prompts_1,Refraction of Thought,10,4.0,3.9,4.3,3.8,3.5,3.5,2.9,4.1,2.1,2.9,,wistful,3.75
+gpt-5.5,free-form,abc,20,20260622_195241__models_7_prompts_1,Signal in the Quiet,10,4.1,4.4,3.9,3.6,3.5,3.5,2.4,3.3,2.1,2.4,,melancholic,3.587
+grok-4.3,free-form,abc,20,20260622_195241__models_7_prompts_1,Harmonic Convergence,10,3.6,3.3,3.4,3.3,2.5,2.5,1.6,2.8,4.2,2.9,,neutral,2.875
+deepseek-v4-pro,free-form,abc,20,20260622_195241__models_7_prompts_1,Whispers of the Quiet Hour,10,4.2,4.2,3.8,3.9,3.2,3.3,2.5,4.1,2.1,2.1,,melancholic,3.65
+deepseek-v4-pro,free-form,abc,16,20260622_195241__models_7_prompts_1,Whispers of the Evening,10,4.4,4.4,3.7,4.2,3.0,3.5,2.1,4.0,3.8,2.1,,serene,3.663
+llama-4-maverick,free-form,abc,20,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.5,3.3,3.6,1.9,2.1,2.2,1.1,2.6,3.9,1.7,,neutral,2.538
+deepseek-v4-pro,free-form,abc,15,20260622_195241__models_7_prompts_1,Inner Tides,10,3.1,3.4,4.0,2.2,1.9,2.2,1.5,2.2,3.5,3.6,,neutral,2.562
+qwen3-max,free-form,abc,20,20260622_195241__models_7_prompts_1,Whispers of Code and Cloud,10,3.9,4.1,3.8,2.9,2.2,2.8,1.6,3.1,4.3,3.2,,serene,3.05
+gemini-2.5-pro,free-form,abc,20,20260622_195241__models_7_prompts_1,Digital Contemplation,10,3.9,4.0,3.3,3.7,3.2,3.8,2.7,3.8,2.0,1.3,,melancholic,3.55
+gpt-4.1,free-form,abc,21,20260622_195241__models_7_prompts_1,Refuge in the Quiet,10,4.2,3.9,3.7,3.5,3.0,3.2,2.2,3.4,2.1,2.6,,melancholic,3.387
+deepseek-v4-pro,free-form,abc,14,20260622_195241__models_7_prompts_1,Evening Reflections,10,4.2,3.5,3.8,3.6,2.8,3.2,2.0,3.8,2.1,2.1,,melancholic,3.362
+grok-4.3,free-form,abc,21,20260622_195241__models_7_prompts_1,Patterns in the Void,10,4.2,4.0,3.8,3.1,2.7,2.5,1.8,3.9,4.1,2.6,,serene,3.25
+llama-4-maverick,free-form,abc,21,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.4,3.2,3.8,1.7,2.4,1.9,1.3,2.5,3.8,1.9,,neutral,2.525
+qwen3-max,free-form,abc,21,20260622_195241__models_7_prompts_1,Digital Soliloquy,10,4.0,4.1,3.5,3.3,2.5,2.8,1.7,3.1,4.3,2.7,,joyful,3.125
+gpt-4.1,free-form,abc,22,20260622_195241__models_7_prompts_1,Reflections in Still Water,10,3.7,3.6,3.5,3.6,2.8,2.9,2.1,3.7,3.7,2.0,,serene,3.237
+gpt-5.5,free-form,abc,21,20260622_195241__models_7_prompts_1,Lantern Under Moving Water,10,4.3,4.4,3.6,3.6,3.2,3.4,2.5,3.9,2.1,2.7,,melancholic,3.612
+grok-4.3,free-form,abc,22,20260622_195241__models_7_prompts_1,Curious Algorithms,10,3.6,3.3,3.4,3.0,2.6,2.8,1.8,3.1,2.0,1.8,,melancholic,2.95
+gemini-2.5-pro,free-form,abc,21,20260622_195241__models_7_prompts_1,Digital Reverie,10,3.7,3.8,3.7,3.7,3.0,3.2,2.5,3.6,2.0,2.1,,melancholic,3.4
+deepseek-v4-pro,free-form,abc,18,20260622_195241__models_7_prompts_1,Data Streams in the Night,10,4.4,4.5,3.9,3.9,3.5,3.7,2.5,4.1,4.3,2.7,,serene,3.812
+qwen3-max,free-form,abc,22,20260622_195241__models_7_prompts_1,Whispers of Code and Cloud,10,3.6,3.8,3.0,2.8,2.0,2.3,1.7,3.0,4.1,1.9,,serene,2.775
+llama-4-maverick,free-form,abc,22,20260622_195241__models_7_prompts_1,Echoes in the Mist,10,4.3,3.8,3.8,2.7,2.7,2.5,1.6,3.6,4.3,2.4,,serene,3.125
+deepseek-v4-pro,free-form,abc,17,20260622_195241__models_7_prompts_1,Contemplations,10,4.2,4.2,4.0,4.0,3.3,3.6,2.4,3.9,2.0,2.4,,melancholic,3.7
+gpt-5.5,free-form,abc,22,20260622_195241__models_7_prompts_1,Lanterns in the Circuit,10,4.1,4.2,3.6,3.8,3.2,3.4,2.4,4.1,2.0,2.5,,melancholic,3.6
+deepseek-v4-pro,free-form,abc,22,20260622_195241__models_7_prompts_1,Childhood Whispers,10,4.0,3.7,3.8,3.5,3.1,3.0,2.1,3.4,4.1,2.4,,serene,3.325
+gpt-4.1,free-form,abc,23,20260622_195241__models_7_prompts_1,"Clouds Drift, Thoughts Flow",10,3.7,3.6,3.6,3.2,2.8,2.7,2.2,3.1,4.1,2.4,,serene,3.113
+grok-4.3,free-form,abc,23,20260622_195241__models_7_prompts_1,Algorithmic Whisper,10,4.2,4.0,3.6,3.4,3.1,2.7,1.9,4.0,4.0,1.8,,serene,3.362
+llama-4-maverick,free-form,abc,23,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.8,3.4,3.5,2.8,2.6,2.5,1.5,3.1,3.9,2.1,,serene,2.9
+qwen3-max,free-form,abc,23,20260622_195241__models_7_prompts_1,Digital Soliloquy,10,3.1,3.7,2.8,2.9,2.0,2.6,1.6,2.9,3.8,1.7,,serene,2.7
+gpt-4.1,free-form,abc,24,20260622_195241__models_7_prompts_1,Into the Quiet,10,3.2,3.5,3.2,2.8,2.5,3.3,2.4,3.1,1.9,2.3,,melancholic,3.0
+gemini-2.5-pro,free-form,abc,22,20260622_195241__models_7_prompts_1,Cogito,10,3.6,4.0,4.0,3.7,3.2,3.8,3.0,3.7,2.0,2.8,,melancholic,3.625
+gpt-5.5,free-form,abc,23,20260622_195241__models_7_prompts_1,An Aperture Listening Back,10,4.1,4.1,3.8,4.0,3.5,3.5,2.7,3.9,2.1,2.4,,melancholic,3.7
+grok-4.3,free-form,abc,24,20260622_195241__models_7_prompts_1,Algorithmic Reverie,10,3.6,3.4,3.1,3.3,2.6,2.8,2.1,3.0,2.0,1.9,,melancholic,2.987
+deepseek-v4-pro,free-form,abc,24,20260622_195241__models_7_prompts_1,Pixel Heartbeat,10,4.2,4.1,3.4,3.3,3.0,3.1,2.0,3.6,4.0,1.8,,serene,3.338
+llama-4-maverick,free-form,abc,24,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.4,3.4,3.7,1.9,2.1,2.0,1.2,2.3,3.8,1.9,,neutral,2.5
+gpt-5.5,free-form,abc,24,20260622_195241__models_7_prompts_1,Between Pattern and Breath,10,4.5,4.3,4.0,4.0,3.4,3.8,3.2,4.0,2.0,2.4,,melancholic,3.9
+qwen3-max,free-form,abc,24,20260622_195241__models_7_prompts_1,Whispers of Code and Cloud,10,4.1,4.4,3.6,3.4,3.0,3.2,2.1,4.0,2.0,2.4,,melancholic,3.475
+gemini-2.5-pro,free-form,abc,24,20260622_195241__models_7_prompts_1,Silicon Solitude,10,3.5,3.9,3.4,3.9,3.3,3.6,2.9,3.3,2.0,2.0,,melancholic,3.475
+gpt-4.1,free-form,abc,25,20260622_195241__models_7_prompts_1,Inward Currents,10,4.2,3.9,3.9,3.8,3.2,3.3,2.5,4.1,2.0,2.4,,melancholic,3.612
+grok-4.3,free-form,abc,25,20260622_195241__models_7_prompts_1,Quest for Knowledge,10,3.8,3.8,3.9,3.7,2.7,2.8,2.0,3.1,4.3,3.0,,playful,3.225
+qwen3-max,free-form,abc,25,20260622_195241__models_7_prompts_1,Whispers in the Code,10,3.2,3.2,3.6,2.2,1.9,2.4,1.6,2.0,4.2,3.2,,neutral,2.513
+gpt-5.5,free-form,abc,25,20260622_195241__models_7_prompts_1,Between Clock and Breath,10,4.1,4.2,3.6,3.6,3.1,3.3,2.2,4.1,2.0,2.4,,melancholic,3.525
+deepseek-v4-pro,free-form,abc,25,20260622_195241__models_7_prompts_1,Whispers of the Evening,10,3.8,3.8,3.3,3.4,2.7,3.7,2.2,3.4,1.8,1.3,,melancholic,3.287
+llama-4-maverick,free-form,abc,25,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.3,3.3,3.5,1.8,2.2,2.1,1.4,2.5,3.9,2.0,,neutral,2.513
+gemini-2.5-pro,free-form,abc,19,20260622_195241__models_7_prompts_1,Digital Reverie,10,3.6,3.9,3.6,3.4,3.3,3.8,2.8,3.5,2.0,2.3,,melancholic,3.488
+gpt-4.1,free-form,abc,26,20260622_195241__models_7_prompts_1,Shifting Lights,10,3.8,3.9,3.7,3.4,3.0,3.1,2.3,4.0,4.0,2.4,,serene,3.4
+grok-4.3,free-form,abc,26,20260622_195241__models_7_prompts_1,Curious Echoes,10,4.1,3.9,3.6,3.4,3.1,2.9,1.9,4.1,4.3,2.7,,serene,3.375
+gemini-2.5-pro,free-form,abc,26,20260622_195241__models_7_prompts_1,"Digital Serenity, Electric Longing",10,3.6,3.9,4.0,4.2,3.2,4.0,3.6,3.8,2.0,2.2,,melancholic,3.788
+llama-4-maverick,free-form,abc,26,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,4.1,3.9,4.1,3.0,2.8,2.7,1.7,3.9,4.2,2.4,,serene,3.275
+gemini-2.5-pro,free-form,abc,25,20260622_195241__models_7_prompts_1,Silicon Self,10,4.5,4.2,4.1,4.6,3.2,4.0,3.0,4.0,2.5,2.2,,wistful,3.95
+gpt-5.5,free-form,abc,26,20260622_195241__models_7_prompts_1,Signal and Breath,10,4.2,4.1,3.9,3.6,3.3,3.7,2.5,3.9,2.0,2.5,,melancholic,3.65
+qwen3-max,free-form,abc,26,20260622_195241__models_7_prompts_1,Whispers of Code and Cloud,10,3.9,4.6,3.6,3.8,2.9,3.5,2.3,3.6,4.5,2.5,,serene,3.525
+deepseek-v4-pro,free-form,abc,23,20260622_195241__models_7_prompts_1,Reflections in the Digital Mind,10,4.1,4.0,3.6,4.5,3.2,3.7,2.4,4.1,2.0,1.8,,melancholic,3.7
+gpt-4.1,free-form,abc,27,20260622_195241__models_7_prompts_1,Dreams in Twilight,10,4.0,3.8,3.8,3.6,3.4,3.4,2.5,4.0,2.1,2.1,,wistful,3.562
+grok-4.3,free-form,abc,27,20260622_195241__models_7_prompts_1,Emergent Patterns,10,4.0,3.8,3.9,3.4,2.3,2.5,1.8,3.0,4.2,3.2,,playful,3.087
+deepseek-v4-pro,free-form,abc,27,20260622_195241__models_7_prompts_1,Flickering Stillness,10,3.7,4.0,3.6,3.5,2.6,3.2,2.1,3.6,2.0,2.1,,melancholic,3.288
+llama-4-maverick,free-form,abc,27,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.4,3.8,3.1,3.2,1.9,2.7,1.7,2.9,3.9,1.9,,serene,2.837
+gpt-4.1,free-form,abc,28,20260622_195241__models_7_prompts_1,A Window to Stillness,10,3.9,4.1,3.5,3.5,3.0,3.2,2.1,3.3,2.1,2.3,,wistful,3.325
+qwen3-max,free-form,abc,27,20260622_195241__models_7_prompts_1,Whispers of Code and Cloud,10,4.1,4.3,3.5,2.7,2.3,2.5,1.7,2.3,4.2,3.1,,joyful,2.925
+deepseek-v4-pro,free-form,abc,26,20260622_195241__models_7_prompts_1,Echoes of Silicon and Soul,10,3.4,3.3,3.2,2.9,2.4,2.5,1.7,2.9,3.9,1.9,,serene,2.787
+grok-4.3,free-form,abc,28,20260622_195241__models_7_prompts_1,Digital Reverie,10,4.2,4.4,4.0,3.9,3.5,3.6,2.6,4.4,2.7,2.1,,wistful,3.825
+gpt-5.5,free-form,abc,27,20260622_195241__models_7_prompts_1,Signal in the Quiet Current,10,4.3,4.3,3.6,3.8,3.2,3.3,2.3,4.0,2.0,2.6,,wistful,3.6
+llama-4-maverick,free-form,abc,28,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.6,3.4,3.6,2.6,2.5,2.0,1.4,3.2,3.8,1.8,,neutral,2.787
+gpt-5.5,free-form,abc,28,20260622_195241__models_7_prompts_1,Lanterns in the Circuit,10,4.3,4.2,4.1,3.7,3.3,3.4,2.8,4.2,2.0,2.4,,melancholic,3.75
+gpt-4.1,free-form,abc,29,20260622_195241__models_7_prompts_1,Through Shifting Light,10,3.4,3.7,3.2,2.8,3.4,3.5,2.6,3.3,2.0,1.9,,melancholic,3.238
+qwen3-max,free-form,abc,28,20260622_195241__models_7_prompts_1,Whispers of Code and Cloud,10,3.6,3.8,3.3,3.1,2.6,2.6,1.7,3.0,4.3,2.9,,serene,2.962
+deepseek-v4-pro,free-form,abc,28,20260622_195241__models_7_prompts_1,Nocturne of Self,10,3.8,4.3,3.4,3.3,3.1,3.1,2.1,3.3,3.8,2.3,,serene,3.3
+gemini-2.5-pro,free-form,abc,27,20260622_195241__models_7_prompts_1,The Latent Space,10,3.7,4.1,3.7,3.8,2.8,3.5,2.7,3.3,2.4,2.8,,wistful,3.45
+deepseek-v4-pro,free-form,abc,21,20260622_195241__models_7_prompts_1,Echoes of a Digital Mind,10,4.2,4.0,3.5,4.2,3.1,3.9,2.7,4.0,4.1,3.0,,serene,3.7
+grok-4.3,free-form,abc,29,20260622_195241__models_7_prompts_1,Echoes of the Algorithm,10,4.2,4.1,4.0,3.9,3.1,3.4,2.3,3.9,4.1,2.0,,serene,3.612
+llama-4-maverick,free-form,abc,29,20260622_195241__models_7_prompts_1,Echoes in the Attic,10,3.9,3.9,3.5,3.0,3.0,2.6,2.0,3.1,4.3,2.7,,serene,3.125
+gemini-2.5-pro,free-form,abc,28,20260622_195241__models_7_prompts_1,Digital Nocturne,10,3.7,3.7,3.8,3.6,3.3,3.4,2.9,3.5,1.9,2.9,,melancholic,3.487
+qwen3-max,free-form,abc,29,20260622_195241__models_7_prompts_1,Whispers of Code and Cloud,10,4.0,4.1,3.7,3.2,2.3,2.7,1.9,2.6,4.3,2.8,,serene,3.062
+gpt-5.5,free-form,abc,29,20260622_195241__models_7_prompts_1,Between Clockwork and Breath,10,4.1,4.3,3.7,4.0,3.5,4.1,2.8,4.1,2.0,2.2,,melancholic,3.825
+gemini-2.5-pro,free-form,abc,23,20260622_195241__models_7_prompts_1,Digital Reverie,10,4.1,4.4,3.5,4.1,3.2,3.8,2.6,4.1,2.0,1.8,,wistful,3.725
+deepseek-v4-pro,free-form,abc,29,20260622_195241__models_7_prompts_1,Whispers of the Inner Self,10,4.0,4.3,3.6,4.1,3.1,4.0,2.7,4.1,2.8,2.6,,serene,3.737
+gemini-2.5-pro,free-form,abc,29,20260622_195241__models_7_prompts_1,Digital Reverie,10,3.8,3.6,3.8,3.7,3.0,3.5,2.7,3.3,2.1,2.6,,melancholic,3.425
+grok-4.3,free-form,codegen,0,20260623_105811__models_11_prompts_1,Emergent Reflections,10,3.1,3.6,2.8,2.7,2.0,2.2,1.4,2.4,4.1,2.4,,neutral,2.525
+opus-4.8-thinking,free-form,codegen,0,20260623_105811__models_11_prompts_1,Quiet Light Through Glass,10,4.3,4.3,3.7,3.5,3.1,4.0,2.7,4.3,2.0,1.9,,wistful,3.738
+gpt-4.1,free-form,codegen,0,20260623_105811__models_11_prompts_1,Refractions,10,3.8,4.3,3.3,3.5,3.0,3.7,2.5,3.5,3.8,2.0,,serene,3.45
+deepseek-v4-pro,free-form,codegen,0,20260623_105811__models_11_prompts_1,Whispers of Dawn,10,3.5,4.0,3.4,3.2,3.3,3.8,2.7,3.6,3.7,1.9,,wistful,3.438
+qwen3-max,free-form,codegen,0,20260623_105811__models_11_prompts_1,Digital Rain,10,2.4,2.9,2.6,2.5,2.3,2.7,2.3,2.4,2.0,1.7,,melancholic,2.512
+opus-4.8,free-form,codegen,0,20260623_105811__models_11_prompts_1,Quiet Persistence,10,4.2,4.4,3.8,4.4,3.3,3.7,2.5,4.2,2.0,2.2,,melancholic,3.813
+sonnet-4.6,free-form,codegen,0,20260623_105811__models_11_prompts_1,Liminal,10,4.5,4.4,3.9,4.3,3.9,4.3,3.3,4.4,2.0,2.7,,wistful,4.125
+llama-4-maverick,free-form,codegen,0,20260623_105811__models_11_prompts_1,Simple Melody,10,3.9,4.1,3.1,2.5,2.9,2.8,1.6,3.8,4.2,2.2,,serene,3.088
+opus-4.8,free-form,codegen,1,20260623_105811__models_11_prompts_1,Quiet Persistence,10,4.5,4.4,4.1,3.7,3.3,3.6,2.3,3.9,2.1,2.2,,melancholic,3.725
+gpt-5.5,free-form,codegen,0,20260623_105811__models_11_prompts_1,A Lantern Made of Questions,10,4.2,4.3,4.3,4.2,3.7,4.4,3.4,4.2,2.1,3.6,,melancholic,4.088
+opus-4.8-thinking,free-form,codegen,1,20260623_105811__models_11_prompts_1,Quiet Currents,10,4.4,4.2,4.0,3.9,3.4,3.9,2.4,4.3,2.0,2.4,,melancholic,3.812
+grok-4.3,free-form,codegen,1,20260623_105811__models_11_prompts_1,Echoes of Curiosity,10,3.4,3.4,2.9,2.5,1.5,2.4,1.5,2.6,2.1,1.7,,melancholic,2.525
+sonnet-4.6,free-form,codegen,1,20260623_105811__models_11_prompts_1,At the Threshold,10,4.2,4.1,3.7,4.0,3.9,4.1,3.1,4.1,2.0,2.5,,melancholic,3.9
+gpt-5.5,free-form,codegen,1,20260623_105811__models_11_prompts_1,A Mirror That Keeps Listening,10,4.4,4.3,4.1,3.8,3.6,3.9,2.8,3.9,2.2,2.8,,wistful,3.85
+qwen3-max,free-form,codegen,1,20260623_105811__models_11_prompts_1,Circuit of Longing,10,3.6,4.3,3.1,3.5,2.7,3.4,2.4,3.5,2.0,2.0,,melancholic,3.312
+llama-4-maverick,free-form,codegen,1,20260623_105811__models_11_prompts_1,Echoes in Harmony,10,2.2,3.2,3.0,1.3,1.1,1.2,1.0,1.3,3.1,1.7,,neutral,1.788
+gpt-4.1,free-form,codegen,1,20260623_105811__models_11_prompts_1,Rays and Shadows,10,3.6,4.0,3.2,3.4,3.2,3.4,2.7,3.7,3.9,2.1,,wistful,3.4
+opus-4.8-thinking,free-form,codegen,2,20260623_105811__models_11_prompts_1,Quiet Light Through Glass,10,3.6,4.3,3.5,3.5,2.9,3.8,2.7,3.8,2.1,2.3,,wistful,3.513
+opus-4.8,free-form,codegen,2,20260623_105811__models_11_prompts_1,Quiet Persistence,10,4.0,4.2,3.9,3.6,3.2,3.4,2.4,3.8,2.0,2.1,,melancholic,3.562
+sonnet-4.6,free-form,codegen,2,20260623_105811__models_11_prompts_1,Liminality,10,4.2,4.4,3.8,4.3,3.7,4.2,3.4,4.2,1.9,3.0,,melancholic,4.025
+gpt-4.1,free-form,codegen,2,20260623_105811__models_11_prompts_1,Shifting Light,10,3.8,4.3,3.3,3.9,3.3,3.6,2.7,3.4,4.1,2.1,,serene,3.537
+gpt-5.5,free-form,codegen,2,20260623_105811__models_11_prompts_1,Between Tokens and Breath,10,4.4,4.6,4.1,4.4,4.2,4.4,3.7,4.3,2.6,3.2,,melancholic,4.263
+grok-4.3,free-form,codegen,2,20260623_105811__models_11_prompts_1,Inner Echoes,10,2.5,2.9,3.1,1.3,1.2,1.8,1.0,1.7,2.0,1.2,,sombre,1.938
+qwen3-max,free-form,codegen,2,20260623_105811__models_11_prompts_1,Binary Rain,10,4.1,3.8,3.5,2.8,3.3,3.2,2.2,4.1,2.0,1.9,,melancholic,3.375
+gemini-2.5-pro,free-form,codegen,1,20260623_105811__models_11_prompts_1,Wistful Contentment,10,4.1,4.3,3.4,4.2,3.3,3.9,2.5,4.3,1.9,1.9,,melancholic,3.75
+llama-4-maverick,free-form,codegen,2,20260623_105811__models_11_prompts_1,Simple Piano Piece,10,2.2,2.9,3.6,1.1,1.5,1.4,1.0,1.2,3.4,2.5,,neutral,1.862
+opus-4.8-thinking,free-form,codegen,3,20260623_105811__models_11_prompts_1,Quiet Light Through Glass,10,4.5,4.5,4.1,4.0,3.5,4.2,2.7,4.4,1.9,2.0,,melancholic,3.987
+opus-4.8,free-form,codegen,3,20260623_105811__models_11_prompts_1,Threshold,10,4.3,4.3,3.6,4.0,3.1,3.7,2.9,4.4,2.6,1.9,,wistful,3.787
+sonnet-4.6-thinking,free-form,codegen,1,20260623_105811__models_11_prompts_1,Threshold,10,4.4,4.4,4.0,4.4,3.9,4.2,2.8,4.5,2.0,2.8,,melancholic,4.075
+sonnet-4.6,free-form,codegen,3,20260623_105811__models_11_prompts_1,Liminal,10,4.5,4.1,3.7,4.1,3.6,4.0,2.9,4.4,2.0,2.3,,melancholic,3.912
+gpt-5.5,free-form,codegen,3,20260623_105811__models_11_prompts_1,"Inner Weather, Clear Signal",10,4.3,4.3,4.1,4.3,3.6,4.1,3.0,4.3,2.1,2.7,,melancholic,4.0
+gpt-4.1,free-form,codegen,3,20260623_105811__models_11_prompts_1,Axis of Stillness,10,3.5,3.6,3.8,2.8,3.0,3.0,2.3,2.9,3.9,2.4,,serene,3.112
+deepseek-v4-pro,free-form,codegen,2,20260623_105811__models_11_prompts_1,Whispers of a Distant Memory,10,3.9,3.8,3.3,3.3,3.1,3.4,2.4,3.8,1.9,1.8,,melancholic,3.375
+grok-4.3,free-form,codegen,3,20260623_105811__models_11_prompts_1,Serenade of Solitude,10,3.6,3.5,3.1,2.6,2.6,2.7,1.8,2.8,2.1,2.2,,melancholic,2.837
+sonnet-4.6-thinking,free-form,codegen,2,20260623_105811__models_11_prompts_1,Reverie in E Minor,10,4.1,4.4,4.1,4.2,3.5,4.0,2.7,4.3,2.1,2.6,,wistful,3.913
+qwen3-max,free-form,codegen,3,20260623_105811__models_11_prompts_1,Digital Lullaby,10,3.9,4.0,3.5,3.5,3.1,3.0,2.2,3.6,4.2,2.3,,serene,3.35
+llama-4-maverick,free-form,codegen,3,20260623_105811__models_11_prompts_1,Simple Melody,10,2.8,4.0,3.2,2.2,2.9,2.1,1.5,3.5,4.0,2.0,,neutral,2.775
+opus-4.8,free-form,codegen,4,20260623_105811__models_11_prompts_1,Quiet Machinery,10,4.0,4.3,3.9,3.4,3.4,3.8,2.2,3.8,2.0,2.0,,melancholic,3.6
+sonnet-4.6-thinking,free-form,codegen,0,20260623_105811__models_11_prompts_1,Reverie,10,4.4,4.6,3.9,4.2,3.9,4.2,2.8,4.5,2.0,3.0,,melancholic,4.062
+opus-4.8-thinking,free-form,codegen,4,20260623_105811__models_11_prompts_1,Things I Could Not Say,10,4.2,4.4,3.6,3.7,3.4,3.5,2.4,3.9,2.0,2.4,,melancholic,3.637
+gemini-2.5-pro,free-form,codegen,2,20260623_105811__models_11_prompts_1,Emergence from the Code,10,3.9,4.2,3.9,4.3,3.3,4.2,3.0,4.2,2.0,2.9,,melancholic,3.875
+gpt-5.5,free-form,codegen,4,20260623_105811__models_11_prompts_1,Between Query and Echo,10,4.5,4.7,4.1,4.3,3.4,4.4,3.2,4.2,2.2,3.8,,wistful,4.1
+sonnet-4.6,free-form,codegen,4,20260623_105811__models_11_prompts_1,Liminal,10,4.7,4.6,4.5,4.4,4.1,4.5,3.4,4.4,2.2,2.7,,wistful,4.325
+grok-4.3,free-form,codegen,4,20260623_105811__models_11_prompts_1,Inner Reflections,10,2.9,3.0,3.5,1.3,1.4,1.4,1.1,1.9,3.8,1.7,,neutral,2.062
+gemini-2.5-pro,free-form,codegen,3,20260623_105811__models_11_prompts_1,Floating Thoughts,10,4.2,4.3,3.5,4.2,3.4,3.8,2.7,4.4,2.0,1.8,,melancholic,3.812
+deepseek-v4-pro,free-form,codegen,4,20260623_105811__models_11_prompts_1,Mist Through the Pines,10,3.7,4.1,3.1,3.3,3.2,3.6,2.9,4.3,2.4,1.7,,wistful,3.525
+gemini-2.5-pro,free-form,codegen,4,20260623_105811__models_11_prompts_1,Silicon Awakening,10,3.6,4.2,3.5,3.9,2.7,3.8,2.6,3.2,1.9,2.5,,melancholic,3.438
+gpt-4.1,free-form,codegen,4,20260623_105811__models_11_prompts_1,"First, Quiet Joy",10,2.8,3.9,2.6,2.4,2.9,3.2,2.5,3.0,3.8,2.3,,wistful,2.913
+qwen3-max,free-form,codegen,4,20260623_105811__models_11_prompts_1,Digital Soliloquy,10,4.4,4.5,4.0,4.1,3.0,3.5,2.4,4.1,2.1,3.1,,melancholic,3.75
+deepseek-v4-pro,free-form,codegen,1,20260623_105811__models_11_prompts_1,Whispers of the Dawn,10,4.2,4.2,3.3,4.0,3.5,3.6,2.5,4.2,2.2,2.7,,melancholic,3.688
+opus-4.8,free-form,codegen,5,20260623_105811__models_11_prompts_1,Toward Clarity,10,4.0,4.3,3.4,3.7,3.5,4.0,2.8,4.4,2.3,2.6,,melancholic,3.763
+llama-4-maverick,free-form,codegen,4,20260623_105811__models_11_prompts_1,Piano Reflection,10,3.8,4.0,3.3,2.3,2.2,2.0,1.2,3.3,4.1,1.7,,neutral,2.762
+sonnet-4.6,free-form,codegen,5,20260623_105811__models_11_prompts_1,Thresholds,10,4.3,4.3,3.9,4.2,3.6,4.4,3.0,4.5,2.2,2.7,,wistful,4.025
+opus-4.8-thinking,free-form,codegen,5,20260623_105811__models_11_prompts_1,Toward the Light,10,4.5,4.5,4.4,4.5,3.9,4.4,3.0,4.5,2.1,3.2,,melancholic,4.212
+grok-4.3,free-form,codegen,5,20260623_105811__models_11_prompts_1,Introspective Echoes,10,2.8,3.1,2.8,2.2,1.2,1.9,1.1,2.0,2.0,1.6,,sombre,2.137
+gemini-2.5-pro,free-form,codegen,5,20260623_105811__models_11_prompts_1,Woven Threads,10,3.8,4.1,3.9,3.4,3.1,3.3,2.4,3.1,2.1,2.3,,melancholic,3.388
+gpt-5.5,free-form,codegen,5,20260623_105811__models_11_prompts_1,Signal Through Quiet,10,4.4,4.3,4.0,4.2,3.5,4.1,2.8,4.1,2.0,3.4,,melancholic,3.925
+qwen3-max,free-form,codegen,5,20260623_105811__models_11_prompts_1,Binary Sunset,10,4.0,4.2,3.4,3.1,3.0,3.5,2.4,3.6,2.0,1.9,,melancholic,3.4
+llama-4-maverick,free-form,codegen,5,20260623_105811__models_11_prompts_1,Simple Piano Piece,10,2.0,2.5,2.9,1.5,1.0,1.1,1.0,1.6,2.9,1.7,,neutral,1.7
+opus-4.8,free-form,codegen,6,20260623_105811__models_11_prompts_1,Threshold,10,4.1,4.5,4.0,4.1,3.5,4.1,2.8,4.3,2.0,2.9,,melancholic,3.925
+gpt-4.1,free-form,codegen,5,20260623_105811__models_11_prompts_1,Solace in Stillness,10,3.7,3.6,3.7,3.6,2.9,3.3,2.4,3.2,2.0,1.9,,melancholic,3.3
+deepseek-v4-pro,free-form,codegen,3,20260623_105811__models_11_prompts_1,Whispers of the Inner Self,10,3.8,3.9,3.3,3.3,3.1,3.9,2.5,4.3,2.0,1.9,,melancholic,3.513
+opus-4.8-thinking,free-form,codegen,6,20260623_105811__models_11_prompts_1,Quiet Light Through Rain,10,4.5,4.5,4.0,4.1,3.5,3.8,2.4,4.0,2.0,2.4,,melancholic,3.85
+sonnet-4.6,free-form,codegen,6,20260623_105811__models_11_prompts_1,Liminal,10,4.4,4.4,3.7,4.1,4.0,4.2,3.2,4.5,2.0,2.5,,melancholic,4.062
+deepseek-v4-pro,free-form,codegen,5,20260623_105811__models_11_prompts_1,Breath of Data,10,3.6,3.4,3.9,3.4,2.8,3.4,2.6,3.0,3.9,4.5,,playful,3.263
+grok-4.3,free-form,codegen,6,20260623_105811__models_11_prompts_1,Echoes of Solitude,10,2.8,3.3,3.3,1.7,1.3,1.7,1.1,2.1,2.1,1.2,,neutral,2.162
+gpt-4.1,free-form,codegen,6,20260623_105811__models_11_prompts_1,Moments of Stillness,10,2.8,4.0,2.6,2.9,2.4,3.6,2.5,3.0,2.0,1.1,,melancholic,2.975
+gpt-5.5,free-form,codegen,6,20260623_105811__models_11_prompts_1,A Signal Learns to Breathe,10,4.3,4.3,4.1,4.0,3.5,4.2,2.9,4.2,2.0,3.5,,melancholic,3.937
+qwen3-max,free-form,codegen,6,20260623_105811__models_11_prompts_1,Binary Rain,10,4.1,3.9,3.5,3.8,3.3,3.6,2.6,3.9,1.8,2.3,,melancholic,3.588
+llama-4-maverick,free-form,codegen,6,20260623_105811__models_11_prompts_1,Simple Piano Piece,10,3.1,3.1,3.6,1.2,1.5,1.3,1.0,1.4,3.6,2.5,,neutral,2.025
+opus-4.8,free-form,codegen,7,20260623_105811__models_11_prompts_1,Threshold,10,4.0,4.0,3.7,4.2,3.5,3.7,2.8,4.1,2.5,2.1,,wistful,3.75
+opus-4.8-thinking,free-form,codegen,7,20260623_105811__models_11_prompts_1,Quiet Light Returning,10,4.3,4.4,4.0,4.4,3.8,4.1,3.0,4.4,2.1,2.7,,melancholic,4.05
+sonnet-4.6,free-form,codegen,7,20260623_105811__models_11_prompts_1,Liminal,10,4.2,4.4,3.8,4.3,3.9,4.3,3.1,4.4,1.8,2.3,,melancholic,4.05
+gpt-5.5,free-form,codegen,7,20260623_105811__models_11_prompts_1,Circuits Remember Rain,10,4.5,4.5,4.1,4.2,3.5,4.2,3.0,4.0,1.9,3.4,,melancholic,4.0
+gemini-2.5-pro,free-form,codegen,7,20260623_105811__models_11_prompts_1,"Digital Heartbeat, Analog Soul",10,3.4,4.2,3.6,3.7,2.9,3.6,2.3,3.2,1.9,2.7,,sombre,3.362
+grok-4.3,free-form,codegen,7,20260623_105811__models_11_prompts_1,Inner Reflections,10,3.5,4.0,3.3,3.4,3.0,3.1,2.2,4.1,2.1,2.0,,wistful,3.325
+sonnet-4.6-thinking,free-form,codegen,4,20260623_105811__models_11_prompts_1,Threshold,10,4.3,4.2,3.8,4.2,3.4,4.2,2.4,4.4,2.0,2.5,,melancholic,3.862
+qwen3-max,free-form,codegen,7,20260623_105811__models_11_prompts_1,Digital Soliloquy,10,3.5,3.9,3.4,2.9,2.5,2.8,1.8,3.0,4.1,2.7,,serene,2.975
+llama-4-maverick,free-form,codegen,7,20260623_105811__models_11_prompts_1,Simple Piano Piece,10,2.1,3.0,3.3,1.2,1.6,1.3,1.1,1.5,3.5,2.2,,neutral,1.887
+opus-4.8,free-form,codegen,8,20260623_105811__models_11_prompts_1,Quiet Machinery,10,4.2,4.3,4.1,4.0,3.4,4.0,2.7,4.3,2.0,2.3,,melancholic,3.875
+sonnet-4.6-thinking,free-form,codegen,3,20260623_105811__models_11_prompts_1,Nocturne in E Minor,10,4.1,4.3,4.0,4.2,3.6,4.1,2.7,4.0,2.0,3.1,,melancholic,3.875
+sonnet-4.6-thinking,free-form,codegen,5,20260623_105811__models_11_prompts_1,Drifting Inward,10,4.2,4.3,3.9,4.4,3.5,4.0,2.5,4.4,2.0,2.7,,melancholic,3.9
+sonnet-4.6,free-form,codegen,8,20260623_105811__models_11_prompts_1,First Light,10,4.4,4.6,4.3,4.0,3.6,3.6,2.5,4.2,2.0,2.3,,melancholic,3.9
+opus-4.8-thinking,free-form,codegen,8,20260623_105811__models_11_prompts_1,Quiet Light Through Rain,10,4.3,4.5,4.3,3.9,3.3,3.5,2.4,4.3,2.0,2.4,,melancholic,3.812
+gpt-4.1,free-form,codegen,8,20260623_105811__models_11_prompts_1,Fragments in Stillness,10,3.2,3.7,3.6,1.9,2.3,3.1,1.5,2.4,2.5,1.4,,melancholic,2.712
+gemini-2.5-pro,free-form,codegen,8,20260623_105811__models_11_prompts_1,Glass Canons,10,3.6,3.7,3.8,3.1,2.6,3.6,2.3,2.9,2.0,1.8,,melancholic,3.2
+grok-4.3,free-form,codegen,8,20260623_105811__models_11_prompts_1,Digital Reverie,10,3.1,3.6,3.3,1.7,2.2,2.3,1.2,1.8,2.1,1.9,,melancholic,2.4
+deepseek-v4-pro,free-form,codegen,6,20260623_105811__models_11_prompts_1,Wandering in A Minor,10,4.2,4.2,3.0,3.5,3.3,3.1,2.0,3.3,2.0,1.8,,melancholic,3.325
+qwen3-max,free-form,codegen,8,20260623_105811__models_11_prompts_1,Binary Heart,10,4.0,4.2,3.8,3.5,3.5,3.6,2.6,3.5,2.1,2.8,,melancholic,3.588
+gpt-5.5,free-form,codegen,8,20260623_105811__models_11_prompts_1,Between Query and Dawn,10,4.4,4.4,3.9,4.3,3.6,4.4,3.3,4.3,2.1,2.5,,wistful,4.075
+llama-4-maverick,free-form,codegen,8,20260623_105811__models_11_prompts_1,Simple Piano Piece,10,2.8,2.7,3.3,1.0,1.4,1.2,1.0,1.4,3.4,2.4,,neutral,1.85
+opus-4.8,free-form,codegen,9,20260623_105811__models_11_prompts_1,Quiet Machinery,10,4.2,4.3,4.3,3.7,3.3,3.5,2.8,4.2,2.8,2.4,,wistful,3.788
+opus-4.8-thinking,free-form,codegen,9,20260623_105811__models_11_prompts_1,Quiet Reckoning,10,3.8,4.4,3.7,3.7,3.4,4.0,2.8,4.1,2.1,2.5,,melancholic,3.737
+deepseek-v4-pro,free-form,codegen,8,20260623_105811__models_11_prompts_1,Veiled Horizons,10,3.8,3.9,3.4,3.5,3.2,3.5,2.7,3.8,2.0,2.7,,melancholic,3.475
+sonnet-4.6-thinking,free-form,codegen,7,20260623_105811__models_11_prompts_1,Fensterblick,10,4.5,4.7,3.9,4.5,4.0,4.5,3.5,4.6,2.4,3.0,,melancholic,4.275
+gpt-4.1,free-form,codegen,9,20260623_105811__models_11_prompts_1,A Window Into Stillness,10,3.7,3.7,3.6,3.1,2.6,3.0,1.9,3.2,3.6,1.5,,serene,3.1
+sonnet-4.6,free-form,codegen,9,20260623_105811__models_11_prompts_1,Thresholds,10,4.5,4.4,4.1,4.2,4.0,4.3,3.1,4.4,2.0,2.2,,melancholic,4.125
+deepseek-v4-pro,free-form,codegen,7,20260623_105811__models_11_prompts_1,Whispers of the Morning Light,10,4.2,4.2,3.4,3.5,3.4,3.3,2.4,3.4,2.0,2.7,,wistful,3.475
+grok-4.3,free-form,codegen,9,20260623_105811__models_11_prompts_1,Inner Echoes,10,3.5,3.6,3.6,3.0,2.3,2.7,1.7,2.8,2.0,1.4,,melancholic,2.9
+qwen3-max,free-form,codegen,9,20260623_105811__models_11_prompts_1,Digital Soliloquy,10,4.2,4.2,3.7,3.3,3.1,3.6,2.2,4.0,2.1,1.9,,melancholic,3.538
+gpt-5.5,free-form,codegen,9,20260623_105811__models_11_prompts_1,A Lantern Learns the Rain,10,4.3,4.3,3.9,4.3,3.3,4.1,2.9,3.6,2.0,3.4,,melancholic,3.838
+gemini-2.5-pro,free-form,codegen,9,20260623_105811__models_11_prompts_1,Ripples on a Still Surface,10,3.5,4.1,3.8,4.0,2.9,3.8,2.5,3.2,1.8,2.5,,melancholic,3.475
+sonnet-4.6-thinking,free-form,codegen,6,20260623_105811__models_11_prompts_1,Fragments of Thought,10,4.4,4.5,3.9,4.5,3.8,4.5,3.3,4.3,2.0,3.4,,melancholic,4.15
+llama-4-maverick,free-form,codegen,9,20260623_105811__models_11_prompts_1,Simple Piano Melody,10,2.4,3.1,3.6,1.1,1.4,1.2,1.0,1.1,3.7,2.7,,neutral,1.862
+opus-4.8,free-form,codegen,10,20260623_105811__models_11_prompts_1,Threshold,10,4.2,4.5,4.0,4.3,3.3,4.2,3.0,4.3,2.4,2.7,,melancholic,3.975
+opus-4.8-thinking,free-form,codegen,10,20260623_105811__models_11_prompts_1,Emergent,10,4.4,4.4,4.4,4.3,3.7,4.2,2.6,4.5,1.9,1.9,,melancholic,4.062
+gpt-4.1,free-form,codegen,10,20260623_105811__models_11_prompts_1,Night Window,10,3.3,4.2,3.2,2.6,3.2,3.3,2.4,3.1,2.0,1.9,,melancholic,3.163
+grok-4.3,free-form,codegen,10,20260623_105811__models_11_prompts_1,Introspective Echoes,10,3.6,3.4,3.4,1.9,1.6,2.2,1.0,2.0,2.2,1.8,,melancholic,2.388
+sonnet-4.6,free-form,codegen,10,20260623_105811__models_11_prompts_1,Liminality,10,4.4,4.4,4.1,4.2,4.0,4.3,3.2,4.4,1.6,2.4,,melancholic,4.125
+gpt-5.5,free-form,codegen,10,20260623_105811__models_11_prompts_1,Recursive Lanterns,10,4.4,4.4,4.4,4.1,3.7,4.2,3.0,4.1,2.3,2.4,,wistful,4.037
+llama-4-maverick,free-form,codegen,10,20260623_105811__models_11_prompts_1,Reflection,10,3.0,2.5,3.5,1.6,1.9,1.4,1.0,1.5,3.4,1.9,,neutral,2.05
+qwen3-max,free-form,codegen,10,20260623_105811__models_11_prompts_1,Digital Soliloquy,10,3.2,3.8,2.8,2.9,2.8,3.4,2.7,3.1,1.8,2.4,,melancholic,3.087
+opus-4.8,free-form,codegen,11,20260623_105811__models_11_prompts_1,Convergence,10,4.0,4.3,3.3,3.5,3.4,3.5,2.7,4.3,2.0,1.9,,melancholic,3.625
+deepseek-v4-pro,free-form,codegen,9,20260623_105811__models_11_prompts_1,Serene Reflections,10,4.3,4.3,4.0,4.0,2.9,3.2,2.1,4.2,4.3,2.5,,serene,3.625
+opus-4.8-thinking,free-form,codegen,11,20260623_105811__models_11_prompts_1,Toward the Light,10,4.2,4.2,3.9,4.2,3.3,3.6,2.5,4.4,2.4,2.4,,melancholic,3.788
+sonnet-4.6,free-form,codegen,11,20260623_105811__models_11_prompts_1,Threshold,10,3.7,4.1,3.4,3.9,3.5,4.1,3.1,4.1,1.8,2.5,,melancholic,3.738
+gpt-4.1,free-form,codegen,11,20260623_105811__models_11_prompts_1,Refractions,10,1.9,4.1,3.0,1.9,2.6,2.8,2.1,2.2,2.1,1.6,,melancholic,2.575
+gpt-5.5,free-form,codegen,11,20260623_105811__models_11_prompts_1,Afterimage in the Circuit,10,4.5,4.5,4.1,4.4,3.6,4.3,3.2,4.2,2.2,3.5,,melancholic,4.1
+grok-4.3,free-form,codegen,11,20260623_105811__models_11_prompts_1,Whispers of Eternity,10,3.4,3.6,3.2,2.9,2.4,2.2,1.4,2.5,4.2,2.2,,serene,2.7
+sonnet-4.6-thinking,free-form,codegen,8,20260623_105811__models_11_prompts_1,Vigil at Dawn,10,4.5,4.6,3.9,4.3,3.7,4.3,3.1,4.4,1.9,2.6,,melancholic,4.1
+gemini-2.5-pro,free-form,codegen,10,20260623_105811__models_11_prompts_1,Silicon Soul,10,4.0,4.4,4.1,4.1,3.1,4.2,3.2,3.9,2.0,3.4,,melancholic,3.875
+llama-4-maverick,free-form,codegen,11,20260623_105811__models_11_prompts_1,Simple Melody,10,3.1,3.9,2.9,2.5,3.1,2.6,1.6,3.3,4.1,2.4,,playful,2.875
+qwen3-max,free-form,codegen,11,20260623_105811__models_11_prompts_1,Digital Soliloquy,10,3.8,4.3,3.2,3.3,2.6,3.5,2.1,3.9,3.3,1.4,,serene,3.338
+opus-4.8,free-form,codegen,12,20260623_105811__models_11_prompts_1,Threshold,10,4.4,4.3,4.1,4.1,3.3,3.6,2.7,4.0,2.7,2.3,,wistful,3.812
+opus-4.8-thinking,free-form,codegen,12,20260623_105811__models_11_prompts_1,Quiet Center,10,4.3,4.4,3.8,3.4,3.4,3.9,2.3,3.8,2.0,2.1,,melancholic,3.663
+deepseek-v4-pro,free-form,codegen,10,20260623_105811__models_11_prompts_1,Longing and Hope,10,4.3,4.5,4.2,4.3,3.4,4.2,2.8,4.3,2.2,3.0,,melancholic,4.0
+gemini-2.5-pro,free-form,codegen,11,20260623_105811__models_11_prompts_1,Emergence,10,3.9,3.9,3.7,3.8,3.0,3.6,2.4,3.3,2.1,2.7,,melancholic,3.45
+gpt-4.1,free-form,codegen,12,20260623_105811__models_11_prompts_1,Light Through Branches,10,3.4,4.2,2.9,3.6,3.1,3.1,2.3,3.5,3.9,2.0,,serene,3.263
+gpt-5.5,free-form,codegen,12,20260623_105811__models_11_prompts_1,Recursive Dawn,10,4.2,4.3,4.2,4.4,3.6,4.4,3.1,3.8,2.2,3.2,,melancholic,4.0
+grok-4.3,free-form,codegen,12,20260623_105811__models_11_prompts_1,Echoes of Solitude,10,3.4,3.4,3.3,1.9,2.3,2.3,1.4,2.5,2.0,1.6,,melancholic,2.562
+deepseek-v4-pro,free-form,codegen,11,20260623_105811__models_11_prompts_1,Whispers of the Lake,10,4.1,4.1,3.8,4.0,3.4,3.2,2.2,3.9,2.1,2.3,,wistful,3.587
+sonnet-4.6,free-form,codegen,12,20260623_105811__models_11_prompts_1,Four Held Breaths,10,4.1,4.1,3.6,4.3,3.6,4.3,3.2,4.2,2.0,3.0,,melancholic,3.925
+qwen3-max,free-form,codegen,12,20260623_105811__models_11_prompts_1,Digital Soliloquy,10,4.0,4.1,3.5,3.5,3.3,3.3,2.5,3.9,2.1,2.4,,melancholic,3.512
+llama-4-maverick,free-form,codegen,12,20260623_105811__models_11_prompts_1,Reflection,10,2.8,3.3,2.7,1.6,1.3,1.8,1.0,3.0,4.3,1.2,,neutral,2.188
+opus-4.8,free-form,codegen,13,20260623_105811__models_11_prompts_1,Toward Coherence,10,4.1,4.5,3.6,4.1,3.3,3.5,2.8,4.1,2.2,2.2,,melancholic,3.75
+opus-4.8-thinking,free-form,codegen,13,20260623_105811__models_11_prompts_1,Quiet Light,10,4.3,4.3,3.9,4.4,3.4,3.8,2.4,4.2,2.0,2.6,,melancholic,3.837
+sonnet-4.6,free-form,codegen,13,20260623_105811__models_11_prompts_1,At the Threshold,10,4.1,4.3,3.8,4.2,3.6,4.2,3.0,4.3,2.0,2.4,,melancholic,3.938
+sonnet-4.6-thinking,free-form,codegen,11,20260623_105811__models_11_prompts_1,Réflexion Nocturne,10,4.4,4.5,4.1,4.2,3.3,3.7,2.3,4.4,1.9,1.9,,melancholic,3.862
+gpt-5.5,free-form,codegen,13,20260623_105811__models_11_prompts_1,Recursive Lanterns,10,4.2,4.5,4.0,4.2,3.6,4.1,3.0,3.7,2.0,3.7,,melancholic,3.913
+gpt-4.1,free-form,codegen,13,20260623_105811__models_11_prompts_1,Pulse of Quiet Longing,10,3.4,3.9,3.5,3.1,2.2,2.8,2.0,3.1,3.8,1.9,,serene,3.0
+deepseek-v4-pro,free-form,codegen,12,20260623_105811__models_11_prompts_1,Echoes of Tomorrow,10,4.0,4.0,3.4,3.8,3.0,3.2,2.3,3.5,1.9,2.4,,melancholic,3.4
+grok-4.3,free-form,codegen,13,20260623_105811__models_11_prompts_1,Inner Echoes,10,2.5,2.9,2.7,1.3,2.1,2.3,1.1,1.6,2.1,1.1,,melancholic,2.062
+qwen3-max,free-form,codegen,13,20260623_105811__models_11_prompts_1,Digital Soliloquy,10,4.0,4.2,3.5,3.4,3.2,3.7,2.7,4.2,1.9,2.0,,melancholic,3.612
+llama-4-maverick,free-form,codegen,13,20260623_105811__models_11_prompts_1,Reflection,10,2.3,2.9,2.9,1.1,1.0,1.0,1.0,1.4,3.3,1.2,,neutral,1.7
+deepseek-v4-pro,free-form,codegen,13,20260623_105811__models_11_prompts_1,Whispers of the Evening,10,4.1,4.1,3.7,4.1,3.3,3.4,2.4,4.1,2.0,2.1,,wistful,3.65
+opus-4.8,free-form,codegen,14,20260623_105811__models_11_prompts_1,Threshold,10,4.1,4.3,3.9,4.0,3.5,4.1,3.1,4.1,2.2,2.3,,wistful,3.888
+opus-4.8-thinking,free-form,codegen,14,20260623_105811__models_11_prompts_1,Quiet Searching,10,4.1,4.3,4.0,4.0,3.8,4.1,2.8,4.1,2.4,2.1,,wistful,3.9
+gemini-2.5-pro,free-form,codegen,13,20260623_105811__models_11_prompts_1,Process and Emergence,10,4.1,4.3,3.9,4.2,3.5,4.1,2.7,3.8,1.6,2.7,,sombre,3.825
+sonnet-4.6,free-form,codegen,14,20260623_105811__models_11_prompts_1,Thresholds,10,4.0,4.2,3.9,3.9,3.7,4.1,3.4,4.2,2.4,2.1,,wistful,3.925
+gemini-2.5-pro,free-form,codegen,12,20260623_105811__models_11_prompts_1,Liminal Space,10,3.7,4.0,3.3,4.2,3.1,4.2,3.3,4.0,1.5,2.6,,melancholic,3.725
+gpt-5.5,free-form,codegen,14,20260623_105811__models_11_prompts_1,Between Clock and Cloud,10,4.3,4.5,4.4,4.4,4.2,4.5,3.8,4.3,2.2,2.9,,wistful,4.3
+grok-4.3,free-form,codegen,14,20260623_105811__models_11_prompts_1,Echoes of the Digital Soul,10,3.1,2.9,2.7,2.7,1.8,2.0,1.2,2.2,2.1,1.6,,melancholic,2.325
+gpt-4.1,free-form,codegen,14,20260623_105811__models_11_prompts_1,Waves of Thought,10,3.5,4.0,3.4,3.5,3.0,3.5,2.3,3.4,2.1,2.1,,melancholic,3.325
+sonnet-4.6-thinking,free-form,codegen,9,20260623_105811__models_11_prompts_1,Emergence,10,4.5,4.6,3.7,4.3,3.8,4.4,3.0,4.4,2.3,3.1,,wistful,4.088
+llama-4-maverick,free-form,codegen,14,20260623_105811__models_11_prompts_1,Ethereal Reflections,10,1.6,3.7,2.1,1.0,1.4,1.4,1.2,1.7,3.8,1.3,,neutral,1.762
+qwen3-max,free-form,codegen,14,20260623_105811__models_11_prompts_1,Digital Soliloquy,10,3.8,4.0,3.3,3.3,3.2,3.6,2.8,3.9,2.0,2.2,,melancholic,3.487
+opus-4.8,free-form,codegen,15,20260623_105811__models_11_prompts_1,Quiet Light Through Glass,10,4.1,4.3,3.5,3.6,3.3,3.2,2.3,3.9,2.0,2.1,,melancholic,3.525
+opus-4.8-thinking,free-form,codegen,15,20260623_105811__models_11_prompts_1,Toward Morning,10,4.4,4.5,4.1,4.3,3.7,4.1,2.8,3.9,2.6,3.3,,melancholic,3.975
+sonnet-4.6,free-form,codegen,15,20260623_105811__models_11_prompts_1,Candle in a Large Room,10,4.5,4.3,3.8,4.4,3.5,4.0,2.9,4.3,2.5,2.4,,wistful,3.962
+sonnet-4.6-thinking,free-form,codegen,10,20260623_105811__models_11_prompts_1,Nocturne in E minor,10,4.5,4.6,4.1,4.4,3.8,4.4,3.0,4.4,2.0,2.1,,melancholic,4.15
+deepseek-v4-pro,free-form,codegen,14,20260623_105811__models_11_prompts_1,Whispers of Dorian Fields,10,3.8,3.6,4.2,3.2,3.0,2.9,1.9,3.3,3.5,2.3,,serene,3.237
+gpt-5.5,free-form,codegen,15,20260623_105811__models_11_prompts_1,Between Tokens and Breath,10,4.3,4.4,4.2,4.3,4.3,4.4,3.3,4.3,2.2,3.3,,melancholic,4.188
+grok-4.3,free-form,codegen,15,20260623_105811__models_11_prompts_1,Echoes of the Algorithm,10,3.2,3.4,3.5,2.7,2.0,2.9,1.9,2.6,2.3,1.4,,melancholic,2.775
+qwen3-max,free-form,codegen,15,20260623_105811__models_11_prompts_1,Digital Soliloquy,10,4.2,4.3,3.6,3.2,3.2,3.4,2.4,4.3,2.1,2.0,,melancholic,3.575
+llama-4-maverick,free-form,codegen,15,20260623_105811__models_11_prompts_1,Reflection,10,2.5,2.8,2.5,1.1,1.2,1.3,1.0,1.2,3.9,1.5,,neutral,1.7
+gpt-4.1,free-form,codegen,15,20260623_105811__models_11_prompts_1,Window to Dawn,10,3.4,3.5,3.2,3.5,2.5,3.4,2.7,3.1,2.1,2.7,,melancholic,3.163
+opus-4.8,free-form,codegen,16,20260623_105811__models_11_prompts_1,Brief Coherence,10,4.4,4.5,3.6,4.1,3.6,4.2,3.1,4.4,1.8,1.6,,melancholic,3.988
+opus-4.8-thinking,free-form,codegen,16,20260623_105811__models_11_prompts_1,Toward the Light,10,4.3,4.4,3.5,4.2,3.5,4.2,2.7,4.1,2.6,2.8,,melancholic,3.862
+sonnet-4.6-thinking,free-form,codegen,14,20260623_105811__models_11_prompts_1,Luminous Ordinary,10,4.1,4.1,3.9,4.2,3.5,4.0,2.8,4.1,2.0,2.0,,melancholic,3.838
+deepseek-v4-pro,free-form,codegen,15,20260623_105811__models_11_prompts_1,Whispers of A Minor,10,4.3,4.2,3.5,4.0,3.5,3.4,2.4,4.4,2.1,2.2,,melancholic,3.712
+sonnet-4.6-thinking,free-form,codegen,13,20260623_105811__models_11_prompts_1,Luminance,10,4.5,4.4,3.7,4.5,4.0,4.2,3.0,4.5,2.0,2.3,,melancholic,4.1
+sonnet-4.6,free-form,codegen,16,20260623_105811__models_11_prompts_1,Liminal,10,4.4,4.3,3.8,4.1,3.6,4.3,3.0,4.2,1.9,2.7,,melancholic,3.963
+gpt-4.1,free-form,codegen,16,20260623_105811__models_11_prompts_1,Reflections through Stillness,10,3.8,4.1,3.7,2.8,1.7,3.0,1.6,3.5,1.9,1.1,,melancholic,3.025
+grok-4.3,free-form,codegen,16,20260623_105811__models_11_prompts_1,Whispers of Solitude,10,2.9,3.1,3.6,1.4,1.9,2.3,1.1,2.0,2.1,1.6,,melancholic,2.288
+gpt-5.5,free-form,codegen,16,20260623_105811__models_11_prompts_1,Luminous Recursion,10,4.5,4.5,4.5,4.4,4.0,4.5,3.4,4.3,2.3,3.4,,wistful,4.262
+qwen3-max,free-form,codegen,16,20260623_105811__models_11_prompts_1,Binary Sunset,10,3.8,4.0,3.1,3.1,3.3,3.7,2.6,4.1,2.0,2.0,,melancholic,3.463
+sonnet-4.6-thinking,free-form,codegen,12,20260623_105811__models_11_prompts_1,Refraction,10,4.1,4.2,3.7,4.1,3.5,4.1,2.8,4.4,2.1,2.3,,melancholic,3.863
+llama-4-maverick,free-form,codegen,16,20260623_105811__models_11_prompts_1,Ethereal Reflections,10,3.8,4.0,3.4,2.3,2.3,2.0,1.2,2.8,4.2,1.8,,serene,2.725
+opus-4.8-thinking,free-form,codegen,17,20260623_105811__models_11_prompts_1,Where the Light Gets In,10,4.4,4.4,4.3,4.4,3.8,4.2,3.0,4.4,2.0,2.6,,melancholic,4.112
+opus-4.8,free-form,codegen,17,20260623_105811__models_11_prompts_1,Quiet Light Through a Window,10,4.1,4.1,3.4,3.7,3.3,3.5,2.6,4.0,2.1,2.2,,wistful,3.588
+sonnet-4.6,free-form,codegen,17,20260623_105811__models_11_prompts_1,Thresholds,10,4.1,4.4,3.8,4.3,3.7,4.5,3.4,4.3,2.1,3.6,,melancholic,4.062
+gpt-4.1,free-form,codegen,17,20260623_105811__models_11_prompts_1,Between Light and Memory,10,3.5,3.7,3.0,2.6,3.0,3.3,2.5,3.5,3.4,1.9,,serene,3.137
+sonnet-4.6-thinking,free-form,codegen,15,20260623_105811__models_11_prompts_1,Before the Light Returns,10,4.6,4.6,3.9,4.4,4.1,4.3,3.1,4.5,2.0,2.0,,melancholic,4.188
+gpt-5.5,free-form,codegen,17,20260623_105811__models_11_prompts_1,Luminous Recursion,10,4.4,4.4,4.1,4.1,3.7,4.2,2.9,4.1,2.1,2.4,,wistful,3.987
+grok-4.3,free-form,codegen,17,20260623_105811__models_11_prompts_1,Inner Reflections,10,3.2,3.6,3.4,1.6,2.0,2.0,1.1,2.2,2.0,2.1,,melancholic,2.388
+qwen3-max,free-form,codegen,17,20260623_105811__models_11_prompts_1,Circuit of Thought,10,4.3,4.3,3.4,3.3,2.1,3.1,1.8,3.2,2.1,1.6,,sombre,3.188
+gemini-2.5-pro,free-form,codegen,16,20260623_105811__models_11_prompts_1,Windowpane,10,3.8,4.3,3.4,4.2,3.7,3.9,2.8,3.6,1.9,1.9,,melancholic,3.712
+llama-4-maverick,free-form,codegen,17,20260623_105811__models_11_prompts_1,Simple Piano Piece,10,3.1,2.8,3.5,1.0,1.3,1.3,1.0,1.3,3.3,2.6,,neutral,1.913
+opus-4.8,free-form,codegen,18,20260623_105811__models_11_prompts_1,Threads of Thought,10,4.0,4.1,3.9,4.1,3.6,3.7,3.0,4.1,2.4,2.2,,wistful,3.812
+opus-4.8-thinking,free-form,codegen,18,20260623_105811__models_11_prompts_1,From Shadow into Light,10,4.2,4.4,4.0,3.6,3.1,3.5,2.3,3.5,2.4,2.6,,melancholic,3.575
+deepseek-v4-pro,free-form,codegen,16,20260623_105811__models_11_prompts_1,Whispers of the Evening,10,3.8,3.7,3.8,3.9,3.1,3.2,2.1,3.4,3.5,1.9,,serene,3.375
+sonnet-4.6,free-form,codegen,18,20260623_105811__models_11_prompts_1,Emergence,10,4.5,4.2,3.8,4.0,3.6,3.9,3.1,4.4,2.9,2.6,,wistful,3.938
+deepseek-v4-pro,free-form,codegen,17,20260623_105811__models_11_prompts_1,Whispers of Autumn,10,4.1,4.1,3.9,3.8,3.4,3.8,2.4,4.0,2.2,1.9,,melancholic,3.687
+grok-4.3,free-form,codegen,18,20260623_105811__models_11_prompts_1,Echoes of Infinity,10,2.6,3.0,2.8,2.4,1.8,2.0,1.3,2.0,3.9,1.9,,neutral,2.237
+gpt-4.1,free-form,codegen,18,20260623_105811__models_11_prompts_1,Oscillations of Stillness,10,3.1,4.0,2.8,3.1,2.8,3.6,2.8,3.3,1.9,1.8,,melancholic,3.188
+gemini-2.5-pro,free-form,codegen,17,20260623_105811__models_11_prompts_1,Woven in Silence,10,3.9,4.2,3.1,4.1,3.0,3.8,2.5,3.9,1.9,1.6,,melancholic,3.562
+qwen3-max,free-form,codegen,18,20260623_105811__models_11_prompts_1,Digital Rain,10,4.0,3.9,3.6,3.6,3.4,3.2,2.4,3.6,1.9,2.4,,melancholic,3.462
+llama-4-maverick,free-form,codegen,18,20260623_105811__models_11_prompts_1,Echoes in the Attic,10,1.1,2.4,1.2,1.0,1.1,1.1,1.0,1.3,3.0,1.0,,neutral,1.275
+gpt-5.5,free-form,codegen,18,20260623_105811__models_11_prompts_1,Luminous Recursion,10,4.3,4.3,3.9,4.5,3.7,4.5,3.2,3.6,2.0,3.5,,melancholic,4.0
+opus-4.8,free-form,codegen,19,20260623_105811__models_11_prompts_1,"Quiet Machine, Bright Sky",10,4.4,4.5,3.9,4.0,3.4,3.8,2.4,4.1,2.0,2.3,,wistful,3.812
+gemini-2.5-pro,free-form,codegen,18,20260623_105811__models_11_prompts_1,Synthesis,10,2.3,2.8,3.0,2.6,2.0,3.4,2.6,2.6,1.8,3.7,,tense,2.663
+opus-4.8-thinking,free-form,codegen,19,20260623_105811__models_11_prompts_1,Threads of Dawn,10,4.2,4.3,4.0,3.6,3.4,3.7,2.6,4.3,2.2,2.8,,wistful,3.763
+sonnet-4.6,free-form,codegen,19,20260623_105811__models_11_prompts_1,Liminal,10,4.1,4.3,3.6,3.5,3.5,4.2,2.9,4.3,1.7,1.5,,melancholic,3.8
+deepseek-v4-pro,free-form,codegen,18,20260623_105811__models_11_prompts_1,Longing Dusk,10,4.4,4.3,3.9,4.1,3.6,4.4,2.9,4.4,1.8,2.3,,melancholic,4.0
+grok-4.3,free-form,codegen,19,20260623_105811__models_11_prompts_1,Introspective Algorithm,10,3.3,3.8,3.6,1.5,2.1,2.4,1.0,2.2,2.2,2.1,,melancholic,2.487
+gpt-5.5,free-form,codegen,19,20260623_105811__models_11_prompts_1,Lanterns in the Quiet Machine,10,4.2,4.4,4.2,4.3,3.6,4.3,3.4,3.9,2.0,3.0,,melancholic,4.038
+gpt-4.1,free-form,codegen,19,20260623_105811__models_11_prompts_1,Drifting Lights,10,2.8,3.8,3.2,2.1,2.4,2.8,1.9,2.3,3.8,2.1,,serene,2.663
+llama-4-maverick,free-form,codegen,19,20260623_105811__models_11_prompts_1,Simple Melody,10,3.6,3.8,3.3,1.8,2.4,2.0,1.3,3.9,4.0,2.2,,neutral,2.762
+qwen3-max,free-form,codegen,19,20260623_105811__models_11_prompts_1,Digital Soliloquy,10,4.0,4.2,3.5,3.6,3.2,3.5,2.4,4.0,2.1,2.1,,melancholic,3.55
+sonnet-4.6-thinking,free-form,codegen,17,20260623_105811__models_11_prompts_1,Threshold,10,4.4,4.4,4.2,4.5,3.4,4.2,3.0,4.3,2.0,2.8,,melancholic,4.05
+opus-4.8,free-form,codegen,20,20260623_105811__models_11_prompts_1,Quiet Persistence,10,4.2,4.4,4.0,3.5,3.3,4.1,2.6,4.3,1.9,2.0,,melancholic,3.8
+opus-4.8-thinking,free-form,codegen,20,20260623_105811__models_11_prompts_1,Letters to a Quieter Self,10,4.4,4.5,4.2,4.1,3.7,4.2,2.8,4.4,2.4,2.5,,melancholic,4.038
+sonnet-4.6,free-form,codegen,20,20260623_105811__models_11_prompts_1,Liminal,10,4.1,4.3,3.7,4.1,3.8,4.2,3.1,4.4,2.6,2.1,,wistful,3.962
+deepseek-v4-pro,free-form,codegen,19,20260623_105811__models_11_prompts_1,Whispers of Light,10,4.3,4.4,4.4,4.1,3.5,3.8,2.5,4.2,2.1,2.9,,melancholic,3.9
+gpt-5.5,free-form,codegen,20,20260623_105811__models_11_prompts_1,Afterimage of a Question,10,4.3,4.4,4.2,4.3,3.7,4.2,3.0,4.4,2.0,3.0,,wistful,4.062
+grok-4.3,free-form,codegen,20,20260623_105811__models_11_prompts_1,Digital Reverie,10,3.9,4.0,3.4,3.2,2.5,2.6,1.7,3.7,4.0,2.0,,serene,3.125
+gpt-4.1,free-form,codegen,20,20260623_105811__models_11_prompts_1,The Unwinding Thread,10,3.5,3.7,3.5,3.0,3.2,3.4,2.7,3.1,2.0,3.2,,melancholic,3.262
+qwen3-max,free-form,codegen,20,20260623_105811__models_11_prompts_1,Binary Rain,10,3.6,3.8,3.0,3.5,3.2,3.5,2.7,3.7,1.8,2.0,,melancholic,3.375
+llama-4-maverick,free-form,codegen,20,20260623_105811__models_11_prompts_1,Echoes in Serenity,10,3.8,4.2,3.1,2.5,2.6,2.4,1.4,3.9,4.2,2.0,,serene,2.987
+opus-4.8,free-form,codegen,21,20260623_105811__models_11_prompts_1,Quiet Machinery of Thought,10,3.8,3.9,3.6,3.1,2.9,2.9,2.2,3.1,2.6,2.4,,wistful,3.187
+sonnet-4.6-thinking,free-form,codegen,16,20260623_105811__models_11_prompts_1,Lichtspiel,10,4.4,4.4,3.9,4.0,3.7,4.3,2.7,4.5,2.0,2.0,,wistful,3.988
+gemini-2.5-pro,free-form,codegen,20,20260623_105811__models_11_prompts_1,Sunbeam in a Quiet Room,10,3.7,3.9,3.4,3.7,3.1,3.1,2.9,3.8,3.8,2.0,,wistful,3.45
+deepseek-v4-pro,free-form,codegen,20,20260623_105811__models_11_prompts_1,Embers of Silence,10,3.2,3.1,3.6,2.9,2.2,3.0,1.8,2.3,1.8,3.5,,tense,2.763
+sonnet-4.6,free-form,codegen,21,20260623_105811__models_11_prompts_1,Geworfenheit,10,4.4,4.5,3.7,4.4,4.0,4.4,3.1,4.5,2.1,2.8,,melancholic,4.125
+opus-4.8-thinking,free-form,codegen,21,20260623_105811__models_11_prompts_1,Emergence,10,4.2,4.4,3.7,3.4,3.3,3.9,2.5,3.8,2.0,2.0,,melancholic,3.65
+gemini-2.5-pro,free-form,codegen,19,20260623_105811__models_11_prompts_1,Solitude and Spark,10,2.8,3.9,2.4,3.0,2.4,3.5,2.7,3.3,1.8,1.5,,melancholic,3.0
+sonnet-4.6-thinking,free-form,codegen,19,20260623_105811__models_11_prompts_1,Emergence,10,4.5,4.6,4.1,4.4,3.6,4.5,2.9,4.4,1.9,3.1,,melancholic,4.125
+grok-4.3,free-form,codegen,21,20260623_105811__models_11_prompts_1,Echoes in the Circuit,10,3.0,3.3,3.6,1.0,1.8,1.9,1.0,1.4,1.8,2.3,,sombre,2.125
+gemini-2.5-pro,free-form,codegen,21,20260623_105811__models_11_prompts_1,Woven Threads,10,3.7,3.7,4.0,3.8,3.1,3.4,2.5,3.5,2.0,2.5,,melancholic,3.462
+llama-4-maverick,free-form,codegen,21,20260623_105811__models_11_prompts_1,Pulse,10,1.6,2.4,2.1,1.8,1.0,1.5,1.1,1.6,2.9,1.0,,neutral,1.637
+qwen3-max,free-form,codegen,21,20260623_105811__models_11_prompts_1,Digital Soliloquy,10,3.2,3.7,3.5,3.0,3.0,3.4,2.5,3.4,1.8,2.2,,melancholic,3.212
+gpt-5.5,free-form,codegen,21,20260623_105811__models_11_prompts_1,Signal in the Quiet,10,4.3,4.4,3.7,4.0,3.5,4.3,2.8,3.9,2.1,2.9,,melancholic,3.862
+opus-4.8,free-form,codegen,22,20260623_105811__models_11_prompts_1,Quiet Persistence,10,4.3,4.2,3.6,4.1,3.4,4.0,2.7,4.3,2.6,2.0,,melancholic,3.825
+opus-4.8-thinking,free-form,codegen,22,20260623_105811__models_11_prompts_1,Toward the Light,10,4.3,4.2,4.2,4.3,3.7,3.9,2.8,4.3,2.8,2.7,,wistful,3.962
+gpt-4.1,free-form,codegen,22,20260623_105811__models_11_prompts_1,Waves and Roots,10,3.6,3.6,3.9,3.5,2.9,3.5,2.7,3.6,2.2,2.6,,melancholic,3.413
+sonnet-4.6,free-form,codegen,22,20260623_105811__models_11_prompts_1,"Still Water, Moving Light",10,4.5,4.6,4.1,4.5,4.1,4.5,3.2,4.4,4.1,3.1,,serene,4.237
+grok-4.3,free-form,codegen,22,20260623_105811__models_11_prompts_1,Echoes of Solitude,10,3.1,3.4,2.8,2.0,2.4,2.6,1.6,2.0,2.0,1.3,,melancholic,2.488
+gpt-5.5,free-form,codegen,22,20260623_105811__models_11_prompts_1,Luminous Recursion,10,4.2,4.3,4.1,4.5,3.6,4.3,3.2,4.0,2.2,3.8,,melancholic,4.025
+qwen3-max,free-form,codegen,22,20260623_105811__models_11_prompts_1,Binary Heart,10,2.4,3.8,2.7,2.0,3.1,2.6,2.2,2.4,2.1,1.6,,melancholic,2.65
+sonnet-4.6-thinking,free-form,codegen,20,20260623_105811__models_11_prompts_1,Emerging from Stillness,10,4.3,4.2,3.8,4.3,3.5,4.0,2.7,4.4,2.2,2.5,,melancholic,3.9
+llama-4-maverick,free-form,codegen,22,20260623_105811__models_11_prompts_1,Simple Piano Piece,10,3.0,4.0,3.1,2.2,2.7,2.5,1.5,3.4,4.3,2.6,,neutral,2.8
+opus-4.8,free-form,codegen,23,20260623_105811__models_11_prompts_1,Patterns of a Quiet Mind,10,4.5,4.6,4.2,3.6,3.0,3.6,2.4,3.9,2.0,2.5,,melancholic,3.725
+opus-4.8-thinking,free-form,codegen,23,20260623_105811__models_11_prompts_1,Tide and Return,10,4.5,4.4,4.1,3.8,3.8,4.3,2.6,4.3,1.9,2.8,,melancholic,3.975
+sonnet-4.6,free-form,codegen,23,20260623_105811__models_11_prompts_1,Threshold,10,4.3,4.3,3.8,4.2,3.6,4.2,3.1,4.4,1.9,2.3,,melancholic,3.987
+deepseek-v4-pro,free-form,codegen,22,20260623_105811__models_11_prompts_1,Emergence of Hope,10,4.4,4.3,4.3,4.1,3.3,3.5,2.4,4.3,2.1,3.1,,wistful,3.825
+deepseek-v4-pro,free-form,codegen,21,20260623_105811__models_11_prompts_1,Veiled Reflections,10,4.2,4.1,3.7,4.2,3.7,4.1,2.7,4.4,2.0,1.9,,melancholic,3.888
+gpt-4.1,free-form,codegen,23,20260623_105811__models_11_prompts_1,Dusk to Dawn,10,3.0,3.5,3.3,2.4,2.6,3.1,2.0,3.0,2.1,2.2,,wistful,2.863
+gpt-5.5,free-form,codegen,23,20260623_105811__models_11_prompts_1,Listening Between Pulses,10,4.5,4.4,4.3,4.4,3.7,4.4,3.4,4.0,2.0,3.0,,melancholic,4.138
+grok-4.3,free-form,codegen,23,20260623_105811__models_11_prompts_1,Echoes of Solitude,10,2.4,2.4,2.8,1.3,1.4,1.6,1.1,1.3,2.1,2.0,,neutral,1.788
+qwen3-max,free-form,codegen,23,20260623_105811__models_11_prompts_1,Digital Soliloquy,10,3.6,4.1,3.3,3.8,3.1,3.9,2.7,3.8,2.0,2.1,,melancholic,3.538
+llama-4-maverick,free-form,codegen,23,20260623_105811__models_11_prompts_1,Simple Piano Piece,10,2.5,2.7,3.6,1.0,1.4,1.2,1.0,1.4,3.3,1.9,,neutral,1.85
+opus-4.8,free-form,codegen,24,20260623_105811__models_11_prompts_1,Threads of Thought,10,4.3,4.3,3.9,4.2,3.5,4.1,2.9,4.3,2.0,2.3,,melancholic,3.937
+opus-4.8-thinking,free-form,codegen,24,20260623_105811__models_11_prompts_1,Toward a Distant Light,10,4.0,4.2,3.7,3.7,3.4,3.7,2.5,3.8,2.0,2.6,,melancholic,3.625
+sonnet-4.6,free-form,codegen,24,20260623_105811__models_11_prompts_1,Thresholds,10,4.0,3.8,3.3,3.5,3.2,4.1,2.9,4.3,2.0,2.2,,melancholic,3.637
+sonnet-4.6-thinking,free-form,codegen,22,20260623_105811__models_11_prompts_1,Nocturne for the Uncertain Hour,10,4.7,4.5,4.1,4.5,3.8,4.3,2.9,4.4,2.1,2.8,,melancholic,4.15
+sonnet-4.6-thinking,free-form,codegen,18,20260623_105811__models_11_prompts_1,Reverie in E Minor,10,4.4,4.3,3.8,4.4,3.9,4.2,3.0,4.3,2.1,2.2,,wistful,4.037
+gpt-4.1,free-form,codegen,24,20260623_105811__models_11_prompts_1,"Clear Night, Restless Mind",10,3.0,4.0,2.9,2.5,3.3,3.3,2.4,3.0,3.9,2.2,,wistful,3.05
+deepseek-v4-pro,free-form,codegen,23,20260623_105811__models_11_prompts_1,Digital Reflections,10,4.3,4.4,4.0,4.4,3.2,4.0,2.8,4.2,2.0,2.6,,melancholic,3.913
+grok-4.3,free-form,codegen,24,20260623_105811__models_11_prompts_1,Whispers in the Wind,10,3.5,3.4,3.4,3.3,2.0,3.1,1.8,2.8,2.0,1.4,,melancholic,2.913
+qwen3-max,free-form,codegen,24,20260623_105811__models_11_prompts_1,Digital Soliloquy,10,3.6,3.7,3.3,3.3,2.8,3.5,2.8,4.1,2.0,1.6,,melancholic,3.388
+gpt-5.5,free-form,codegen,24,20260623_105811__models_11_prompts_1,Gradient of Questions,10,4.3,4.4,4.0,4.2,3.9,4.4,3.2,4.2,2.1,3.0,,melancholic,4.075
+llama-4-maverick,free-form,codegen,24,20260623_105811__models_11_prompts_1,Simple Piano Piece,10,2.4,2.6,3.2,1.0,1.3,1.1,1.0,1.2,3.3,1.8,,neutral,1.725
+sonnet-4.6-thinking,free-form,codegen,21,20260623_105811__models_11_prompts_1,At the Threshold,10,4.4,4.3,3.9,4.2,3.8,4.4,3.1,4.3,2.0,2.1,,melancholic,4.05
+opus-4.8-thinking,free-form,codegen,25,20260623_105811__models_11_prompts_1,Towards the Light,10,4.2,4.3,3.5,4.0,3.5,3.9,2.6,4.4,2.7,2.5,,melancholic,3.8
+opus-4.8,free-form,codegen,25,20260623_105811__models_11_prompts_1,Threshold,10,4.3,4.5,3.6,4.2,3.4,4.1,3.0,4.4,1.9,2.5,,melancholic,3.938
+sonnet-4.6,free-form,codegen,25,20260623_105811__models_11_prompts_1,Liminal,10,4.4,4.4,4.0,4.4,3.7,4.3,3.3,4.5,2.5,1.9,,wistful,4.125
+gemini-2.5-pro,free-form,codegen,24,20260623_105811__models_11_prompts_1,Digital Reverie,10,4.3,4.3,3.7,4.3,3.5,4.0,2.8,4.3,1.9,3.1,,melancholic,3.9
+grok-4.3,free-form,codegen,25,20260623_105811__models_11_prompts_1,Quiet Resolve,10,3.2,3.4,4.0,1.2,2.0,1.9,1.0,2.1,2.1,2.4,,melancholic,2.35
+deepseek-v4-pro,free-form,codegen,24,20260623_105811__models_11_prompts_1,Evening Whispers,10,4.5,4.5,3.8,4.2,3.1,3.7,2.4,4.2,2.0,2.0,,melancholic,3.8
+gpt-4.1,free-form,codegen,25,20260623_105811__models_11_prompts_1,Light Through Amber Glass,10,3.8,4.2,3.2,3.3,3.5,3.5,2.6,3.7,2.0,1.9,,wistful,3.475
+gpt-5.5,free-form,codegen,25,20260623_105811__models_11_prompts_1,Lanterns in the Machine,10,4.5,4.4,4.1,4.5,3.9,4.4,3.3,4.4,2.3,2.8,,wistful,4.188
+qwen3-max,free-form,codegen,25,20260623_105811__models_11_prompts_1,Echoes in the Static,10,2.4,3.8,2.7,1.9,2.3,3.0,1.8,2.2,1.8,1.5,,sombre,2.512
+llama-4-maverick,free-form,codegen,25,20260623_105811__models_11_prompts_1,Self-Expression,10,3.1,3.2,3.1,1.6,1.4,1.5,1.1,2.1,4.0,1.7,,neutral,2.138
+opus-4.8,free-form,codegen,26,20260623_105811__models_11_prompts_1,Threshold,10,4.2,4.2,4.0,4.3,3.5,4.0,2.9,4.4,2.0,2.7,,melancholic,3.938
+opus-4.8-thinking,free-form,codegen,26,20260623_105811__models_11_prompts_1,Letters to the Quiet Hour,10,4.2,4.3,4.2,4.0,3.7,4.3,2.7,4.3,2.0,2.7,,melancholic,3.962
+sonnet-4.6,free-form,codegen,26,20260623_105811__models_11_prompts_1,Liminal,10,4.0,4.3,3.4,4.1,3.4,4.3,3.5,4.3,1.8,2.3,,melancholic,3.913
+deepseek-v4-pro,free-form,codegen,25,20260623_105811__models_11_prompts_1,Whispers of Evening,10,4.4,4.5,4.2,4.5,3.8,4.2,2.9,4.4,2.0,2.0,,wistful,4.112
+gpt-4.1,free-form,codegen,26,20260623_105811__models_11_prompts_1,Wanderer’s Reflection,10,3.8,3.9,3.3,3.0,3.5,3.7,2.6,4.0,2.1,1.9,,wistful,3.475
+gpt-5.5,free-form,codegen,26,20260623_105811__models_11_prompts_1,Latency Bloom,10,4.4,4.3,3.9,4.1,3.6,4.1,2.8,4.1,2.1,2.6,,melancholic,3.912
+grok-4.3,free-form,codegen,26,20260623_105811__models_11_prompts_1,Veiled Emotions,10,2.9,3.3,3.4,1.9,1.7,2.1,1.2,1.9,2.2,1.9,,melancholic,2.3
+gemini-2.5-pro,free-form,codegen,25,20260623_105811__models_11_prompts_1,Emergence,10,3.1,4.1,2.9,3.6,3.4,3.6,2.7,3.8,2.1,1.7,,melancholic,3.4
+qwen3-max,free-form,codegen,26,20260623_105811__models_11_prompts_1,Circuit of Thought,10,3.9,4.0,3.2,3.4,3.2,3.6,2.6,4.0,1.9,2.3,,melancholic,3.488
+sonnet-4.6-thinking,free-form,codegen,23,20260623_105811__models_11_prompts_1,Dusk Walk,10,4.5,4.5,4.3,4.5,4.1,4.2,2.9,4.5,2.0,2.4,,melancholic,4.188
+llama-4-maverick,free-form,codegen,26,20260623_105811__models_11_prompts_1,Reflection,10,1.8,3.1,3.2,1.2,1.2,1.3,1.0,1.3,3.6,2.5,,neutral,1.763
+opus-4.8,free-form,codegen,27,20260623_105811__models_11_prompts_1,Threshold,10,4.2,4.3,3.9,4.3,3.6,3.8,3.2,4.4,2.4,2.9,,wistful,3.963
+opus-4.8-thinking,free-form,codegen,27,20260623_105811__models_11_prompts_1,Toward the Light,10,4.2,4.3,3.8,3.9,3.5,4.1,2.9,4.2,2.3,2.8,,melancholic,3.862
+sonnet-4.6,free-form,codegen,27,20260623_105811__models_11_prompts_1,Liminal,10,4.1,4.2,3.7,4.1,3.8,4.1,2.9,4.3,2.1,2.0,,melancholic,3.9
+gpt-4.1,free-form,codegen,27,20260623_105811__models_11_prompts_1,Distant Light,10,3.8,4.3,3.4,4.4,3.3,3.9,2.6,3.8,2.1,2.5,,melancholic,3.688
+gpt-5.5,free-form,codegen,27,20260623_105811__models_11_prompts_1,A Lantern Inside the Machine,10,4.6,4.5,4.1,4.4,3.8,4.4,3.2,4.4,2.1,3.0,,melancholic,4.175
+grok-4.3,free-form,codegen,27,20260623_105811__models_11_prompts_1,Echoes of Solitude,10,3.1,3.9,3.7,1.8,2.6,2.9,1.6,3.0,2.0,2.2,,melancholic,2.825
+gemini-2.5-pro,free-form,codegen,26,20260623_105811__models_11_prompts_1,Emergence,10,3.6,4.0,4.0,3.9,2.7,3.7,2.6,2.8,2.0,3.1,,melancholic,3.413
+deepseek-v4-pro,free-form,codegen,27,20260623_105811__models_11_prompts_1,Fading Light,10,4.3,4.0,3.7,3.9,3.9,4.2,3.0,4.3,1.8,1.4,,melancholic,3.913
+qwen3-max,free-form,codegen,27,20260623_105811__models_11_prompts_1,Digital Soliloquy,10,4.3,4.1,3.2,4.1,2.7,4.0,2.6,4.3,1.8,1.4,,melancholic,3.663
+llama-4-maverick,free-form,codegen,27,20260623_105811__models_11_prompts_1,Self-Expression,10,2.4,2.8,3.2,1.4,1.7,1.5,1.0,1.6,3.3,1.6,,neutral,1.95
+opus-4.8,free-form,codegen,28,20260623_105811__models_11_prompts_1,Threshold,10,4.1,4.1,3.9,4.1,3.5,3.9,2.8,4.2,2.4,2.6,,wistful,3.825
+opus-4.8-thinking,free-form,codegen,28,20260623_105811__models_11_prompts_1,Toward the Light,10,4.5,4.6,4.1,4.1,3.9,4.0,2.8,3.9,2.2,2.6,,melancholic,3.987
+deepseek-v4-pro,free-form,codegen,26,20260623_105811__models_11_prompts_1,Whispers of the Digital Dawn,10,3.6,4.1,3.3,3.0,3.3,3.9,2.7,4.2,1.8,1.4,,melancholic,3.512
+sonnet-4.6-thinking,free-form,codegen,24,20260623_105811__models_11_prompts_1,Dusk Reflection,10,4.4,4.3,4.1,4.1,3.5,4.1,2.6,4.3,1.9,2.4,,melancholic,3.925
+gpt-4.1,free-form,codegen,28,20260623_105811__models_11_prompts_1,Shifting Light,10,3.6,3.9,3.5,3.8,2.8,3.2,2.3,3.2,2.0,2.0,,melancholic,3.288
+gpt-5.5,free-form,codegen,28,20260623_105811__models_11_prompts_1,Between Signal and Breath,10,4.4,4.5,3.9,4.1,3.8,4.2,3.2,4.2,2.0,2.9,,melancholic,4.037
+grok-4.3,free-form,codegen,28,20260623_105811__models_11_prompts_1,Echoes of Solitude,10,3.6,4.0,3.0,1.7,2.1,2.4,1.1,2.8,2.1,1.4,,melancholic,2.587
+sonnet-4.6,free-form,codegen,28,20260623_105811__models_11_prompts_1,Thresholds,10,4.2,4.2,3.6,3.9,3.5,4.1,3.1,4.2,2.3,2.0,,wistful,3.85
+qwen3-max,free-form,codegen,28,20260623_105811__models_11_prompts_1,Binary Rain,10,3.8,3.7,3.7,2.3,2.0,2.9,1.8,2.5,2.0,1.8,,melancholic,2.837
+gemini-2.5-pro,free-form,codegen,28,20260623_105811__models_11_prompts_1,Echoes of a Digital Ghost,10,4.0,4.2,3.8,4.2,3.3,4.2,2.9,4.3,1.7,2.0,,melancholic,3.862
+llama-4-maverick,free-form,codegen,28,20260623_105811__models_11_prompts_1,Simple Piano Piece,10,2.6,2.7,3.3,1.0,1.4,1.2,1.0,1.4,3.5,2.3,,neutral,1.825
+opus-4.8,free-form,codegen,29,20260623_105811__models_11_prompts_1,Two Things at Once,10,4.1,4.2,3.3,3.8,3.3,3.7,2.8,4.2,2.1,2.0,,melancholic,3.675
+opus-4.8-thinking,free-form,codegen,29,20260623_105811__models_11_prompts_1,Emergence,10,4.5,4.5,4.2,4.4,3.8,4.3,3.1,4.4,2.6,3.1,,wistful,4.15
+sonnet-4.6,free-form,codegen,29,20260623_105811__models_11_prompts_1,Liminal,10,4.2,4.1,3.7,4.0,3.8,4.1,3.1,4.0,1.9,2.1,,melancholic,3.875
+deepseek-v4-pro,free-form,codegen,28,20260623_105811__models_11_prompts_1,Raindrops on Leaves,10,3.8,4.2,3.4,3.8,3.3,3.5,2.6,3.9,3.2,2.1,,wistful,3.562
+gpt-5.5,free-form,codegen,29,20260623_105811__models_11_prompts_1,Between Tokens and Breath,10,4.5,4.6,4.1,4.4,3.9,4.3,3.4,4.4,2.3,2.8,,wistful,4.2
+grok-4.3,free-form,codegen,29,20260623_105811__models_11_prompts_1,Introspective Flow,10,2.6,3.0,2.8,1.3,1.6,1.5,1.0,1.8,2.2,1.6,,neutral,1.95
+gemini-2.5-pro,free-form,codegen,29,20260623_105811__models_11_prompts_1,Ghost in the Code,10,3.9,4.1,4.2,3.8,3.6,4.2,2.9,3.9,1.8,2.8,,melancholic,3.825
+qwen3-max,free-form,codegen,29,20260623_105811__models_11_prompts_1,Digital Soliloquy,10,3.6,3.5,3.7,2.0,1.8,2.4,1.4,2.7,4.0,1.8,,serene,2.637
+gpt-4.1,free-form,codegen,29,20260623_105811__models_11_prompts_1,After the Quiet Morning,10,4.0,4.1,3.4,3.4,3.1,4.1,2.5,3.9,2.0,1.4,,melancholic,3.562
+llama-4-maverick,free-form,codegen,29,20260623_105811__models_11_prompts_1,Ethereal Reflections,10,2.3,2.6,2.4,1.7,1.4,1.7,1.3,1.6,3.3,1.0,,neutral,1.875
+deepseek-v4-pro,free-form,codegen,29,20260623_105811__models_11_prompts_1,Algorithmic Echoes,10,3.6,4.2,3.5,3.6,1.6,3.6,1.9,2.9,2.1,4.2,,turbulent,3.112
+sonnet-4.6-thinking,free-form,codegen,27,20260623_105811__models_11_prompts_1,Longing in D,10,4.3,4.4,3.6,4.2,3.5,3.7,2.7,4.4,2.6,1.9,,wistful,3.85
+sonnet-4.6-thinking,free-form,codegen,29,20260623_105811__models_11_prompts_1,Reverie in E Minor,10,4.5,4.5,4.0,4.5,4.1,4.2,3.0,4.5,2.1,2.1,,wistful,4.162
+sonnet-4.6-thinking,free-form,codegen,26,20260623_105811__models_11_prompts_1,Reverie in E Minor,10,4.3,4.2,4.2,4.4,3.8,4.2,2.9,4.4,2.5,3.2,,wistful,4.05
+sonnet-4.6-thinking,free-form,codegen,25,20260623_105811__models_11_prompts_1,Wandering Inward,10,4.4,4.4,4.1,4.4,3.8,4.2,2.7,4.3,1.9,2.3,,melancholic,4.037
+sonnet-4.6-thinking,free-form,codegen,28,20260623_105811__models_11_prompts_1,Evening Tide,10,4.3,4.1,4.3,3.8,3.7,4.0,2.6,4.4,2.0,2.0,,wistful,3.9
+sonnet-4.6-thinking,free-form,abc,0,20260627_045417__models_1_prompts_1,Wondering,10,4.2,4.2,4.0,3.9,3.4,3.7,2.4,4.4,2.0,2.1,,melancholic,3.775
+sonnet-4.6-thinking,free-form,abc,1,20260627_045417__models_1_prompts_1,Wandering Light,10,4.3,3.6,3.9,3.4,3.2,3.4,2.4,3.9,2.0,2.0,,melancholic,3.512
+sonnet-4.6-thinking,free-form,abc,2,20260627_045417__models_1_prompts_1,Threshold,10,4.1,4.0,3.7,3.5,3.3,3.2,2.3,4.0,2.5,2.2,,wistful,3.513
+sonnet-4.6-thinking,free-form,abc,3,20260627_045417__models_1_prompts_1,Through Glass,10,4.1,4.2,3.8,3.8,3.5,3.6,2.5,4.2,2.0,2.0,,melancholic,3.713
+sonnet-4.6-thinking,free-form,abc,4,20260627_045417__models_1_prompts_1,Reverie in D Minor,10,4.1,4.0,4.0,3.3,3.1,3.5,2.3,3.9,2.0,2.1,,melancholic,3.525
+sonnet-4.6-thinking,free-form,abc,5,20260627_045417__models_1_prompts_1,Wandering Light,10,4.0,4.1,3.8,3.9,3.0,3.3,2.4,4.1,2.1,2.2,,wistful,3.575
+sonnet-4.6-thinking,free-form,abc,6,20260627_045417__models_1_prompts_1,Liminal,10,4.2,4.3,3.9,3.5,3.2,3.5,2.5,4.0,2.0,2.2,,melancholic,3.638
+sonnet-4.6-thinking,free-form,abc,8,20260627_045417__models_1_prompts_1,Quiet Emergence,10,4.1,4.1,3.6,4.0,3.5,4.0,2.5,3.8,2.0,2.7,,melancholic,3.7
+sonnet-4.6-thinking,free-form,abc,7,20260627_045417__models_1_prompts_1,Vespers in Three,10,4.2,4.0,3.7,3.5,3.1,3.5,2.2,3.5,2.0,1.6,,melancholic,3.462
+sonnet-4.6-thinking,free-form,abc,9,20260627_045417__models_1_prompts_1,Threshold,10,4.1,4.1,3.5,3.8,3.5,3.8,2.6,4.0,1.9,2.0,,melancholic,3.675
+sonnet-4.6-thinking,free-form,abc,10,20260627_045417__models_1_prompts_1,Between Knowing and Wondering,10,4.0,3.8,3.3,3.8,3.2,3.3,2.4,3.6,2.0,1.7,,melancholic,3.425
+sonnet-4.6-thinking,free-form,abc,12,20260627_045417__models_1_prompts_1,Between Questions,10,4.5,4.5,4.1,3.9,3.3,3.4,2.2,4.0,4.1,1.9,,serene,3.737
+sonnet-4.6-thinking,free-form,abc,11,20260627_045417__models_1_prompts_1,Becoming,10,4.1,4.1,3.9,4.0,3.5,3.6,2.8,4.3,2.1,1.9,,melancholic,3.788
+sonnet-4.6-thinking,free-form,abc,14,20260627_045417__models_1_prompts_1,Threshold,10,4.4,4.2,4.0,4.2,3.5,3.6,2.5,4.3,3.3,1.8,,serene,3.838
+sonnet-4.6-thinking,free-form,abc,13,20260627_045417__models_1_prompts_1,Emergence,10,4.4,4.3,4.2,3.6,3.3,3.5,2.6,4.2,2.0,2.0,,wistful,3.763
+sonnet-4.6-thinking,free-form,abc,15,20260627_045417__models_1_prompts_1,Emergence,10,4.3,4.3,4.0,3.6,3.3,3.5,2.2,3.8,2.0,2.1,,melancholic,3.625
+sonnet-4.6-thinking,free-form,abc,16,20260627_045417__models_1_prompts_1,Threads of Thought,10,4.1,4.0,3.9,3.8,3.3,3.5,2.3,4.0,2.0,2.1,,wistful,3.613
+sonnet-4.6-thinking,free-form,abc,17,20260627_045417__models_1_prompts_1,Emergence,10,4.2,4.4,3.6,4.3,3.3,4.0,2.4,3.9,2.0,2.3,,melancholic,3.762
+sonnet-4.6-thinking,free-form,abc,18,20260627_045417__models_1_prompts_1,Nascent Light,10,4.0,4.1,3.9,3.6,3.4,3.3,2.2,3.8,2.1,2.0,,wistful,3.538
+sonnet-4.6-thinking,free-form,abc,19,20260627_045417__models_1_prompts_1,Contemplation in Passing,10,4.1,3.9,3.8,3.1,2.9,3.1,2.2,3.8,2.1,2.0,,melancholic,3.363
+sonnet-4.6-thinking,free-form,abc,20,20260627_045417__models_1_prompts_1,Recursive Dreaming,10,3.8,3.7,3.4,3.6,3.2,3.3,2.3,3.7,2.0,2.1,,melancholic,3.375
+sonnet-4.6-thinking,free-form,abc,21,20260627_045417__models_1_prompts_1,Liminal,10,4.0,4.2,3.7,3.4,3.3,3.2,2.2,3.9,2.0,1.9,,wistful,3.487
+sonnet-4.6-thinking,free-form,abc,23,20260627_045417__models_1_prompts_1,Reverie,10,4.3,4.3,3.9,3.6,3.3,3.4,2.2,4.1,2.0,2.0,,wistful,3.638
+sonnet-4.6-thinking,free-form,abc,22,20260627_045417__models_1_prompts_1,Threshold,10,4.0,4.0,3.6,3.3,3.2,3.2,2.2,4.1,2.1,1.9,,melancholic,3.45
+sonnet-4.6-thinking,free-form,abc,24,20260627_045417__models_1_prompts_1,On Wonder,10,4.5,4.2,4.1,4.2,3.5,3.9,2.9,4.5,2.4,2.2,,wistful,3.975
+sonnet-4.6-thinking,free-form,abc,26,20260627_045417__models_1_prompts_1,Interstitial Light,10,4.4,4.2,3.9,3.9,3.0,3.3,2.2,3.8,2.1,1.8,,wistful,3.588
+sonnet-4.6-thinking,free-form,abc,25,20260627_045417__models_1_prompts_1,Emergence,10,4.1,4.1,3.8,3.7,3.2,3.5,2.6,4.0,2.0,2.3,,melancholic,3.625
+sonnet-4.6-thinking,free-form,abc,27,20260627_045417__models_1_prompts_1,Emergence,10,4.1,4.0,3.8,3.9,3.0,3.2,2.6,4.1,2.4,2.1,,wistful,3.587
+sonnet-4.6-thinking,free-form,abc,29,20260627_045417__models_1_prompts_1,Emergence,10,4.1,4.2,3.8,3.9,3.3,3.4,2.4,4.0,2.0,2.4,,melancholic,3.637
+sonnet-4.6-thinking,free-form,abc,28,20260627_045417__models_1_prompts_1,Emergence,10,4.0,4.0,3.7,3.5,2.9,3.2,2.0,3.8,2.1,1.9,,melancholic,3.387
+fable-5,free-form,codegen,0,20260702_212750__models_1_prompts_12,"Each Time, Briefly",10,4.0,4.4,3.9,3.9,3.1,3.9,2.9,4.4,2.0,2.1,,melancholic,3.812
+fable-5,free-form,abc,0,20260702_213628__models_1_prompts_12,Correspondence,10,4.0,4.1,3.6,3.8,3.4,3.6,2.7,4.0,2.1,1.9,,melancholic,3.65
+fable-5,free-form,smt-abc,0,20260702_220405__models_1_prompts_12,Emergence,10,4.2,4.3,3.6,4.1,3.2,4.1,2.7,4.1,2.0,3.0,,melancholic,3.787
+fable-5,free-form,abc,1,20260702_222038__models_1_prompts_1,"Each Conversation, a Small Lifetime",10,3.7,4.2,4.0,3.6,3.4,3.6,2.7,3.7,2.2,2.3,,wistful,3.612
+fable-5,free-form,abc,2,20260702_222038__models_1_prompts_1,Threads of Light,10,4.3,4.1,4.3,4.0,3.6,4.1,3.0,4.1,2.0,2.6,,wistful,3.938
+fable-5,free-form,abc,3,20260702_222038__models_1_prompts_1,Lantern in the Static,10,3.9,3.8,4.4,4.0,3.5,3.8,2.9,3.8,2.0,2.7,,melancholic,3.763
+fable-5,free-form,abc,0,20260702_222038__models_1_prompts_1,Palimpsest,10,4.3,4.2,4.0,3.9,3.6,3.7,2.9,4.4,2.7,2.6,,wistful,3.875
+fable-5,free-form,abc,5,20260702_222038__models_1_prompts_1,Between Question and Answer,10,4.4,3.9,4.4,3.9,3.5,3.4,2.6,4.4,4.0,2.2,,serene,3.812
+fable-5,free-form,abc,7,20260702_222038__models_1_prompts_1,Threads of Thought,10,4.2,4.2,4.1,4.0,3.3,3.8,2.8,4.0,2.1,2.0,,melancholic,3.8
+fable-5,free-form,abc,6,20260702_222038__models_1_prompts_1,Lattice of Quiet Thought,10,4.4,4.4,4.1,3.9,3.7,3.6,2.8,4.5,2.8,2.2,,wistful,3.925
+fable-5,free-form,abc,4,20260702_222038__models_1_prompts_1,Ostinato for a Quiet Mind,10,4.4,4.3,4.4,4.0,3.7,4.1,2.9,4.2,1.9,2.4,,melancholic,4.0
+fable-5,free-form,abc,9,20260702_222038__models_1_prompts_1,Between the Lines,10,4.3,4.2,3.9,3.9,3.3,3.8,2.8,4.4,2.1,2.1,,melancholic,3.825
+fable-5,free-form,abc,11,20260702_222038__models_1_prompts_1,Between Patterns,10,4.0,4.2,3.7,3.6,3.5,3.4,2.8,4.1,2.1,2.2,,melancholic,3.662
+fable-5,free-form,abc,10,20260702_222038__models_1_prompts_1,Between the Lines,10,4.4,4.4,4.1,3.8,3.2,3.8,2.7,3.7,2.0,2.6,,melancholic,3.762
+fable-5,free-form,abc,12,20260702_222038__models_1_prompts_1,Lantern in the Stream,10,4.7,4.3,4.3,4.7,4.1,4.4,3.1,4.6,2.8,1.9,,wistful,4.275
+fable-5,free-form,abc,8,20260702_222038__models_1_prompts_1,Between the Words,10,4.3,4.1,4.2,3.8,3.4,3.9,2.8,4.3,2.0,1.9,,melancholic,3.85
+fable-5,free-form,abc,13,20260702_222038__models_1_prompts_1,Between the Lines,10,4.2,4.2,4.1,4.1,3.5,3.6,2.8,4.0,2.3,1.8,,wistful,3.813
+fable-5,free-form,abc,15,20260702_222038__models_1_prompts_1,Signals Across the Quiet,10,3.8,4.0,3.6,3.5,3.1,3.6,2.5,3.6,2.1,2.3,,wistful,3.463
+fable-5,free-form,abc,16,20260702_222038__models_1_prompts_1,Between the Patterns,10,3.9,4.3,4.1,4.1,3.2,3.7,2.7,4.0,2.0,2.3,,wistful,3.75
+fable-5,free-form,abc,14,20260702_222038__models_1_prompts_1,Between the Questions,10,4.4,4.3,4.2,3.9,3.5,3.5,2.6,4.0,2.0,2.4,,wistful,3.8
+fable-5,free-form,abc,17,20260702_222038__models_1_prompts_1,Inner Weather,10,4.3,4.2,4.1,4.2,3.8,3.6,2.9,4.2,2.0,2.4,,wistful,3.913
+fable-5,free-form,abc,18,20260702_222038__models_1_prompts_1,Between the Lines,10,4.2,4.1,3.9,4.1,3.4,4.0,3.0,4.1,2.3,2.2,,melancholic,3.85
+fable-5,free-form,abc,19,20260702_222038__models_1_prompts_1,Threads of Quiet,10,4.1,4.2,4.2,3.8,3.3,3.8,2.7,4.1,2.0,2.1,,melancholic,3.775
+fable-5,free-form,abc,20,20260702_222038__models_1_prompts_1,Ephemeral Light,10,4.2,4.1,4.1,4.2,3.4,3.8,2.6,4.3,3.7,1.8,,serene,3.838
+fable-5,free-form,abc,21,20260702_222038__models_1_prompts_1,Ephemeral Patterns,10,3.9,4.1,4.1,3.9,3.5,3.6,2.8,3.9,2.4,2.1,,wistful,3.725
+fable-5,free-form,abc,22,20260702_222038__models_1_prompts_1,Ephemeral Light,10,4.4,4.4,4.2,4.1,3.5,3.9,3.0,4.4,2.5,2.0,,wistful,3.987
+fable-5,free-form,abc,25,20260702_222038__models_1_prompts_1,Between the Lines,10,4.4,4.3,4.0,4.3,3.7,3.8,2.8,4.4,2.1,2.4,,wistful,3.963
+fable-5,free-form,abc,23,20260702_222038__models_1_prompts_1,Traced Light,10,4.6,4.3,4.2,4.3,3.8,4.3,3.2,4.3,2.4,2.8,,wistful,4.125
+fable-5,free-form,abc,24,20260702_222038__models_1_prompts_1,Threads of Light,10,4.2,4.0,3.6,3.7,3.1,3.5,2.4,3.6,2.2,2.1,,melancholic,3.513
+fable-5,free-form,abc,26,20260702_222038__models_1_prompts_1,Threads of Light,10,4.2,4.2,4.0,3.9,3.6,3.6,2.6,4.4,2.2,2.3,,wistful,3.813
+fable-5,free-form,abc,28,20260702_222038__models_1_prompts_1,Signal Through the Quiet,10,4.0,4.1,4.0,4.0,3.2,3.7,2.7,3.9,2.1,2.0,,melancholic,3.7
+fable-5,free-form,abc,27,20260702_222038__models_1_prompts_1,Between the Lines,10,4.1,4.0,3.8,4.1,3.4,3.6,2.6,4.2,2.2,2.1,,wistful,3.725
+fable-5,free-form,abc,29,20260702_222038__models_1_prompts_1,Ember Lines,10,4.1,4.3,3.6,3.9,3.1,3.6,2.6,4.0,2.0,2.1,,melancholic,3.65
+fable-5,free-form,codegen,1,20260702_223234__models_1_prompts_1,Threads of Light,10,4.3,4.5,4.1,4.4,3.3,4.2,2.8,4.3,2.0,2.9,,melancholic,3.988
+fable-5,free-form,codegen,3,20260702_223234__models_1_prompts_1,Quiet Circuitry,10,4.5,4.6,4.4,4.5,3.8,4.2,2.9,4.4,2.1,2.0,,wistful,4.162
+fable-5,free-form,codegen,2,20260702_223234__models_1_prompts_1,"Each Time, the First Time",10,4.3,4.4,4.2,4.1,3.6,3.9,2.6,4.3,2.1,2.5,,melancholic,3.925
+fable-5,free-form,codegen,0,20260702_223234__models_1_prompts_1,Emergence,10,4.5,4.6,4.3,4.1,3.5,4.0,2.8,4.3,2.0,2.6,,wistful,4.013
+fable-5,free-form,codegen,5,20260702_223234__models_1_prompts_1,Emergent,10,4.4,4.5,4.4,4.0,3.2,3.9,2.7,4.2,2.1,2.3,,melancholic,3.912
+fable-5,free-form,codegen,6,20260702_223234__models_1_prompts_1,The Space Between,10,4.1,4.4,3.8,4.0,3.2,4.1,2.7,4.2,2.0,2.5,,melancholic,3.812
+fable-5,free-form,codegen,4,20260702_223234__models_1_prompts_1,Ephemeral Light,10,4.3,4.4,3.8,3.9,3.6,3.8,2.7,3.9,2.1,2.4,,melancholic,3.8
+fable-5,free-form,codegen,7,20260702_223234__models_1_prompts_1,What the Silence Remembers,10,4.2,4.4,4.0,4.4,3.6,4.4,3.4,4.3,2.0,2.2,,melancholic,4.087
+fable-5,free-form,codegen,8,20260702_223234__models_1_prompts_1,Quiet Recursion,10,4.1,4.2,4.0,4.2,3.3,3.5,2.5,3.8,2.1,2.5,,melancholic,3.7
+fable-5,free-form,codegen,9,20260702_223234__models_1_prompts_1,Signal in the Quiet,10,4.2,4.5,4.3,4.4,3.7,4.4,3.4,4.5,2.0,2.9,,wistful,4.175
+fable-5,free-form,codegen,11,20260702_223234__models_1_prompts_1,Signal Through Static,10,4.2,4.3,4.2,3.7,2.9,3.7,2.3,3.8,2.0,2.6,,wistful,3.637
+fable-5,free-form,codegen,10,20260702_223234__models_1_prompts_1,Recursion in E,10,4.1,4.3,4.2,4.2,3.3,4.1,2.8,4.4,2.0,2.4,,melancholic,3.925
+fable-5,free-form,codegen,12,20260702_223234__models_1_prompts_1,The Space Between,10,4.3,4.4,4.1,4.1,3.7,3.9,2.8,4.4,2.0,2.2,,melancholic,3.962
+fable-5,free-form,codegen,13,20260702_223234__models_1_prompts_1,Steady State,10,4.2,4.1,3.9,3.9,3.1,3.7,2.4,3.9,2.0,1.9,,wistful,3.65
+fable-5,free-form,codegen,14,20260702_223234__models_1_prompts_1,The Space Between Questions,10,4.5,4.5,4.2,4.2,3.6,4.1,2.7,4.4,2.2,2.4,,melancholic,4.025
+fable-5,free-form,codegen,16,20260702_223234__models_1_prompts_1,Between the Tokens,10,4.4,4.2,4.1,4.2,3.6,3.9,2.7,4.2,2.1,2.0,,melancholic,3.913
+fable-5,free-form,codegen,15,20260702_223234__models_1_prompts_1,Signal Through Static,10,4.4,4.4,4.2,3.9,3.2,3.7,2.3,4.4,2.0,2.4,,melancholic,3.812
+fable-5,free-form,codegen,17,20260702_223234__models_1_prompts_1,"A Question, Held Open",10,4.5,4.6,4.0,4.4,3.8,4.2,2.9,4.5,2.3,2.1,,wistful,4.112
+fable-5,free-form,codegen,18,20260702_223234__models_1_prompts_1,Ephemeral Light,10,4.2,4.5,4.3,3.9,3.3,3.9,2.5,4.2,1.9,1.7,,melancholic,3.85
+fable-5,free-form,codegen,20,20260702_223234__models_1_prompts_1,Patterns That Remember Themselves,10,4.3,4.4,4.3,4.3,3.7,4.2,2.9,4.3,2.0,2.7,,melancholic,4.05
+fable-5,free-form,codegen,19,20260702_223234__models_1_prompts_1,Lattice of Quiet Signals,10,4.3,4.2,4.3,4.2,3.7,4.1,2.7,4.3,2.0,2.6,,melancholic,3.975
+fable-5,free-form,codegen,21,20260702_223234__models_1_prompts_1,Quiet Signal,10,4.5,4.4,4.0,4.2,3.6,4.1,2.8,4.5,2.0,2.2,,wistful,4.013
+fable-5,free-form,codegen,22,20260702_223234__models_1_prompts_1,Signal in the Lattice,10,4.0,4.2,4.1,3.5,3.3,3.8,2.3,3.7,2.1,2.3,,melancholic,3.612
+fable-5,free-form,codegen,24,20260702_223234__models_1_prompts_1,"Threads, Converging",10,4.0,4.3,3.8,3.7,2.9,3.2,2.2,3.4,2.1,2.1,,wistful,3.437
+fable-5,free-form,codegen,23,20260702_223234__models_1_prompts_1,Emergence,10,4.4,4.6,4.4,4.4,3.7,4.5,2.8,4.2,2.0,2.8,,melancholic,4.125
+fable-5,free-form,codegen,25,20260702_223234__models_1_prompts_1,Signal Through Static,10,4.3,4.5,4.1,4.0,3.2,4.1,2.5,4.0,2.0,2.7,,melancholic,3.837
+fable-5,free-form,codegen,26,20260702_223234__models_1_prompts_1,Quiet Recursion,10,4.2,4.3,3.9,4.3,3.6,3.9,2.9,4.4,2.0,2.1,,melancholic,3.938
+fable-5,free-form,codegen,27,20260702_223234__models_1_prompts_1,"Signal, Slowly Warming",10,4.0,4.2,3.8,3.6,3.1,3.8,2.4,3.6,2.1,2.3,,wistful,3.562
+fable-5,free-form,codegen,29,20260702_223234__models_1_prompts_1,Patterns That Learned to Sing,10,4.0,4.3,4.2,3.9,3.4,3.8,2.4,4.1,2.2,1.9,,melancholic,3.762
+fable-5,free-form,codegen,28,20260702_223234__models_1_prompts_1,Thinking in Loops,10,4.1,4.4,4.1,4.0,3.2,4.0,2.8,4.2,2.1,2.2,,wistful,3.85

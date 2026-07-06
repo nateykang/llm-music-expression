@@ -30,7 +30,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from llm_music.judge import (  # noqa: E402
-    AFFECT_KEYS, QUALITY_KEYS, _extract_json, _system, build_user, representation,
+    AFFECT_KEYS, QUALITY_KEYS, _EMOTION_ALIASES, _extract_json, _system, build_user,
+    representation,
 )
 
 KEYS = QUALITY_KEYS + AFFECT_KEYS
@@ -61,6 +62,7 @@ def parse_verdict(obj):
         elif isinstance(v, (int, float)):
             out[k] = {"score": float(v)}
     lbl = str(obj.get("emotion_label", "")).strip().lower()
+    lbl = _EMOTION_ALIASES.get(lbl, lbl)
     if lbl:
         out["emotion_label"] = lbl
     return out or None
@@ -90,7 +92,9 @@ def gemini_judge(system, user, audio_bytes, attempts=3):
             # A daily-cap 429 won't clear on retry — bail immediately so we don't
             # burn 3x the request budget against the RPD limit.
             if "RESOURCE_EXHAUSTED" in str(e) or "429" in str(e):
+                print("  gemini: rate/quota limit — giving up on this piece", flush=True)
                 return None
+            print(f"  gemini: attempt {a + 1}/{attempts} failed: {e}", flush=True)
         time.sleep(min(2 ** a, 8))
     return None
 
@@ -113,8 +117,9 @@ def openai_judge(system, user, audio_bytes, attempts=3):
             v = parse_verdict(_extract_json(r.choices[0].message.content))
             if v:
                 return v
-        except Exception:
-            pass
+            print(f"  gpt-audio: unparseable verdict (attempt {a + 1}/{attempts})", flush=True)
+        except Exception as e:
+            print(f"  gpt-audio: attempt {a + 1}/{attempts} failed: {e}", flush=True)
         time.sleep(min(2 ** a, 8))
     return None
 
@@ -135,6 +140,7 @@ def main():
 
     # build the task list: one (piece, batch, judge, modality) per call
     tasks = []
+    seen_pids: dict[str, str] = {}
     for bd in sorted((ROOT / "docs/data").glob("2026*")):
         dj = bd / "data.json"
         if not dj.exists():
@@ -146,6 +152,11 @@ def main():
             if not ar or not (bd / ar).exists():
                 continue
             pid = f'{p["model"]}|{p.get("mode")}|{p.get("title")}|{p.get("sample")}'
+            if pid in seen_pids:
+                sys.exit(f"pid collision: {pid!r} appears in {seen_pids[pid]} and {bd.name} — "
+                         "the checkpoint key can no longer distinguish these pieces; "
+                         "add the batch to the pid (and migrate the ckpt) before running")
+            seen_pids[pid] = bd.name
             for judge in JUDGES:
                 # gpt-audio requires audio in the request — it can only HEAR, not read.
                 # gemini-2.5-pro does both, giving the clean within-model read-vs-hear.
@@ -170,7 +181,8 @@ def main():
                 system, user = AUDIO_SYSTEM, build_user(p, "audio recording", AUDIO_USER_STUB)
                 audio = (bd / p["audio"]).read_bytes()
             verdict = JUDGES[judge](system, user, audio)
-        except Exception:
+        except Exception as e:
+            print(f"  {key}: failed: {e}", flush=True)
             verdict = None
         return key, verdict
 

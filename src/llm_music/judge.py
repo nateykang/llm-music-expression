@@ -79,6 +79,10 @@ INTENT = ("intent", "Intent–execution",
 # Single dominant-emotion vocabulary, spanning the circumplex quadrants.
 EMOTION_LABELS = ["joyful", "triumphant", "playful", "serene", "tender", "wistful",
                   "melancholic", "sombre", "tense", "turbulent", "mysterious", "neutral"]
+# Judges occasionally answer with a spelling/word variant; fold those back into
+# the vocabulary so label counts don't split (e.g. US "somber" vs "sombre").
+_EMOTION_ALIASES = {"somber": "sombre", "melancholy": "melancholic",
+                    "mysterious/enigmatic": "mysterious", "peaceful": "serene"}
 
 QUALITY_KEYS = [k for k, *_ in QUALITY]
 AFFECT_KEYS = [k for k, *_ in AFFECT]
@@ -405,6 +409,7 @@ def judge_piece(client, piece: dict, batch_dir: Path, include_note: bool = False
         elif isinstance(v, (int, float)):
             out[k] = {"score": float(v), "reason": ""}
     lbl = str(obj.get("emotion_label", "")).strip().lower()
+    lbl = _EMOTION_ALIASES.get(lbl, lbl)
     if lbl:
         out["emotion_label"] = lbl
     return out or None
@@ -439,28 +444,39 @@ def judge_corpus(data_dir: Path, judge_names: list[str], *, prompt: str | None =
         tasks = tasks[:limit]
 
     # Resumable: every verdict is checkpointed as it completes so a multi-hour run
-    # survives sleep/shutdown. Keyed by "<task-index>|<judge>" — task order is the
-    # deterministic sorted-batch order, so indices are stable across a resume.
+    # survives sleep/shutdown. Keyed by piece CONTENT (batch|model|prompt|mode|sample),
+    # not task index — index keys silently misattach verdicts when a batch is added
+    # or a manifest changes (e.g. resume_failures.py turning a failed piece ok)
+    # between resumes.
+    def _task_key(pc, bd):
+        return f"{bd.name}|{pc['model']}|{pc['prompt']}|{pc.get('mode', '')}|{pc.get('sample', 0)}"
+
     analysis = data_dir.parent / "analysis"
     analysis.mkdir(parents=True, exist_ok=True)
     ckpt_path = analysis / f"{out_name}_ckpt.json"
     attempted = json.loads(ckpt_path.read_text(encoding="utf-8")) if ckpt_path.exists() else {}
+    if attempted and all(k.count("|") == 1 for k in attempted):
+        log.warning("ignoring legacy index-keyed checkpoint %s (%d entries) — "
+                    "verdict keys are content-based now", ckpt_path.name, len(attempted))
+        attempted = {}
 
     jobs = []
-    for ti, (pc, bd) in enumerate(tasks):
+    for pc, bd in tasks:
         for jname in judge_names:
             if exclude_self and jname == pc["model"]:
                 continue
-            if f"{ti}|{jname}" not in attempted:
-                jobs.append((ti, jname, pc, bd))
+            if f"{_task_key(pc, bd)}|{jname}" not in attempted:
+                jobs.append((jname, pc, bd))
 
+    n_failed_cached = sum(1 for v in attempted.values() if not v)
     print(f"Judging {len(tasks)} pieces × panel {judge_names}: {len(jobs)} calls to do, "
-          f"{len(attempted)} cached ({workers} workers, exclude_self={exclude_self}, "
-          f"include_note={include_note})", flush=True)
+          f"{len(attempted)} cached ({n_failed_cached} of those failed and stay skipped; "
+          f"{workers} workers, exclude_self={exclude_self}, include_note={include_note})",
+          flush=True)
 
     def work(job):
-        ti, jname, pc, bd = job
-        return ti, jname, judge_piece(clients[jname], pc, bd, include_note)
+        jname, pc, bd = job
+        return f"{_task_key(pc, bd)}|{jname}", judge_piece(clients[jname], pc, bd, include_note)
 
     def save_ckpt():
         tmp = ckpt_path.with_suffix(".tmp")
@@ -470,9 +486,9 @@ def judge_corpus(data_dir: Path, judge_names: list[str], *, prompt: str | None =
     done = 0
     with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
         for fut in as_completed([ex.submit(work, j) for j in jobs]):
-            ti, jname, verdict = fut.result()
+            key, verdict = fut.result()
             with lock:
-                attempted[f"{ti}|{jname}"] = verdict
+                attempted[key] = verdict
                 done += 1
                 if done % 25 == 0 or done == len(jobs):
                     save_ckpt()
@@ -481,19 +497,20 @@ def judge_corpus(data_dir: Path, judge_names: list[str], *, prompt: str | None =
     save_ckpt()
 
     # reconstruct verdicts (successes only) from all attempts in the checkpoint
-    verdicts: dict[int, dict[str, dict]] = {}
+    verdicts: dict[str, dict[str, dict]] = {}
     for key, v in attempted.items():
         if v:
-            ti_s, jname = key.split("|", 1)
-            verdicts.setdefault(int(ti_s), {})[jname] = v
+            tkey, jname = key.rsplit("|", 1)
+            verdicts.setdefault(tkey, {})[jname] = v
 
     score_keys = QUALITY_KEYS + AFFECT_KEYS + (["intent"] if include_note else [])
     rows, raw = [], []
-    for ti, (pc, bd) in enumerate(tasks):
-        panel = verdicts.get(ti, {})
+    for pc, bd in tasks:
+        panel = verdicts.get(_task_key(pc, bd), {})
         if not panel:
             continue
         row = {"model": pc["model"], "prompt": pc["prompt"], "mode": pc.get("mode", ""),
+               "sample": pc.get("sample", 0), "batch": bd.name,
                "title": pc.get("title", ""), "n_judges": len(panel)}
         for k in score_keys:
             scores = [v[k]["score"] for v in panel.values() if k in v]
@@ -506,12 +523,14 @@ def judge_corpus(data_dir: Path, judge_names: list[str], *, prompt: str | None =
         row["overall"] = round(sum(q) / len(q), 3) if q else None
         rows.append(row)
         raw.append({"model": pc["model"], "prompt": pc["prompt"], "mode": pc.get("mode", ""),
+                    "sample": pc.get("sample", 0), "batch": bd.name,
                     "title": pc.get("title", ""), "panel": panel})
 
     import csv
     out_csv = analysis / f"{out_name}.csv"
     with out_csv.open("w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=["model", "prompt", "mode", "title", "n_judges",
+        w = csv.DictWriter(f, fieldnames=["model", "prompt", "mode", "sample", "batch",
+                                          "title", "n_judges",
                                           *ALL_KEYS, "emotion_label", "overall"])
         w.writeheader()
         w.writerows(rows)

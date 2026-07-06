@@ -24,11 +24,12 @@ sys.path.insert(0, str(ROOT / "src"))
 from llm_music.judge import QUALITY_KEYS  # noqa: E402
 
 DIMS = QUALITY_KEYS + ["valence", "arousal"]
-SHORT = {"gpt-5.5": "gpt5.5", "gemini-2.5-pro": "gemini", "opus-4.8": "opus",
+SHORT = {"fable-5": "fable", "gpt-5.5": "gpt5.5", "gemini-2.5-pro": "gemini", "opus-4.8": "opus",
          "sonnet-4.6": "sonnet", "deepseek-v4-pro": "deepsk", "gpt-4.1": "gpt4.1",
          "grok-4.3": "grok", "qwen3-max": "qwen", "llama-4-maverick": "llama"}
-# columns ordered by judge competence (most reliable critics first)
-ORDER = ["opus-4.8", "sonnet-4.6", "gpt-5.5", "qwen3-max", "deepseek-v4-pro",
+# columns ordered by judge competence (most reliable critics first); judges found
+# in the data but not listed here are appended so new panelists never vanish.
+ORDER = ["fable-5", "opus-4.8", "sonnet-4.6", "gpt-5.5", "qwen3-max", "deepseek-v4-pro",
          "grok-4.3", "gpt-4.1", "llama-4-maverick", "gemini-2.5-pro"]
 
 
@@ -52,7 +53,9 @@ def main():
                 gap = sj - mean(peers)
                 (own if author == j else oth)[j][d].append(gap)
 
-    models = [m for m in ORDER if own.get(m)]
+    models = [m for m in ORDER if own.get(m)] + sorted(m for m in own if m not in ORDER)
+    for m in models:
+        SHORT.setdefault(m, m[:6])
     corr = {m: {} for m in models}
     for m in models:
         for d in DIMS:

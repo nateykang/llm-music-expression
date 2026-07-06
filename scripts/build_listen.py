@@ -37,19 +37,25 @@ def _f(x):
 
 
 def load() -> list[dict]:
+    # Keys include sample+batch — models reuse titles across samples, so a
+    # title-only join hands a piece some sibling sample's notation/score.
+    def k(model, prompt, mode, sample, batch):
+        return (model, prompt, mode or "", str(sample or 0), batch or "")
+
     abc_by_key = {}
     for fn in ROOT.glob("docs/data/2026*/data.json"):
         m = json.loads(fn.read_text(encoding="utf-8"))
         for p in m.get("pieces", []):
             if p.get("ok") and p.get("abc"):
-                abc_by_key[(p["model"], p["prompt"], p.get("mode", ""), p.get("title", ""))] = p["abc"]
+                abc_by_key[k(p["model"], p["prompt"], p.get("mode"), p.get("sample", 0),
+                             fn.parent.name)] = p["abc"]
     overall = {}
     for r in csv.DictReader((ROOT / "docs/analysis/judge.csv").open(encoding="utf-8")):
-        overall[(r["model"], r["prompt"], r["mode"], r["title"])] = _f(r.get("overall"))
+        overall[k(r["model"], r["prompt"], r["mode"], r.get("sample"), r.get("batch"))] = _f(r.get("overall"))
     raw = json.loads((ROOT / "docs/analysis/judge_raw.json").read_text(encoding="utf-8"))
     out = []
     for p in raw:
-        key = (p["model"], p["prompt"], p.get("mode", ""), p.get("title", ""))
+        key = k(p["model"], p["prompt"], p.get("mode"), p.get("sample", 0), p.get("batch"))
         if key in abc_by_key and overall.get(key) is not None:
             p["_abc"] = abc_by_key[key]
             p["_overall"] = overall[key]

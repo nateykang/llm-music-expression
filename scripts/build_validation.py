@@ -37,18 +37,21 @@ def _f(x):
 
 
 def load_judged() -> list[dict]:
-    """judge.csv rows (free-form) joined to their ABC from the batch manifests."""
+    """judge.csv rows (free-form) joined to their ABC from the batch manifests.
+    Keys include sample+batch — models reuse titles across samples, so a
+    title-only join hands a piece some sibling sample's notation."""
     abc_by_key = {}
     for fn in ROOT.glob("docs/data/2026*/data.json"):
         m = json.loads(fn.read_text(encoding="utf-8"))
         for p in m.get("pieces", []):
             if p.get("ok") and p.get("abc"):
-                abc_by_key[(p["model"], p["prompt"], p.get("mode", ""), p.get("title", ""))] = p["abc"]
+                abc_by_key[(p["model"], p["prompt"], p.get("mode", ""),
+                            str(p.get("sample", 0)), fn.parent.name)] = p["abc"]
     rows = []
     for r in csv.DictReader((ROOT / "docs/analysis/judge.csv").open(encoding="utf-8")):
         if r["prompt"] != "free-form":
             continue
-        key = (r["model"], r["prompt"], r["mode"], r["title"])
+        key = (r["model"], r["prompt"], r["mode"], str(r.get("sample") or 0), r.get("batch", ""))
         if key in abc_by_key and _f(r.get("overall")) is not None:
             r["_abc"] = abc_by_key[key]
             rows.append(r)
@@ -228,7 +231,8 @@ def main():
     key = {}
     for i, r in enumerate(sample):
         pid = f"P{i + 1:02d}"
-        key[pid] = {"model": r["model"], "prompt": r["prompt"], "mode": r["mode"], "title": r["title"],
+        key[pid] = {"model": r["model"], "prompt": r["prompt"], "mode": r["mode"],
+                    "sample": r.get("sample", ""), "batch": r.get("batch", ""), "title": r["title"],
                     "judge": {k: _f(r.get(k)) for k in [d[0] for d in RATED] + ["overall"]}}
     (out_dir / "sample_key.json").write_text(json.dumps(key, indent=1), encoding="utf-8")
 
