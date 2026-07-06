@@ -79,6 +79,9 @@ def main():
     ap.add_argument("--out", default=str(ROOT / "docs/analysis/music2emo_full.json"))
     ap.add_argument("--emb-out", default=str(ROOT / "docs/analysis/music2emo_embeddings.npz"))
     ap.add_argument("--model", default=None, help="only process this generating model")
+    ap.add_argument("--prompt", default="free-form",
+                    help="prompt to process, or 'all' for every prompt (the multi-prompt "
+                         "sweeps enable prompt-vs-PC analyses in embedding space)")
     ap.add_argument("--append", action="store_true",
                     help="merge into existing json/npz instead of overwriting")
     args = ap.parse_args()
@@ -90,7 +93,9 @@ def main():
         if not dj.exists():
             continue
         for p in json.load(open(dj))["pieces"]:
-            if p.get("prompt") != "free-form" or not p.get("ok"):
+            if not p.get("ok"):
+                continue
+            if args.prompt != "all" and p.get("prompt") != args.prompt:
                 continue
             if args.model and p.get("model") != args.model:
                 continue
@@ -101,11 +106,18 @@ def main():
 
     m = Music2emo()
     results, embs, idx = [], [], []
+    seen_keys = set()
     for i, (p, bd, ap_) in enumerate(pieces):
         # sample + batch make the identity unique: models reuse titles across
         # samples, and the same cell can recur in different batches.
-        rec = {"model": p["model"], "mode": p.get("mode"), "title": p.get("title"),
-               "sample": p.get("sample"), "batch": bd.name}
+        rec = {"model": p["model"], "prompt": p.get("prompt"), "mode": p.get("mode"),
+               "title": p.get("title"), "sample": p.get("sample"), "batch": bd.name}
+        ikey = "%s|%s|%s|%s" % (rec["model"], rec["mode"], rec["title"], rec["sample"])
+        if ikey in seen_keys:
+            raise SystemExit(f"npz index collision for {ikey!r} (same model/mode/title/sample "
+                             "under two prompts or batches) — the embedding index key needs a "
+                             "revision before this corpus can be extracted")
+        seen_keys.add(ikey)
         try:
             out = m.predict(str(ap_))
             rec["valence"] = float(out["valence"])
