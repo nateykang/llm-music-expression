@@ -103,7 +103,8 @@ def _affect_table(recs, dim):
             ("Music2Emo", f"MERT audio {dim}, 1–9"),
             ("gemini read", f"gemini judging the blinded NOTATION — {dim}, 1–5"),
             ("gemini hear", f"gemini judging the rendered AUDIO — {dim}, 1–5"),
-            ("gpt-audio", f"gpt-audio judging the AUDIO — {dim}, 1–5 (n≤600)")]
+            ("gpt-audio", f"gpt-audio judging the AUDIO — {dim}, 1–5 (fewer pieces "
+                          "covered than gemini; see the scope line for counts)")]
     return table(cols, rows)
 
 
