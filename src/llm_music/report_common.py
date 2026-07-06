@@ -151,19 +151,6 @@ def scorebar(v, lo=1.0, hi=5.0, fmt="{:.2f}"):
             f"<b>{fmt.format(v)}</b></span>")
 
 
-def stat_cards(cards):
-    """The findings strip: cards = [(value, label, sub)] — value is the big
-    number/phrase, label says what it is, sub is an optional qualifier. All
-    values must be COMPUTED from the data being rendered, not hand-written,
-    so the strip can never drift from the tables below it."""
-    out = []
-    for value, label, sub in cards:
-        out.append(f"<div class='statcard'><div class='statval'>{value}</div>"
-                   f"<div class='statlabel'>{label}</div>"
-                   + (f"<div class='statsub'>{sub}</div>" if sub else "") + "</div>")
-    return "<div class='statgrid'>" + "".join(out) + "</div>"
-
-
 def details_section(summary_html, body_html):
     """Progressive disclosure for completeness-not-headline content (e.g. the
     MFCC table): collapsed by default, one click to expand."""
@@ -210,13 +197,6 @@ SHARED_CSS = """
   table.sortable th { cursor: pointer; user-select: none; white-space: nowrap; }
   table.sortable th[data-dir=asc]::after { content: ' ▲'; font-size: .6em; opacity: .6; }
   table.sortable th[data-dir=desc]::after { content: ' ▼'; font-size: .6em; opacity: .6; }
-  .statgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-    gap: 10px; margin: 1.2rem 0 1.6rem; }
-  .statcard { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
-    padding: .8rem .9rem; }
-  .statval { font-size: 1.45rem; font-weight: 700; color: var(--fg); line-height: 1.15; }
-  .statlabel { font-size: .82rem; color: var(--muted); margin-top: .25rem; }
-  .statsub { font-size: .74rem; color: var(--muted); opacity: .8; margin-top: .15rem; }
   .scorebar { position: relative; display: inline-block; min-width: 84px; padding: 1px 6px; }
   .scorebar-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px;
     background: color-mix(in srgb, var(--accent) 22%, transparent); }
