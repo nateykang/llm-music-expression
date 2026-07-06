@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0"]
+dev = ["pytest>=8.0", "scikit-learn>=1.4", "matplotlib>=3.8"]
 
 [project.scripts]
 llm-music = "llm_music.cli:main"
