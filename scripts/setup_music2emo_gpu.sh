@@ -20,11 +20,17 @@ pip install -q torch torchaudio --index-url https://download.pytorch.org/whl/cu1
 python -c "import torch; print('torch', torch.__version__, '| cuda:', torch.cuda.is_available())"
 
 echo "### Music2Emotion repo + reqs (minus its pinned torch) + librosa ###"
-[ -d ~/Music2Emotion ] || git clone --depth 1 https://github.com/AMAAI-Lab/Music2Emotion.git ~/Music2Emotion
+# Pinned to the commit the published measurements were made with (Jul 2026);
+# the patch script asserts its assumptions, but pinning removes the drift risk.
+M2E_COMMIT="${M2E_COMMIT:-main}"
+[ -d ~/Music2Emotion ] || git clone https://github.com/AMAAI-Lab/Music2Emotion.git ~/Music2Emotion
 cd ~/Music2Emotion
+[ "$M2E_COMMIT" != "main" ] && git checkout -q "$M2E_COMMIT"
+echo "Music2Emotion @ $(git rev-parse HEAD)  <- record this with the run"
 grep -vE "^(torch==|torchaudio==)" requirements.txt > /tmp/req.txt
 pip install -q -r /tmp/req.txt
-pip install -q librosa
+pip install -q "librosa>=0.10,<0.12"
+python -c "import librosa; print('librosa', librosa.__version__)"
 
 echo "### patch music2emo.py + verify predict() exposes the full key set ###"
 cp "$REPO/scripts/music2emo_patch.py" ~/Music2Emotion/

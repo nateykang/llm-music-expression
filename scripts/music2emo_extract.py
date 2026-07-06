@@ -31,6 +31,13 @@ import numpy as np  # noqa: E402
 import librosa  # noqa: E402
 from music2emo import Music2emo  # noqa: E402
 
+# MERT weights are frozen, but seed everything anyway so any stochastic corner
+# (dropout left on, kernel nondeterminism fallbacks) can't drift between runs.
+np.random.seed(0)
+torch.manual_seed(0)
+if torch.cuda.is_available():
+    torch.cuda.manual_seed_all(0)
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -41,7 +48,8 @@ def lib_feats(path: str) -> dict:
     f = {}
     try:
         f["lib_tempo"] = float(np.atleast_1d(librosa.beat.beat_track(y=y, sr=sr)[0])[0])
-    except Exception:
+    except Exception as e:
+        print(f"  beat_track failed on {path}: {e}", flush=True)
         f["lib_tempo"] = None
     f["spec_centroid"] = float(np.mean(librosa.feature.spectral_centroid(y=y, sr=sr)))
     f["spec_bandwidth"] = float(np.mean(librosa.feature.spectral_bandwidth(y=y, sr=sr)))
@@ -88,13 +96,16 @@ def main():
                 continue
             ar = p.get("audio")
             if ar and (bd / ar).exists():
-                pieces.append((p, bd / ar))
+                pieces.append((p, bd, bd / ar))
     print("%d pieces to process" % len(pieces), flush=True)
 
     m = Music2emo()
     results, embs, idx = [], [], []
-    for i, (p, ap_) in enumerate(pieces):
-        rec = {"model": p["model"], "mode": p.get("mode"), "title": p.get("title"), "sample": p.get("sample")}
+    for i, (p, bd, ap_) in enumerate(pieces):
+        # sample + batch make the identity unique: models reuse titles across
+        # samples, and the same cell can recur in different batches.
+        rec = {"model": p["model"], "mode": p.get("mode"), "title": p.get("title"),
+               "sample": p.get("sample"), "batch": bd.name}
         try:
             out = m.predict(str(ap_))
             rec["valence"] = float(out["valence"])
@@ -108,8 +119,9 @@ def main():
             rec["chord_distinct"] = len(set(nn))
             rec["chord_changes"] = sum(1 for j in range(1, len(ch)) if ch[j] != ch[j - 1])
             embs.append(out["mert_embedding"])
-            idx.append("%s|%s|%s" % (rec["model"], rec["mode"], rec["title"]))
+            idx.append("%s|%s|%s|%s" % (rec["model"], rec["mode"], rec["title"], rec["sample"]))
         except Exception as e:
+            print(f"  music2emo failed on {ap_}: {str(e)[:100]}", flush=True)
             rec["error"] = str(e)[:150]
         try:
             rec.update(lib_feats(str(ap_)))
