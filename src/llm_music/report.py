@@ -133,7 +133,8 @@ def load_features(data_dir: Path) -> list[dict]:
             for r in csv.DictReader(f):
                 r["_batch"] = batch
                 for k in ("valence", "arousal", "tempo_bpm", "scale_consistency",
-                          "pitch_class_entropy", "note_density", "length_seconds",
+                          "pitch_class_entropy", "pitch_in_scale_rate",
+                          "note_density", "length_seconds",
                           "pitch_range", "polyphony", "n_voices",
                           "consonance_rate", "chord_tone_rate", "mode_match",
                           "chord_tonal_distance", "structureness",
@@ -231,12 +232,14 @@ def make_charts(rows: list[dict], out_dir: Path) -> list[tuple[str, str]]:
         f.savefig(out_dir / name, facecolor=BG)
         plt.close(f)
 
-    # 1. Mode preference per model (minor vs major fraction).
+    # 1. Mode preference per model (minor vs major fraction). Uses the same
+    # declared-preferred mode (key_mode_best) as the summary tables' minor%,
+    # so chart and table measure the same thing.
     f, ax = fig()
     ys = range(len(models))
-    minor = [sum(r.get("key_mode") == "minor" for r in rows if r["model"] == m)
+    minor = [sum(r.get("key_mode_best") == "minor" for r in rows if r["model"] == m)
              / max(1, sum(r["model"] == m for r in rows)) for m in models]
-    major = [sum(r.get("key_mode") == "major" for r in rows if r["model"] == m)
+    major = [sum(r.get("key_mode_best") == "major" for r in rows if r["model"] == m)
              / max(1, sum(r["model"] == m for r in rows)) for m in models]
     ax.barh(list(ys), minor, color="#5a6b8a", label="minor")
     ax.barh(list(ys), major, left=minor, color="#c08a3a", label="major")

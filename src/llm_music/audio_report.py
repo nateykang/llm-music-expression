@@ -186,11 +186,14 @@ def render_audio_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
         return out_path
     m2e = [e for e in json.loads(m2e_path.read_text(encoding="utf-8")) if "valence" in e]
 
+    # Keyed with the sample index: models often reuse titles across samples
+    # (llama titled 28 of 30 free-form samples identically), so a title-only key
+    # would hand every same-titled piece one arbitrary sample's features.
     feats = {}
     for csvf in sorted(data_dir.glob("*/features.csv")):
         for r in csv.DictReader(csvf.open(encoding="utf-8")):
             if r.get("prompt") == "free-form":
-                feats[(r["model"], r.get("mode"), r.get("title"))] = r
+                feats[(r["model"], r.get("mode"), r.get("title"), str(r.get("sample") or 0))] = r
 
     ja = analysis / "judge_audio_llm.json"
     read, hear, gpt = {}, {}, {}
@@ -207,7 +210,7 @@ def render_audio_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
     recs = []
     for e in m2e:
         k4 = (e["model"], e.get("mode"), e.get("title"), str(e.get("sample")))
-        f = feats.get((e["model"], e.get("mode"), e.get("title")))
+        f = feats.get((e["model"], e.get("mode"), e.get("title"), str(e.get("sample") or 0)))
         rec = dict(e)
         rec["comp_v"] = fnum(f.get("valence")) if f else None
         rec["comp_a"] = fnum(f.get("arousal")) if f else None

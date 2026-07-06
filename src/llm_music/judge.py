@@ -410,15 +410,6 @@ def judge_piece(client, piece: dict, batch_dir: Path, include_note: bool = False
     return out or None
 
 
-def _features_index(batch_dir: Path) -> dict:
-    import csv
-    f = batch_dir / "features.csv"
-    if not f.exists():
-        return {}
-    return {(r["model"], r["prompt"], r.get("mode", ""), r.get("title", "")): r
-            for r in csv.DictReader(f.open(encoding="utf-8"))}
-
-
 def judge_corpus(data_dir: Path, judge_names: list[str], *, prompt: str | None = None,
                  limit: int | None = None, workers: int = 6, exclude_self: bool = True,
                  include_note: bool = False, out_name: str | None = None):

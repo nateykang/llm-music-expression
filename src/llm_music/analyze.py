@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import csv
 import json
+import logging
 import re
 import tempfile
 import warnings
@@ -26,9 +27,18 @@ from pathlib import Path
 
 warnings.filterwarnings("ignore")
 
+log = logging.getLogger(__name__)
+
+# Bump whenever a metric's definition/inputs change, so stale features.csv files
+# (and the Bach reference cache) are detectable instead of silently blending
+# old and new numbers. History: 1 = original; 2 = gchordoff for ABC features,
+# pitch_in_scale_rate actually computed, groove uses the real time signature,
+# valence None (not 0) for unknown mode, sample/batch identity columns.
+FEATURES_VERSION = 2
+
 # Columns emitted per piece, in order.
 FIELDS = [
-    "model", "prompt", "mode", "title",
+    "model", "prompt", "mode", "sample", "batch", "title",
     "key_tonic", "key_mode", "key_confidence",
     "key_declared_tonic", "key_declared_mode", "key_mode_best", "mode_match",
     "scale_consistency", "pitch_class_entropy", "pitch_entropy", "pitch_in_scale_rate",
@@ -41,6 +51,7 @@ FIELDS = [
     "n_pitches_used", "pitch_range",
     "tempo_bpm", "n_notes", "length_seconds", "note_density",
     "valence", "arousal", "affect_quadrant",
+    "features_version",
 ]
 
 
@@ -325,7 +336,11 @@ def extract_features(piece: dict, batch_dir: Path) -> dict | None:
         mus, score = _load(piece, batch_dir, Path(td))
     if mus is None or score is None:
         return None
-    return _compute_features(mus, score, piece)
+    feats = _compute_features(mus, score, piece)
+    if feats:
+        feats["batch"] = batch_dir.name
+        feats["features_version"] = FEATURES_VERSION
+    return feats
 
 
 def _compute_features(mus, score, meta) -> dict | None:
@@ -335,6 +350,8 @@ def _compute_features(mus, score, meta) -> dict | None:
     def safe(fn, *args):
         try:
             v = float(fn(mus, *args))
+        except TypeError:
+            raise  # wrong call signature is a programming error, not piece data
         except Exception:
             return None
         return None if v != v else round(v, 4)  # NaN (e.g. 0/0 on a note-less piece) -> None
@@ -353,8 +370,12 @@ def _compute_features(mus, score, meta) -> dict | None:
         key = score.analyze("key")
         tonic, mode = key.tonic.name, key.mode
         key_conf = round(float(key.tonalCertainty()), 3)
+        root_pc = key.tonic.pitchClass
     except Exception:
-        tonic, mode, key_conf = "?", "?", None
+        tonic, mode, key_conf, root_pc = "?", "?", None, None
+    # In-scale rate needs the key as input (root pitch class + mode).
+    pitch_in_scale = (safe(muspy.pitch_in_scale_rate, root_pc, mode)
+                      if root_pc is not None and mode in ("major", "minor") else None)
     mm = score.recurse().getElementsByClass(m21tempo.MetronomeMark).first()
     bpm = float(mm.number) if mm and mm.number else 120.0
     n_notes = len(list(score.recurse().notes))
@@ -362,7 +383,12 @@ def _compute_features(mus, score, meta) -> dict | None:
     length_s = length_q * 60.0 / bpm
     notes_per_beat = n_notes / length_q                 # tempo-invariant rhythmic density
 
-    resolution = (mus.resolution or 480) * 4  # assume 4 beats/measure for grooving
+    # Groove needs ticks per measure — read the real time signature (a 3/4 piece
+    # measured with a 4/4 grid scores spuriously low).
+    from music21 import meter as m21meter
+    ts = score.recurse().getElementsByClass(m21meter.TimeSignature).first()
+    bar_quarters = float(ts.barDuration.quarterLength) if ts else 4.0
+    resolution = int((mus.resolution or 480) * bar_quarters)
 
     # Declared (K: field) vs detected (Krumhansl–Schmuckler) key. Declared is the
     # model's stated intent — more reliable for "what key did it choose" — so it
@@ -374,11 +400,13 @@ def _compute_features(mus, score, meta) -> dict | None:
     # affect proxy: mode -> valence; tempo + rhythmic density -> arousal (Russell
     # circumplex). Density is notes-PER-BEAT (not per-second) so it stays independent
     # of tempo — otherwise the two arousal terms would both encode speed.
-    valence = 0 if best_mode in (None, "?") else (1 if best_mode == "major" else -1)
+    # Unknown mode -> None (not 0), so it drops out of averages instead of
+    # quietly pulling per-model means toward neutral.
+    valence = None if best_mode in (None, "?") else (1 if best_mode == "major" else -1)
     tempo_norm = max(0.0, min(1.0, (bpm - 50) / (160 - 50)))
     dens_norm = max(0.0, min(1.0, notes_per_beat / 4.0))
     arousal = round(0.6 * tempo_norm + 0.4 * dens_norm, 3)
-    quadrant = ("unknown" if valence == 0
+    quadrant = ("unknown" if valence is None
                 else "happy/excited" if (valence > 0 and arousal >= 0.5)
                 else "serene/content" if (valence > 0)
                 else "angry/tense" if (arousal >= 0.5)
@@ -386,7 +414,8 @@ def _compute_features(mus, score, meta) -> dict | None:
 
     return {
         "model": meta["model"], "prompt": meta["prompt"],
-        "mode": meta.get("mode"), "title": meta.get("title", ""),
+        "mode": meta.get("mode"), "sample": meta.get("sample", 0),
+        "title": meta.get("title", ""),
         "key_tonic": tonic, "key_mode": mode,
         "key_confidence": key_conf,
         "key_declared_tonic": decl_tonic or "", "key_declared_mode": decl_mode or "",
@@ -394,7 +423,7 @@ def _compute_features(mus, score, meta) -> dict | None:
         "scale_consistency": safe(muspy.scale_consistency),
         "pitch_class_entropy": safe(muspy.pitch_class_entropy),
         "pitch_entropy": safe(muspy.pitch_entropy),
-        "pitch_in_scale_rate": safe(muspy.pitch_in_scale_rate),
+        "pitch_in_scale_rate": pitch_in_scale,
         "consonance_rate": consonance_rate, "chord_tone_rate": chord_tone_rate,
         "chord_tonal_distance": chord_tonal_distance, "structureness": structureness,
         "polyphony": safe(muspy.polyphony),
@@ -457,6 +486,9 @@ def analyze_batch(batch_dir: Path) -> list[dict]:
         feats = extract_features(p, batch_dir)
         if feats:
             rows.append(feats)
+        else:
+            log.warning("%s: skipped %s × %s s%s — MIDI unreadable or piece degenerate",
+                        batch_dir.name, p.get("model"), p.get("prompt"), p.get("sample", 0))
     return rows
 
 

@@ -100,6 +100,24 @@ def cmd_analyze(args) -> int:
 
     from .analyze import analyze_batch, write_csv
 
+    if args.all:
+        base = Path(args.data_dir)
+        batches = sorted(p for p in base.iterdir() if p.is_dir() and (p / "data.json").exists())
+        if not batches:
+            print(f"no batches under {base}")
+            return 1
+        total = 0
+        for b in batches:
+            rows = analyze_batch(b)
+            if rows:
+                write_csv(rows, b / "features.csv")
+            total += len(rows)
+            print(f"  {b.name}: {len(rows)} rows", flush=True)
+        print(f"Wrote features for {total} pieces across {len(batches)} batches")
+        return 0
+    if not args.batch:
+        print("error: give a batch path or use --all", file=sys.stderr)
+        return 2
     batch = Path(args.batch)
     rows = analyze_batch(batch)
     if not rows:
@@ -139,11 +157,28 @@ def cmd_report(args) -> int:
     from .report import (key_distributions, load_features, load_reliability,
                          make_charts, make_key_chart, render_html)
 
+    from .analyze import FEATURES_VERSION
+
     data_dir = Path(args.data_dir)
     rows = load_features(data_dir)
     if not rows:
         print(f"No features.csv found under {data_dir}. Run `llm-music analyze <batch>` first.")
         return 1
+    # Batches whose features.csv predates the current metric definitions would
+    # silently blend old and new numbers — flag them instead.
+    stale = sorted({r["_batch"] for r in rows
+                    if str(r.get("features_version") or "") != str(FEATURES_VERSION)})
+    if stale:
+        print(f"warning: {len(stale)} batch(es) analyzed with an older feature version "
+              f"(current v{FEATURES_VERSION}) — run `llm-music analyze --all`:")
+        for b in stale:
+            print(f"  {b}")
+    unanalyzed = sorted(p.name for p in data_dir.iterdir()
+                        if p.is_dir() and (p / "data.json").exists()
+                        and not (p / "features.csv").exists())
+    if unanalyzed:
+        print(f"warning: {len(unanalyzed)} batch(es) have no features.csv (their pieces are "
+              f"missing from the dashboard): {', '.join(unanalyzed)}")
     analysis = data_dir.parent / "analysis"
     analysis.mkdir(parents=True, exist_ok=True)
     charts = make_charts(rows, analysis)
@@ -152,17 +187,23 @@ def cmd_report(args) -> int:
     reliability = load_reliability(data_dir)
 
     # Bach-chorale reference (human functional-harmony baseline) — cached, since
-    # computing the metric panel on the chorales is slow.
+    # computing the metric panel on the chorales is slow. The cache is keyed to
+    # FEATURES_VERSION so metric changes invalidate it instead of pinning the
+    # reference row to whatever the code did when the cache was first written.
     import json as _json
 
     from .analyze import bach_reference
     bach_cache = analysis / "bach_reference.json"
+    bach_rows = None
     if bach_cache.exists():
-        bach_rows = _json.loads(bach_cache.read_text(encoding="utf-8"))
-    else:
-        print("computing Bach-chorale reference (first run, ~1-2 min)…")
+        cached = _json.loads(bach_cache.read_text(encoding="utf-8"))
+        if isinstance(cached, dict) and cached.get("version") == FEATURES_VERSION:
+            bach_rows = cached["rows"]
+    if bach_rows is None:
+        print(f"computing Bach-chorale reference (feature version v{FEATURES_VERSION}, ~1-2 min)…")
         bach_rows = bach_reference()
-        bach_cache.write_text(_json.dumps(bach_rows), encoding="utf-8")
+        bach_cache.write_text(_json.dumps({"version": FEATURES_VERSION, "rows": bach_rows}),
+                              encoding="utf-8")
 
     out = data_dir.parent / "results.html"
     render_html(rows, charts, out, reliability, dists, bach_rows)
@@ -234,7 +275,10 @@ def build_parser() -> argparse.ArgumentParser:
     pm.set_defaults(func=cmd_models)
 
     pa = sub.add_parser("analyze", help="extract standard metrics from a batch → features.csv")
-    pa.add_argument("batch", help="path to a docs/data/<batch> folder")
+    pa.add_argument("batch", nargs="?", help="path to a docs/data/<batch> folder")
+    pa.add_argument("--all", action="store_true",
+                    help="re-analyze every batch under --data-dir (run after metric changes)")
+    pa.add_argument("--data-dir", default="docs/data")
     pa.add_argument("--summary-prompt", default="free-form",
                     help="prompt to base the per-model bias readout on")
     pa.set_defaults(func=cmd_analyze)
