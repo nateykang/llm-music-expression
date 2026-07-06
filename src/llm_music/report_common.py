@@ -91,9 +91,20 @@ def tip(label, tip_text):
 
 
 def cell(v, kind):
-    """Format a value for a table cell: text | int | pct | f0 | f1 | f2."""
+    """Format a value for a table cell: text | int | pct | f0 | f1 | f2.
+    A (mean, sd) tuple renders as 'mean ±sd' with the sd de-emphasized; sorting
+    still works because the mean leads the cell text."""
     if v is None:
         return "—"
+    if isinstance(v, tuple):
+        m, sd = v
+        if m is None:
+            return "—"
+        main = cell(m, kind)
+        if sd is None:
+            return main
+        spread = f"{sd * 100:.0f}" if kind == "pct" else cell(sd, kind)
+        return f"{main} <span class='sd'>±{spread}</span>"
     if kind == "text":
         return html.escape(str(v))
     if kind == "int":
@@ -128,6 +139,36 @@ def heat(v, scale=0.55):
     a = min(0.5, abs(v) / scale * 0.5)
     rgb = "46,160,67" if v >= 0 else "207,90,80"
     return f"<td style='background:rgba({rgb},{a:.2f})'>{v:+.2f}</td>"
+
+
+def scorebar(v, lo=1.0, hi=5.0, fmt="{:.2f}"):
+    """A cell that shows a value with a proportional bar behind it — makes a
+    ranking column readable at a glance without a separate chart."""
+    if v is None:
+        return "—"
+    pct = max(0.0, min(1.0, (v - lo) / (hi - lo))) * 100
+    return (f"<span class='scorebar'><span class='scorebar-fill' style='width:{pct:.0f}%'></span>"
+            f"<b>{fmt.format(v)}</b></span>")
+
+
+def stat_cards(cards):
+    """The findings strip: cards = [(value, label, sub)] — value is the big
+    number/phrase, label says what it is, sub is an optional qualifier. All
+    values must be COMPUTED from the data being rendered, not hand-written,
+    so the strip can never drift from the tables below it."""
+    out = []
+    for value, label, sub in cards:
+        out.append(f"<div class='statcard'><div class='statval'>{value}</div>"
+                   f"<div class='statlabel'>{label}</div>"
+                   + (f"<div class='statsub'>{sub}</div>" if sub else "") + "</div>")
+    return "<div class='statgrid'>" + "".join(out) + "</div>"
+
+
+def details_section(summary_html, body_html):
+    """Progressive disclosure for completeness-not-headline content (e.g. the
+    MFCC table): collapsed by default, one click to expand."""
+    return (f"<details class='lowlevel'><summary>{summary_html}</summary>"
+            f"{body_html}</details>")
 
 
 # ---------- page skeleton ----------
@@ -169,6 +210,26 @@ SHARED_CSS = """
   table.sortable th { cursor: pointer; user-select: none; white-space: nowrap; }
   table.sortable th[data-dir=asc]::after { content: ' ▲'; font-size: .6em; opacity: .6; }
   table.sortable th[data-dir=desc]::after { content: ' ▼'; font-size: .6em; opacity: .6; }
+  .statgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 10px; margin: 1.2rem 0 1.6rem; }
+  .statcard { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: .8rem .9rem; }
+  .statval { font-size: 1.45rem; font-weight: 700; color: var(--fg); line-height: 1.15; }
+  .statlabel { font-size: .82rem; color: var(--muted); margin-top: .25rem; }
+  .statsub { font-size: .74rem; color: var(--muted); opacity: .8; margin-top: .15rem; }
+  .scorebar { position: relative; display: inline-block; min-width: 84px; padding: 1px 6px; }
+  .scorebar-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px;
+    background: color-mix(in srgb, var(--accent) 22%, transparent); }
+  .scorebar b { position: relative; }
+  details.lowlevel { margin: 1.2rem 0; border: 1px solid var(--border); border-radius: 8px;
+    padding: .5rem .9rem; background: var(--card); }
+  details.lowlevel > summary { cursor: pointer; color: var(--muted); font-size: .92rem;
+    font-weight: 600; }
+  details.lowlevel[open] > summary { margin-bottom: .5rem; }
+  details.lowlevel h2 { margin-top: .6rem; font-size: 1.05rem; }
+  .toc { font-size: .8rem; color: var(--muted); margin: .2rem 0 1rem; line-height: 1.9; }
+  .toc a { color: var(--accent); text-decoration: none; white-space: nowrap; margin-right: .9rem; }
+  .sd { color: var(--muted); font-size: .78em; font-weight: 400; }
 """
 
 # Pane toggle (calls the optional window.__onModeChange hook, e.g. the key widget),
@@ -212,6 +273,24 @@ SHARED_JS = r"""
     });
   }
   document.querySelectorAll('table.sortable').forEach(makeSortable);
+
+  // Jump nav: long pages get a compact section index built from their h2s
+  // (skipping ones inside collapsed low-level <details>).
+  var h2s = Array.prototype.filter.call(document.querySelectorAll('.wrap > h2, .wrap h2'), function(h){
+    return !h.closest('details.lowlevel');
+  });
+  if (h2s.length >= 4){
+    var toc = document.createElement('nav'); toc.className = 'toc';
+    h2s.forEach(function(h, i){
+      if (!h.id) h.id = 'sec-' + (i + 1);
+      var a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = (h.childNodes[0] && h.childNodes[0].textContent || h.textContent).trim();
+      toc.appendChild(a);
+    });
+    var anchor = document.querySelector('.mode-toggle') || document.querySelector('.wrap h1');
+    if (anchor) anchor.insertAdjacentElement('afterend', toc);
+  }
 
   var box = document.createElement('div'); box.id = 'tipbox'; document.body.appendChild(box);
   function show(el){

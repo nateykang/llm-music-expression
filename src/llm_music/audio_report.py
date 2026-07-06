@@ -24,8 +24,9 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from statistics import mean
 
-from .report_common import (MODE_TOGGLE, SHORT, fnum, group_by_model,
-                            mode_filter, page, paned, table, toggle)
+from .report_common import (MODE_TOGGLE, SHORT, details_section, fnum,
+                            group_by_model, mode_filter, page, paned,
+                            stat_cards, table, toggle)
 
 QUAL = ["coherence", "harmony", "rhythm", "structure", "melody", "emotion", "creativity", "naturalness"]
 NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
@@ -260,24 +261,51 @@ def render_audio_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
                 "<p class='scope'>From the audio chord-recognition → key pipeline (independent of the "
                 "symbolic notation): key mode and chord statistics.</p>"
                 + paned(lambda mo: _harmony_table(mode_filter(recs, mo))))
-    secs.append("<h2>Spectral shape &amp; dynamics by model <span class='sub'>(librosa)</span></h2>"
-                "<p class='scope'>Timbre-shape, loudness, and rhythm-density descriptors of the "
-                "rendered audio.</p>"
-                + paned(lambda mo: _feature_table(mode_filter(recs, mo), SPECTRAL)))
-    secs.append("<h2>Timbre — MFCC by model <span class='sub'>(1–13)</span></h2>"
-                "<p class='scope'>Mel-frequency cepstral coefficients — the standard timbre "
-                "fingerprint. Low-level; here for completeness.</p>"
-                + paned(lambda mo: _feature_table(mode_filter(recs, mo), MFCC)))
-    secs.append("<h2>Pitch-class energy — chroma by model</h2>"
-                "<p class='scope'>Mean energy per pitch class (C…B) in the audio — which notes "
-                "dominate, independent of octave.</p>"
-                + paned(lambda mo: _feature_table(mode_filter(recs, mo), CHROMA)))
-    secs.append("<h2>Acoustic profile by generation mode</h2>"
-                "<p class='scope'>The same audio suite cut by representation (all modes in one view).</p>"
-                + _acoustic_by_mode(recs)
-                + "<div class='callout' style='font-size:.82rem'>Music2Emo also produces a "
-                  "<b>1536-dim MERT embedding</b> per piece (in <code>music2emo_embeddings.npz</code>) — "
-                  "not tabular, so not shown here; available for similarity / clustering work.</div>")
+    # Low-level acoustic suites: completeness content, collapsed by default so
+    # the affect and quality comparisons above stay the page's focus.
+    secs.append(details_section(
+        "Spectral shape &amp; dynamics by model (librosa — low-level)",
+        "<h2>Spectral shape &amp; dynamics by model <span class='sub'>(librosa)</span></h2>"
+        "<p class='scope'>Timbre-shape, loudness, and rhythm-density descriptors of the "
+        "rendered audio.</p>"
+        + paned(lambda mo: _feature_table(mode_filter(recs, mo), SPECTRAL))))
+    secs.append(details_section(
+        "Timbre — MFCC by model (low-level)",
+        "<h2>Timbre — MFCC by model <span class='sub'>(1–13)</span></h2>"
+        "<p class='scope'>Mel-frequency cepstral coefficients — the standard timbre "
+        "fingerprint. Low-level; here for completeness.</p>"
+        + paned(lambda mo: _feature_table(mode_filter(recs, mo), MFCC))))
+    secs.append(details_section(
+        "Pitch-class energy — chroma by model (low-level)",
+        "<h2>Pitch-class energy — chroma by model</h2>"
+        "<p class='scope'>Mean energy per pitch class (C…B) in the audio — which notes "
+        "dominate, independent of octave.</p>"
+        + paned(lambda mo: _feature_table(mode_filter(recs, mo), CHROMA))))
+    secs.append(details_section(
+        "Acoustic profile by generation mode (low-level)",
+        "<h2>Acoustic profile by generation mode</h2>"
+        "<p class='scope'>The same audio suite cut by representation (all modes in one view).</p>"
+        + _acoustic_by_mode(recs)
+        + "<div class='callout' style='font-size:.82rem'>Music2Emo also produces a "
+          "<b>1536-dim MERT embedding</b> per piece (in <code>music2emo_embeddings.npz</code>) — "
+          "not tabular, so not shown here; available for similarity / clustering work.</div>"))
+
+    # Findings strip — computed from the same records as the tables below.
+    both = [r for r in recs if r.get("read") and r.get("hear")]
+    shift = (_m([_src(r, "hear", "valence") for r in both])
+             - _m([_src(r, "read", "valence") for r in both])) if both else None
+    keyed = [r for r in recs if r.get("audio_key")]
+    minor_audio = 100 * sum(1 for r in keyed if r["audio_key"].endswith("minor")) / len(keyed) if keyed else 0
+    top_mood = Counter(t for r in recs for t in r.get("moods", [])).most_common(1)
+    cards = stat_cards([
+        (f"{n}", "pieces measured", f"gemini read {n_read} · hear {n_hear} · gpt-audio {n_gpt}"),
+        (f"{shift:+.2f}" if shift is not None else "—", "hear − read valence (gemini)",
+         f"same pieces, same judge, n={len(both)}"),
+        (f"{minor_audio:.0f}% minor", "audio-derived key",
+         "from the chord-recognition pipeline"),
+        (top_mood[0][0] if top_mood else "—", "top Music2Emo mood tag",
+         f"tagged on {top_mood[0][1]} pieces" if top_mood else ""),
+    ])
 
     secs_html = "\n".join(secs)
     body = f"""<h1>What the audio says</h1>
@@ -288,6 +316,7 @@ def render_audio_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
      proxy. Scope: {n} free-form pieces (gemini read {n_read} · hear {n_hear} · gpt-audio {n_gpt}). Sort
      any column; the "Generation" toggle slices by representation. Generated by
      <code>llm-music audio-report</code>.</p>
+  {cards}
   {toggle(MODE_TOGGLE)}
   {secs_html}"""
     out_path.write_text(page("Audio emotion — musical inductive biases", "audio.html", body),
