@@ -245,6 +245,16 @@ def cmd_audio_report(args) -> int:
     return 0
 
 
+def cmd_embed_report(args) -> int:
+    from .embed_report import render_selfpref_html
+
+    data_dir = Path(args.data_dir)
+    analysis = data_dir.parent / "analysis"
+    out = render_selfpref_html(analysis, data_dir, data_dir.parent / "selfpref.html")
+    print(f"Wrote self-preference page → {out}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="llm-music", description=__doc__)
     p.add_argument("-q", "--quiet", action="store_true",
@@ -307,6 +317,11 @@ def build_parser() -> argparse.ArgumentParser:
     par = sub.add_parser("audio-report", help="build the audio-emotion analysis page (audio.html)")
     par.add_argument("--data-dir", default="docs/data")
     par.set_defaults(func=cmd_audio_report)
+
+    pe = sub.add_parser("embed-report",
+                        help="build the style-space & self-preference page (selfpref.html)")
+    pe.add_argument("--data-dir", default="docs/data")
+    pe.set_defaults(func=cmd_embed_report)
 
     prp = sub.add_parser("report", help="build the analysis dashboard (results.html + charts)")
     prp.add_argument("--data-dir", default="docs/data",
