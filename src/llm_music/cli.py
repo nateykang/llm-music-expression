@@ -255,6 +255,16 @@ def cmd_embed_report(args) -> int:
     return 0
 
 
+def cmd_genre_report(args) -> int:
+    from .genre_report import render_genre_html
+
+    data_dir = Path(args.data_dir)
+    analysis = data_dir.parent / "analysis"
+    out = render_genre_html(analysis, data_dir, data_dir.parent / "genre.html")
+    print(f"Wrote genre page → {out}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="llm-music", description=__doc__)
     p.add_argument("-q", "--quiet", action="store_true",
@@ -322,6 +332,11 @@ def build_parser() -> argparse.ArgumentParser:
                         help="build the style-space & self-preference page (selfpref.html)")
     pe.add_argument("--data-dir", default="docs/data")
     pe.set_defaults(func=cmd_embed_report)
+
+    pg = sub.add_parser("genre-report",
+                        help="build the human-corpora genre-bias page (genre.html)")
+    pg.add_argument("--data-dir", default="docs/data")
+    pg.set_defaults(func=cmd_genre_report)
 
     prp = sub.add_parser("report", help="build the analysis dashboard (results.html + charts)")
     prp.add_argument("--data-dir", default="docs/data",

@@ -162,7 +162,7 @@ def details_section(summary_html, body_html):
 
 TABS = [("index.html", "Browse outputs"), ("results.html", "Results &amp; analysis"),
         ("judge.html", "LLM judge"), ("audio.html", "Audio emotion"),
-        ("selfpref.html", "Self-preference")]
+        ("selfpref.html", "Self-preference"), ("genre.html", "Genre bias")]
 
 SHARED_CSS = """
   .wrap { max-width: 980px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
