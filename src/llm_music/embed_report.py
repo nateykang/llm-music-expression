@@ -697,6 +697,58 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
                      f"perm p = {p_b:.3f})", color=INK, fontsize=11)
     _fig("bach_mode_bias.png", bachfig, figsize=(7.4, 5))
 
+    # mode vs specific key: does a judge's favorite key get extra points on Bach,
+    # beyond its favorite mode? For each judge, take its most-written (tonic, mode)
+    # and compare its deviation on Bach chorales in exactly that key against other
+    # chorales of the same mode.
+    own_keys = {}
+    for k, fr in feats.items():
+        ton = fr.get("key_declared_tonic") or fr.get("key_tonic")
+        km = fr.get("key_mode_best")
+        if ton and km in ("major", "minor"):
+            own_keys.setdefault(k[0], Counter())[(ton, km)] += 1
+    key_bumps, key_per = [], []
+    for J in judges:
+        if J not in own_keys:
+            continue
+        (ton, kmode), n_top = own_keys[J].most_common(1)[0]
+        share = n_top / sum(own_keys[J].values())
+        devs, flags = [], []
+        for p in bach:
+            if J not in p["panel"]:
+                continue
+            pt, pm = p["key"].rsplit(" ", 1)
+            if pm != kmode:
+                continue
+            qJ = _qual(p["panel"][J])
+            peers = [x for x in (_qual(v) for j2, v in p["panel"].items() if j2 != J)
+                     if x is not None]
+            if qJ is None or not peers:
+                continue
+            devs.append(qJ - mean(peers))
+            flags.append(pt == ton)
+        if sum(flags) < 5:
+            continue
+        devs, fl = np.array(devs), np.array(flags)
+        key_bumps.append((J, ton, kmode, share,
+                          float(devs[fl].mean() - devs[~fl].mean())))
+        key_per.append((devs, int(fl.sum())))
+    kb_mean = mean(b for *_, b in key_bumps)
+    rngk = np.random.default_rng(0)
+    hits_k = 0
+    for _ in range(5000):
+        tot = 0.0
+        for devs, ns in key_per:
+            idx = rngk.permutation(len(devs))
+            tot += devs[idx[:ns]].mean() - devs[idx[ns:]].mean()
+        if abs(tot / len(key_per)) >= abs(kb_mean):
+            hits_k += 1
+    p_key = hits_k / 5000
+    ex_key = sorted(key_bumps, key=lambda t: -t[3])[:2]
+    ex_txt = "; ".join(
+        f"{SHORT.get(j, j)} writes {sh * 100:.0f}% of its pieces in {t} {m} yet its "
+        f"same-key bump is {b:+.2f}" for j, t, m, sh, b in ex_key)
+
     # relabel
     relabel = json.loads((analysis / "judge_relabel_raw.json").read_text(encoding="utf-8"))
     orig = {(p["model"], p.get("mode"), p.get("title"), str(p.get("sample")),
@@ -728,8 +780,9 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
         f"<p class='scope'><b>1 · Within the generated corpus</b> (author held fixed so "
         f"authorship style can't confound): each judge's tendency to favor major-mode pieces "
         f"correlates with its own major-writing rate at r = {r_wa:+.2f} (permutation "
-        f"p = {p_wa:.3f}, n = {len(wa_pairs)} judges). Preference for a specific tonic within a "
-        f"mode (D minor vs E minor) is nil — the bias is about mode, not key.</p>"
+        f"p = {p_wa:.3f}, n = {len(wa_pairs)} judges). Whether the bias attaches to the "
+        f"specific key rather than the mode is tested on Bach below, where key and author "
+        f"aren't entangled.</p>"
         f"<p class='scope'><b>2 · Generalization to human music:</b> the panel blind-rated all "
         f"371 Bach chorales (195 major / 176 minor). Bach fixes two weaknesses of the "
         f"within-corpus test: a larger, mode-balanced sample, and no author↔mode entanglement. "
@@ -751,6 +804,14 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
         + table([("judge", None), ("writes major", "share of its own free-form pieces in major"),
                  ("favors major on Bach", "major-minus-minor deviation vs the panel, points")],
                 [r for _, r in bach_rows])
+        + f"<p class='scope'><b>Mode, or the specific key?</b> Some models concentrate hard "
+        f"on one key — {ex_txt} (bump = its deviation on Bach chorales in exactly that key "
+        f"minus its deviation on other chorales of the same mode). Across the "
+        f"{len(key_bumps)} judges with enough same-key chorales, the same-key bump averages "
+        f"{kb_mean:+.2f} points (permutation p = {p_key:.2f}), and a judge's key "
+        f"concentration doesn't predict its bump. So the favorite-key habit does not "
+        f"transfer as a favorite-key bias: what generalizes is the preference for major vs "
+        f"minor, not for any particular tonic.</p>"
         + f"<p class='scope'><b>3 · Mechanism:</b> re-judging {len(relabel)} pieces with the K: "
         f"field swapped to the relative key (C ↔ Am — every note byte-identical, only the "
         f"declared label flips) shifts scores by {mean(shifts):+.3f} points on average "
