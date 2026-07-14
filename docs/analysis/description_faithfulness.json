@@ -1,0 +1,1583 @@
+{
+ "per_composer": {
+  "deepseek-v4-pro|abc": {
+   "n": 29,
+   "claim_rate": {
+    "key_tonic": 0.862,
+    "key_mode": 0.862,
+    "tempo_bpm": 0.172,
+    "tempo_character": 0.483,
+    "meter": 0.276,
+    "texture": 0.931,
+    "n_voices": 0.655,
+    "instruments": 0.828,
+    "dynamics_mentioned": 0.69,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.655
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.8,
+     "n": 20
+    },
+    "key_mode": {
+     "acc": 1.0,
+     "n": 24
+    },
+    "key_tonic": {
+     "acc": 0.96,
+     "n": 25
+    },
+    "n_instruments": {
+     "acc": 0.75,
+     "n": 24
+    },
+    "n_voices": {
+     "acc": 1.0,
+     "n": 19
+    },
+    "tempo_bpm": {
+     "acc": 1.0,
+     "n": 5
+    },
+    "tempo_character": {
+     "acc": 0.5,
+     "n": 14
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 27
+    }
+   },
+   "mae": {
+    "n_voices": 0.0,
+    "tempo_bpm": 0.0
+   },
+   "valence_spearman": {
+    "rho": 0.745,
+    "p": 0.0,
+    "n": 29
+   },
+   "arousal_spearman": {
+    "rho": 0.035,
+    "p": 0.85885,
+    "n": 29
+   }
+  },
+  "deepseek-v4-pro|codegen": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 1.0,
+    "key_mode": 1.0,
+    "tempo_bpm": 0.433,
+    "tempo_character": 0.333,
+    "meter": 0.133,
+    "texture": 0.867,
+    "n_voices": 0.6,
+    "instruments": 1.0,
+    "dynamics_mentioned": 1.0,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.567
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.767,
+     "n": 30
+    },
+    "key_mode": {
+     "acc": 1.0,
+     "n": 28
+    },
+    "key_tonic": {
+     "acc": 0.967,
+     "n": 30
+    },
+    "n_instruments": {
+     "acc": 0.933,
+     "n": 30
+    },
+    "n_voices": {
+     "acc": 0.889,
+     "n": 18
+    },
+    "tempo_bpm": {
+     "acc": 0.0,
+     "n": 13
+    },
+    "tempo_character": {
+     "acc": 0.1,
+     "n": 10
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 26
+    }
+   },
+   "mae": {
+    "tempo_bpm": 53.08,
+    "n_voices": 0.11
+   },
+   "valence_spearman": {
+    "rho": 0.509,
+    "p": 0.00407,
+    "n": 30
+   },
+   "arousal_spearman": {
+    "rho": 0.234,
+    "p": 0.21258,
+    "n": 30
+   }
+  },
+  "gemini-2.5-pro|abc": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 0.867,
+    "key_mode": 0.9,
+    "tempo_bpm": 0.0,
+    "tempo_character": 0.133,
+    "meter": 0.033,
+    "texture": 1.0,
+    "n_voices": 0.967,
+    "instruments": 0.267,
+    "dynamics_mentioned": 0.3,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.867
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.0,
+     "n": 9
+    },
+    "key_mode": {
+     "acc": 0.875,
+     "n": 24
+    },
+    "key_tonic": {
+     "acc": 0.846,
+     "n": 26
+    },
+    "n_instruments": {
+     "acc": 0.875,
+     "n": 8
+    },
+    "n_voices": {
+     "acc": 1.0,
+     "n": 29
+    },
+    "tempo_character": {
+     "acc": 0.75,
+     "n": 4
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 30
+    }
+   },
+   "mae": {
+    "n_voices": 0.0
+   },
+   "valence_spearman": {
+    "rho": 0.229,
+    "p": 0.2244,
+    "n": 30
+   },
+   "arousal_spearman": {
+    "rho": 0.162,
+    "p": 0.39141,
+    "n": 30
+   }
+  },
+  "gemini-2.5-pro|codegen": {
+   "n": 23,
+   "claim_rate": {
+    "key_tonic": 0.913,
+    "key_mode": 0.826,
+    "tempo_bpm": 0.174,
+    "tempo_character": 0.261,
+    "meter": 0.0,
+    "texture": 0.913,
+    "n_voices": 0.696,
+    "instruments": 0.957,
+    "dynamics_mentioned": 0.913,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.87
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.81,
+     "n": 21
+    },
+    "key_mode": {
+     "acc": 0.833,
+     "n": 18
+    },
+    "key_tonic": {
+     "acc": 0.857,
+     "n": 21
+    },
+    "n_instruments": {
+     "acc": 0.909,
+     "n": 22
+    },
+    "n_voices": {
+     "acc": 1.0,
+     "n": 16
+    },
+    "tempo_bpm": {
+     "acc": 0.0,
+     "n": 4
+    },
+    "tempo_character": {
+     "acc": 0.333,
+     "n": 6
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 21
+    }
+   },
+   "mae": {
+    "n_voices": 0.0,
+    "tempo_bpm": 52.25
+   },
+   "valence_spearman": {
+    "rho": 0.065,
+    "p": 0.76716,
+    "n": 23
+   },
+   "arousal_spearman": {
+    "rho": 0.432,
+    "p": 0.03961,
+    "n": 23
+   }
+  },
+  "gpt-4.1|abc": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 1.0,
+    "key_mode": 1.0,
+    "tempo_bpm": 0.033,
+    "tempo_character": 0.333,
+    "meter": 0.433,
+    "texture": 0.9,
+    "n_voices": 0.933,
+    "instruments": 0.133,
+    "dynamics_mentioned": 0.067,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.167
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.0,
+     "n": 2
+    },
+    "key_mode": {
+     "acc": 0.967,
+     "n": 30
+    },
+    "key_tonic": {
+     "acc": 0.9,
+     "n": 30
+    },
+    "n_instruments": {
+     "acc": 1.0,
+     "n": 4
+    },
+    "n_voices": {
+     "acc": 0.929,
+     "n": 28
+    },
+    "tempo_bpm": {
+     "acc": 0.0,
+     "n": 1
+    },
+    "tempo_character": {
+     "acc": 0.1,
+     "n": 10
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 27
+    }
+   },
+   "mae": {
+    "n_voices": 0.14,
+    "tempo_bpm": 60.0
+   },
+   "valence_spearman": {
+    "rho": 0.434,
+    "p": 0.01666,
+    "n": 30
+   },
+   "arousal_spearman": {
+    "rho": 0.381,
+    "p": 0.03779,
+    "n": 30
+   }
+  },
+  "gpt-4.1|codegen": {
+   "n": 28,
+   "claim_rate": {
+    "key_tonic": 0.821,
+    "key_mode": 0.821,
+    "tempo_bpm": 0.357,
+    "tempo_character": 0.786,
+    "meter": 0.25,
+    "texture": 1.0,
+    "n_voices": 0.786,
+    "instruments": 1.0,
+    "dynamics_mentioned": 0.929,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.214
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 1.0,
+     "n": 26
+    },
+    "key_mode": {
+     "acc": 0.957,
+     "n": 23
+    },
+    "key_tonic": {
+     "acc": 0.783,
+     "n": 23
+    },
+    "n_instruments": {
+     "acc": 1.0,
+     "n": 28
+    },
+    "n_voices": {
+     "acc": 0.955,
+     "n": 22
+    },
+    "tempo_bpm": {
+     "acc": 0.0,
+     "n": 10
+    },
+    "tempo_character": {
+     "acc": 0.182,
+     "n": 22
+    },
+    "texture": {
+     "acc": 0.964,
+     "n": 28
+    }
+   },
+   "mae": {
+    "n_voices": 0.05,
+    "tempo_bpm": 57.2
+   },
+   "valence_spearman": {
+    "rho": -0.27,
+    "p": 0.16461,
+    "n": 28
+   },
+   "arousal_spearman": {
+    "rho": 0.102,
+    "p": 0.6068,
+    "n": 28
+   }
+  },
+  "gpt-5.5|abc": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 1.0,
+    "key_mode": 1.0,
+    "tempo_bpm": 0.3,
+    "tempo_character": 0.667,
+    "meter": 0.267,
+    "texture": 0.9,
+    "n_voices": 0.767,
+    "instruments": 0.0,
+    "dynamics_mentioned": 0.1,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.167
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.0,
+     "n": 3
+    },
+    "key_mode": {
+     "acc": 1.0,
+     "n": 28
+    },
+    "key_tonic": {
+     "acc": 1.0,
+     "n": 30
+    },
+    "n_voices": {
+     "acc": 1.0,
+     "n": 23
+    },
+    "tempo_bpm": {
+     "acc": 1.0,
+     "n": 9
+    },
+    "tempo_character": {
+     "acc": 1.0,
+     "n": 20
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 27
+    }
+   },
+   "mae": {
+    "n_voices": 0.0,
+    "tempo_bpm": 0.0
+   },
+   "arousal_spearman": {
+    "rho": -0.154,
+    "p": 0.4162,
+    "n": 30
+   }
+  },
+  "gpt-5.5|codegen": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 1.0,
+    "key_mode": 0.933,
+    "tempo_bpm": 0.033,
+    "tempo_character": 0.267,
+    "meter": 0.1,
+    "texture": 0.6,
+    "n_voices": 0.167,
+    "instruments": 1.0,
+    "dynamics_mentioned": 0.633,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.1
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 1.0,
+     "n": 19
+    },
+    "key_mode": {
+     "acc": 1.0,
+     "n": 28
+    },
+    "key_tonic": {
+     "acc": 1.0,
+     "n": 30
+    },
+    "n_instruments": {
+     "acc": 0.8,
+     "n": 30
+    },
+    "n_voices": {
+     "acc": 0.8,
+     "n": 5
+    },
+    "tempo_bpm": {
+     "acc": 0.0,
+     "n": 1
+    },
+    "tempo_character": {
+     "acc": 0.25,
+     "n": 8
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 18
+    }
+   },
+   "mae": {
+    "tempo_bpm": 52.0,
+    "n_voices": 0.2
+   },
+   "arousal_spearman": {
+    "rho": 0.163,
+    "p": 0.39076,
+    "n": 30
+   }
+  },
+  "grok-4.3|abc": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 0.567,
+    "key_mode": 0.767,
+    "tempo_bpm": 0.567,
+    "tempo_character": 0.4,
+    "meter": 0.267,
+    "texture": 0.8,
+    "n_voices": 0.933,
+    "instruments": 0.333,
+    "dynamics_mentioned": 0.133,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.267
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.0,
+     "n": 4
+    },
+    "key_mode": {
+     "acc": 1.0,
+     "n": 21
+    },
+    "key_tonic": {
+     "acc": 0.824,
+     "n": 17
+    },
+    "n_instruments": {
+     "acc": 0.8,
+     "n": 10
+    },
+    "n_voices": {
+     "acc": 1.0,
+     "n": 28
+    },
+    "tempo_bpm": {
+     "acc": 0.941,
+     "n": 17
+    },
+    "tempo_character": {
+     "acc": 0.75,
+     "n": 12
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 24
+    }
+   },
+   "mae": {
+    "tempo_bpm": 3.53,
+    "n_voices": 0.0
+   },
+   "valence_spearman": {
+    "rho": 0.533,
+    "p": 0.0024,
+    "n": 30
+   },
+   "arousal_spearman": {
+    "rho": 0.437,
+    "p": 0.01583,
+    "n": 30
+   }
+  },
+  "grok-4.3|codegen": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 0.867,
+    "key_mode": 0.933,
+    "tempo_bpm": 0.867,
+    "tempo_character": 0.467,
+    "meter": 0.267,
+    "texture": 0.633,
+    "n_voices": 0.433,
+    "instruments": 1.0,
+    "dynamics_mentioned": 0.733,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.067
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.318,
+     "n": 22
+    },
+    "key_mode": {
+     "acc": 0.893,
+     "n": 28
+    },
+    "key_tonic": {
+     "acc": 0.923,
+     "n": 26
+    },
+    "n_instruments": {
+     "acc": 0.967,
+     "n": 30
+    },
+    "n_voices": {
+     "acc": 1.0,
+     "n": 13
+    },
+    "tempo_bpm": {
+     "acc": 0.038,
+     "n": 26
+    },
+    "tempo_character": {
+     "acc": 0.429,
+     "n": 14
+    },
+    "texture": {
+     "acc": 0.947,
+     "n": 19
+    }
+   },
+   "mae": {
+    "tempo_bpm": 51.31,
+    "n_voices": 0.0
+   },
+   "valence_spearman": {
+    "rho": 0.287,
+    "p": 0.12382,
+    "n": 30
+   },
+   "arousal_spearman": {
+    "rho": 0.196,
+    "p": 0.30017,
+    "n": 30
+   }
+  },
+  "llama-4-maverick|abc": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 0.667,
+    "key_mode": 0.633,
+    "tempo_bpm": 0.0,
+    "tempo_character": 0.167,
+    "meter": 0.433,
+    "texture": 0.9,
+    "n_voices": 0.933,
+    "instruments": 0.0,
+    "dynamics_mentioned": 0.033,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.2
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.0,
+     "n": 1
+    },
+    "key_mode": {
+     "acc": 1.0,
+     "n": 19
+    },
+    "key_tonic": {
+     "acc": 0.9,
+     "n": 20
+    },
+    "n_voices": {
+     "acc": 1.0,
+     "n": 28
+    },
+    "tempo_character": {
+     "acc": 0.4,
+     "n": 5
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 27
+    }
+   },
+   "mae": {
+    "n_voices": 0.0
+   },
+   "arousal_spearman": {
+    "rho": 0.184,
+    "p": 0.33109,
+    "n": 30
+   }
+  },
+  "llama-4-maverick|codegen": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 0.833,
+    "key_mode": 0.867,
+    "tempo_bpm": 0.667,
+    "tempo_character": 0.633,
+    "meter": 0.4,
+    "texture": 0.4,
+    "n_voices": 0.433,
+    "instruments": 0.967,
+    "dynamics_mentioned": 0.133,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.067
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.0,
+     "n": 4
+    },
+    "key_mode": {
+     "acc": 0.769,
+     "n": 26
+    },
+    "key_tonic": {
+     "acc": 0.52,
+     "n": 25
+    },
+    "n_instruments": {
+     "acc": 1.0,
+     "n": 29
+    },
+    "n_voices": {
+     "acc": 1.0,
+     "n": 13
+    },
+    "tempo_bpm": {
+     "acc": 0.85,
+     "n": 20
+    },
+    "tempo_character": {
+     "acc": 1.0,
+     "n": 19
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 12
+    }
+   },
+   "mae": {
+    "tempo_bpm": 4.4,
+    "n_voices": 0.0
+   },
+   "valence_spearman": {
+    "rho": 0.096,
+    "p": 0.61417,
+    "n": 30
+   },
+   "arousal_spearman": {
+    "rho": -0.083,
+    "p": 0.66279,
+    "n": 30
+   }
+  },
+  "opus-4.8|abc": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 0.967,
+    "key_mode": 0.933,
+    "tempo_bpm": 0.533,
+    "tempo_character": 0.6,
+    "meter": 0.133,
+    "texture": 0.867,
+    "n_voices": 0.833,
+    "instruments": 0.1,
+    "dynamics_mentioned": 0.033,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.9
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.0,
+     "n": 1
+    },
+    "key_mode": {
+     "acc": 1.0,
+     "n": 27
+    },
+    "key_tonic": {
+     "acc": 1.0,
+     "n": 29
+    },
+    "n_instruments": {
+     "acc": 1.0,
+     "n": 3
+    },
+    "n_voices": {
+     "acc": 1.0,
+     "n": 25
+    },
+    "tempo_bpm": {
+     "acc": 1.0,
+     "n": 16
+    },
+    "tempo_character": {
+     "acc": 0.944,
+     "n": 18
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 26
+    }
+   },
+   "mae": {
+    "tempo_bpm": 0.0,
+    "n_voices": 0.0
+   },
+   "valence_spearman": {
+    "rho": 0.201,
+    "p": 0.28683,
+    "n": 30
+   },
+   "arousal_spearman": {
+    "rho": 0.375,
+    "p": 0.04093,
+    "n": 30
+   }
+  },
+  "opus-4.8|codegen": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 1.0,
+    "key_mode": 0.867,
+    "tempo_bpm": 0.733,
+    "tempo_character": 0.8,
+    "meter": 0.033,
+    "texture": 1.0,
+    "n_voices": 0.633,
+    "instruments": 1.0,
+    "dynamics_mentioned": 1.0,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.567
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.767,
+     "n": 30
+    },
+    "key_mode": {
+     "acc": 1.0,
+     "n": 15
+    },
+    "key_tonic": {
+     "acc": 1.0,
+     "n": 30
+    },
+    "n_instruments": {
+     "acc": 1.0,
+     "n": 30
+    },
+    "n_voices": {
+     "acc": 0.895,
+     "n": 19
+    },
+    "tempo_bpm": {
+     "acc": 0.0,
+     "n": 22
+    },
+    "tempo_character": {
+     "acc": 0.0,
+     "n": 24
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 30
+    }
+   },
+   "mae": {
+    "tempo_bpm": 53.36,
+    "n_voices": 0.11
+   },
+   "arousal_spearman": {
+    "rho": 0.227,
+    "p": 0.22847,
+    "n": 30
+   }
+  },
+  "opus-4.8-thinking|abc": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 0.967,
+    "key_mode": 0.9,
+    "tempo_bpm": 0.467,
+    "tempo_character": 0.833,
+    "meter": 0.167,
+    "texture": 1.0,
+    "n_voices": 0.767,
+    "instruments": 0.233,
+    "dynamics_mentioned": 0.033,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.867
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.0,
+     "n": 1
+    },
+    "key_mode": {
+     "acc": 0.963,
+     "n": 27
+    },
+    "key_tonic": {
+     "acc": 1.0,
+     "n": 29
+    },
+    "n_instruments": {
+     "acc": 0.714,
+     "n": 7
+    },
+    "n_voices": {
+     "acc": 1.0,
+     "n": 23
+    },
+    "tempo_bpm": {
+     "acc": 1.0,
+     "n": 14
+    },
+    "tempo_character": {
+     "acc": 0.92,
+     "n": 25
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 30
+    }
+   },
+   "mae": {
+    "tempo_bpm": 0.0,
+    "n_voices": 0.0
+   },
+   "arousal_spearman": {
+    "rho": 0.14,
+    "p": 0.46209,
+    "n": 30
+   }
+  },
+  "opus-4.8-thinking|codegen": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 1.0,
+    "key_mode": 0.567,
+    "tempo_bpm": 0.7,
+    "tempo_character": 0.733,
+    "meter": 0.133,
+    "texture": 1.0,
+    "n_voices": 0.367,
+    "instruments": 1.0,
+    "dynamics_mentioned": 1.0,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.667
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.7,
+     "n": 30
+    },
+    "key_mode": {
+     "acc": 1.0,
+     "n": 17
+    },
+    "key_tonic": {
+     "acc": 1.0,
+     "n": 30
+    },
+    "n_instruments": {
+     "acc": 0.967,
+     "n": 30
+    },
+    "n_voices": {
+     "acc": 0.636,
+     "n": 11
+    },
+    "tempo_bpm": {
+     "acc": 0.095,
+     "n": 21
+    },
+    "tempo_character": {
+     "acc": 0.182,
+     "n": 22
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 30
+    }
+   },
+   "mae": {
+    "tempo_bpm": 47.33,
+    "n_voices": 0.36
+   },
+   "valence_spearman": {
+    "rho": 0.111,
+    "p": 0.55787,
+    "n": 30
+   },
+   "arousal_spearman": {
+    "rho": 0.276,
+    "p": 0.13913,
+    "n": 30
+   }
+  },
+  "qwen3-max|abc": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 0.8,
+    "key_mode": 0.8,
+    "tempo_bpm": 0.267,
+    "tempo_character": 0.467,
+    "meter": 0.367,
+    "texture": 0.9,
+    "n_voices": 0.933,
+    "instruments": 0.567,
+    "dynamics_mentioned": 0.267,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.233
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.0,
+     "n": 8
+    },
+    "key_mode": {
+     "acc": 1.0,
+     "n": 24
+    },
+    "key_tonic": {
+     "acc": 0.958,
+     "n": 24
+    },
+    "n_instruments": {
+     "acc": 0.353,
+     "n": 17
+    },
+    "n_voices": {
+     "acc": 0.821,
+     "n": 28
+    },
+    "tempo_bpm": {
+     "acc": 0.375,
+     "n": 8
+    },
+    "tempo_character": {
+     "acc": 0.643,
+     "n": 14
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 27
+    }
+   },
+   "mae": {
+    "n_voices": 0.61,
+    "tempo_bpm": 25.0
+   },
+   "valence_spearman": {
+    "rho": 0.406,
+    "p": 0.02585,
+    "n": 30
+   },
+   "arousal_spearman": {
+    "rho": -0.003,
+    "p": 0.98718,
+    "n": 30
+   }
+  },
+  "qwen3-max|codegen": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 1.0,
+    "key_mode": 1.0,
+    "tempo_bpm": 0.767,
+    "tempo_character": 0.6,
+    "meter": 0.3,
+    "texture": 0.7,
+    "n_voices": 0.6,
+    "instruments": 1.0,
+    "dynamics_mentioned": 0.933,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.167
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.429,
+     "n": 28
+    },
+    "key_mode": {
+     "acc": 0.867,
+     "n": 30
+    },
+    "key_tonic": {
+     "acc": 0.833,
+     "n": 30
+    },
+    "n_instruments": {
+     "acc": 1.0,
+     "n": 30
+    },
+    "n_voices": {
+     "acc": 0.889,
+     "n": 18
+    },
+    "tempo_bpm": {
+     "acc": 0.043,
+     "n": 23
+    },
+    "tempo_character": {
+     "acc": 0.389,
+     "n": 18
+    },
+    "texture": {
+     "acc": 0.952,
+     "n": 21
+    }
+   },
+   "mae": {
+    "tempo_bpm": 49.48,
+    "n_voices": 0.11
+   },
+   "valence_spearman": {
+    "rho": 0.501,
+    "p": 0.00476,
+    "n": 30
+   },
+   "arousal_spearman": {
+    "rho": 0.09,
+    "p": 0.63597,
+    "n": 30
+   }
+  },
+  "sonnet-4.6|abc": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 1.0,
+    "key_mode": 0.967,
+    "tempo_bpm": 0.7,
+    "tempo_character": 0.833,
+    "meter": 0.467,
+    "texture": 0.967,
+    "n_voices": 0.9,
+    "instruments": 0.3,
+    "dynamics_mentioned": 0.333,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.767
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.0,
+     "n": 10
+    },
+    "key_mode": {
+     "acc": 1.0,
+     "n": 17
+    },
+    "key_tonic": {
+     "acc": 0.967,
+     "n": 30
+    },
+    "n_instruments": {
+     "acc": 0.889,
+     "n": 9
+    },
+    "n_voices": {
+     "acc": 1.0,
+     "n": 27
+    },
+    "tempo_bpm": {
+     "acc": 0.857,
+     "n": 21
+    },
+    "tempo_character": {
+     "acc": 0.76,
+     "n": 25
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 29
+    }
+   },
+   "mae": {
+    "n_voices": 0.0,
+    "tempo_bpm": 15.62
+   },
+   "valence_spearman": {
+    "rho": 0.176,
+    "p": 0.3509,
+    "n": 30
+   },
+   "arousal_spearman": {
+    "rho": 0.207,
+    "p": 0.27154,
+    "n": 30
+   }
+  },
+  "sonnet-4.6|codegen": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 0.9,
+    "key_mode": 0.9,
+    "tempo_bpm": 0.6,
+    "tempo_character": 0.833,
+    "meter": 0.233,
+    "texture": 0.6,
+    "n_voices": 0.767,
+    "instruments": 0.967,
+    "dynamics_mentioned": 1.0,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.6
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.933,
+     "n": 30
+    },
+    "key_mode": {
+     "acc": 1.0,
+     "n": 20
+    },
+    "key_tonic": {
+     "acc": 0.889,
+     "n": 27
+    },
+    "n_instruments": {
+     "acc": 0.862,
+     "n": 29
+    },
+    "n_voices": {
+     "acc": 0.87,
+     "n": 23
+    },
+    "tempo_bpm": {
+     "acc": 0.0,
+     "n": 18
+    },
+    "tempo_character": {
+     "acc": 0.12,
+     "n": 25
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 18
+    }
+   },
+   "mae": {
+    "tempo_bpm": 59.11,
+    "n_voices": 0.13
+   },
+   "valence_spearman": {
+    "rho": 0.383,
+    "p": 0.03653,
+    "n": 30
+   },
+   "arousal_spearman": {
+    "rho": 0.072,
+    "p": 0.70364,
+    "n": 30
+   }
+  },
+  "sonnet-4.6-thinking|abc": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 1.0,
+    "key_mode": 1.0,
+    "tempo_bpm": 0.733,
+    "tempo_character": 0.7,
+    "meter": 0.6,
+    "texture": 0.967,
+    "n_voices": 0.933,
+    "instruments": 0.2,
+    "dynamics_mentioned": 0.267,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.8
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.625,
+     "n": 8
+    },
+    "key_mode": {
+     "acc": 1.0,
+     "n": 25
+    },
+    "key_tonic": {
+     "acc": 0.9,
+     "n": 30
+    },
+    "n_instruments": {
+     "acc": 1.0,
+     "n": 6
+    },
+    "n_voices": {
+     "acc": 1.0,
+     "n": 28
+    },
+    "tempo_bpm": {
+     "acc": 1.0,
+     "n": 22
+    },
+    "tempo_character": {
+     "acc": 0.857,
+     "n": 21
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 29
+    }
+   },
+   "mae": {
+    "tempo_bpm": 0.0,
+    "n_voices": 0.0
+   },
+   "valence_spearman": {
+    "rho": 0.173,
+    "p": 0.36046,
+    "n": 30
+   },
+   "arousal_spearman": {
+    "rho": 0.091,
+    "p": 0.63359,
+    "n": 30
+   }
+  },
+  "sonnet-4.6-thinking|codegen": {
+   "n": 30,
+   "claim_rate": {
+    "key_tonic": 1.0,
+    "key_mode": 0.967,
+    "tempo_bpm": 0.9,
+    "tempo_character": 0.767,
+    "meter": 0.4,
+    "texture": 0.933,
+    "n_voices": 0.667,
+    "instruments": 1.0,
+    "dynamics_mentioned": 1.0,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.9
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 1.0,
+     "n": 30
+    },
+    "key_mode": {
+     "acc": 1.0,
+     "n": 28
+    },
+    "key_tonic": {
+     "acc": 1.0,
+     "n": 30
+    },
+    "n_instruments": {
+     "acc": 1.0,
+     "n": 30
+    },
+    "n_voices": {
+     "acc": 1.0,
+     "n": 20
+    },
+    "tempo_bpm": {
+     "acc": 0.0,
+     "n": 27
+    },
+    "tempo_character": {
+     "acc": 0.087,
+     "n": 23
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 28
+    }
+   },
+   "mae": {
+    "tempo_bpm": 53.26,
+    "n_voices": 0.0
+   },
+   "arousal_spearman": {
+    "rho": -0.08,
+    "p": 0.67548,
+    "n": 30
+   }
+  }
+ },
+ "per_mode": {
+  "abc": {
+   "n": 329,
+   "claim_rate": {
+    "key_tonic": 0.881,
+    "key_mode": 0.888,
+    "tempo_bpm": 0.343,
+    "tempo_character": 0.511,
+    "meter": 0.313,
+    "texture": 0.921,
+    "n_voices": 0.869,
+    "instruments": 0.267,
+    "dynamics_mentioned": 0.204,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.535
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.313,
+     "n": 67
+    },
+    "key_mode": {
+     "acc": 0.981,
+     "n": 266
+    },
+    "key_tonic": {
+     "acc": 0.938,
+     "n": 290
+    },
+    "n_instruments": {
+     "acc": 0.739,
+     "n": 88
+    },
+    "n_voices": {
+     "acc": 0.976,
+     "n": 286
+    },
+    "tempo_bpm": {
+     "acc": 0.912,
+     "n": 113
+    },
+    "tempo_character": {
+     "acc": 0.762,
+     "n": 168
+    },
+    "texture": {
+     "acc": 1.0,
+     "n": 303
+    }
+   },
+   "mae": {
+    "tempo_bpm": 5.73,
+    "n_voices": 0.07
+   },
+   "valence_spearman": {
+    "rho": 0.185,
+    "p": 0.00077,
+    "n": 329
+   },
+   "arousal_spearman": {
+    "rho": 0.031,
+    "p": 0.57206,
+    "n": 329
+   }
+  },
+  "codegen": {
+   "n": 321,
+   "claim_rate": {
+    "key_tonic": 0.941,
+    "key_mode": 0.882,
+    "tempo_bpm": 0.576,
+    "tempo_character": 0.595,
+    "meter": 0.209,
+    "texture": 0.782,
+    "n_voices": 0.555,
+    "instruments": 0.991,
+    "dynamics_mentioned": 0.841,
+    "valence": 1.0,
+    "arousal": 1.0,
+    "form": 0.427
+   },
+   "accuracy": {
+    "dynamics": {
+     "acc": 0.763,
+     "n": 270
+    },
+    "key_mode": {
+     "acc": 0.935,
+     "n": 261
+    },
+    "key_tonic": {
+     "acc": 0.897,
+     "n": 302
+    },
+    "n_instruments": {
+     "acc": 0.95,
+     "n": 318
+    },
+    "n_voices": {
+     "acc": 0.916,
+     "n": 178
+    },
+    "tempo_bpm": {
+     "acc": 0.114,
+     "n": 185
+    },
+    "tempo_character": {
+     "acc": 0.262,
+     "n": 191
+    },
+    "texture": {
+     "acc": 0.988,
+     "n": 251
+    }
+   },
+   "mae": {
+    "tempo_bpm": 47.31,
+    "n_voices": 0.08
+   },
+   "valence_spearman": {
+    "rho": 0.225,
+    "p": 5e-05,
+    "n": 321
+   },
+   "arousal_spearman": {
+    "rho": 0.231,
+    "p": 3e-05,
+    "n": 321
+   }
+  }
+ },
+ "overall": {
+  "n": 650,
+  "claim_rate": {
+   "key_tonic": 0.911,
+   "key_mode": 0.885,
+   "tempo_bpm": 0.458,
+   "tempo_character": 0.552,
+   "meter": 0.262,
+   "texture": 0.852,
+   "n_voices": 0.714,
+   "instruments": 0.625,
+   "dynamics_mentioned": 0.518,
+   "valence": 1.0,
+   "arousal": 1.0,
+   "form": 0.482
+  },
+  "accuracy": {
+   "dynamics": {
+    "acc": 0.674,
+    "n": 337
+   },
+   "key_mode": {
+    "acc": 0.958,
+    "n": 527
+   },
+   "key_tonic": {
+    "acc": 0.917,
+    "n": 592
+   },
+   "n_instruments": {
+    "acc": 0.904,
+    "n": 406
+   },
+   "n_voices": {
+    "acc": 0.953,
+    "n": 464
+   },
+   "tempo_bpm": {
+    "acc": 0.416,
+    "n": 298
+   },
+   "tempo_character": {
+    "acc": 0.496,
+    "n": 359
+   },
+   "texture": {
+    "acc": 0.995,
+    "n": 554
+   }
+  },
+  "mae": {
+   "tempo_bpm": 31.55,
+   "n_voices": 0.08
+  },
+  "valence_spearman": {
+   "rho": 0.207,
+   "p": 0.0,
+   "n": 650
+  },
+  "arousal_spearman": {
+   "rho": 0.093,
+   "p": 0.0175,
+   "n": 650
+  }
+ }
+}

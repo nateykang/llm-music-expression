@@ -338,9 +338,12 @@ def build_user(piece: dict, rep_kind: str, rep_text: str, include_note: bool = F
     )
 
 
-def _extract_json(text: str) -> dict | None:
+def _extract_json(text: str, expect_keys: tuple = ()) -> dict | None:
+    """First JSON object in `text` that contains at least one expected key
+    (default: the judge rubric keys)."""
     if not text:
         return None
+    expect_keys = tuple(expect_keys) or (*QUALITY_KEYS, "emotion_label")
     fenced = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.S)
     candidates = [fenced.group(1)] if fenced else []
     depth, start, spans = 0, None, []
@@ -357,7 +360,7 @@ def _extract_json(text: str) -> dict | None:
     for cand in candidates:
         try:
             obj = json.loads(cand)
-            if isinstance(obj, dict) and (any(k in obj for k in QUALITY_KEYS) or "emotion_label" in obj):
+            if isinstance(obj, dict) and any(k in obj for k in expect_keys):
                 return obj
         except Exception:
             continue
