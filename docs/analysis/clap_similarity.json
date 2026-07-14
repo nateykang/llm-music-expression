@@ -1,0 +1,385 @@
+{
+ "model": "laion/larger_clap_general",
+ "text_variants": {
+  "short": {
+   "matched_cos": 0.2582,
+   "mismatched_cos": 0.2284,
+   "gap": 0.0299,
+   "global_retrieval": {
+    "n": 651,
+    "top1": 0.005,
+    "mrr": 0.023,
+    "median_rank": 214.0,
+    "chance_top1": 0.002
+   },
+   "within_composer_retrieval": {
+    "deepseek-v4-pro|abc": {
+     "n": 30,
+     "top1": 0.067,
+     "mrr": 0.203,
+     "median_rank": 11.5,
+     "chance_top1": 0.033,
+     "matched_cos": 0.2302
+    },
+    "deepseek-v4-pro|codegen": {
+     "n": 30,
+     "top1": 0.133,
+     "mrr": 0.28,
+     "median_rank": 8.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.3283
+    },
+    "gemini-2.5-pro|abc": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.15,
+     "median_rank": 13.5,
+     "chance_top1": 0.033,
+     "matched_cos": 0.1912
+    },
+    "gemini-2.5-pro|codegen": {
+     "n": 23,
+     "top1": 0.043,
+     "mrr": 0.232,
+     "median_rank": 6.0,
+     "chance_top1": 0.043,
+     "matched_cos": 0.2894
+    },
+    "gpt-4.1|abc": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.148,
+     "median_rank": 15.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.1609
+    },
+    "gpt-4.1|codegen": {
+     "n": 28,
+     "top1": 0.071,
+     "mrr": 0.208,
+     "median_rank": 10.0,
+     "chance_top1": 0.036,
+     "matched_cos": 0.2837
+    },
+    "gpt-5.5|abc": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.138,
+     "median_rank": 14.5,
+     "chance_top1": 0.033,
+     "matched_cos": 0.1863
+    },
+    "gpt-5.5|codegen": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.133,
+     "median_rank": 15.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.2342
+    },
+    "grok-4.3|abc": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.117,
+     "median_rank": 15.5,
+     "chance_top1": 0.033,
+     "matched_cos": 0.1823
+    },
+    "grok-4.3|codegen": {
+     "n": 30,
+     "top1": 0.133,
+     "mrr": 0.246,
+     "median_rank": 12.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.2754
+    },
+    "llama-4-maverick|abc": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.121,
+     "median_rank": 14.5,
+     "chance_top1": 0.033,
+     "matched_cos": 0.1305
+    },
+    "llama-4-maverick|codegen": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.131,
+     "median_rank": 16.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.2854
+    },
+    "opus-4.8|abc": {
+     "n": 30,
+     "top1": 0.067,
+     "mrr": 0.156,
+     "median_rank": 15.5,
+     "chance_top1": 0.033,
+     "matched_cos": 0.2349
+    },
+    "opus-4.8|codegen": {
+     "n": 30,
+     "top1": 0.133,
+     "mrr": 0.23,
+     "median_rank": 10.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.3585
+    },
+    "opus-4.8-thinking|abc": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.139,
+     "median_rank": 13.5,
+     "chance_top1": 0.033,
+     "matched_cos": 0.2695
+    },
+    "opus-4.8-thinking|codegen": {
+     "n": 30,
+     "top1": 0.133,
+     "mrr": 0.229,
+     "median_rank": 10.5,
+     "chance_top1": 0.033,
+     "matched_cos": 0.3723
+    },
+    "qwen3-max|abc": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.138,
+     "median_rank": 13.5,
+     "chance_top1": 0.033,
+     "matched_cos": 0.1377
+    },
+    "qwen3-max|codegen": {
+     "n": 30,
+     "top1": 0.1,
+     "mrr": 0.292,
+     "median_rank": 6.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.3394
+    },
+    "sonnet-4.6|abc": {
+     "n": 30,
+     "top1": 0.067,
+     "mrr": 0.188,
+     "median_rank": 12.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.2407
+    },
+    "sonnet-4.6|codegen": {
+     "n": 30,
+     "top1": 0.133,
+     "mrr": 0.274,
+     "median_rank": 9.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.341
+    },
+    "sonnet-4.6-thinking|abc": {
+     "n": 30,
+     "top1": 0.067,
+     "mrr": 0.153,
+     "median_rank": 16.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.2562
+    },
+    "sonnet-4.6-thinking|codegen": {
+     "n": 30,
+     "top1": 0.067,
+     "mrr": 0.19,
+     "median_rank": 15.5,
+     "chance_top1": 0.033,
+     "matched_cos": 0.3619
+    }
+   }
+  },
+  "long": {
+   "matched_cos": 0.2864,
+   "mismatched_cos": 0.2549,
+   "gap": 0.0315,
+   "global_retrieval": {
+    "n": 651,
+    "top1": 0.002,
+    "mrr": 0.023,
+    "median_rank": 198.0,
+    "chance_top1": 0.002
+   },
+   "within_composer_retrieval": {
+    "deepseek-v4-pro|abc": {
+     "n": 30,
+     "top1": 0.1,
+     "mrr": 0.216,
+     "median_rank": 11.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.2771
+    },
+    "deepseek-v4-pro|codegen": {
+     "n": 30,
+     "top1": 0.133,
+     "mrr": 0.276,
+     "median_rank": 6.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.3627
+    },
+    "gemini-2.5-pro|abc": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.136,
+     "median_rank": 16.5,
+     "chance_top1": 0.033,
+     "matched_cos": 0.2042
+    },
+    "gemini-2.5-pro|codegen": {
+     "n": 23,
+     "top1": 0.087,
+     "mrr": 0.267,
+     "median_rank": 9.0,
+     "chance_top1": 0.043,
+     "matched_cos": 0.3304
+    },
+    "gpt-4.1|abc": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.129,
+     "median_rank": 15.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.1833
+    },
+    "gpt-4.1|codegen": {
+     "n": 28,
+     "top1": 0.071,
+     "mrr": 0.205,
+     "median_rank": 9.5,
+     "chance_top1": 0.036,
+     "matched_cos": 0.3222
+    },
+    "gpt-5.5|abc": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.143,
+     "median_rank": 14.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.2678
+    },
+    "gpt-5.5|codegen": {
+     "n": 30,
+     "top1": 0.0,
+     "mrr": 0.134,
+     "median_rank": 10.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.4426
+    },
+    "grok-4.3|abc": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.131,
+     "median_rank": 15.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.1788
+    },
+    "grok-4.3|codegen": {
+     "n": 30,
+     "top1": 0.067,
+     "mrr": 0.209,
+     "median_rank": 11.5,
+     "chance_top1": 0.033,
+     "matched_cos": 0.292
+    },
+    "llama-4-maverick|abc": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.136,
+     "median_rank": 15.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.1801
+    },
+    "llama-4-maverick|codegen": {
+     "n": 30,
+     "top1": 0.0,
+     "mrr": 0.125,
+     "median_rank": 13.5,
+     "chance_top1": 0.033,
+     "matched_cos": 0.2718
+    },
+    "opus-4.8|abc": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.113,
+     "median_rank": 15.5,
+     "chance_top1": 0.033,
+     "matched_cos": 0.177
+    },
+    "opus-4.8|codegen": {
+     "n": 30,
+     "top1": 0.2,
+     "mrr": 0.308,
+     "median_rank": 9.5,
+     "chance_top1": 0.033,
+     "matched_cos": 0.4264
+    },
+    "opus-4.8-thinking|abc": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.129,
+     "median_rank": 16.5,
+     "chance_top1": 0.033,
+     "matched_cos": 0.1922
+    },
+    "opus-4.8-thinking|codegen": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.177,
+     "median_rank": 9.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.4284
+    },
+    "qwen3-max|abc": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.145,
+     "median_rank": 12.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.2431
+    },
+    "qwen3-max|codegen": {
+     "n": 30,
+     "top1": 0.1,
+     "mrr": 0.239,
+     "median_rank": 7.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.3536
+    },
+    "sonnet-4.6|abc": {
+     "n": 30,
+     "top1": 0.067,
+     "mrr": 0.148,
+     "median_rank": 15.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.2013
+    },
+    "sonnet-4.6|codegen": {
+     "n": 30,
+     "top1": 0.133,
+     "mrr": 0.285,
+     "median_rank": 7.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.3776
+    },
+    "sonnet-4.6-thinking|abc": {
+     "n": 30,
+     "top1": 0.067,
+     "mrr": 0.176,
+     "median_rank": 15.0,
+     "chance_top1": 0.033,
+     "matched_cos": 0.2642
+    },
+    "sonnet-4.6-thinking|codegen": {
+     "n": 30,
+     "top1": 0.033,
+     "mrr": 0.147,
+     "median_rank": 13.5,
+     "chance_top1": 0.033,
+     "matched_cos": 0.336
+    }
+   }
+  }
+ }
+}
