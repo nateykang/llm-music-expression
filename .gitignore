@@ -34,3 +34,9 @@ docs/analysis/*_ckpt.json
 docs/data/*/audio/
 docs/analysis/embedding_figs/
 docs/sheets.html
+
+# external human-music corpora (large, fetched locally)
+data_external/
+
+# per-piece CLAP embedding cache (redundant with clap_embeddings.npz)
+docs/analysis/embedding/clap/
