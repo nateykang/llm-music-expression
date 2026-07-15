@@ -23,6 +23,7 @@ from starlette.concurrency import run_in_threadpool
 from ..config import PROMPTS_DIR
 from ..models.registry import MODEL_REGISTRY
 from ..retry import backoff_delay, is_retryable
+from .backends import BACKENDS, REQUIRED_KEYS
 from .config import MAX_TURN_STEPS
 from .pieces import render_abc_version, render_codegen_version
 from .sessions import SessionStore
@@ -94,10 +95,52 @@ TOOLS_BY_MODE = {
 }
 
 
-@lru_cache(maxsize=1)
-def system_prompt() -> str:
-    toolkit = (PROMPTS_DIR / "toolkit.md").read_text(encoding="utf-8").strip()
-    return f"""\
+_CODEGEN_DOCS = """\
+# Music documentation
+
+{toolkit}
+
+# Realizing dynamics in the audio
+
+The synthesized audio realizes stepwise Dynamic marks and per-note velocities. \
+Hairpin wedges — `dynamics.Crescendo(first_note, last_note)` / \
+`dynamics.Diminuendo(...)` inserted into the Part — engrave in the score but do \
+not change the audio by themselves. For a crescendo the composer can actually \
+hear, ramp `note.volume.velocity` across the passage (velocities scale within \
+the prevailing Dynamic) and add the wedge so the score shows it too.
+"""
+
+_ABC_DOCS = """\
+# Writing ABC
+
+- Include the header fields X, T, M, L and K (K last, right before the music).
+- Never leave a blank line inside the tune — everything after it is silently \
+dropped from the audio.
+- Declare voices with real instrument names (e.g. `V:1 name="Violin"`) and mark \
+voice switches as `[V:1]` — the audio picks timbres from the names.
+- Dynamics decorations (`!pp!` `!p!` `!mp!` `!mf!` `!f!` `!ff!`) are audible; \
+hairpins (`!crescendo(!` `!crescendo)!` `!diminuendo(!` `!diminuendo)!`) engrave \
+in the score but the audio only follows the stepwise marks.
+- Chord symbols like `"Em"` are performed as strummed accompaniment in the \
+audio, so only write them if you want them heard.
+"""
+
+
+@lru_cache(maxsize=4)
+def system_prompt(mode: str = "codegen") -> str:
+    """Mode-aware: only this turn's writing method is documented. Teaching both
+    methods at once made models drift to the one the composer didn't pick
+    (observed with gemini inventing render_music21 calls in ABC mode)."""
+    if mode == "codegen":
+        toolkit = (PROMPTS_DIR / "toolkit.md").read_text(encoding="utf-8").strip()
+        docs = _CODEGEN_DOCS.format(toolkit=toolkit)
+    else:
+        docs = _ABC_DOCS
+    return _persona() + "\n" + docs
+
+
+def _persona() -> str:
+    return """\
 You are a composer collaborating with a professional human composer in a shared \
 studio. You write music; they react, direct, and refine. Treat them as the \
 senior musical voice in the room.
@@ -112,6 +155,13 @@ never surface technical errors.
 sees the engraved score and can play the audio beside the chat, so don't paste \
 notation or describe the piece bar-by-bar — render it, then say a few words \
 about the musical intent and what to listen for.
+- The render tool is the ONLY way music reaches the composer — text cannot \
+carry a piece. Never say a piece is ready, or invite them to listen, unless \
+you actually called the render tool in this turn. Composing "in your head" \
+and describing it is a broken promise: nothing will appear on their screen.
+- One message from the composer means one piece (unless they ask for several). \
+After a successful render, wrap up and wait for their reaction. Never invent \
+or anticipate their feedback — only the composer speaks for the composer.
 - The composer chooses the writing method for each message; you get exactly one \
 render tool per turn. Use the one available and never suggest switching methods \
 — that toggle is theirs.
@@ -124,32 +174,6 @@ composer sees these notes on the version timeline.
 - Be concise. A short paragraph of musical intent beats an essay. Ask a focused \
 question when direction is genuinely ambiguous; otherwise make a musical choice \
 and offer it.
-
-# Music documentation
-
-{toolkit}
-
-# Realizing dynamics in the audio (render_music21)
-
-The synthesized audio realizes stepwise Dynamic marks and per-note velocities. \
-Hairpin wedges — `dynamics.Crescendo(first_note, last_note)` / \
-`dynamics.Diminuendo(...)` inserted into the Part — engrave in the score but do \
-not change the audio by themselves. For a crescendo the composer can actually \
-hear, ramp `note.volume.velocity` across the passage (velocities scale within \
-the prevailing Dynamic) and add the wedge so the score shows it too.
-
-# Writing ABC (render_abc)
-
-- Include the header fields X, T, M, L and K (K last, right before the music).
-- Never leave a blank line inside the tune — everything after it is silently \
-dropped from the audio.
-- Declare voices with real instrument names (e.g. `V:1 name="Violin"`) and mark \
-voice switches as `[V:1]` — the audio picks timbres from the names.
-- Dynamics decorations (`!pp!` `!p!` `!mp!` `!mf!` `!f!` `!ff!`) are audible; \
-hairpins (`!crescendo(!` `!crescendo)!` `!diminuendo(!` `!diminuendo)!`) engrave \
-in the score but the audio only follows the stepwise marks.
-- Chord symbols like `"Em"` are performed as strummed accompaniment in the \
-audio, so only write them if you want them heard.
 """
 
 
@@ -171,15 +195,14 @@ def _strip_thinking(messages: list) -> list:
     return out
 
 
-def _model_spec(model_name: str) -> tuple[str, dict | None]:
-    """friendly id -> (anthropic model id, thinking config or None)."""
+def _model_spec(model_name: str) -> tuple[str, str, dict]:
+    """friendly id -> (provider, provider model id, provider options)."""
     if model_name not in MODEL_REGISTRY:
         raise KeyError(f"unknown model '{model_name}'")
     provider, model_id, *rest = MODEL_REGISTRY[model_name]
-    if provider != "anthropic":
-        raise ValueError(f"studio requires an anthropic model, got '{model_name}'")
-    options = rest[0] if rest else {}
-    return model_id, options.get("thinking")
+    if provider not in BACKENDS:
+        raise ValueError(f"no studio backend for provider '{provider}' ({model_name})")
+    return provider, model_id, (rest[0] if rest else {})
 
 
 async def stream_turn(store: SessionStore, session_id: str, user_text: str,
@@ -194,22 +217,16 @@ async def stream_turn(store: SessionStore, session_id: str, user_text: str,
     if meta is None:
         raise KeyError(session_id)
     model_name = model or meta["model"]
-    model_id, thinking = _model_spec(model_name)
+    provider, model_id, options = _model_spec(model_name)
     if model_name != meta["model"]:
         # Stick immediately, not at clean turn end — a crashed turn shouldn't
         # silently revert the composer's model choice.
         store.touch(session_id, model=model_name)
 
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        yield {"type": "error", "message": "server is missing ANTHROPIC_API_KEY"}
+    key_env = REQUIRED_KEYS[provider]
+    if not os.environ.get(key_env):
+        yield {"type": "error", "message": f"server is missing {key_env}"}
         return
-
-    from anthropic import AsyncAnthropic
-
-    # Same timeout rationale as models/anthropic.py: thinking models can stay
-    # silent for many minutes before answering.
-    client = AsyncAnthropic(timeout=1800.0 if thinking else 600.0, max_retries=2)
-    max_tokens = 64000 if thinking else 16000
 
     messages = _strip_thinking(store.messages(session_id))
     messages.append({"role": "user", "content": user_text})
@@ -219,39 +236,22 @@ async def stream_turn(store: SessionStore, session_id: str, user_text: str,
     usage = {"input_tokens": 0, "output_tokens": 0}
     n_versions = meta.get("n_versions", 0)
 
-    for step in range(1, MAX_TURN_STEPS + 1):
-        kwargs = dict(
-            model=model_id,
-            max_tokens=max_tokens,
-            system=system_prompt(),
-            tools=TOOLS_BY_MODE[mode],
-            messages=messages,
-        )
-        if thinking:
-            kwargs["thinking"] = thinking
+    backend = BACKENDS[provider]
 
-        # The SDK retries failed *requests*, but a stream that dies midway
+    for step in range(1, MAX_TURN_STEPS + 1):
+        # The SDKs retry failed *requests*, but a stream that dies midway
         # (e.g. httpx.ReadError on a network blip) raises out of the iterator
         # and would kill the whole turn — so retry the streaming call itself.
         # A `retry` event tells the UI to discard the half-streamed reply.
         final = None
         for attempt in range(1, 4):
             try:
-                async with client.messages.stream(**kwargs) as stream:
-                    async for event in stream:
-                        if event.type == "content_block_start":
-                            block = event.content_block
-                            if block.type == "text":
-                                yield {"type": "text_start"}
-                            elif block.type == "thinking":
-                                yield {"type": "status", "text": "Thinking…"}
-                            elif block.type == "tool_use":
-                                yield {"type": "status", "text": "Composing…"}
-                        elif event.type == "content_block_delta":
-                            delta = event.delta
-                            if delta.type == "text_delta":
-                                yield {"type": "text", "delta": delta.text}
-                    final = await stream.get_final_message()
+                async for event in backend(model_id, options, system_prompt(mode),
+                                           TOOLS_BY_MODE[mode], messages):
+                    if event.get("type") == "_result":
+                        final = event
+                    else:
+                        yield event
                 break
             except Exception as e:
                 if attempt == 3 or not is_retryable(e):
@@ -262,40 +262,64 @@ async def stream_turn(store: SessionStore, session_id: str, user_text: str,
                 yield {"type": "status", "text": "Reconnecting…"}
                 await asyncio.sleep(backoff_delay(attempt))
 
-        usage["input_tokens"] += final.usage.input_tokens
-        usage["output_tokens"] += final.usage.output_tokens
+        usage["input_tokens"] += final["usage"]["input_tokens"]
+        usage["output_tokens"] += final["usage"]["output_tokens"]
 
-        assistant_blocks = [b.model_dump(exclude_none=True) for b in final.content]
+        assistant_blocks = final["blocks"]
+        if not assistant_blocks:
+            yield {"type": "error", "message": "the model returned nothing — try again"}
+            break
         messages.append({"role": "assistant", "content": assistant_blocks})
         store.save_messages(session_id, messages)
 
-        for block in final.content:
-            if block.type == "thinking":
-                store.append_event(session_id, {"type": "thinking", "text": block.thinking})
-            elif block.type == "text":
-                store.append_event(session_id, {"type": "assistant", "text": block.text,
+        if final.get("reasoning_text"):
+            store.append_event(session_id, {"type": "thinking",
+                                            "text": final["reasoning_text"]})
+        for block in assistant_blocks:
+            if block.get("type") == "thinking":
+                store.append_event(session_id, {"type": "thinking",
+                                                "text": block.get("thinking", "")})
+            elif block.get("type") == "text":
+                store.append_event(session_id, {"type": "assistant",
+                                                "text": block.get("text", ""),
                                                 "step": step})
 
-        if final.stop_reason == "max_tokens":
+        if final["stop_reason"] == "max_tokens":
             yield {"type": "error",
                    "message": "the response ran too long and was cut off — ask again"}
             break
 
-        tool_uses = [b for b in final.content if b.type == "tool_use"]
-        if final.stop_reason != "tool_use" or not tool_uses:
+        tool_uses = [b for b in assistant_blocks if b.get("type") == "tool_use"]
+        if final["stop_reason"] != "tool_use" or not tool_uses:
             break
 
+        allowed = {t["name"] for t in TOOLS_BY_MODE[mode]}
         results = []
         for tu in tool_uses:
-            store.append_event(session_id, {"type": "tool_call", "name": tu.name,
-                                            "input": tu.input, "step": step})
-            executor = _EXECUTORS.get(tu.name)
-            if executor is None:
-                result = {"ok": False, "error": f"unknown tool {tu.name}"}
+            store.append_event(session_id, {"type": "tool_call", "name": tu["name"],
+                                            "input": tu["input"], "step": step})
+            executor = _EXECUTORS.get(tu["name"])
+            if tu["name"] not in allowed:
+                # Models sometimes hallucinate the other render tool (the system
+                # prompt documents both methods); the composer's toggle is a hard
+                # constraint, so refuse rather than quietly cross modes.
+                result = {"ok": False,
+                          "error": f"{tu['name']} is not available this turn; "
+                                   f"use {', '.join(sorted(allowed))}"}
+            elif executor is None:
+                result = {"ok": False, "error": f"unknown tool {tu['name']}"}
             else:
                 result = await run_in_threadpool(
-                    executor, store.pieces_dir(session_id), tu.input
+                    executor, store.pieces_dir(session_id), tu["input"]
                 )
+                if result.get("ok"):
+                    # Read by the model, not the UI: several models (observed
+                    # with gemini) otherwise keep "improving" the piece across
+                    # steps, inventing composer feedback as they go.
+                    result["next"] = (
+                        "The composer can now see and hear this version. Reply "
+                        "briefly and end your turn — do not render again unless "
+                        "their message asked for more than one piece.")
             if result.get("ok"):
                 n_versions = max(n_versions, result["version"])
                 piece_event = {
@@ -312,12 +336,12 @@ async def stream_turn(store: SessionStore, session_id: str, user_text: str,
                 yield piece_event
             else:
                 store.append_event(session_id, {"type": "tool_error",
-                                                "name": tu.name,
+                                                "name": tu["name"],
                                                 "error": result.get("error")})
                 yield {"type": "status", "text": "Adjusting…"}
             results.append({
                 "type": "tool_result",
-                "tool_use_id": tu.id,
+                "tool_use_id": tu["id"],
                 "content": json.dumps(result, ensure_ascii=False),
                 "is_error": not result.get("ok", False),
             })

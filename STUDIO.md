@@ -33,12 +33,24 @@ without them scores still engrave, only MP3s are skipped. ABC audio also wants
 | `STUDIO_DEFAULT_MODEL` | `opus-4.8` | preselected model for new sessions (non-thinking, so turns stay snappy; pick fable-5 in the UI when quality is worth minutes of silent thinking) |
 | `STUDIO_NOTIFY_URL` | *(off)* | webhook POSTed on session create / resume-after-idle |
 
-Models come from [`registry.py`](src/llm_music/models/registry.py); only
-Anthropic entries qualify (the agent loop uses tool use on that API). Each
-session starts on the model picked at creation, and the dropdown above the chat
-box switches it mid-conversation (applies from the next message and sticks).
-Prior turns' thinking blocks are stripped from the replayed context — their
-signatures are model-specific — but stay in events.jsonl.
+Models come from [`registry.py`](src/llm_music/models/registry.py) — all three
+providers, so the picker spans the full study roster: claude, gpt, gemini,
+grok, deepseek, qwen. Set the matching `*_API_KEY`s on the server; use
+`STUDIO_MODELS` to hide models whose keys are absent. Each session starts on
+the model picked at creation, and the dropdown above the chat box switches it
+mid-conversation — even across providers (transcripts are stored in one
+canonical format and translated per call). Prior turns' thinking blocks are
+stripped from the replayed context — their signatures are model-specific — but
+stay in events.jsonl.
+
+Backend per provider (see [`backends.py`](src/llm_music/studio/backends.py)):
+Anthropic and OpenAI use native streaming tool calls; OpenRouter models use a
+JSON-in-text protocol instead (the same style the batch pipeline uses), because
+function calling through OpenRouter proved unreliable — gemini upstream-errors
+on most tool requests and some providers silently drop the `tools` param.
+OpenRouter replies therefore arrive as one block rather than streaming. The
+system prompt documents only the writing method the composer picked for that
+message; teaching both at once made models drift to the wrong tool.
 
 ## Deploy on a small VPS
 

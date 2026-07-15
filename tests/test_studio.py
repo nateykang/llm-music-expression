@@ -194,7 +194,7 @@ def test_message_model_validation(client):
     login(client)
     meta = client.post("/api/sessions", json={"title": "Models"}).json()
     res = client.post(f"/api/sessions/{meta['id']}/message",
-                      json={"text": "hi", "model": "gpt-5.5"})  # not an anthropic model
+                      json={"text": "hi", "model": "not-a-model"})
     assert res.status_code == 400
 
 
@@ -225,7 +225,65 @@ def test_index_serves_shell(client):
     assert "Composer Studio" in res.text
 
 
-def test_available_models_are_anthropic(studio_env):
+def test_available_models_span_providers(studio_env):
     models = cfg.available_models()
-    assert models and "fable-5" in models
+    for m in ("fable-5", "gpt-5.5", "gemini-2.5-pro"):  # one per provider
+        assert m in models
     assert cfg.default_model() == "opus-4.8"  # snappy default; thinking models opt-in
+
+
+def test_openai_transcript_conversion():
+    from llm_music.studio.backends import to_openai_messages, to_openai_tools
+    from llm_music.studio.agent import TOOLS
+
+    canonical = [
+        {"role": "user", "content": "write me a jig"},
+        {"role": "assistant", "content": [
+            {"type": "text", "text": "Here it comes."},
+            {"type": "tool_use", "id": "toolu_1", "name": "render_abc",
+             "input": {"abc": "X:1", "title": "Jig", "note": "initial version"}},
+        ]},
+        {"role": "user", "content": [
+            {"type": "tool_result", "tool_use_id": "toolu_1",
+             "content": '{"ok": true, "version": 1}', "is_error": False},
+        ]},
+    ]
+    msgs = to_openai_messages("be musical", canonical)
+    assert msgs[0] == {"role": "system", "content": "be musical"}
+    assert msgs[1] == {"role": "user", "content": "write me a jig"}
+    assert msgs[2]["role"] == "assistant" and msgs[2]["content"] == "Here it comes."
+    call = msgs[2]["tool_calls"][0]
+    assert call["id"] == "toolu_1" and call["function"]["name"] == "render_abc"
+    assert '"title": "Jig"' in call["function"]["arguments"]
+    assert msgs[3] == {"role": "tool", "tool_call_id": "toolu_1",
+                       "content": '{"ok": true, "version": 1}'}
+
+    fns = to_openai_tools(TOOLS)
+    assert [f["function"]["name"] for f in fns] == ["render_music21", "render_abc"]
+    assert fns[0]["function"]["parameters"]["required"] == ["code", "title", "note"]
+
+
+def test_json_protocol_transcript_conversion():
+    from llm_music.studio.agent import TOOLS_BY_MODE
+    from llm_music.studio.backends import _to_json_messages
+
+    tools = TOOLS_BY_MODE["abc"]
+    canonical = [
+        {"role": "user", "content": "write me a jig"},
+        {"role": "assistant", "content": [
+            {"type": "tool_use", "id": "toolu_1", "name": "render_abc",
+             "input": {"abc": "X:1", "title": "Jig", "note": "initial version"}},
+        ]},
+        {"role": "user", "content": [
+            {"type": "tool_result", "tool_use_id": "toolu_1",
+             "content": '{"ok": true, "version": 1}', "is_error": False},
+        ]},
+        {"role": "assistant", "content": [{"type": "text", "text": "Take a listen!"}]},
+    ]
+    msgs = _to_json_messages("be musical", tools, canonical)
+    assert msgs[0]["role"] == "system" and "Response protocol" in msgs[0]["content"]
+    assert "render_abc" in msgs[0]["content"]
+    assert msgs[1] == {"role": "user", "content": "write me a jig"}
+    assert msgs[2]["role"] == "assistant" and '"tool": "render_abc"' in msgs[2]["content"]
+    assert msgs[3]["role"] == "user" and msgs[3]["content"].startswith("RENDER RESULT:")
+    assert msgs[4] == {"role": "assistant", "content": "Take a listen!"}

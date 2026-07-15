@@ -38,19 +38,22 @@ def notify_url() -> str | None:
 
 
 def available_models() -> list[str]:
-    """Friendly model ids the studio offers. Tool use runs on the Anthropic API,
-    so only anthropic-provider entries from the shared registry qualify."""
+    """Friendly model ids the studio offers: every registry entry whose provider
+    has a studio backend (anthropic, openai, openrouter — see backends.py).
+    STUDIO_MODELS narrows the list, e.g. to models whose keys are on the server."""
+    from .backends import BACKENDS
+
     env = os.environ.get("STUDIO_MODELS")
-    anthropic = [m for m, spec in MODEL_REGISTRY.items() if spec[0] == "anthropic"]
+    supported = [m for m, spec in MODEL_REGISTRY.items() if spec[0] in BACKENDS]
     if env:
         wanted = [m.strip() for m in env.split(",") if m.strip()]
-        unknown = [m for m in wanted if m not in anthropic]
+        unknown = [m for m in wanted if m not in supported]
         if unknown:
             raise ValueError(
-                f"STUDIO_MODELS entries not in registry as anthropic models: {unknown}"
+                f"STUDIO_MODELS entries without a studio backend: {unknown}"
             )
         return wanted
-    return anthropic
+    return supported
 
 
 def default_model() -> str:
