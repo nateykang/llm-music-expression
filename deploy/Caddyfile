@@ -1,0 +1,8 @@
+# Caddy reverse proxy for the studio. Automatic HTTPS via Let's Encrypt.
+# Replace the hostname, then: sudo cp deploy/Caddyfile /etc/caddy/Caddyfile && sudo systemctl reload caddy
+studio.example.com {
+	reverse_proxy 127.0.0.1:8321 {
+		# SSE turns stream for minutes; don't buffer or time them out.
+		flush_interval -1
+	}
+}

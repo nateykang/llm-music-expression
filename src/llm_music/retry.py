@@ -33,10 +33,15 @@ def is_retryable(exc: Exception) -> bool:
     return True
 
 
-def backoff_sleep(attempt: int, cap: float = 20.0) -> float:
-    """Exponential backoff with jitter: sleep 2^attempt (capped) scaled by a
+def backoff_delay(attempt: int, cap: float = 20.0) -> float:
+    """Exponential backoff duration with jitter: 2^attempt (capped) scaled by a
     random factor in [0.5, 1.0] so parallel workers don't retry in lockstep.
-    Returns the duration slept."""
-    delay = min(2 ** attempt, cap) * _rng.uniform(0.5, 1.0)
+    Async callers pass this to asyncio.sleep; sync callers use backoff_sleep."""
+    return min(2 ** attempt, cap) * _rng.uniform(0.5, 1.0)
+
+
+def backoff_sleep(attempt: int, cap: float = 20.0) -> float:
+    """Sleep for backoff_delay(attempt) and return the duration slept."""
+    delay = backoff_delay(attempt, cap)
     time.sleep(delay)
     return delay

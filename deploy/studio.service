@@ -1,0 +1,19 @@
+# systemd unit for the composer studio. Install:
+#   sudo cp deploy/studio.service /etc/systemd/system/
+#   sudo systemctl enable --now studio
+[Unit]
+Description=Composer Studio (llm-music-expression)
+After=network.target
+
+[Service]
+User=studio
+WorkingDirectory=/home/studio/llm-music-expression
+# Secrets live in an env file readable only by the service user:
+#   STUDIO_PASSWORD=..., ANTHROPIC_API_KEY=..., STUDIO_SECRET=...
+EnvironmentFile=/home/studio/llm-music-expression/.env
+ExecStart=/home/studio/llm-music-expression/.venv/bin/llm-music-studio --host 127.0.0.1 --port 8321 --proxy-headers
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

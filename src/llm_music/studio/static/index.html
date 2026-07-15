@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Composer Studio</title>
+  <link rel="stylesheet" href="/static/studio.css">
+  <!-- Same engraving stack as the main site: Verovio for MusicXML, abcjs for ABC. -->
+  <script src="https://www.verovio.org/javascript/latest/verovio-toolkit-wasm.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/abcjs@6.4.4/dist/abcjs-basic-min.js" defer></script>
+  <script src="/static/studio.js" defer></script>
+</head>
+<body>
+
+  <div id="login-view" hidden>
+    <form id="login-form" class="card login-card">
+      <h1>Composer Studio</h1>
+      <p class="sub">A shared room: you talk music, the model composes.</p>
+      <input id="password" type="password" placeholder="Password" autocomplete="current-password" autofocus>
+      <button type="submit">Enter</button>
+      <p id="login-error" class="error" hidden></p>
+    </form>
+  </div>
+
+  <div id="home-view" hidden>
+    <header class="bar">
+      <h1>Composer Studio</h1>
+      <button id="logout" class="ghost">Log out</button>
+    </header>
+    <main class="home-main">
+      <form id="new-session-form" class="card">
+        <h2>New session</h2>
+        <div class="row">
+          <input id="new-title" type="text" placeholder="What are we working on? (optional)">
+          <select id="new-model"></select>
+          <button type="submit">Start</button>
+        </div>
+      </form>
+      <section class="card">
+        <h2>Sessions</h2>
+        <div id="session-list"><p class="muted">No sessions yet.</p></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="chat-view" hidden>
+    <div class="piece-col">
+      <p id="piece-empty" class="muted">Scores and audio will appear here as the model composes.</p>
+      <div id="piece-panel" hidden>
+        <div id="version-tabs"></div>
+        <h3 id="piece-title"></h3>
+        <p id="piece-note" class="muted"></p>
+        <audio id="piece-audio" controls preload="metadata"></audio>
+        <div id="score"></div>
+      </div>
+    </div>
+    <div class="chat-col">
+      <div class="bar chat-bar">
+        <button id="back" class="ghost">&larr; Sessions</button>
+        <span id="chat-title"></span>
+        <span id="chat-model" class="chip"></span>
+      </div>
+      <div id="messages"></div>
+      <div id="status-line" hidden><span class="dot"></span><span id="status-text">Thinking…</span></div>
+      <div class="mode-bar">
+        <span class="muted">Writing method</span>
+        <div class="mode-toggle" role="radiogroup" aria-label="Writing method">
+          <button type="button" class="mode active" id="mode-codegen"
+            title="The model writes music21 code — full multi-part writing, articulations, shaped dynamics">code</button>
+          <button type="button" class="mode" id="mode-abc"
+            title="The model writes ABC notation directly — leaner, folk-style notation">ABC</button>
+        </div>
+        <span class="muted">Model</span>
+        <select id="turn-model" title="Applies from your next message on"></select>
+      </div>
+      <form id="composer" class="composer">
+        <textarea id="input" rows="2"
+          placeholder="Describe what you'd like to hear — a mood, a form, a revision…"></textarea>
+        <button id="send" type="submit">Send</button>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

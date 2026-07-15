@@ -38,5 +38,8 @@ docs/sheets.html
 # external human-music corpora (large, fetched locally)
 data_external/
 
+# composer-studio sessions (research data, backed up separately — see STUDIO.md)
+studio_data/
+
 # per-piece CLAP embedding cache (redundant with clap_embeddings.npz)
 docs/analysis/embedding/clap/

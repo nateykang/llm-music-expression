@@ -6,6 +6,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8011", "--directory", "docs"],
       "port": 8011
+    },
+    {
+      "name": "studio",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "STUDIO_PASSWORD=local-dev .venv/bin/python -m llm_music.studio --port 8321"],
+      "port": 8321
     }
   ]
 }
