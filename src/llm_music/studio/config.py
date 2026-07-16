@@ -15,6 +15,20 @@ COOKIE_NAME = "studio_auth"
 TOKEN_TTL_SECONDS = 30 * 24 * 3600  # re-login monthly
 MAX_TURN_STEPS = 8  # model calls per composer message (spend guardrail)
 
+_SECRET_VARS = ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "OPENROUTER_API_KEY",
+                "STUDIO_PASSWORD", "STUDIO_SECRET", "STUDIO_BACKUP_REPO")
+
+
+def sanitize_env() -> None:
+    """Strip stray whitespace from secret env vars. Console UIs (e.g. RunPod's
+    env-var fields) make it easy to paste a trailing newline; a newline inside
+    an API key becomes httpcore's 'Illegal header value', which the SDKs
+    surface as a bogus 'Connection error' — hours of fun to diagnose."""
+    for var in _SECRET_VARS:
+        val = os.environ.get(var)
+        if val and val.strip() != val:
+            os.environ[var] = val.strip()
+
 # Random per boot unless pinned: a restart just means re-entering the password.
 _boot_secret = secrets.token_bytes(32)
 
@@ -54,6 +68,10 @@ def available_models() -> list[str]:
             )
         return wanted
     return supported
+
+
+# At import so every entry point (server, __main__, tests) sees clean values.
+sanitize_env()
 
 
 def default_model() -> str:

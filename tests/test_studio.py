@@ -225,6 +225,16 @@ def test_index_serves_shell(client):
     assert "Composer Studio" in res.text
 
 
+def test_sanitize_env_strips_pasted_newlines(monkeypatch):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-test\n")
+    monkeypatch.setenv("STUDIO_PASSWORD", " secret ")
+    cfg.sanitize_env()
+    import os
+
+    assert os.environ["ANTHROPIC_API_KEY"] == "sk-ant-test"
+    assert os.environ["STUDIO_PASSWORD"] == "secret"
+
+
 def test_available_models_span_providers(studio_env):
     models = cfg.available_models()
     for m in ("fable-5", "gpt-5.5", "gemini-2.5-pro"):  # one per provider
