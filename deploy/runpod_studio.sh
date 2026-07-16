@@ -67,18 +67,25 @@ BACKUP_REPO="${STUDIO_BACKUP_REPO:-$(grep -E '^STUDIO_BACKUP_REPO=' .env 2>/dev/
 BACKUP_REPO="$(printf '%s' "$BACKUP_REPO" | tr -d '[:space:]')"
 if [ -n "$BACKUP_REPO" ]; then
     (
+        set +e  # the loop must outlive transient failures (set -e is inherited)
         while true; do
             if [ -d studio_data ]; then
-                [ -d ~/studio_backup ] || git clone -q "$BACKUP_REPO" ~/studio_backup \
-                    || echo "backup: clone failed — check STUDIO_BACKUP_REPO" >&2
+                # A clone that failed half-way (or an rsync before it) leaves a
+                # non-git ~/studio_backup that blocks every later clone — reset it.
+                if [ ! -d ~/studio_backup/.git ]; then
+                    rm -rf ~/studio_backup
+                    git clone -q "$BACKUP_REPO" ~/studio_backup \
+                        || echo "backup: clone failed — check STUDIO_BACKUP_REPO" >&2
+                fi
                 if [ -d ~/studio_backup/.git ]; then
                     rsync -a studio_data/ ~/studio_backup/studio_data/
-                    cd ~/studio_backup
-                    git add -A
-                    git -c user.email=studio@pod -c user.name=studio \
-                        commit -qm "backup $(date -u +%Y-%m-%dT%H:%M)" 2>/dev/null || true
-                    git push -q || true
-                    cd ~/llm-music-expression
+                    (
+                        cd ~/studio_backup || exit
+                        git add -A
+                        git -c user.email=studio@pod -c user.name=studio \
+                            commit -qm "backup $(date -u +%Y-%m-%dT%H:%M)" 2>/dev/null
+                        git push -q || echo "backup: push failed" >&2
+                    )
                 fi
             fi
             sleep 6h
