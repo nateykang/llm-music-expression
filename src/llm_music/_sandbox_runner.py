@@ -28,6 +28,39 @@ def _apply_limits() -> None:
         pass
 
 
+def _relocate_tempo_marks(score, parts) -> None:
+    """Move Score-/Part-level MetronomeMarks into the Measure covering their offset.
+
+    music21's MusicXML export only writes a MetronomeMark that lives inside a
+    Measure; a mark inserted directly on the Score, or on a Part that contains
+    explicit Measures, is silently dropped — and our MIDI is derived from the
+    MusicXML, so the piece's tempo is lost end to end (the analyzer then falls
+    back to 120 BPM). The toolkit historically told models to insert tempo at
+    part level, so honor that placement here. Parts holding loose notes are left
+    alone: export's makeMeasures already carries their marks into bar 1.
+    """
+    from music21 import stream as m21stream, tempo as m21tempo
+
+    holders = {}
+    if parts:
+        holders[id(score)] = (score, parts[0])  # score-level marks -> first part
+    for p in parts:
+        holders[id(p)] = (p, p)
+    for holder, part in holders.values():
+        for mm in list(holder.getElementsByClass(m21tempo.MetronomeMark)):
+            measures = list(part.getElementsByClass(m21stream.Measure))
+            if not measures:
+                continue
+            target = measures[0]
+            for m in measures:
+                if float(m.offset) <= float(mm.offset):
+                    target = m
+                else:
+                    break
+            holder.remove(mm)
+            target.insert(max(0.0, float(mm.offset) - float(target.offset)), mm)
+
+
 def main() -> int:
     code_file, midi_out, xml_out = sys.argv[1], sys.argv[2], sys.argv[3]
     _apply_limits()
@@ -75,6 +108,8 @@ def main() -> int:
                 continue
             target = p.recurse().getElementsByClass("Measure").first() or p
             target.insert(0, best)
+
+        _relocate_tempo_marks(score, parts)
 
         # Write MusicXML first, then derive MIDI FROM it. music21's direct MIDI
         # export drops a grand-staff's second (bass) part while its MusicXML keeps

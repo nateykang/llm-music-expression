@@ -19,7 +19,7 @@ OUTPUTS = """\
 You must respond with a single JSON object (and nothing else) with these fields:
 
 - `abc`: The complete piece written in ABC notation, including the header fields
-  X, T, M, L, K and all the music. Multiple voices are welcome via V: lines.
+  X, T, M, L, Q, K and all the music. Multiple voices are welcome via V: lines.
 - `title`: A short title for your piece.
 - `short_description`: A single sentence describing your musical intent.
 - `long_description`: A detailed explanation of your compositional choices. Can be any length.

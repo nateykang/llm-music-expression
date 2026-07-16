@@ -33,8 +33,10 @@ log = logging.getLogger(__name__)
 # (and the Bach reference cache) are detectable instead of silently blending
 # old and new numbers. History: 1 = original; 2 = gchordoff for ABC features,
 # pitch_in_scale_rate actually computed, groove uses the real time signature,
-# valence None (not 0) for unknown mode, sample/batch identity columns.
-FEATURES_VERSION = 2
+# valence None (not 0) for unknown mode, sample/batch identity columns;
+# 3 = tempo_bpm blank when the model never set a tempo (was: silent 120),
+# plus the tempo_defaulted flag column.
+FEATURES_VERSION = 3
 
 # Columns emitted per piece, in order.
 FIELDS = [
@@ -49,7 +51,7 @@ FIELDS = [
     "empty_beat_rate", "groove_consistency",
     "pitch_interval", "ioi", "rhythm_entropy",
     "n_pitches_used", "pitch_range",
-    "tempo_bpm", "n_notes", "length_seconds", "note_density",
+    "tempo_bpm", "tempo_defaulted", "n_notes", "length_seconds", "note_density",
     "valence", "arousal", "affect_quadrant",
     "features_version",
 ]
@@ -88,6 +90,22 @@ def _load(piece: dict, batch_dir: Path, work_dir: Path):
         return muspy.read_midi(str(midi)), score
     except Exception:
         return None, None
+
+
+def _abc_declares_tempo(abc: str) -> bool:
+    """True if the ABC sets a tempo the pipeline will honor: a Q: header line
+    BEFORE the K: line. K: ends the ABC header, so a Q: after it is ignored by
+    abc2midi, which then bakes its 120 BPM default into the MIDI — downstream
+    that default is indistinguishable from a real tempo, so it must be caught
+    here, on the raw text."""
+    qi = ki = None
+    for i, line in enumerate(abc.splitlines()):
+        s = line.lstrip()
+        if qi is None and s.startswith(("Q:", "q:")):
+            qi = i
+        if ki is None and s.startswith(("K:", "k:")):
+            ki = i
+    return qi is not None and (ki is None or qi < ki)
 
 
 def _parse_declared_key(abc: str):
@@ -376,10 +394,20 @@ def _compute_features(mus, score, meta) -> dict | None:
     # In-scale rate needs the key as input (root pitch class + mode).
     pitch_in_scale = (safe(muspy.pitch_in_scale_rate, root_pc, mode)
                       if root_pc is not None and mode in ("major", "minor") else None)
+    # Tempo, with an honest "defaulted" flag: 120 is our fallback, not a model
+    # choice. For ABC the flag must come from the raw text — abc2midi bakes its
+    # own 120 default into the MIDI, so a piece with no (honored) Q: field still
+    # parses back with a 120 MetronomeMark.
     mm = score.recurse().getElementsByClass(m21tempo.MetronomeMark).first()
+    if meta.get("abc"):
+        tempo_defaulted = not _abc_declares_tempo(meta["abc"])
+    else:
+        tempo_defaulted = not (mm and mm.number)
     bpm = float(mm.number) if mm and mm.number else 120.0
     n_notes = len(list(score.recurse().notes))
     length_q = float(score.highestTime) or 1.0          # duration in quarter-notes
+    # length/arousal keep the fallback bpm: they describe the piece as rendered
+    # (the audio really does play at 120 when no tempo was set).
     length_s = length_q * 60.0 / bpm
     notes_per_beat = n_notes / length_q                 # tempo-invariant rhythmic density
 
@@ -437,7 +465,8 @@ def _compute_features(mus, score, meta) -> dict | None:
         "pitch_interval": pitch_interval, "ioi": ioi, "rhythm_entropy": rhythm_entropy,
         "n_pitches_used": safe(muspy.n_pitches_used),
         "pitch_range": safe(muspy.pitch_range),
-        "tempo_bpm": round(bpm, 1), "n_notes": n_notes,
+        "tempo_bpm": "" if tempo_defaulted else round(bpm, 1),
+        "tempo_defaulted": int(tempo_defaulted), "n_notes": n_notes,
         "length_seconds": round(length_s, 1), "note_density": round(notes_per_beat, 2),
         "valence": valence, "arousal": arousal, "affect_quadrant": quadrant,
     }
