@@ -28,12 +28,22 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
 apt-get install -y -qq git abcmidi fluidsynth lame
 
+# --- python >= 3.11 (RunPod's 20.04 base images ship 3.8) ---------------------
+PY=python3
+if ! $PY -c 'import sys; sys.exit(sys.version_info < (3, 11))' 2>/dev/null; then
+    apt-get install -y -qq software-properties-common
+    add-apt-repository -y ppa:deadsnakes/ppa >/dev/null
+    apt-get update -qq
+    apt-get install -y -qq python3.11 python3.11-venv
+    PY=python3.11
+fi
+
 # --- repo + venv + package ----------------------------------------------------
 cd ~
 [ -d llm-music-expression ] || git clone https://github.com/nateykang/llm-music-expression.git
 cd llm-music-expression
 git pull --ff-only || true
-python3 -m venv .venv
+[ -d .venv ] || $PY -m venv .venv  # never recreate: 3.8's venv would clobber 3.11's
 .venv/bin/pip install -q --upgrade pip
 .venv/bin/pip install -q -e ".[studio]"
 
