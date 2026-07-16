@@ -22,7 +22,7 @@ import numpy as np
 
 from .config import REPO_ROOT
 from .judge import QUALITY_KEYS
-from .report_common import BG, INK, MUTED, SHORT, page, table
+from .report_common import BG, INK, MUTED, SHORT, fnote, page, table
 
 FIG_DIR = "analysis/embedding"
 QUALITY = QUALITY_KEYS
@@ -265,11 +265,16 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
 
     secs.append(
         "<h2>The style space (exploratory)</h2>"
-        "<p class='scope'>I embedded every free-form piece's rendered audio with MERT — the "
-        "encoder inside Music2Emo (1536 dimensions). This section is an exploratory look at "
-        "that space; the sections below reuse cosine similarity between these embeddings. "
-        f"Two things came out of the exploration. The space is low-dimensional: {n50} "
-        f"principal components carry 50% of the variance, {n80} carry 80%. And the two "
+        "<p class='scope'>I embedded every free-form piece's rendered audio with "
+        f"MERT{fnote('mert')} — the encoder inside Music2Emo{fnote('music2emo')}. An "
+        "<b>embedding</b> is a list of numbers (here 1536 of them) summarizing what the audio "
+        "sounds like, placed so that similar-sounding pieces get nearby points. This section is "
+        "an exploratory look at that space; the sections below reuse <b>cosine similarity</b> "
+        "between these embeddings — the angle between two pieces' vectors, 1 = pointing the "
+        "same way (very similar), 0 = unrelated. Two things came out of the exploration. The "
+        f"space is low-dimensional: {n50} principal components (PCA — the directions along "
+        f"which the point cloud varies most, ranked{fnote('pca')}) carry 50% of the variance, "
+        f"{n80} carry 80%. And the two "
         "leading axes correspond to recognizable musical properties — I named each by checking "
         "which independent notation-side and audio-side measurements it correlates with. "
         "η² = how much of the axis is explained by knowing the composer model (or the "
@@ -285,7 +290,10 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
         "four times what generation method explains on it). fable-5 sits highest on both "
         "axes, llama-4-maverick lowest. The higher components are harder to name and I left "
         "them alone. That the axes track real musical properties is some reassurance for "
-        "treating “similar in this space” as “musically similar” below.</p>"
+        "treating “similar in this space” as “musically similar” below. The two map figures "
+        f"further down flatten the full space to 2-D with t-SNE{fnote('tsne')} — a projection "
+        "that keeps similar pieces close together (only local neighborhoods are meaningful, "
+        "not long-range distances).</p>"
         + _figure("pc12_models.png", "Every piece projected on PC1 and PC2 (faint dots), with "
                   "each model's mean position (large dots). Right = more instruments and a "
                   "brighter, wider sound; up = longer and more harmonically active.")
@@ -314,10 +322,12 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
 
     secs.append(
         "<h2>Model fingerprints — local structure, not islands</h2>"
-        f"<p class='scope'>A 5-nearest-neighbor classifier can tell which of the 12 models "
+        f"<p class='scope'>A 5-nearest-neighbor classifier — guess a piece's author by looking "
+        f"at the 5 pieces closest to it in the embedding space — can tell which of the 12 models "
         f"wrote a piece, from the audio embedding alone, <b>{knn_model * 100:.0f}%</b> of the "
         f"time (chance is 8%); it gets the generation method {knn_mode * 100:.0f}% of the "
-        f"time. At the same time, the silhouette score by model is {sil:+.2f}, meaning the "
+        f"time. At the same time, the silhouette score by model — a −1…+1 measure of how "
+        f"cleanly groups separate, where ~0 means overlapping clouds — is {sil:+.2f}, meaning the "
         f"models are not separated clusters. Both are true at once: a piece's nearest "
         f"neighbors are usually by the same author, but the model clouds heavily overlap. The "
         f"fingerprints are real but local — a plot showing twelve clean islands would be "
@@ -391,18 +401,21 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
     raw = json.loads((analysis / "judge_allmodels_raw.json").read_text(encoding="utf-8"))
     key2row = {i: j for j, i in enumerate(ids)}
     judges = sorted({j for p in raw for j in p["panel"]})
-    cent = {j: En[models == j].mean(0) for j in judges}
-    for j in cent:
-        cent[j] /= np.linalg.norm(cent[j])
 
     TOP = 50
-    rows_sp, selfbias, kinbias, resid = [], {}, {}, {}
-    kin_sim_all, own_sim_all = [], []
-    n_oth = 0
+    # lookalikes are matched PIECE-TO-PIECE: a candidate's similarity is its cosine
+    # to the judge's nearest own piece. (An earlier version matched to the judge's
+    # style centroid; a reviewer pointed out that a multi-style composer's centroid
+    # can sit far from all of its actual pieces, which biased the comparison.)
+    S_full = En @ En.T
+    Xz_sp = X / X.std(axis=0)
+    rows_sp = []
+    selfbias, kinbias, gapbias, resid2 = {}, {}, {}, {}
+    kin_dose, own_dose = {}, {}
     for J in judges:
-        own_devs, oth = [], []
+        own_rows = np.where(models == J)[0]
+        dev_j = {}
         for p in raw:
-            a = p["model"]
             if J not in p["panel"]:
                 continue
             qJ = _qual(p["panel"][J])
@@ -410,89 +423,99 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
             peers = [x for x in peers if x is not None]
             if qJ is None or not peers:
                 continue
-            dev = qJ - mean(peers)
-            if a == J:
-                own_devs.append(dev)
-            else:
-                row = key2row.get((a, p.get("mode"), p.get("title"), str(p.get("sample"))))
-                if row is not None:
-                    oth.append((float(En[row] @ cent[J]), dev))
-        oth.sort(key=lambda t: -t[0])
-        lenience = mean(d for _, d in oth)
-        ob = mean(own_devs) - lenience
-        sb = mean(d for _, d in oth[:TOP]) - lenience
-        # similarity dose-response: fit deviation ~ similarity over ALL other-author
-        # pieces, extrapolate to the similarity level of J's own pieces (each own
-        # piece measured against the leave-one-out centroid, so it can't match itself)
-        sims = np.array([s for s, _ in oth])
-        devs = np.array([d for _, d in oth])
-        beta = np.polyfit(sims, devs, 1)
-        own_rows = np.where(models == J)[0]
-        ssum = En[own_rows].sum(0)
-        own_sims = []
-        for ri in own_rows:
-            c = ssum - En[ri]
-            nrm = np.linalg.norm(c)
-            if nrm > 0:
-                own_sims.append(float(En[ri] @ (c / nrm)))
-        pred = float(np.polyval(beta, mean(own_sims))) - lenience
-        selfbias[J], kinbias[J], resid[J] = ob, sb, ob - pred
-        kin_sim_all += [s for s, _ in oth[:TOP]]
-        own_sim_all += own_sims
-        n_oth = max(n_oth, len(oth))
-        rows_sp.append((ob, [SHORT.get(J, J), f"{ob:+.2f}", f"{sb:+.2f}",
-                             f"{pred:+.2f}", f"{ob - pred:+.2f}"]))
+            row = key2row.get((p["model"], p.get("mode"), p.get("title"),
+                               str(p.get("sample"))))
+            if row is not None:
+                dev_j[row] = qJ - mean(peers)
+        oth_rows = np.array([r for r in dev_j if models[r] != J])
+        own_scored = np.array([r for r in dev_j if models[r] == J])
+        devs_oth = np.array([dev_j[r] for r in oth_rows])
+        own_devs = np.array([dev_j[r] for r in own_scored])
+        sim_nn_oth = S_full[np.ix_(oth_rows, own_rows)].max(axis=1)
+        s_own = S_full[np.ix_(own_rows, own_rows)].copy()
+        np.fill_diagonal(s_own, -1)
+        sim_nn_own = s_own.max(axis=1)
+        lenience = devs_oth.mean()
+        ob = float(own_devs.mean() - lenience)
+        top = np.argsort(-sim_nn_oth)[:TOP]
+        kb = float(devs_oth[top].mean() - lenience)
+        # strictest control: predict own deviation from similarity AND where pieces
+        # sit along the judge's own taste axis (fitted on other-author pieces only)
+        a_t = np.column_stack([Xz_sp[oth_rows], np.ones(len(oth_rows))])
+        tv = np.linalg.lstsq(a_t, devs_oth, rcond=None)[0][:Xz_sp.shape[1]]
+        tv /= np.linalg.norm(tv)
+        a2 = np.column_stack([sim_nn_oth, Xz_sp[oth_rows] @ tv, np.ones(len(oth_rows))])
+        b2 = np.linalg.lstsq(a2, devs_oth, rcond=None)[0]
+        pred2 = (b2[0] * sim_nn_own.mean()
+                 + b2[1] * float((Xz_sp[own_rows] @ tv).mean()) + b2[2])
+        selfbias[J], kinbias[J], gapbias[J] = ob, kb, ob - kb
+        resid2[J] = float(own_devs.mean() - pred2)
+        kin_dose[J] = float(sim_nn_oth[top].mean())
+        own_dose[J] = float(sim_nn_own.mean())
+        rows_sp.append((ob, [SHORT.get(J, J), f"{ob:+.2f}", f"{kb:+.2f}",
+                             f"{ob - kb:+.2f}", f"{resid2[J]:+.2f}"]))
     rows_sp.sort(key=lambda t: -t[0])
     r_sk, p_sk = _perm_p([selfbias[j] for j in judges], [kinbias[j] for j in judges])
     strong = [j for j in judges if abs(selfbias[j]) > 0.05]
     same_dir = [j for j in strong
                 if kinbias[j] * selfbias[j] > 0 and abs(kinbias[j]) < abs(selfbias[j])]
-    pos_res = [f"{SHORT.get(j, j)} ({resid[j]:+.2f})"
-               for j in sorted(judges, key=lambda j: -resid[j]) if resid[j] > 0.05]
-    neg_res = [f"{SHORT.get(j, j)} ({resid[j]:+.2f})"
-               for j in sorted(judges, key=lambda j: resid[j]) if resid[j] < -0.05]
-    dose_txt = (f"positive for every self-favoring judge ({', '.join(pos_res)}) and negative "
-                f"for the self-averse ({', '.join(neg_res)})" if pos_res and neg_res else
-                "residuals: " + ", ".join(f"{SHORT.get(j, j)} {resid[j]:+.2f}" for j in judges))
+    bound_bad = [SHORT.get(j, j) for j in judges if kin_dose[j] < own_dose[j]]
+    n_bound_ok = len(judges) - len(bound_bad)
+    surv = [f"{SHORT.get(j, j)} ({resid2[j]:+.2f})"
+            for j in sorted(judges, key=lambda j: -abs(resid2[j]))
+            if abs(resid2[j]) > 0.1]
 
     secs.append(
         "<h2>Self-preference: do models favor their own music?</h2>"
         "<p class='scope'>A judge's bias on a piece = its score minus the other judges' average "
         "on the same piece. I compare each judge's bias on its own pieces against its baseline "
         "bias on everyone else's music, so 0 means it treats its own music like everything "
-        "else. “50 most-similar” = the 50 pieces by <i>other</i> models closest to the judge's "
-        "own average style (cosine similarity in MERT space). Judges never see model "
-        "names.</p>"
+        "else. “50 most-similar” = the 50 pieces by <i>other</i> models most similar to the "
+        "judge's own pieces themselves — each candidate is scored by its cosine similarity to "
+        "the judge's <i>nearest own piece</i> (MERT embeddings). An earlier version of this "
+        "analysis matched candidates to the judge's average style vector instead; a reviewer "
+        "pointed out that if a model writes in more than one style, that average can sit far "
+        "from all of its actual pieces, so the matching is now piece-to-piece. Judges never "
+        "see model names.</p>"
         + table([("judge", None),
                  ("its own music", "leniency-corrected deviation on literally-own pieces"),
                  ("50 most-similar", "same, on other models' most lookalike pieces"),
-                 ("extrapolated", "deviation the similarity dose-response predicts at "
-                  "own-piece similarity"),
-                 ("residual", "own-music bias beyond what similarity taste predicts")],
+                 ("premium", "own minus most-similar — a conservative estimate of the "
+                  "authorship premium when the lookalikes are at least as similar as own "
+                  "pieces are to each other"),
+                 ("after taste control", "own-piece bias beyond what similarity AND the "
+                  "judge's own taste axis predict")],
                 [r for _, r in rows_sp])
         + f"<p class='callout'>Of the {len(strong)} judges with a real bias on their own music "
         f"(|bias| &gt; 0.05, either direction), {len(same_dir)} show a smaller bias in the "
         f"same direction on the 50 most-similar pieces by other authors. Across all "
-        f"{len(judges)} judges the two biases correlate at r = {r_sk:+.2f} (permutation p "
+        f"{len(judges)} judges the two biases correlate at r = {r_sk:+.2f} (Pearson "
+        f"correlation, −1…+1; the p-value — the chance of a correlation this large arising "
+        f"from random shuffling alone — comes from a permutation test: p "
         f"{'&lt; 0.001' if p_sk < 0.001 else f'= {p_sk:.3f}'}). So models respond to music "
-        f"that resembles their own even when they didn't write it.</p>"
-        + f"<p class='scope'>A natural objection: maybe a judge's own pieces just match its "
-        f"style even better than the lookalikes do, and the bigger boost is similarity again. "
-        f"The data suggests not. The 50 lookalikes are actually slightly <i>closer</i> to the "
-        f"judge's average style (mean cosine similarity {mean(kin_sim_all):.2f}) than the "
-        f"judge's own pieces are ({mean(own_sim_all):.2f}, each own piece compared against an "
-        f"average that excludes it) — yet the own pieces get the bigger boost. If similarity "
-        f"were the whole story, it would go the other way. The last two table columns put "
-        f"numbers on this: <i>extrapolated</i> = the bias expected on the judge's own pieces "
-        f"if only similarity mattered (predicted from how it scores everyone else's music at "
-        f"each similarity level); <i>residual</i> = the extra bias beyond that. The residual "
-        f"is {dose_txt}. So beyond taste for a familiar style, something about a model's own "
-        f"pieces gets extra credit, without the judge being told authorship.</p>"
-        "<p class='scope'>Reading the rows: opus-4.8 likes its style (small positive "
-        "lookalike bias) but gives its own pieces no extra credit; gpt-5.5 and gemini are "
-        "mildly negative on their own style in others' hands and harder still on their own "
-        "pieces; llama favors its style and adds the largest own-piece premium on top. The "
-        "taste-vectors section below looks for what that extra something is.</p>")
+        f"that resembles their own even when they didn't write it. That is the robust "
+        f"finding of this section: self-preference is mostly taste for a style.</p>"
+        + f"<p class='scope'>Is there anything left for authorship itself — do own pieces "
+        f"get credit beyond the style taste? The <i>premium</i> column (own minus "
+        f"most-similar) is a deliberately conservative estimate: whenever the lookalikes "
+        f"are at least as similar to the judge's music as its own pieces are to each other "
+        f"— true for {n_bound_ok} of {len(judges)} judges — any taste that rises with "
+        f"similarity would, if anything, favor the lookalikes, so the difference "
+        f"understates the premium. (The exception is {', '.join(bound_bad)}: its own "
+        f"pieces include near-duplicates of each other, so nothing by anyone else can "
+        f"match them, and its premium column overstates.) The <i>after taste control</i> "
+        f"column is the strictest test: it also holds fixed where pieces sit along the "
+        f"judge's own taste axis (the direction it rewards, from the next section). "
+        f"Little survives both: {', '.join(surv) if surv else 'nothing above ±0.10'}. "
+        f"So the pure authorship premium — extra credit for one's own pieces beyond "
+        f"generalizable style taste — is thin at best, and an earlier version of this "
+        f"page overstated it.</p>"
+        "<p class='scope'>Reading the rows: llama favors its style most strongly, but its "
+        "apparent own-piece premium is explained by its own near-duplicate sampling plus "
+        "its taste; gpt-4.1 and gemini rate their own pieces above lookalikes they "
+        "dislike; gpt-5.5 is the mirror case — fine with its style in others' hands, "
+        "harder on its own pieces; opus-4.8 likes its style with no self-attachment "
+        "either way.</p>")
 
     # ---- 4b. taste vectors: putting the axes to work ------------------------------
     Xz = X / X.std(axis=0)
@@ -545,13 +568,14 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
         ax.set_title("Does a judge's taste point toward its own style?", color=INK, fontsize=11)
     _fig("taste_align.png", alignfig, figsize=(7.4, 4.4))
 
-    # signature location: own pieces vs 50 lookalikes, per axis
+    # where matching falls short: own pieces vs the 50 piece-matched lookalikes, per axis
     sig = []
     for J in judges:
-        sims_all = En @ cent[J]
+        own_rows = np.where(models == J)[0]
         oth_rows = np.where(models != J)[0]
-        kin_rows = oth_rows[np.argsort(-sims_all[oth_rows])[:TOP]]
-        sig.append(Xz[models == J].mean(0) - Xz[kin_rows].mean(0))
+        sims_nn = S_full[np.ix_(oth_rows, own_rows)].max(axis=1)
+        kin_rows = oth_rows[np.argsort(-sims_nn)[:TOP]]
+        sig.append(Xz[own_rows].mean(0) - Xz[kin_rows].mean(0))
     sig = np.array(sig)
     pc1_pos = int((sig[:, 0] > 0).sum())
 
@@ -587,7 +611,8 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
         "<h2>Taste vectors: which style directions does each judge reward?</h2>"
         "<p class='scope'>For each judge I fit a linear model: how much the judge deviates "
         "from the panel on a piece, as a function of the piece's position on the 10 style "
-        "axes (z-scored; the judge's own pieces are excluded, so self-preference can't leak "
+        "axes (z-scored — each axis rescaled to mean 0, spread 1, so coefficients are "
+        "comparable; the judge's own pieces are excluded, so self-preference can't leak "
         "in). The 10 fitted coefficients say which directions in style space the judge "
         "rewards — call it the judge's <b>taste vector</b>. I then checked whether that "
         "direction points toward where the judge's own music sits.</p>"
@@ -600,15 +625,15 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
         + "<p class='scope'>So as a general tendency, models reward music that lies in the "
         "direction of their own. The mode bias in the next section is the sharpest "
         "single-axis case of this.</p>"
-        + "<p class='scope'>I also wanted to know what causes the residual in the previous "
-        "section, given that the 50 lookalikes are <i>more</i> cosine-similar to the judge's "
-        "average style than its own pieces are. Comparing each judge's own pieces to its "
-        f"lookalikes on each axis, the largest gap is on PC1 — the instrumentation and "
+        + "<p class='scope'>I also wanted to know where similarity matching falls short — "
+        "on which axes the 50 lookalikes still differ from the judge's own pieces despite "
+        "being its closest matches. The largest gap is on PC1 — the instrumentation and "
         f"dynamics axis (number of instruments +0.82, written dynamic span +0.50). Own pieces "
         f"sit higher on it than the lookalikes for {pc1_pos} of {len(judges)} judges (mean "
-        f"gap {sig[:, 0].mean():+.2f} z). A plain candidate explanation: even the closest "
-        "lookalikes don't match a model's instrumentation habits, and the extra credit for "
-        "own pieces may come from that.</p>"
+        f"gap {sig[:, 0].mean():+.2f} z). So overall cosine similarity under-matches "
+        "instrumentation habits specifically — one reason to be cautious about reading any "
+        "small leftover own-piece premium as self-recognition rather than as imperfect "
+        "matching.</p>"
         f"<p class='scope'>One more check comes free with this setup: judges are told not to "
         f"reward length. Pooling within-author comparisons (so style can't confound), they "
         f"don't: r = {r_len:+.3f} between length and score deviation (n = {len(px)}). "
@@ -772,7 +797,9 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
 
     secs.append(
         "<h2>Mode bias: models reward the tonal mode they compose in</h2>"
-        f"<p class='scope'>The corpus skews dark ({100 - 100 * mean(own_major.values()):.0f}% "
+        "<p class='scope'>Tonal <b>mode</b> = whether a piece is in a major key (typically "
+        "heard as bright/happy) or a minor key (dark/sad). "
+        f"The corpus skews dark ({100 - 100 * mean(own_major.values()):.0f}% "
         f"minor on average across models' own free-form output), but models differ widely — "
         f"llama-4-maverick writes {100 * own_major.get('llama-4-maverick', 0):.0f}% major, "
         f"gpt-5.5 {100 * own_major.get('gpt-5.5', 0):.0f}%. Three experiments test whether "
@@ -827,20 +854,28 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
     secs.append(
         "<h2>Methods &amp; caveats</h2>"
         "<p class='scope'>Embeddings: Music2Emo's internal pooled MERT representation "
-        "(1536-d), L2-normalized, cosine geometry; computed on FluidSynth renders — "
-        "out-of-distribution for MERT, so timbre dominates distances and transfer estimates are "
-        "lower bounds. All statistics seeded; second-level correlations use permutation tests "
+        "(1536-d), L2-normalized, cosine geometry (vectors scaled to unit length and compared "
+        f"by angle); computed on FluidSynth{fnote('fluidsynth')} renders — synthesized audio is "
+        "out-of-distribution for MERT (trained on real recordings), so timbre dominates "
+        "distances and transfer estimates are lower bounds. All statistics seeded; second-level correlations use permutation tests "
         "over the 10 judges (a small sample — effects near p≈0.05 should be read accordingly). "
         "Judge deviations are measured against co-judges on the same piece, which cancels piece "
         "quality and judge leniency; dimensions within one verdict share a single API call, so "
-        "cross-dimension analyses lean on within-call contrasts. Reproduce with "
+        "cross-dimension analyses lean on within-call contrasts. Revision note: the "
+        "self-preference lookalikes were originally matched to each judge's style centroid; "
+        "following a reviewer critique (a multi-style composer's centroid can sit far from "
+        "all of its pieces, and cosine similarity weights all features equally while a "
+        "judge's taste may live in a few), matching is now piece-to-piece and the authorship "
+        "premium is reported with a taste-axis control — which shrank it substantially from "
+        "what an earlier version of this page claimed. Reproduce with "
         "<code>scripts/embedding_analysis.py</code>, <code>scripts/analyze_mode_bias.py</code>, "
         "and <code>llm-music embed-report</code>; raw verdicts are committed under "
         "<code>docs/analysis/</code>.</p>")
 
     body = ("<h1>Style space &amp; self-preference</h1>"
             "<p class='scope'>This tab looks at where the models' pieces sit in an audio "
-            "embedding space, and whether each model's own style shows up in its judging — of "
+            "embedding space — a numeric map in which similar-sounding pieces sit close "
+            "together — and whether each model's own style shows up in its judging — of "
             "other models, of itself, and of Bach. All numbers on this page are computed from "
             "the committed data at build time. Generated by "
             "<code>llm-music embed-report</code>.</p>"
