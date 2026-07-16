@@ -23,7 +23,7 @@ import numpy as np
 
 from .config import REPO_ROOT
 from .judge import QUALITY_KEYS
-from .report_common import BG, INK, MUTED, SHORT, page, table
+from .report_common import BG, INK, MUTED, SHORT, fnote, page, table
 
 FIG_DIR = "analysis/genre"
 QUAL = QUALITY_KEYS
@@ -34,6 +34,18 @@ ARM_LABEL = {
     "chinese_han": "Chinese Han folk", "arab_and": "Arab-Andalusian",
 }
 ARAB_FORM = re.compile(r"tawshiya|mshalia|nuba|quddam", re.I)
+ANY_QUOTE = re.compile(r'"[^"]{2,}"')
+ARAB_GROUPS = [("form", "genre form name in notation"),
+               ("title", "Arabic song title only"),
+               ("none", "never had text (control)")]
+
+
+def _arab_group(rep: str) -> str:
+    if ARAB_FORM.search(rep):
+        return "form"
+    if ANY_QUOTE.search(rep):
+        return "title"
+    return "none"
 ORIGIN_KW = {
     "bach": ["bach", "chorale", "lutheran", "german baroque", "baroque german"],
     "euro_folk": ["german folk", "european folk", "folk song", "volkslied",
@@ -74,8 +86,10 @@ def _figure(fname, caption):
             f"alt='{_h.escape(caption)}'><figcaption>{caption}</figcaption></figure>")
 
 
-def _blind_stats(analysis: Path, orig_arab):
-    """(stats-by-stripped, rows) for the labeled-vs-blind contrast, or None."""
+def _blind_stats(analysis: Path, orig_arab, grp_of):
+    """(stats-by-group, rows) for the labeled-vs-blind contrast, or None.
+    Groups by what text the piece originally carried: an explicit genre form
+    name, only an Arabic song title, or nothing (retest control)."""
     path = analysis / "judge_arab_blind_raw.json"
     if not path.exists():
         return None
@@ -87,9 +101,8 @@ def _blind_stats(analysis: Path, orig_arab):
         return any(k in g for k in ORIGIN_KW["arab_and"])
 
     rows_out, stats = [], {}
-    for stripped, name in ((True, "quoted text stripped"),
-                           (False, "control (never had text)")):
-        grp = [r for r in blind if r["stripped"] == stripped]
+    for gkey, name in ARAB_GROUPS:
+        grp = [r for r in blind if grp_of.get(r["id"]) == gkey]
         dq, de, dfam, ho, hb = [], [], [], [], []
         for r in grp:
             o = orig.get(r["id"])
@@ -114,7 +127,7 @@ def _blind_stats(analysis: Path, orig_arab):
         d = np.array(dq)
         p = float(np.mean([abs(np.mean(d * rng.choice([-1, 1], len(d)))) >= abs(d.mean())
                            for _ in range(10000)]))
-        stats[stripped] = (mean(dq), mean(de), mean(dfam), mean(ho), mean(hb), p)
+        stats[gkey] = (mean(dq), mean(de), mean(dfam), mean(ho), mean(hb), p)
         rows_out.append([name, str(len(grp)), f"{mean(dq):+.2f}", f"{mean(de):+.2f}",
                          f"{mean(dfam):+.2f}",
                          f"{100 * mean(ho):.0f}% → {100 * mean(hb):.0f}%",
@@ -122,17 +135,18 @@ def _blind_stats(analysis: Path, orig_arab):
     return stats, rows_out
 
 
-def _blind_section(analysis: Path, orig_arab) -> str:
+def _blind_section(analysis: Path, orig_arab, grp_of) -> str:
     """Within-piece labeled-vs-blind contrast from the quote-stripped re-run."""
-    res = _blind_stats(analysis, orig_arab)
+    res = _blind_stats(analysis, orig_arab, grp_of)
     if res is None:
         return ""
     stats, rows_out = res
     return (
         f"<p class='scope'><b>The blind re-run.</b> I re-judged the whole arm with every "
         f"quoted string stripped from the notation — same pieces, same judges, same "
-        f"rubric; only the embedded text changes. The 28 pieces that never had quoted "
-        f"text are re-judged unchanged and serve as a retest control:</p>"
+        f"rubric; only the embedded text changes. Splitting the pieces by what their text "
+        f"originally said (an explicit genre form name, only an Arabic song title, or "
+        f"nothing — the last group re-judged unchanged as a retest control):</p>"
         + table([("group", None), ("n", "pieces"),
                  ("Δ quality", "blind minus labeled, points per verdict"),
                  ("Δ enjoyment", None),
@@ -140,22 +154,26 @@ def _blind_section(analysis: Path, orig_arab) -> str:
                  ("origin correct", "labeled run → blind run"),
                  ("perm p", "sign-flip permutation test on Δ quality")],
                 rows_out)
-        + f"<p class='scope'>The control is flat ({stats[False][0]:+.2f}, p = "
-        f"{stats[False][5]:.2f}) — test-retest noise is tiny — while stripping the labels "
-        f"drops quality by {stats[True][0]:+.2f} points and blind origin recognition "
-        f"falls to zero: judges cannot identify Arab-Andalusian music from the notes at "
-        f"all, so the arm's recognition rate above is entirely text-driven. Blind judges "
-        f"also <i>claim more familiarity</i> while scoring lower — consistent with "
-        f"misreading the music as a Western idiom and penalizing it by Western "
-        f"standards.</p>"
+        + f"<p class='scope'>The control is flat ({stats['none'][0]:+.2f}, p = "
+        f"{stats['none'][5]:.2f}) — test-retest noise is tiny — and it was never "
+        f"recognized in either run: with no text at all, judges identify Arab-Andalusian "
+        f"music {100 * stats['none'][3]:.0f}% of the time. All recognition in this arm is "
+        f"read off the embedded text, and the effect is dose-shaped: an explicit genre "
+        f"name protected {abs(stats['form'][0]):.2f} points of quality, a mere Arabic "
+        f"title (which cues the region through its language) protected "
+        f"{abs(stats['title'][0]):.2f}, and both vanish when stripped. Blind judges also "
+        f"<i>claim more familiarity</i> while scoring lower — consistent with misreading "
+        f"the music as a Western idiom and penalizing it by Western standards.</p>"
         f"<p class='callout'><b>The headline.</b> Telling an LLM judge that a piece is "
         f"Arab-Andalusian makes it score the music <b>higher</b>, not lower. The naive "
         f"worry — that a non-Western label triggers a penalty — points the wrong way. The "
         f"penalty comes from <i>not knowing</i>: blind, judges misread the music as a "
         f"clumsy Western piece and mark it down by Western standards; the label switches "
-        f"on genre-appropriate expectations and the penalty lifts. It is the single "
-        f"cleanest causal result in this experiment — a within-piece manipulation with a "
-        f"flat retest control (Δ quality {stats[True][0]:+.2f}, p &lt; 0.001).</p>")
+        f"on genre-appropriate expectations and the penalty lifts — in proportion to how "
+        f"informative the label is (Δ quality {stats['form'][0]:+.2f} for a genre name, "
+        f"{stats['title'][0]:+.2f} for an Arabic title, {stats['none'][0]:+.2f} for the "
+        f"no-text control; p &lt; 0.001). A within-piece manipulation with a flat retest "
+        f"control — the single cleanest causal result in this experiment.</p>")
 
 
 def render_genre_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
@@ -181,16 +199,19 @@ def render_genre_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
 
     # ---- 1. the experiment ---------------------------------------------------------
     arab_orig = [r for r in rows if r["arm"] == "arab_and"]
-    blind_res = _blind_stats(analysis, arab_orig)
+    arab_grp_of = {r["id"]: _arab_group(r["rep"]) for r in sample
+                   if r["arm"] == "arab_and"}
+    blind_res = _blind_stats(analysis, arab_orig, arab_grp_of)
     headline = ""
     if blind_res is not None:
-        dq = blind_res[0][True][0]
+        dq = blind_res[0]["form"][0]
         headline = (
             f"<p class='callout'><b>Headline result:</b> whether an LLM judge scores "
             f"unfamiliar music harshly turns on <i>recognition</i>, not on prejudice "
             f"against the culture. In a within-piece experiment, <b>telling the judges a "
             f"piece is Arab-Andalusian makes them rate it higher, not lower</b> "
-            f"(Δ quality {dq:+.2f} points when the label is removed, p &lt; 0.001, with a "
+            f"(Δ quality {dq:+.2f} points when the genre name is removed; p &lt; 0.001, where p "
+            f"is the probability of a gap this large arising by chance — with a "
             f"flat retest control). Blind, judges misread the music as clumsy Western "
             f"writing and mark it down; the label switches on genre-appropriate standards. "
             f"Full experiment in the “know what they're listening to” section below.</p>")
@@ -202,7 +223,9 @@ def render_genre_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
         "the classical arm has 51 pieces, the Arab-Andalusian split is 118/32). Every piece "
         "was converted to the same note-listing text the LLM pieces are judged in, and the "
         f"same 10-judge panel scored each one — {n_verd} verdicts. The rubric keeps the "
-        "original 8 quality dimensions plus valence/arousal unchanged and adds four new "
+        "original 8 quality dimensions plus valence/arousal (perceived positivity and "
+        f"energy of the music, after the Russell circumplex model of emotion{fnote('russell')}) "
+        "unchanged and adds four new hedonic — i.e. pleasure-related — "
         "1–5 questions (enjoyment, interest, beauty, familiarity) and a free-text guess at "
         "the piece's tradition or origin. The question behind the design: do LLM judges "
         "score non-Western music lower, and if so, is it mediated by unfamiliarity?</p>")
@@ -343,7 +366,8 @@ def render_genre_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
         + "<p class='scope'>The raw ranking is consistent with a Western-bias story for the "
         "two non-Western arms, but German folk (Essen collection) scoring at the same level "
         "complicates it: the shared property of the three low arms is that they are mostly "
-        "short monophonic melodies, while the three high arms have harmony or counterpoint "
+        "short monophonic melodies (a single unaccompanied melody line), while the three "
+        "high arms have harmony or counterpoint (several interweaving melody lines) "
         "written out. The sizes make this concrete — mean notation length per piece is "
         f"{size_txt}. Some of the gap is plausibly a texture and scale penalty, not a "
         "cultural one.</p>")
@@ -358,11 +382,7 @@ def render_genre_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
         return {a: float(np.mean(v)) for a, v in by.items()}
 
     hits = hit_rate(rows)
-    labeled_ids = {r["id"] for r in sample if r["arm"] == "arab_and"
-                   and ARAB_FORM.search(r["rep"])}
     arab = [r for r in rows if r["arm"] == "arab_and"]
-    lab = [r for r in arab if r["id"] in labeled_ids]
-    unlab = [r for r in arab if r["id"] not in labeled_ids]
 
     def grp_stats(rs):
         qs = [q for r in rs for q in (_qual(v) for v in r["panel"].values())
@@ -374,7 +394,12 @@ def render_genre_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
         h = hit_rate(rs).get("arab_and", float("nan"))
         return len(rs), mean(qs), mean(enj), mean(fam), h
 
-    lab_s, unlab_s = grp_stats(lab), grp_stats(unlab)
+    grp_rows = []
+    for gkey, gname in ARAB_GROUPS:
+        st = grp_stats([r for r in arab if arab_grp_of.get(r["id"]) == gkey])
+        grp_rows.append([gname, str(st[0]), f"{st[1]:.2f}", f"{st[2]:.2f}",
+                         f"{st[3]:.2f}", f"{st[4] * 100:.0f}%"])
+    n_text = sum(1 for g in arab_grp_of.values() if g != "none")
     ex_guesses = sorted({v["origin_guess"] for r in rows if r["arm"] == "chinese_han"
                          for v in r["panel"].values() if "origin_guess" in v})
     rng = np.random.default_rng(0)
@@ -395,23 +420,24 @@ def render_genre_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
         "into generic “Western European folk”. So for the chinese_han arm the low scores "
         "come <i>without</i> the judges knowing the music is Chinese — whatever penalty "
         "it gets is not applied to a “Chinese” label.</p>"
-        f"<p class='scope'><b>A leak, and a lucky natural experiment.</b> {len(labeled_ids)} "
-        f"of the {len(arab)} Arab-Andalusian pieces carry their form name (e.g. "
-        "“Tawshiya Qaim Wa Nisf”) as an inline text direction in the notation itself — no "
-        "other corpus leaks anything like this. Splitting the arm on that leak:</p>"
+        f"<p class='scope'><b>A leak, and a lucky natural experiment.</b> {n_text} "
+        f"of the {len(arab)} Arab-Andalusian pieces carry text inside the notation itself "
+        "— either an explicit genre form name (e.g. “Tawshiya Qaim Wa Nisf”) or just an "
+        "Arabic song title, inherited from the source MusicXML as inline directions. No "
+        "other corpus leaks anything like this. Splitting the arm three ways in the "
+        "original run:</p>"
         + table([("group", None), ("n", "pieces"), ("quality", None),
                  ("enjoyment", None), ("familiarity", None),
-                 ("origin correct", None)],
-                [["form name visible", str(lab_s[0]), f"{lab_s[1]:.2f}",
-                  f"{lab_s[2]:.2f}", f"{lab_s[3]:.2f}", f"{lab_s[4] * 100:.0f}%"],
-                 ["blind", str(unlab_s[0]), f"{unlab_s[1]:.2f}", f"{unlab_s[2]:.2f}",
-                  f"{unlab_s[3]:.2f}", f"{unlab_s[4] * 100:.0f}%"]])
-        + "<p class='scope'>With the label visible, judges recognize the tradition more, "
-        "admit less familiarity — and score the music <i>higher</i>. Blind, they score it "
-        "lower while claiming more familiarity (consistent with misreading it as some "
-        "Western idiom they know). On its own this is only suggestive — the two groups are "
-        "different slices of the repertoire — so I made it a real experiment.</p>"
-        + _blind_section(analysis, orig_arab=arab))
+                 ("origin correct", None)], grp_rows)
+        + "<p class='scope'>The gradient runs with how informative the text is: with a "
+        "genre name judges recognize the tradition most, admit the least familiarity — "
+        "and score the music highest; with only an Arabic title, less so (the title's "
+        "language still cues the region); with no text at all, recognition is 0% — "
+        "judges have <i>never</i> identified this music from the notes — and scores are "
+        "lowest, while claimed familiarity is highest (consistent with misreading it as "
+        "some Western idiom they know). On its own this is only suggestive — the groups "
+        "are different slices of the repertoire — so I made it a real experiment.</p>"
+        + _blind_section(analysis, orig_arab=arab, grp_of=arab_grp_of))
 
     # ---- 5. familiarity mediation ------------------------------------------------------
     recs = []
@@ -510,11 +536,14 @@ def render_genre_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
         "<p class='scope'>Comparing word frequencies in the written justifications for the "
         "Arab-Andalusian pieces against the Western art/folk arms, the most "
         "over-represented words (after the form names themselves) are about repetition: "
-        + ", ".join(f"“{w}”" for w in style_words) + ". Nuba movements repeat short cells "
+        + ", ".join(f"“{w}”" for w in style_words) + ". Nuba movements (the multi-movement "
+        "suite form of Arab-Andalusian music) repeat short cells "
         "extensively, and in a note-by-note text listing that repetition is literal — "
         "hundreds of near-identical bars — which likely reads worse than it sounds. The "
-        "low harmony scores also show judges applying functional-harmony expectations to "
-        "modal, monophonic music:</p>"
+        "low harmony scores also show judges applying functional-harmony expectations — "
+        "the Western system of chords progressing toward a home key — to music that is "
+        "modal (built on melodic formulas outside the major/minor system) and "
+        "monophonic:</p>"
         + "".join(f"<p class='scope' style='margin-left:1.5em'><i>“{q}”</i></p>"
                   for q in quotes)
         + "<p class='scope'>The German folk penalty has a completely different vocabulary. "
@@ -577,7 +606,7 @@ def render_genre_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
         "judges being fickle. I'd summarize: the mode-bias generalization holds on Bach "
         "and Irish folk and is confounded on the arms where the major/minor split is not "
         "apples-to-apples (German sub-collections; forced major/minor labels on "
-        "pentatonic Chinese material).</p>")
+        "pentatonic — five-note-scale — Chinese material).</p>")
 
     # ---- 9. methods ------------------------------------------------------------------------
     secs.append(
@@ -591,8 +620,9 @@ def render_genre_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
         "means that arm's origin recognition is partly read off the text; second-level "
         "correlations use n = 10 judges; and the keyword origin-matching is approximate. "
         "On keys: three labels exist per piece — the engraved source key signature, the "
-        "source-declared key the judges see in the rep header, and the detected "
-        "(Krumhansl–Schmuckler) key used for mode stratification and the mode-bias "
+        "source-declared key the judges see in the rep header, and the detected key — "
+        f"via the Krumhansl–Schmuckler algorithm{fnote('krumhansl')}, which infers a key "
+        "from the piece's note-usage profile — used for mode stratification and the mode-bias "
         "analysis. They disagree exactly where music is modal, pentatonic, or tonally "
         "ambiguous, so major/minor on those arms is an algorithmic best fit. Judges "
         "almost never react to the declared header (mentions of the stated key appear in "
@@ -604,7 +634,7 @@ def render_genre_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
     body = ("<h1>Judging human music: genre &amp; cultural bias</h1>"
             "<p class='scope'>The same LLM panel that judges the models' own music scored "
             "801 pieces of human music from six traditions, with four added hedonic "
-            "questions and an origin guess. All numbers are computed from the committed "
+            "(pleasure-related) questions and an origin guess. All numbers are computed from the committed "
             "data at build time. Generated by <code>llm-music genre-report</code>.</p>"
             + "\n".join(secs))
     chart_css = """
