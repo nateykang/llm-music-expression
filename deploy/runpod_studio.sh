@@ -13,7 +13,7 @@
 #   STUDIO_PASSWORD, STUDIO_SECRET  (see .env.example)
 # Optional: STUDIO_BACKUP_REPO — a private git remote (https URL with token,
 # e.g. https://<PAT>@github.com/<you>/studio-backup.git); sessions are pushed
-# there every 6 h. Pod volumes survive stop/start but NOT pod termination, so
+# there hourly. Pod volumes survive stop/start but NOT pod termination, so
 # set it.
 set -e
 
@@ -60,8 +60,12 @@ if [ ! -f .env ] && [ -z "${STUDIO_PASSWORD:-}" ]; then
     exit 1
 fi
 
-# --- backup loop (every 6 h, if STUDIO_BACKUP_REPO is set) --------------------
-BACKUP_REPO="${STUDIO_BACKUP_REPO:-$(grep -E '^STUDIO_BACKUP_REPO=' .env 2>/dev/null | cut -d= -f2-)}"
+# --- backup loop (hourly, if STUDIO_BACKUP_REPO is set) -----------------------
+# .env takes precedence over the console env var: console edits wipe the
+# container, so a leaked/rotated token must be swappable via a pod-local .env
+# line without touching pod config.
+BACKUP_REPO="$(grep -E '^STUDIO_BACKUP_REPO=' .env 2>/dev/null | cut -d= -f2-)"
+BACKUP_REPO="${BACKUP_REPO:-${STUDIO_BACKUP_REPO:-}}"
 # Console env-var fields love to smuggle in trailing newlines; a URL with one
 # makes git fail. Secrets never contain whitespace, so strip it all.
 BACKUP_REPO="$(printf '%s' "$BACKUP_REPO" | tr -d '[:space:]')"
@@ -88,10 +92,12 @@ if [ -n "$BACKUP_REPO" ]; then
                     )
                 fi
             fi
-            sleep 6h
+            sleep 1h
         done
     ) &
-    echo "backup loop running (every 6h -> $BACKUP_REPO)"
+    # NEVER print the URL itself: it embeds the access token, and this log has
+    # already leaked one token via exactly that mistake.
+    echo "backup loop running (hourly -> $(printf '%s' "$BACKUP_REPO" | sed -E 's#//[^@/]+@#//[token]@#'))"
 else
     echo "WARNING: STUDIO_BACKUP_REPO unset — sessions die with the pod." >&2
 fi

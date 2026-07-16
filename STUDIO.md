@@ -66,7 +66,7 @@ domain or reverse proxy is needed — link that URL from the site nav.
    experiment pods): the three `*_API_KEY`s, `STUDIO_PASSWORD`,
    `STUDIO_SECRET`, and `STUDIO_BACKUP_REPO` (a private git remote — pod
    volumes survive stop/start but **not** termination, so backups are not
-   optional here; the script pushes sessions every 6 h).
+   optional here; the script pushes sessions hourly).
 3. Re-run the script; it prints the proxy URL when the server is up.
 
 Note the pod-id changes if the pod is ever terminated and recreated — re-link
@@ -96,7 +96,7 @@ installed above vanishes. Two console settings make that a non-event. In
 Saving this edit wipes and rebuilds the container one last time; after that,
 every wipe/restart self-heals: clone from GitHub, reinstall, re-download the
 soundfont, restore sessions is NOT included — that's what `STUDIO_BACKUP_REPO`
-is for (the backup loop pushes `studio_data/` every 6 h).
+is for (the backup loop pushes `studio_data/` hourly).
 
 ## Deploy on a small VPS (alternative)
 
