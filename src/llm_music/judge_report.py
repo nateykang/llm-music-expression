@@ -17,8 +17,9 @@ from pathlib import Path
 from statistics import mean
 
 from .judge import QUALITY_KEYS
-from .report_common import (MODE_TOGGLE, SHORT, fnum, group_by_model, heat,
-                            mode_filter, page, paned, scorebar, table, toggle)
+from .report_common import (MODE_TOGGLE, SHORT, fnote, fnum, group_by_model,
+                            heat, mode_filter, page, paned, scorebar, table,
+                            toggle)
 
 DIMS = QUALITY_KEYS + ["valence", "arousal"]
 PANEL = ["gpt-5.5", "gemini-2.5-pro", "opus-4.8"]
@@ -98,8 +99,10 @@ def _emotion(blind, feats):
     pairs = [(bm[m]["valence"], minorpct[m]) for m in bm if m in minorpct]
     r = _pearson([a for a, _ in pairs], [b for _, b in pairs])
     note = (f"<p class='callout'>Blind perceived valence tracks the computed minor-key rate at "
-            f"<b>r = {r:+.2f}</b> (n={len(pairs)} models) — a judge that never saw the key hears "
-            f"minor-heavy models as darker. The computed proxy and human-style perception agree.</p>")
+            f"<b>r = {r:+.2f}</b> (Pearson correlation: −1…+1, where −1 = move in perfect "
+            f"opposition and 0 = unrelated; n={len(pairs)} models) — a judge that never saw the "
+            f"key hears minor-heavy models as darker. The computed proxy and human-style "
+            f"perception agree.</p>")
     return table(cols, rows) + note
 
 
@@ -221,15 +224,18 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path) -> Pat
         secs.append("<h2>Which models write the best music <span class='sub'>(blind panel)</span></h2>"
                     "<p class='scope'>A blind 3-frontier panel (gpt-5.5 · gemini · opus) rates each piece "
                     "from the notation alone — no title, composer note, or model name. Dimensions follow the "
-                    "music-eval literature (ChatMusician / Chu et al. / MuSpike); scoring follows the "
-                    "LLM-judge literature (reason-before-score, anchored 1–5, panel-averaged).</p>"
+                    f"music-eval literature (ChatMusician{fnote('chatmusician')} / Chu et "
+                    f"al.{fnote('chu')} / MuSpike{fnote('muspike')}); scoring follows the LLM-judge "
+                    f"literature{fnote('llm-judge')} — each judge writes a short justification before "
+                    f"scoring{fnote('geval')}, uses 1–5 scales with described anchor points, and the "
+                    "panel's scores are averaged.</p>"
                     + paned(lambda m: _rankings(_panel_rows(mode_filter(raw, m), PANEL)))
-                    + "<p class='callout' style='font-size:.82rem'>🧠 <b>Thinking improves the music — in "
+                    + "<p class='callout' style='font-size:.82rem'><b>Thinking improves the music — in "
                       "both representations.</b> The adaptive-thinking variants beat their base models in "
                       "every representation-matched comparison (blind 3-frontier panel): "
                       "<b>sonnet +0.28 ABC / +0.23 code-gen</b>, <b>opus +0.10 ABC / +0.47 code-gen</b>. "
                       "Every cell is positive — extended thinking reliably raises perceived quality.</p>"
-                    + "<p class='scope' style='font-size:.8rem; margin-top:.6rem'>⚙️ <b>Caveat — generation "
+                    + "<p class='scope' style='font-size:.8rem; margin-top:.6rem'><b>Caveat — generation "
                       "reliability varies by model and representation, so per-model n differs.</b> The "
                       "adaptive-thinking variants spend most of their token budget <i>thinking</i>: "
                       "sonnet-4.6-thinking needed a <b>64k-token cap</b> and a <b>30-min read-timeout</b> to "
@@ -238,8 +244,10 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path) -> Pat
                       "runs succeeded — its generated music21 code crashes). So these are real findings, but "
                       "they came from models that took substantial engineering to run.</p>")
         secs.append("<h2>Emotional character <span class='sub'>(perceived, blind)</span></h2>"
-                    "<p class='scope'>What the blind judge <i>hears</i> — perceived valence/arousal and the "
-                    "dominant emotion — against the computed minor-key proxy.</p>"
+                    "<p class='scope'>What the blind judge <i>hears</i> — perceived valence (how positive "
+                    "the music sounds, dark ↔ bright) and arousal (how energetic, calm ↔ excited), the two "
+                    f"axes of the Russell circumplex model of emotion{fnote('russell')} — plus the "
+                    "dominant emotion label, against the computed minor-key proxy.</p>"
                     + paned(lambda m: _emotion(_panel_rows(mode_filter(raw, m), PANEL), mode_filter(feats, m))))
         secs.append("<h2>Can each model judge music? <span class='sub'>(all-9 study)</span></h2>"
                     "<p class='scope'>With every model judging every piece, this shows each model's "
@@ -260,7 +268,8 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path) -> Pat
 
     secs_html = "\n".join(secs) or "<p>No judge results found. Run <code>llm-music judge</code> first.</p>"
     body = f"""<h1>How LLMs judge music — and themselves</h1>
-  <p class="scope">An LLM-as-judge layer over the generated pieces: blind quality + emotion ratings,
+  <p class="scope">An LLM-as-judge layer — language models, given a fixed rubric, standing in for
+     human raters{fnote("llm-judge")} — over the generated pieces: blind quality + emotion ratings,
      each model's competence as a critic, and its self-bias. Rubric dimensions follow the music-eval
      literature; the protocol (reason-before-score, anchored scales, blind panel) follows the LLM-judge
      literature. Scope: {len(raw)} free-form pieces. Generated by <code>llm-music judge-report</code>.</p>

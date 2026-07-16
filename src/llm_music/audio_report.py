@@ -24,7 +24,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from statistics import mean
 
-from .report_common import (MODE_TOGGLE, SHORT, details_section, fnum,
+from .report_common import (MODE_TOGGLE, SHORT, details_section, fnote, fnum,
                             group_by_model, mode_filter, page, paned,
                             table, toggle)
 
@@ -226,17 +226,21 @@ def render_audio_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
     secs = []
     secs.append(
         "<div class='callout'><b>Read as a cross-check, not ground truth.</b> Everything on the audio "
-        "side is measured on FluidSynth-rendered MIDI (mostly piano-ish timbres), which is "
-        "<b>out-of-distribution</b> for Music2Emo (MERT, trained on real recordings) and flattens the "
-        "audio-LLM listeners' dynamics. Tables are raw per-model means — sort any column; comparisons "
-        "are yours to make.</div>")
+        f"side is measured on FluidSynth-rendered MIDI{fnote('fluidsynth')} (mostly piano-ish "
+        "timbres), which is <b>out-of-distribution</b> — unlike anything it saw in training — for "
+        f"Music2Emo{fnote('music2emo')} (built on MERT, an audio model trained on real "
+        f"recordings{fnote('mert')}) and flattens the audio-LLM listeners' dynamics. Tables are raw "
+        "per-model means — sort any column; comparisons are yours to make.</div>")
 
     secs.append("<h2>Valence by model <span class='sub'>(five methods, side by side)</span></h2>"
-                "<p class='scope'>Per-model mean valence from every method. Scales differ "
+                "<p class='scope'>Per-model mean valence — how positive/bright the music sounds, "
+                "one of the two emotion axes of the Russell circumplex model"
+                f"{fnote('russell')} — from every method. Scales differ "
                 "(computed = its own proxy scale; Music2Emo 1–9; the LLM judges 1–5) — compare "
                 "<i>orderings</i> across columns, not absolute values.</p>"
                 + paned(lambda mo: _affect_table(mode_filter(recs, mo), "valence")))
-    secs.append("<h2>Arousal by model</h2><p class='scope'>Same five methods, arousal.</p>"
+    secs.append("<h2>Arousal by model</h2><p class='scope'>Same five methods, arousal — the "
+                "circumplex's other axis: how energetic the music sounds, calm ↔ excited.</p>"
                 + paned(lambda mo: _affect_table(mode_filter(recs, mo), "arousal")))
     secs.append("<h2>Dominant emotion label <span class='sub'>(read vs hear vs gpt-audio)</span></h2>"
                 "<p class='scope'>The single emotion each listener named most, per model — how the "
@@ -255,8 +259,8 @@ def render_audio_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
                 + paned(lambda mo: _qual_table(mode_filter(recs, mo), "gpt")))
 
     secs.append("<h2>Music2Emo mood tags by model</h2>"
-                "<p class='scope'>The most-assigned MERT mood tags per model (multi-label, ~10/piece; "
-                "56-mood vocabulary).</p>"
+                f"<p class='scope'>The most-assigned Music2Emo{fnote('music2emo')} mood tags per "
+                "model (multi-label, ~10/piece; 56-mood vocabulary).</p>"
                 + paned(lambda mo: _moods_by_model(mode_filter(recs, mo))))
     secs.append("<h2>Audio-derived harmony by model</h2>"
                 "<p class='scope'>From the audio chord-recognition → key pipeline (independent of the "
@@ -267,14 +271,16 @@ def render_audio_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
     secs.append(details_section(
         "Spectral shape &amp; dynamics by model (librosa — low-level)",
         "<h2>Spectral shape &amp; dynamics by model <span class='sub'>(librosa)</span></h2>"
-        "<p class='scope'>Timbre-shape, loudness, and rhythm-density descriptors of the "
-        "rendered audio.</p>"
+        f"<p class='scope'>Timbre-shape, loudness, and rhythm-density descriptors of the "
+        f"rendered audio, computed with librosa{fnote('librosa')}, the standard Python "
+        "audio-analysis library.</p>"
         + paned(lambda mo: _feature_table(mode_filter(recs, mo), SPECTRAL))))
     secs.append(details_section(
         "Timbre — MFCC by model (low-level)",
         "<h2>Timbre — MFCC by model <span class='sub'>(1–13)</span></h2>"
-        "<p class='scope'>Mel-frequency cepstral coefficients — the standard timbre "
-        "fingerprint. Low-level; here for completeness.</p>"
+        "<p class='scope'>Mel-frequency cepstral coefficients — a compact numeric summary of a "
+        "sound's spectral shape, the standard fingerprint for timbre (tone color). Low-level; "
+        "here for completeness.</p>"
         + paned(lambda mo: _feature_table(mode_filter(recs, mo), MFCC))))
     secs.append(details_section(
         "Pitch-class energy — chroma by model (low-level)",
@@ -293,8 +299,10 @@ def render_audio_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
 
     secs_html = "\n".join(secs)
     body = f"""<h1>What the audio says</h1>
-  <p class="scope">Raw per-model tables of the full audio-side measurement suite: <b>Music2Emo</b> (MERT
-     valence/arousal + moods), audio-derived harmony, and the librosa acoustic suite (spectral shape,
+  <p class="scope">Raw per-model tables of the full audio-side measurement suite: <b>Music2Emo</b>
+     (a music-emotion model built on the MERT audio transformer{fnote("music2emo")}; it estimates
+     valence/arousal — how positive and how energetic the music sounds{fnote("russell")} — plus mood
+     tags), audio-derived harmony, and the librosa acoustic suite (spectral shape,
      dynamics, MFCC timbre, chroma), plus two audio-LLM listeners — <b>gemini-2.5-pro</b> (which also
      judged the notation, so you get read vs hear) and <b>gpt-audio</b> — and the computed symbolic
      proxy. Scope: {n} free-form pieces (gemini read {n_read} · hear {n_hear} · gpt-audio {n_gpt}). Sort

@@ -142,7 +142,7 @@ function verdictHtml(v){
 
 CFG.pieces.forEach(pc=>{
   const card=el("div",{class:"card"});
-  card.append(el("div",{class:"pid"},"🎵 "+pc.id));
+  card.append(el("div",{class:"pid"},pc.id));
   const audio=el("div",{}); card.append(audio);
   const hidden=el("div",{class:"hidden"}); card.append(hidden);
   try{

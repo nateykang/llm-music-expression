@@ -17,8 +17,8 @@ from collections import defaultdict
 from pathlib import Path
 from statistics import mean, pstdev
 
-from .report_common import (ACCENT, BG, INK, MUTED, REP_TOGGLE, cell, fnum,
-                            page, paned, table, toggle)
+from .report_common import (ACCENT, BG, INK, MUTED, REP_TOGGLE, cell, fnote,
+                            fnum, page, paned, table, toggle)
 
 # Warm qualitative palette for per-model chart series.
 PALETTE = ["#7a5a3a", "#b5651d", "#3a6b5a", "#8a3a4a", "#4a5a7a",
@@ -49,15 +49,18 @@ COLUMNS = [
     ("n", "n", "Number of pieces this row aggregates.", "int"),
     ("minor_frac", "minor", "Share of pieces in a minor key. Mode comes from the model's "
         "DECLARED key (the ABC K: field — its stated intent) where available, falling back to "
-        "music21's Krumhansl–Schmuckler detection for code-gen pieces (which have no K:).", "pct"),
+        "music21's Krumhansl–Schmuckler detection (a standard algorithm that infers the key "
+        "from which notes are used most) for code-gen pieces (which have no K:).", "pct"),
     ("mode_match", "mode match", "Intent-vs-execution: how often the actual notes (music21 "
         "detection) match the major/minor mode the model DECLARED in K:. 100% = it plays what it "
         "writes; lower = it declares one mode but the notes lean the other way. Blank for code-gen "
         "(no K: field to compare against).", "pct"),
     ("valence", "valence", "How positive/bright vs negative/dark the mood sounds (−1 to +1). A "
         "deliberately simple proxy: major key → +1, minor key → −1 (the strongest single cue for "
-        "musical 'happiness'). Concept from the Russell circumplex; the mapping is ours, not a "
-        "trained emotion model — read it as 'bright vs dark', not literal joy.", "f2"),
+        "musical 'happiness'). Concept from the Russell circumplex — the standard psychology "
+        "model that maps emotion on two axes, valence (pleasant↔unpleasant) and arousal "
+        "(calm↔energetic). The mapping is ours, not a trained emotion model — read it as "
+        "'bright vs dark', not literal joy.", "f2"),
     ("arousal", "arousal", "An 'energy' level from 0 (calm) to 1 (energetic) = 0.6 × tempo + 0.4 × "
         "rhythmic-density, with tempo rescaled 50 BPM→0 / 160 BPM→1 and density (notes/beat) "
         "rescaled 0→0 / 4→1, each clipped to [0,1]. Our heuristic, not a standard metric.", "f2"),
@@ -394,7 +397,7 @@ CHART_CSS = """
 
 KEY_WIDGET_TMPL = """
 <h2>Key choices <span class='sub'>(circle of fifths — major on C, relative minors on A)</span></h2>
-<p class="scope">Which keys each model chooses in free-form, as a share of its pieces (a PDF). Toggle representation — ABC uses the model's declared K:, code-gen uses music21's detected key. Click a model to filter, click <b>Corpus</b> to see the real-music prior (GigaMIDI, detected the same way), or tick <b>overlay</b> to lay that prior over the selected model.</p>
+<p class="scope">Which keys each model chooses in free-form, as a share of its pieces. Keys are laid out on the circle of fifths — the arrangement where neighboring keys differ by a single sharp or flat, so musically related keys sit side by side__FN_COF__. Toggle representation — ABC uses the model's declared K:, code-gen uses music21's detected key. Click a model to filter, click <b>Corpus</b> to see the real-music prior (GigaMIDI, a 1.4-million-file corpus of real MIDI recordings, detected the same way__FN_GIGA__), or tick <b>overlay</b> to lay that prior over the selected model.</p>
 <div class="keyviz">
   <div id="kv-models" class="kv-row" style="margin-bottom:.4rem;"></div>
   <div id="kv-overlay" class="kv-overlay" style="display:none;"><label><input type="checkbox"> Overlay the corpus prior (dashed) on the selected model</label></div>
@@ -484,6 +487,8 @@ def _key_widget_html(dists):
     present = [m for m in KEY_MODEL_ORDER if m in allmodels]
     present += [m for m in sorted(allmodels) if m not in present]
     return (KEY_WIDGET_TMPL
+            .replace("__FN_COF__", fnote("circle-of-fifths"))
+            .replace("__FN_GIGA__", fnote("gigamidi"))
             .replace("__TEXT__", json.dumps(text))
             .replace("__CODE__", json.dumps(code))
             .replace("__ALL__", json.dumps(allb))
@@ -552,7 +557,7 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
             "<figure><figcaption>How often each model produced a valid generation, and how many "
             "tries it took. Code-gen fails loudly (the interpreter rejects bad code → retry); ABC "
             "fails quietly (a lenient syntax gate passes, so 1st-try rates run high). A "
-            f"ChatMusician-style format-success view.</figcaption>{rel_panes}</figure>"
+            f"ChatMusician-style format-success view{fnote('chatmusician')}.</figcaption>{rel_panes}</figure>"
         )
 
     chart_html = "".join(
@@ -572,9 +577,12 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
 
     body = f"""<h1>What do LLMs default to, musically?</h1>
   <p class="scope">Summary metrics across <b>{n_pieces} generated pieces</b>
-     ({n_models} models, {n_batches} experiments, code-gen + ABC + SMT-ABC).
-     Metrics are standard symbolic-music descriptors (MusPy + music21); affect is a
-     valence/arousal proxy (Russell circumplex). Generated by <code>llm-music report</code>.</p>
+     ({n_models} models, {n_batches} experiments, code-gen + ABC + SMT-ABC — ABC is a compact
+     plain-text music notation{fnote("abc")}; code-gen means the model writes Python that builds
+     the score). Metrics are standard symbolic-music descriptors (MusPy + music21). Affect is a
+     valence/arousal proxy after the Russell circumplex{fnote("russell")} — the standard
+     two-axis map of emotion: <b>valence</b> is how positive the music sounds (dark ↔ bright),
+     <b>arousal</b> how energetic (calm ↔ excited). Generated by <code>llm-music report</code>.</p>
 
   {rep_toggle}
 
@@ -590,19 +598,18 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
   <h2>Charts</h2>
   <div class="charts">{chart_html}</div>
 
-  <h2>Methods &amp; references</h2>
+  <h2>Methods</h2>
   <p class="scope">
     Metrics are standard symbolic-music descriptors, computed with
-    <a href="https://arxiv.org/abs/2008.01951">MusPy</a> (Dong et al., ISMIR 2020) —
-    scale consistency, pitch-class entropy, polyphony, etc. — and
-    <a href="https://www.music21.org/">music21</a> for key (Krumhansl–Schmuckler) and
-    tempo. Affect (valence/arousal) follows the
-    <a href="https://en.wikipedia.org/wiki/Emotion_classification#Circumplex_model">Russell
-    circumplex</a> model. <b>Hover any column header</b> for what it measures.
-    Project after <a href="https://github.com/sara-fish/llm-musical-self-expression">sara-fish/llm-musical-self-expression</a>;
+    MusPy{fnote("muspy")} — scale consistency, pitch-class entropy, polyphony, etc. — and
+    music21{fnote("music21")} for tempo and key. Key detection uses the Krumhansl–Schmuckler
+    algorithm{fnote("krumhansl")}, which infers the key by comparing how often each of the 12
+    pitch classes occurs against known major/minor profiles. Affect (valence/arousal) follows
+    the Russell circumplex{fnote("russell")} model. <b>Hover any column header</b> for what it
+    measures. Project after
+    <a href="https://github.com/sara-fish/llm-musical-self-expression">sara-fish/llm-musical-self-expression</a>;
     representation/evaluation choices follow the LLM-music literature
-    (<a href="https://arxiv.org/abs/2402.16153">ChatMusician</a>,
-    <a href="https://arxiv.org/abs/2404.06393">MuPT</a>).
+    (ChatMusician{fnote("chatmusician")}, MuPT{fnote("mupt")}).
   </p>
 
   <p class="scope" style="margin-top:2rem">Note: the charts above aggregate all

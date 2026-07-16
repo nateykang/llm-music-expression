@@ -14,6 +14,7 @@ matplotlib charts.
 from __future__ import annotations
 
 import html
+import re
 
 # Site palette — keep in sync with the CSS variables in docs/style.css.
 BG = "#faf9f7"
@@ -78,6 +79,126 @@ def group_by_model(rows) -> dict[str, list]:
     for r in rows:
         g.setdefault(r["model"], []).append(r)
     return g
+
+
+# ---------- glossary & footnotes ----------
+
+# Shared reference list. Prose cites an entry with ``fnote(key)``; page()
+# numbers the markers by first appearance and appends a "Footnotes &
+# references" section listing only the entries the page actually cites.
+REFS = {
+    "russell": ('James A. Russell, “A circumplex model of affect”, <i>Journal of Personality '
+                'and Social Psychology</i> 39(6), 1980. '
+                '<a href="https://doi.org/10.1037/h0077714">doi:10.1037/h0077714</a>. The model '
+                'places every emotion on two axes: valence (unpleasant ↔ pleasant) and arousal '
+                '(calm ↔ activated).'),
+    "krumhansl": ('Carol L. Krumhansl, <i>Cognitive Foundations of Musical Pitch</i>, Oxford '
+                  'University Press, 1990. The Krumhansl–Schmuckler key-finding algorithm '
+                  'matches a piece’s pitch-class distribution against experimentally measured '
+                  'major- and minor-key profiles and picks the best-fitting key.'),
+    "muspy": ('Hao-Wen Dong, Ke Chen, Julian McAuley, Taylor Berg-Kirkpatrick, “MusPy: A '
+              'toolkit for symbolic music generation”, ISMIR 2020. '
+              '<a href="https://arxiv.org/abs/2008.01951">arXiv:2008.01951</a>.'),
+    "music21": ('Michael Scott Cuthbert, Christopher Ariza, “music21: A toolkit for '
+                'computer-aided musicology and symbolic music data”, ISMIR 2010. '
+                '<a href="https://www.music21.org/">music21.org</a>.'),
+    "chatmusician": ('Ruibin Yuan et al., “ChatMusician: Understanding and Generating Music '
+                     'Intrinsically with LLM”, 2024. '
+                     '<a href="https://arxiv.org/abs/2402.16153">arXiv:2402.16153</a>.'),
+    "mupt": ('Xingwei Qu et al., “MuPT: A Generative Symbolic Music Pretrained Transformer”, '
+             '2024. <a href="https://arxiv.org/abs/2404.06393">arXiv:2404.06393</a>.'),
+    "chu": ('Hyeshin Chu et al., “An Empirical Study on How People Perceive AI-generated '
+            'Music”, CIKM 2022. '
+            '<a href="https://doi.org/10.1145/3511808.3557235">doi:10.1145/3511808.3557235</a>. '
+            'Source of the melodiousness / naturalness / creativity / coherence axes in the '
+            'judging rubric.'),
+    "muspike": ('Qian Liang, Menghaoran Tang, Yi Zeng, “MuSpike: A Benchmark and Evaluation '
+                'Framework for Symbolic Music Generation with Spiking Neural Networks”, 2025. '
+                '<a href="https://arxiv.org/abs/2508.19251">arXiv:2508.19251</a>. Source of '
+                'several harmony/structure metrics and rubric dimensions used here.'),
+    "llm-judge": ('Lianmin Zheng et al., “Judging LLM-as-a-Judge with MT-Bench and Chatbot '
+                  'Arena”, NeurIPS 2023. '
+                  '<a href="https://arxiv.org/abs/2306.05685">arXiv:2306.05685</a>. '
+                  '“LLM-as-judge” = using a language model, given a rubric, as the rater '
+                  'instead of human annotators.'),
+    "geval": ('Yang Liu et al., “G-Eval: NLG Evaluation using GPT-4 with Better Human '
+              'Alignment”, EMNLP 2023. '
+              '<a href="https://arxiv.org/abs/2303.16634">arXiv:2303.16634</a>. Source of the '
+              'reason-before-score protocol.'),
+    "emopia": ('Hsiao-Tzu Hung et al., “EMOPIA: A Multi-Modal Pop Piano Dataset for Emotion '
+               'Recognition and Emotion-based Music Generation”, ISMIR 2021. '
+               '<a href="https://arxiv.org/abs/2108.01374">arXiv:2108.01374</a>. Uses the same '
+               'valence/arousal quadrant scheme for music.'),
+    "mert": ('Yizhi Li et al., “MERT: Acoustic Music Understanding Model with Large-Scale '
+             'Self-supervised Training”, ICLR 2024. '
+             '<a href="https://arxiv.org/abs/2306.00107">arXiv:2306.00107</a>. MERT is a '
+             'transformer trained on large amounts of music audio; its internal activations '
+             'serve as a general-purpose numeric summary (embedding) of what a recording '
+             'sounds like.'),
+    "music2emo": ('Jaeyong Kang, Dorien Herremans, “Towards Unified Music Emotion Recognition '
+                  'across Dimensional and Categorical Models”, 2025. '
+                  '<a href="https://arxiv.org/abs/2502.03979">arXiv:2502.03979</a>. Music2Emo '
+                  'is a MERT-based model that predicts valence/arousal and mood tags from '
+                  'audio.'),
+    "librosa": ('Brian McFee et al., “librosa: Audio and music signal analysis in Python”, '
+                'SciPy 2015. <a href="https://librosa.org/">librosa.org</a>.'),
+    "pca": ('Principal component analysis (PCA) re-describes a high-dimensional point cloud '
+            'along the directions where it varies most; the first few “principal components” '
+            'often capture most of the structure. Ian T. Jolliffe, <i>Principal Component '
+            'Analysis</i>, 2nd ed., Springer, 2002.'),
+    "tsne": ('Laurens van der Maaten, Geoffrey Hinton, “Visualizing Data using t-SNE”, '
+             '<i>Journal of Machine Learning Research</i> 9, 2008. t-SNE flattens a '
+             'high-dimensional point cloud into a 2-D map that tries to keep similar points '
+             'close together; distances between far-apart groups are not meaningful.'),
+    "gigamidi": ('Keon Ju Maverick Lee et al., “The GigaMIDI Dataset with Features for '
+                 'Expressive Music Performance Detection”, <i>TISMIR</i> 8(1), 2025. '
+                 '<a href="https://arxiv.org/abs/2502.17726">arXiv:2502.17726</a>. A '
+                 '1.4M-file MIDI corpus, used here as the “real music” prior.'),
+    "circle-of-fifths": ('The circle of fifths arranges the 12 keys so that neighbors differ '
+                         'by one sharp/flat (C → G → D …); musically related keys sit next to '
+                         'each other. <a href="https://en.wikipedia.org/wiki/Circle_of_fifths">'
+                         'Wikipedia: Circle of fifths</a>.'),
+    "abc": ('ABC notation is a compact plain-text format for writing music (letters for '
+            'notes, <code>K:</code> for the key, etc.), popular for folk tunes and easy for '
+            'text models to emit. <a href="https://abcnotation.com/">abcnotation.com</a>.'),
+    "fluidsynth": ('<a href="https://www.fluidsynth.org/">FluidSynth</a> — an open-source '
+                   'software synthesizer that renders MIDI files to audio using sampled '
+                   'instrument sounds (SoundFonts).'),
+    "sara-fish": ('Project after <a href="https://github.com/sara-fish/llm-musical-self-expression">'
+                  'sara-fish/llm-musical-self-expression</a>.'),
+}
+
+
+def dfn(term, gloss):
+    """An inline defined term: dotted underline + the shared hover/focus tooltip
+    (same machinery as the column-header tips)."""
+    return (f"<span class='tip' tabindex='0' data-tip=\"{html.escape(gloss)}\">"
+            f"{html.escape(term)}</span>")
+
+
+def fnote(key):
+    """A superscript footnote marker citing REFS[key]. page() assigns numbers by
+    first appearance and appends the cited entries to the page."""
+    if key not in REFS:
+        raise KeyError(f"unknown footnote key: {key}")
+    return f"<sup class='fn'><a data-fn='{key}' href='#fn-{key}'>?</a></sup>"
+
+
+def _apply_footnotes(body):
+    """Number every fnote() marker in `body` by first appearance and append the
+    footnote list. Bodies without markers pass through untouched."""
+    keys = []
+    for m in re.finditer(r"data-fn='([a-z0-9-]+)'", body):
+        if m.group(1) not in keys:
+            keys.append(m.group(1))
+    if not keys:
+        return body
+    for i, k in enumerate(keys, 1):
+        body = body.replace(f"data-fn='{k}' href='#fn-{k}'>?<",
+                            f"data-fn='{k}' href='#fn-{k}'>{i}<")
+    items = "".join(f"<li id='fn-{k}'>{REFS[k]}</li>" for k in keys)
+    return (body + "\n  <h2 id='footnotes'>Footnotes &amp; references</h2>"
+            f"\n  <ol class='footnotes'>{items}</ol>")
 
 
 # ---------- table building ----------
@@ -162,7 +283,8 @@ def details_section(summary_html, body_html):
 
 TABS = [("index.html", "Browse outputs"), ("results.html", "Results &amp; analysis"),
         ("judge.html", "LLM judge"), ("audio.html", "Audio emotion"),
-        ("selfpref.html", "Self-preference"), ("genre.html", "Genre bias")]
+        ("selfpref.html", "Self-preference"), ("genre.html", "Genre bias"),
+        ("studio.html", "Studio")]
 
 SHARED_CSS = """
   .wrap { max-width: 980px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
@@ -211,6 +333,13 @@ SHARED_CSS = """
   .toc { font-size: .8rem; color: var(--muted); margin: .2rem 0 1rem; line-height: 1.9; }
   .toc a { color: var(--accent); text-decoration: none; white-space: nowrap; margin-right: .9rem; }
   .sd { color: var(--muted); font-size: .78em; font-weight: 400; }
+  sup.fn { line-height: 0; }
+  sup.fn a { text-decoration: none; color: var(--accent); font-weight: 600; font-size: .78em;
+    padding: 0 1px; }
+  ol.footnotes { color: var(--muted); font-size: .82rem; line-height: 1.6; padding-left: 1.3rem;
+    margin-top: .6rem; }
+  ol.footnotes li { margin-bottom: .4rem; }
+  ol.footnotes li:target { color: var(--fg); background: #f3ede4; border-radius: 4px; }
 """
 
 # Pane toggle (calls the optional window.__onModeChange hook, e.g. the key widget),
@@ -302,7 +431,10 @@ def page(title, active, body, extra_css="", extra_head=""):
     """The full HTML document: head (style.css link + shared CSS + extra_css),
     nav tabs with `active` (a TABS filename) highlighted, the .wrap'd body, and
     one copy of the shared JS. Page-specific <script>/<style> for the body can
-    also be embedded in `body` directly — it runs before the shared JS."""
+    also be embedded in `body` directly — it runs before the shared JS.
+    fnote() markers in the body are numbered here and their references appended
+    as a footnote section."""
+    body = _apply_footnotes(body)
     style = SHARED_CSS + (extra_css or "")
     return f"""<!doctype html>
 <html lang="en"><head>

@@ -39,7 +39,7 @@ function el(t,a={},...kids){const e=document.createElement(t);for(const k in a){
 
 CFG.pieces.forEach((pc)=>{
   const card=el("div",{class:"card"});
-  card.append(el("div",{class:"pid"},"🎵 "+pc.id));
+  card.append(el("div",{class:"pid"},pc.id));
   const audio=el("div",{}); card.append(audio);
   const hidden=el("div",{class:"hidden"}); card.append(hidden);   // abcjs needs a render target
   // play button

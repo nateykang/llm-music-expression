@@ -1,7 +1,9 @@
 """Shared report framework: table/pane/page building blocks."""
 
-from llm_music.report_common import (MODE_TOGGLE, cell, fnum, mode_filter,
-                                     page, paned, table, toggle)
+import pytest
+
+from llm_music.report_common import (MODE_TOGGLE, cell, dfn, fnote, fnum,
+                                     mode_filter, page, paned, table, toggle)
 
 
 def test_fnum_parses_and_rejects():
@@ -43,6 +45,29 @@ def test_paned_marks_default_visible():
     h = paned(lambda m: f"[{m}]", MODE_TOGGLE, default="all")
     assert "data-mode='all'>[all]" in h
     assert "data-mode='abc' hidden>[abc]" in h
+
+
+def test_footnotes_numbered_by_first_appearance():
+    body = f"<p>A{fnote('russell')} B{fnote('mert')} A again{fnote('russell')}</p>"
+    doc = page("T", "judge.html", body)
+    assert "href='#fn-russell'>1<" in doc and doc.count(">1</a>") == 2  # reuse, same number
+    assert "href='#fn-mert'>2<" in doc
+    assert "Footnotes &amp; references" in doc
+    assert "<li id='fn-russell'>" in doc and "<li id='fn-mert'>" in doc
+    assert "fn-muspy" not in doc                     # uncited entries stay off the page
+    assert "Footnotes" not in page("T", "judge.html", "<p>no markers</p>")
+
+
+def test_fnote_rejects_unknown_key():
+    with pytest.raises(KeyError):
+        fnote("nope")
+
+
+def test_dfn_renders_tooltip_term():
+    h = dfn("nPVI", 'rhythmic "contrast" measure')
+    assert h.startswith("<span class='tip'")
+    assert "data-tip=\"rhythmic &quot;contrast&quot; measure\"" in h
+    assert ">nPVI</span>" in h
 
 
 def test_toggle_and_page_skeleton():
