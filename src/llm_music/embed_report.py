@@ -568,6 +568,30 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
         ax.set_title("Does a judge's taste point toward its own style?", color=INK, fontsize=11)
     _fig("taste_align.png", alignfig, figsize=(7.4, 4.4))
 
+    # judge × PC taste table: shared taste (panel mean quality vs each axis) plus
+    # each judge's idiosyncratic deviation correlations (own pieces excluded)
+    panel_q = np.full(len(ids), np.nan)
+    for p in raw:
+        row = key2row.get((p["model"], p.get("mode"), p.get("title"),
+                           str(p.get("sample"))))
+        if row is None:
+            continue
+        qs = [q for q in (_qual(v) for v in p["panel"].values()) if q is not None]
+        if qs:
+            panel_q[row] = mean(qs)
+    okq = ~np.isnan(panel_q)
+    taste_rows = [["<b>panel (shared)</b>"]
+                  + [f"{np.corrcoef(panel_q[okq], X[okq, k])[0, 1]:+.2f}"
+                     for k in range(NPC)]]
+    for J in judges:
+        rws = np.array([r for r, a, d in dev_rows[J] if a != J])
+        ds = np.array([d for r, a, d in dev_rows[J] if a != J])
+        rs = [np.corrcoef(ds, X[rws, k])[0, 1] for k in range(NPC)]
+        taste_rows.append([SHORT.get(J, J)]
+                          + [f"{r:+.2f}" if abs(r) >= 0.10 else "·" for r in rs])
+    taste_hdr = [("judge", None)] + [(f"PC{k + 1}", top_corr(k, 1)) for k in range(NPC)]
+    r2_shared = np.corrcoef(panel_q[okq], X[okq, 1])[0, 1]
+
     # where matching falls short: own pieces vs the 50 piece-matched lookalikes, per axis
     sig = []
     for J in judges:
@@ -622,9 +646,24 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
                   f"belongs to which judge). The exception is {SHORT.get(worst, worst)}, "
                   f"whose taste points away from its own style (cos = {align[worst]:+.2f}) — "
                   f"consistent with its negative self-preference in the table above.")
-        + "<p class='scope'>So as a general tendency, models reward music that lies in the "
-        "direction of their own. The mode bias in the next section is the sharpest "
-        "single-axis case of this.</p>"
+        + "<p class='scope'>The same taste vectors, axis by axis. The top row is the "
+        "panel's <i>shared</i> taste — the correlation of the panel's mean quality score "
+        f"with each axis: everyone rewards extent &amp; harmonic activity (PC2, "
+        f"r = {r2_shared:+.2f}), instrumentation (PC1), soft touch (PC5), and a darker "
+        "register (PC6 — its strongest correlate is valence, negatively). The judge rows "
+        "are each judge's deviation from the panel, correlated with the same axes (own "
+        "pieces excluded; entries with |r| &lt; 0.10 blanked). Hover a column header for "
+        "the axis's strongest interpretable correlate.</p>"
+        + table(taste_hdr, taste_rows)
+        + "<p class='scope'>Ambition (PC2) is the main axis of disagreement: fable, "
+        "sonnet, and opus reward it beyond the panel's already-positive baseline, while "
+        "gpt-4.1, gpt-5.5, and llama push against it. gpt-5.5 has the most distinctive "
+        "palate — relative to the panel it penalizes instrumentation (PC1), softness "
+        "(PC5), and extent (PC2): exactly the big, gentle, sprawling music the rest of "
+        "the panel rewards, and the same anti-own-style signature as its alignment score. "
+        "So as a general tendency, models reward music that lies in the direction of "
+        "their own. The mode bias in the next section is the sharpest single-axis case "
+        "of this.</p>"
         + "<p class='scope'>I also wanted to know where similarity matching falls short — "
         "on which axes the 50 lookalikes still differ from the judge's own pieces despite "
         "being its closest matches. The largest gap is on PC1 — the instrumentation and "
