@@ -191,8 +191,12 @@ async def post_message(session_id: str, body: MessageBody):
                                                      model=body.model):
                     queue.put_nowait(event)
             except Exception as e:
-                log.exception("turn failed in session %s", session_id)
-                err = {"type": "error", "message": f"turn failed: {e}"}
+                import traceback
+
+                log.error("turn failed in session %s:\n%s", session_id,
+                          cfg.redact(traceback.format_exc()))
+                err = {"type": "error",
+                       "message": f"turn failed: {cfg.redact(str(e))}"}
                 store.append_event(session_id, err)
                 queue.put_nowait(err)
             finally:

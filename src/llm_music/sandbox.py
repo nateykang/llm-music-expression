@@ -37,6 +37,18 @@ def run_music21_code(code: str, out_dir: Path, timeout: int = 60) -> SandboxResu
         # and corrupt tracebacks when the model's code raises.
         code_file = Path(scratch) / "_generated_piece.py"
         code_file.write_text(code, encoding="utf-8")
+        # Minimal environment: the parent process holds API keys (the studio
+        # server in particular), and generated code must not be able to read
+        # them via os.environ. HOME points at the scratch dir so music21 can
+        # write its config without seeing the real home directory.
+        import os
+
+        env = {
+            "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
+            "HOME": scratch,
+            "LANG": os.environ.get("LANG", "C.UTF-8"),
+            "PYTHONPATH": os.pathsep.join(sys.path[1:]),
+        }
         try:
             proc = subprocess.run(
                 [
@@ -51,6 +63,7 @@ def run_music21_code(code: str, out_dir: Path, timeout: int = 60) -> SandboxResu
                 capture_output=True,
                 text=True,
                 timeout=timeout,
+                env=env,
             )
         except subprocess.TimeoutExpired as e:
             # TimeoutExpired carries the output captured before the kill (as

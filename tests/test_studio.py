@@ -235,6 +235,25 @@ def test_sanitize_env_strips_pasted_newlines(monkeypatch):
     assert os.environ["STUDIO_PASSWORD"] == "secret"
 
 
+def test_redact_scrubs_secret_values(monkeypatch):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-supersecret123")
+    msg = "Illegal header value b'sk-ant-supersecret123\\n'"
+    out = cfg.redact(msg)
+    assert "supersecret" not in out and "[ANTHROPIC_API_KEY]" in out
+
+
+def test_sandbox_cannot_read_api_keys(tmp_path, monkeypatch):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-leakcheck")
+    code = """
+import os
+raise RuntimeError("env says: " + os.environ.get("ANTHROPIC_API_KEY", "MISSING"))
+"""
+    result = render_codegen_version(tmp_path, code, "Leak", "n")
+    assert not result["ok"]
+    assert "leakcheck" not in result["error"]
+    assert "MISSING" in result["error"]
+
+
 def test_available_models_span_providers(studio_env):
     models = cfg.available_models()
     for m in ("fable-5", "gpt-5.5", "gemini-2.5-pro"):  # one per provider

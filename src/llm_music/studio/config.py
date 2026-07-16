@@ -70,6 +70,17 @@ def available_models() -> list[str]:
     return supported
 
 
+def redact(text: str) -> str:
+    """Blank secret values out of text before it reaches logs, transcripts, or
+    the browser. Exception messages can embed them — httpcore quotes the whole
+    'illegal header value', i.e. the API key itself."""
+    for var in _SECRET_VARS:
+        val = (os.environ.get(var) or "").strip()
+        if val and val in text:
+            text = text.replace(val, f"[{var}]")
+    return text
+
+
 # At import so every entry point (server, __main__, tests) sees clean values.
 sanitize_env()
 
