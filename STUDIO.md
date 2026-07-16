@@ -52,9 +52,29 @@ OpenRouter replies therefore arrive as one block rather than streaming. The
 system prompt documents only the writing method the composer picked for that
 message; teaching both at once made models drift to the wrong tool.
 
-## Deploy on a small VPS
+## Deploy on RunPod (current plan)
 
-A $5/month CPU box (Hetzner CX22, DigitalOcean basic) is plenty — the heavy
+A 2 vCPU / 4 GB **on-demand CPU pod** (not spot — spot gets reclaimed
+mid-session) with a ~20 GB volume and **port 8321 exposed as an HTTP port**.
+RunPod's proxy provides TLS at `https://<pod-id>-8321.proxy.runpod.net`, so no
+domain or reverse proxy is needed — link that URL from the site nav.
+
+1. Create the pod (any recent Ubuntu image); set
+   [deploy/runpod_studio.sh](deploy/runpod_studio.sh) as the onstart/Docker
+   command, or paste it into the web terminal.
+2. `scp` your `.env` to `~/llm-music-expression/.env` (same flow as the
+   experiment pods): the three `*_API_KEY`s, `STUDIO_PASSWORD`,
+   `STUDIO_SECRET`, and `STUDIO_BACKUP_REPO` (a private git remote — pod
+   volumes survive stop/start but **not** termination, so backups are not
+   optional here; the script pushes sessions every 6 h).
+3. Re-run the script; it prints the proxy URL when the server is up.
+
+Note the pod-id changes if the pod is ever terminated and recreated — re-link
+the nav URL when that happens.
+
+## Deploy on a small VPS (alternative)
+
+A $5/month CPU box (Hetzner CX22, DigitalOcean basic) also works — the heavy
 lifting is API tokens, not compute.
 
 ```bash
