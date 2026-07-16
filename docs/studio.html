@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Composer studio — collaborate with the models live</title>
+<link rel="stylesheet" href="style.css?v=22">
+<style>
+  .wrap { max-width: 760px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  .enter {
+    display: inline-block; margin: 1.2rem 0; padding: .6rem 1.4rem; border-radius: 10px;
+    background: var(--accent); color: #fff; text-decoration: none; font-weight: 600;
+  }
+  .enter:hover { opacity: .92; }
+  .note { color: var(--muted); font-size: .9rem; }
+</style>
+</head>
+<body>
+  <nav class="tabs">
+    <a href="index.html">Browse outputs</a>
+    <a href="results.html">Results &amp; analysis</a>
+    <a href="judge.html">LLM judge</a>
+    <a href="audio.html">Audio emotion</a>
+    <a href="selfpref.html">Self-preference</a>
+    <a href="genre.html">Genre bias</a>
+    <a href="studio.html" class="active">Studio</a>
+  </nav>
+  <div class="wrap">
+    <h1>Composer studio</h1>
+    <p>
+      Everything else on this site is batch-and-bake: each model composed once,
+      alone, and we analyzed what came out. The studio is the live counterpart —
+      a chat room where a human composer works <em>with</em> the models in real
+      time. Describe a mood or a form and the model composes it; react to what
+      you hear and it revises. The score engraves and the audio renders beside
+      the conversation, every revision stays on a version timeline, and the
+      collaborator controls two experimental knobs per message: the writing
+      method (music21 code vs. ABC notation — the same two modes as the batch
+      study) and which frontier model is doing the composing, switchable
+      mid-conversation.
+    </p>
+    <p>
+      Sessions are logged in full — prompts, revisions, model reasoning, and
+      every generated score — and feed back into the research: an expert's
+      bar-level reactions are labels no automated judge can produce.
+    </p>
+    <a class="enter" href="https://nluqf6lj2yj4e9-8321.proxy.runpod.net">Enter the studio</a>
+    <p class="note">
+      Access is password-protected (API-billed compute behind it). If you're a
+      collaborator and need the password, ask Nathaniel.
+    </p>
+  </div>
+</body>
+</html>

@@ -26,7 +26,7 @@ chmod 600 ~/.ssh/authorized_keys
 # --- system deps: renderers for the full audio path --------------------------
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
-apt-get install -y -qq git abcmidi fluidsynth lame
+apt-get install -y -qq git curl abcmidi fluidsynth lame
 
 # --- python >= 3.11 (RunPod's 20.04 base images ship 3.8) ---------------------
 PY=python3
@@ -50,13 +50,18 @@ git pull --ff-only || true
 # --- soundfont (idempotent; skipped if already present) -----------------------
 ls soundfonts/*.sf2 >/dev/null 2>&1 || bash scripts/setup_soundfont.sh
 
-if [ ! -f .env ]; then
-    echo "!!! ~/llm-music-expression/.env missing — scp it over, then re-run." >&2
+# Config can come from a scp'd .env OR from pod environment variables set in
+# the RunPod console (Edit Pod -> Environment Variables). Console env vars are
+# the durable option: they survive the container wipes that config edits cause,
+# making the pod fully self-healing when this script is the start command.
+if [ ! -f .env ] && [ -z "${STUDIO_PASSWORD:-}" ]; then
+    echo "!!! no ~/llm-music-expression/.env and no STUDIO_PASSWORD env var —" >&2
+    echo "    scp a .env over, or set env vars in the RunPod console." >&2
     exit 1
 fi
 
-# --- backup loop (every 6 h, if STUDIO_BACKUP_REPO is set in .env) ------------
-BACKUP_REPO=$(grep -E '^STUDIO_BACKUP_REPO=' .env | cut -d= -f2-)
+# --- backup loop (every 6 h, if STUDIO_BACKUP_REPO is set) --------------------
+BACKUP_REPO="${STUDIO_BACKUP_REPO:-$(grep -E '^STUDIO_BACKUP_REPO=' .env 2>/dev/null | cut -d= -f2-)}"
 if [ -n "$BACKUP_REPO" ]; then
     (
         while true; do

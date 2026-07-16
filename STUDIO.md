@@ -72,6 +72,32 @@ domain or reverse proxy is needed — link that URL from the site nav.
 Note the pod-id changes if the pod is ever terminated and recreated — re-link
 the nav URL when that happens.
 
+### Making the pod self-healing (recommended)
+
+Config edits (image, ports, env) **wipe the container disk** — everything
+installed above vanishes. Two console settings make that a non-event. In
+**Edit Pod**:
+
+1. **Environment Variables** — add `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`,
+   `OPENROUTER_API_KEY`, `STUDIO_PASSWORD`, `STUDIO_SECRET`,
+   `STUDIO_BACKUP_REPO`. Console env vars survive wipes, replacing the scp'd
+   `.env` entirely.
+2. **Container Start Command** — replace it with:
+
+   ```
+   bash -c 'nohup bash -c "apt-get update -qq; apt-get install -y -qq git; git clone https://github.com/nateykang/llm-music-expression.git /root/llm-music-expression 2>/dev/null; cd /root/llm-music-expression && git pull --ff-only; bash deploy/runpod_studio.sh" > /root/studio.log 2>&1 & /start.sh'
+   ```
+
+   The studio bootstrap runs in the background (log: `/root/studio.log`);
+   `/start.sh` stays in the foreground because it is what provides SSH on
+   these base images — don't drop it. This is the pod's *start command*, NOT
+   something to paste into the web terminal.
+
+Saving this edit wipes and rebuilds the container one last time; after that,
+every wipe/restart self-heals: clone from GitHub, reinstall, re-download the
+soundfont, restore sessions is NOT included — that's what `STUDIO_BACKUP_REPO`
+is for (the backup loop pushes `studio_data/` every 6 h).
+
 ## Deploy on a small VPS (alternative)
 
 A $5/month CPU box (Hetzner CX22, DigitalOcean basic) also works — the heavy
