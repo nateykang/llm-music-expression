@@ -62,11 +62,15 @@ fi
 
 # --- backup loop (every 6 h, if STUDIO_BACKUP_REPO is set) --------------------
 BACKUP_REPO="${STUDIO_BACKUP_REPO:-$(grep -E '^STUDIO_BACKUP_REPO=' .env 2>/dev/null | cut -d= -f2-)}"
+# Console env-var fields love to smuggle in trailing newlines; a URL with one
+# makes git fail. Secrets never contain whitespace, so strip it all.
+BACKUP_REPO="$(printf '%s' "$BACKUP_REPO" | tr -d '[:space:]')"
 if [ -n "$BACKUP_REPO" ]; then
     (
         while true; do
             if [ -d studio_data ]; then
-                [ -d ~/studio_backup ] || git clone -q "$BACKUP_REPO" ~/studio_backup || true
+                [ -d ~/studio_backup ] || git clone -q "$BACKUP_REPO" ~/studio_backup \
+                    || echo "backup: clone failed — check STUDIO_BACKUP_REPO" >&2
                 if [ -d ~/studio_backup/.git ]; then
                     rsync -a studio_data/ ~/studio_backup/studio_data/
                     cd ~/studio_backup
