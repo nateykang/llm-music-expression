@@ -57,11 +57,25 @@ llm-music run --model sonnet-4.6 --prompt free-form --mode abc
 # a matrix (the original's batch-and-bake)
 llm-music batch --models opus-4.8,sonnet-4.6 \
                 --prompts free-form,fugue,string-quartet --mode codegen
+
+# have a fresh call to the same model describe the finished symbolic score
+llm-music run --model gpt-5.5 --prompt free-form --mode abc \
+              --independent-description
+
+# apply that same treatment to stored pieces (same author model by default)
+llm-music redescribe docs/data/<batch> --author gpt-5.5 --prompt free-form
 ```
 
 Output lands in `docs/data/<timestamp>__models_N_prompts_M/`. The batch folder and
 its `data.json` are written incrementally — one piece at a time — so an interrupted
 run still leaves a valid, viewable partial batch.
+
+With `--independent-description`, the composing call's notes are retained as
+`original_short_description` and `original_long_description`; the fresh music-only
+call becomes the canonical description used by existing reports. `redescribe` does
+the same retroactively, checkpoints after every piece, and skips completed pieces
+unless `--force` is given. It prefers stored ABC, then music21 code, with MusicXML as
+a fallback for older codegen batches that predate code storage.
 
 ### Prompts
 
