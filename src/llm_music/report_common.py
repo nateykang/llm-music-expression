@@ -14,7 +14,33 @@ matplotlib charts.
 from __future__ import annotations
 
 import html
+import json
 import re
+from pathlib import Path
+
+
+def degenerate_keys(analysis: Path) -> set:
+    """(model, mode, title, str(sample)) keys of pieces retroactively flagged as
+    degenerate (empty part / silent tail — see scripts/flag_degenerate_codegen.py).
+    Report builders drop these from judge/embedding/audio analyses; new batches
+    can't produce them (the sandbox validates exports at generation time)."""
+    p = analysis / "degenerate_pieces.json"
+    if not p.exists():
+        return set()
+    return {(f["model"], f["mode"], f["title"], str(f["sample"]))
+            for f in json.loads(p.read_text(encoding="utf-8"))}
+
+
+def drop_degenerate(rows, analysis: Path):
+    """Filter piece dicts (judge raw / music2emo entries) against the blacklist."""
+    bad = degenerate_keys(analysis)
+    if not bad:
+        return rows
+    return [r for r in rows
+            if (r.get("model"), r.get("mode"), r.get("title"),
+                str(r.get("sample"))) not in bad
+            and (r.get("model"), r.get("mode"), r.get("title"),
+                 str(r.get("sample") or 0)) not in bad]
 
 # Site palette — keep in sync with the CSS variables in docs/style.css.
 BG = "#faf9f7"

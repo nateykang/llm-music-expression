@@ -24,7 +24,8 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from statistics import mean
 
-from .report_common import (MODE_TOGGLE, SHORT, details_section, fnote, fnum,
+from .report_common import (MODE_TOGGLE, SHORT, details_section, drop_degenerate,
+                            fnote, fnum,
                             group_by_model, mode_filter, page, paned,
                             table, toggle)
 
@@ -186,7 +187,9 @@ def render_audio_html(analysis: Path, data_dir: Path, out_path: Path) -> Path:
     if not m2e_path.exists():
         out_path.write_text("<p>No audio results. Run the Music2Emo batch first.</p>", encoding="utf-8")
         return out_path
-    m2e = [e for e in json.loads(m2e_path.read_text(encoding="utf-8")) if "valence" in e]
+    m2e = drop_degenerate(
+        [e for e in json.loads(m2e_path.read_text(encoding="utf-8")) if "valence" in e],
+        analysis)
 
     # Keyed with the sample index: models often reuse titles across samples
     # (llama titled 28 of 30 free-form samples identically), so a title-only key

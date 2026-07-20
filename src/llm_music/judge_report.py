@@ -17,7 +17,8 @@ from pathlib import Path
 from statistics import mean
 
 from .judge import QUALITY_KEYS
-from .report_common import (MODE_TOGGLE, SHORT, fnote, fnum, group_by_model,
+from .report_common import (MODE_TOGGLE, SHORT, drop_degenerate, fnote, fnum,
+                            group_by_model,
                             heat, mode_filter, page, paned, scorebar, table,
                             toggle)
 
@@ -217,8 +218,10 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path) -> Pat
     for fp in sorted(data_dir.glob("*/features.csv")):
         feats += [r for r in csv.DictReader(fp.open(encoding="utf-8")) if r["prompt"] == "free-form"]
     rawp = analysis_dir / "judge_allmodels_raw.json"
-    raw = [p for p in json.loads(rawp.read_text(encoding="utf-8")) if p["prompt"] == "free-form"] \
-        if rawp.exists() else []
+    raw = drop_degenerate(
+        [p for p in json.loads(rawp.read_text(encoding="utf-8"))
+         if p["prompt"] == "free-form"],
+        analysis_dir) if rawp.exists() else []
     secs = []
     if raw:
         secs.append("<h2>Which models write the best music <span class='sub'>(blind panel)</span></h2>"

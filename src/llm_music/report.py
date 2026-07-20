@@ -163,8 +163,10 @@ def _agg(rows: list[dict], key: str):
 
 
 def _msd(rows: list[dict], key: str):
-    """(mean, sd) tuple for a metric — cell() renders it as 'mean ±sd'."""
-    vals = [r[key] for r in rows if r.get(key) is not None]
+    """(mean, sd) tuple for a metric — cell() renders it as 'mean ±sd'.
+    Coerces through fnum so rows from JSON caches (e.g. the Bach reference,
+    where an honestly-unknown tempo is '') can't crash the mean."""
+    vals = [v for v in (fnum(r.get(key)) for r in rows) if v is not None]
     if not vals:
         return None
     return (mean(vals), pstdev(vals) if len(vals) > 1 else None)

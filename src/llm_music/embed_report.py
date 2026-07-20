@@ -22,7 +22,8 @@ import numpy as np
 
 from .config import REPO_ROOT
 from .judge import QUALITY_KEYS
-from .report_common import BG, INK, MUTED, SHORT, fnote, page, table
+from .report_common import (BG, INK, MUTED, SHORT, degenerate_keys,
+                            drop_degenerate, fnote, page, table)
 
 FIG_DIR = "analysis/embedding"
 QUALITY = QUALITY_KEYS
@@ -46,6 +47,11 @@ def _load_embeddings(analysis: Path):
     ids = [_parse_idx(s) for s in z["index"].tolist()]
     E = z["embeddings"].astype(np.float64)
     En = E / np.linalg.norm(E, axis=1, keepdims=True)
+    bad = degenerate_keys(analysis)
+    if bad:
+        keep = [i for i, k in enumerate(ids) if k not in bad]
+        ids = [ids[i] for i in keep]
+        En = En[keep]
     return ids, En
 
 
@@ -398,7 +404,9 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
         f"collapse. Diversity and judged quality are uncorrelated across models.</p>")
 
     # ---- 4. self-preference ------------------------------------------------------
-    raw = json.loads((analysis / "judge_allmodels_raw.json").read_text(encoding="utf-8"))
+    raw = drop_degenerate(
+        json.loads((analysis / "judge_allmodels_raw.json").read_text(encoding="utf-8")),
+        analysis)
     key2row = {i: j for j, i in enumerate(ids)}
     judges = sorted({j for p in raw for j in p["panel"]})
 

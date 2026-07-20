@@ -61,6 +61,54 @@ def _relocate_tempo_marks(score, parts) -> None:
             target.insert(max(0.0, float(mm.offset) - float(target.offset)), mm)
 
 
+def _validate_exported(parsed) -> "str | None":
+    """Reject degenerate exports: a part with zero notes, or a long silent tail.
+
+    Both patterns come from music21 misuse that exec() can't catch (e.g. two
+    Voices appended sequentially instead of stacked), and both previously
+    shipped as 'ok' pieces. Validating the re-parsed MusicXML checks what will
+    actually be heard and engraved.
+    """
+    from music21 import stream as m21stream
+
+    parts = list(getattr(parsed, "parts", [])) or [parsed]
+    empties = []
+    total_m = 0
+    last_sound = 0
+    for p in parts:
+        measures = list(p.getElementsByClass(m21stream.Measure))
+        total_m = max(total_m, len(measures))
+        n_notes = 0
+        for mi, m in enumerate(measures, 1):
+            k = len(m.flatten().notes)
+            if k:
+                n_notes += k
+                last_sound = max(last_sound, mi)
+        if n_notes == 0:
+            try:
+                name = p.partName or p.getInstrument(returnDefault=True).instrumentName
+            except Exception:
+                name = None
+            empties.append(name or "unnamed part")
+    if empties:
+        return (
+            "Degenerate score: instrument part(s) contain zero notes after export: "
+            + ", ".join(empties)
+            + ". Every part you create must end up with notes in it — check that you "
+            "appended your measures/voices into the container you attached to the score."
+        )
+    silent_tail = total_m - last_sound
+    if total_m and silent_tail > max(4, 0.2 * total_m):
+        return (
+            f"Degenerate score: the final {silent_tail} of {total_m} measures contain no "
+            "notes in any part. This usually means content landed at the wrong offset — "
+            "e.g. two Voices appended one after another (sequential) when they should "
+            "sound together; build parallel lines as separate Parts, or put Voices "
+            "inside the same Measure."
+        )
+    return None
+
+
 def main() -> int:
     code_file, midi_out, xml_out = sys.argv[1], sys.argv[2], sys.argv[3]
     _apply_limits()
@@ -115,7 +163,12 @@ def main() -> int:
         # export drops a grand-staff's second (bass) part while its MusicXML keeps
         # it; rendering MIDI from the MusicXML guarantees audio == engraving.
         score.write("musicxml", fp=xml_out)
-        converter.parse(xml_out).write("midi", fp=midi_out)
+        parsed = converter.parse(xml_out)
+        problem = _validate_exported(parsed)
+        if problem:
+            print("ERROR: " + problem, file=sys.stderr)
+            return 5
+        parsed.write("midi", fp=midi_out)
     except Exception:
         traceback.print_exc()
         return 4
