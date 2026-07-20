@@ -18,6 +18,7 @@ class ModeResult:
     midi_path: object = None  # pathlib.Path when ok
     musicxml_path: object = None  # pathlib.Path when ok
     abc: str = ""  # raw ABC text (ABC mode renders client-side via abcjs)
+    code: str = ""  # raw music21 code (codegen modes; kept for failures too)
     error: str | None = None
 
 

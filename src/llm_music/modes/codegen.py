@@ -53,7 +53,7 @@ def generate(response_text: str, work_dir: Path) -> ModeResult:
 
     sandbox = run_music21_code(code, work_dir)
     if not sandbox.ok:
-        return ModeResult(ok=False, error=sandbox.error)
+        return ModeResult(ok=False, error=sandbox.error, code=code)
 
     return ModeResult(
         ok=True,
@@ -62,4 +62,5 @@ def generate(response_text: str, work_dir: Path) -> ModeResult:
         long_description=str(obj.get("long_description", "")),
         midi_path=sandbox.midi_path,
         musicxml_path=sandbox.musicxml_path,
+        code=code,
     )

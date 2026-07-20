@@ -62,6 +62,8 @@ def append_result(batch: Path, result: PieceResult, sample: int = 0) -> dict:
     }
     if r.abc:
         entry["abc"] = r.abc
+    if r.code:
+        entry["code"] = r.code
     if r.ok and r.musicxml_path:
         score_rel = f"scores/{r.prompt}/{r.model}{suffix}.musicxml"
         _copy(r.musicxml_path, batch / score_rel)

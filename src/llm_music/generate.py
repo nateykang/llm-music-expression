@@ -38,6 +38,7 @@ class PieceResult:
     musicxml_path: Path | None = None
     audio_path: Path | None = None
     abc: str = ""
+    code: str = ""  # raw music21 code (codegen modes; last attempt's if all failed)
     error: str | None = None
     errors: list[str] = field(default_factory=list)
 
@@ -114,6 +115,8 @@ def generate_piece(
             continue
 
         outcome = mode_mod.generate(response, work_dir)
+        if getattr(outcome, "code", ""):
+            result.code = outcome.code  # keep the latest attempt's code, pass or fail
         if outcome.ok:
             result.ok = True
             result.title = outcome.title
