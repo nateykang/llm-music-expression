@@ -105,7 +105,11 @@ def generate_piece(
         result.attempts = attempt
         user = mode_mod.build_user_prompt(base_user, prior_error)
         try:
-            response = client.complete(SYSTEM_PROMPT, user)
+            # json_mode enforces at the decoder what the prompt already demands
+            # ("a single JSON object and nothing else") — on OpenRouter reasoning
+            # models it stops the answer being stranded/truncated in the reasoning
+            # trace (same fix the judge path has always used). Prompt text unchanged.
+            response = client.complete(SYSTEM_PROMPT, user, json_mode=True)
         except Exception as e:  # API/network failure
             prior_error = f"API error: {e}"
             result.errors.append(prior_error)
