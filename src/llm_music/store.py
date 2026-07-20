@@ -74,6 +74,11 @@ def append_result(batch: Path, result: PieceResult, sample: int = 0) -> dict:
         entry["audio"] = audio_rel
     if not r.ok:
         entry["error"] = r.error
+    if r.failed_attempts:
+        # full per-attempt trail: the error AND the code of every failed attempt
+        # (retries of eventually-ok pieces included). Drafts carry behavior final
+        # code doesn't — e.g. thinking-out-loud comments models clean up on retry.
+        entry["failed_attempts"] = r.failed_attempts
     return entry
 
 

@@ -41,6 +41,10 @@ class PieceResult:
     code: str = ""  # raw music21 code (codegen modes; last attempt's if all failed)
     error: str | None = None
     errors: list[str] = field(default_factory=list)
+    # one {error, code} record per FAILED attempt (code is "" for API/parse
+    # failures where no code was produced) — drafts models later revise carry
+    # things final code doesn't, e.g. thinking-out-loud comments
+    failed_attempts: list[dict] = field(default_factory=list)
 
 
 def _form_row(prompt_name: str) -> dict:
@@ -105,6 +109,7 @@ def generate_piece(
         except Exception as e:  # API/network failure
             prior_error = f"API error: {e}"
             result.errors.append(prior_error)
+            result.failed_attempts.append({"error": prior_error, "code": ""})
             if not is_retryable(e):
                 log.warning("%s × %s: permanent API error, giving up: %s",
                             client.name, prompt_name, e)
@@ -128,6 +133,8 @@ def generate_piece(
             break
         prior_error = outcome.error
         result.errors.append(prior_error or "unknown error")
+        result.failed_attempts.append({"error": prior_error or "unknown error",
+                                       "code": getattr(outcome, "code", "") or ""})
 
     if not result.ok:
         result.error = result.errors[-1] if result.errors else "generation failed"
