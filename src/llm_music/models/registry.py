@@ -31,6 +31,8 @@ MODEL_REGISTRY: dict[str, tuple] = {
     # study roster is the five closed frontier labs + the strongest open model:
     #   opus-4.8, gpt-5.5, gemini-2.5-pro, grok-4.3, deepseek-v4-pro, qwen3-max
     "gemini-2.5-pro": ("openrouter", "google/gemini-2.5-pro"),
+    # Gemini 3.1 Pro ships only as -preview on OpenRouter.
+    "gemini-3.1-pro": ("openrouter", "google/gemini-3.1-pro-preview"),
     "grok-4.3": ("openrouter", "x-ai/grok-4.3"),
     "grok-4.5": ("openrouter", "x-ai/grok-4.5"),
     "deepseek-v4-pro": ("openrouter", "deepseek/deepseek-v4-pro"),
