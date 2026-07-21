@@ -133,6 +133,10 @@ async def openai_compat_step(model_id: str, options: dict, system: str,
         messages=to_openai_messages(system, messages),
         tools=to_openai_tools(tools),
     )
+    if (options or {}).get("reasoning_effort"):
+        # Native OpenAI reasoning dial (minimal..high) — the registry's
+        # thinking/non-thinking delineation for gpt-5.x models.
+        kwargs["reasoning_effort"] = options["reasoning_effort"]
     # api.openai.com reasoning models reject the legacy param; OpenRouter's
     # many providers only translate the classic one reliably.
     if base_url is None:
@@ -332,11 +336,17 @@ async def openrouter_step(model_id: str, options: dict, system: str,
     client = AsyncOpenAI(base_url=OPENROUTER_BASE_URL,
                          api_key=os.environ.get("OPENROUTER_API_KEY") or None,
                          timeout=600.0, max_retries=2)
+    extra_body: dict = {"usage": {"include": True}}
+    if (options or {}).get("reasoning"):
+        # OpenRouter's unified reasoning control ({"effort": ...} or
+        # {"enabled": false}), translated per upstream provider — how the
+        # registry delineates thinking/non-thinking arms for these models.
+        extra_body["reasoning"] = options["reasoning"]
     resp = await client.chat.completions.create(
         model=model_id,
         messages=_to_json_messages(system, tools, messages),
         max_tokens=32000,
-        extra_body={"usage": {"include": True}})
+        extra_body=extra_body)
     choice = resp.choices[0] if resp.choices else None
     if choice is not None and choice.finish_reason == "error":
         raise RuntimeError("upstream provider error (finish_reason=error)")

@@ -40,8 +40,11 @@ MODEL_REGISTRY: dict[str, tuple] = {
     "llama-4-maverick": ("openrouter", "meta-llama/llama-4-maverick"),
     "kimi-k3": ("openrouter", "moonshotai/kimi-k3"),
     # gpt-5.6 ships only as codenamed variants; 'sol' is the one we expose (via
-    # OpenRouter, since the native OpenAI org doesn't list gpt-5.6).
-    "gpt-5.6": ("openrouter", "openai/gpt-5.6-sol"),
+    # OpenRouter, since the native OpenAI org doesn't list gpt-5.6). Reasoning
+    # is pinned per variant (OpenRouter's unified `reasoning` param) so the
+    # thinking/non-thinking arms are explicit rather than provider defaults.
+    "gpt-5.6": ("openrouter", "openai/gpt-5.6-sol", {"reasoning": {"enabled": False}}),
+    "gpt-5.6-thinking": ("openrouter", "openai/gpt-5.6-sol", {"reasoning": {"effort": "high"}}),
 }
 
 
