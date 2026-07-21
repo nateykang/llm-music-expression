@@ -48,15 +48,16 @@ def _store() -> SessionStore:
 # -- pace limit ---------------------------------------------------------------
 # The API keys have no provider-side caps the composer can set, so the studio
 # itself brakes spending: at most STUDIO_RATE_LIMIT generations per
-# STUDIO_RATE_WINDOW seconds across ALL sessions. One chat message = 1 unit; a
+# STUDIO_RATE_WINDOW seconds (defaults: 400/hour) across ALL sessions. One
+# chat message = 1 unit; a
 # comparison round = 1 unit per cell (each cell is its own model conversation).
 # In-memory on purpose — resets on restart, which is fine for a cost brake.
 _pace: deque = deque()  # timestamps of recently started generations
 
 
 def _check_pace(cost: int) -> None:
-    limit = int(os.environ.get("STUDIO_RATE_LIMIT", "100"))
-    window = float(os.environ.get("STUDIO_RATE_WINDOW", "900"))
+    limit = int(os.environ.get("STUDIO_RATE_LIMIT", "400"))
+    window = float(os.environ.get("STUDIO_RATE_WINDOW", "3600"))
     now = time.time()
     while _pace and _pace[0] <= now - window:
         _pace.popleft()

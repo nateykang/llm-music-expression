@@ -52,6 +52,8 @@ function md(text) {
 }
 
 function show(view) {
+  // Leaving a view silences it — music shouldn't follow you to the homepage.
+  for (const a of document.querySelectorAll("audio")) a.pause();
   for (const v of ["login-view", "home-view", "chat-view", "compare-view"])
     $(v).hidden = v !== view;
 }

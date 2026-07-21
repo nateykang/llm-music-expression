@@ -72,13 +72,17 @@ BACKUP_REPO="$(printf '%s' "$BACKUP_REPO" | tr -d '[:space:]')"
 if [ -n "$BACKUP_REPO" ]; then
     (
         set +e  # the loop must outlive transient failures (set -e is inherited)
+        # Never prompt for credentials (a prompt in this headless loop hangs it
+        # forever — observed as backups silently stopping), and bound every
+        # network call so a wedged connection can't freeze the loop either.
+        export GIT_TERMINAL_PROMPT=0
         while true; do
             if [ -d studio_data ]; then
                 # A clone that failed half-way (or an rsync before it) leaves a
                 # non-git ~/studio_backup that blocks every later clone — reset it.
                 if [ ! -d ~/studio_backup/.git ]; then
                     rm -rf ~/studio_backup
-                    git clone -q "$BACKUP_REPO" ~/studio_backup \
+                    timeout 300 git clone -q "$BACKUP_REPO" ~/studio_backup \
                         || echo "backup: clone failed — check STUDIO_BACKUP_REPO" >&2
                 fi
                 if [ -d ~/studio_backup/.git ]; then
@@ -88,7 +92,7 @@ if [ -n "$BACKUP_REPO" ]; then
                         git add -A
                         git -c user.email=studio@pod -c user.name=studio \
                             commit -qm "backup $(date -u +%Y-%m-%dT%H:%M)" 2>/dev/null
-                        git push -q || echo "backup: push failed" >&2
+                        timeout 300 git push -q || echo "backup: push failed" >&2
                     )
                 fi
             fi
