@@ -32,6 +32,7 @@ MODEL_REGISTRY: dict[str, tuple] = {
     #   opus-4.8, gpt-5.5, gemini-2.5-pro, grok-4.3, deepseek-v4-pro, qwen3-max
     "gemini-2.5-pro": ("openrouter", "google/gemini-2.5-pro"),
     "grok-4.3": ("openrouter", "x-ai/grok-4.3"),
+    "grok-4.5": ("openrouter", "x-ai/grok-4.5"),
     "deepseek-v4-pro": ("openrouter", "deepseek/deepseek-v4-pro"),
     "qwen3-max": ("openrouter", "qwen/qwen3-max"),
     "llama-4-maverick": ("openrouter", "meta-llama/llama-4-maverick"),
