@@ -12,6 +12,12 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": ["-c", "STUDIO_PASSWORD=local-dev .venv/bin/python -m llm_music.studio --port 8321"],
       "port": 8321
+    },
+    {
+      "name": "studio-dev",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "STUDIO_PASSWORD=local-dev .venv/bin/python -m llm_music.studio --port 8322"],
+      "port": 8322
     }
   ]
 }
