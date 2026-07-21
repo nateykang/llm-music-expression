@@ -29,18 +29,60 @@
     </header>
     <main class="home-main">
       <form id="new-session-form" class="card">
-        <h2>New session</h2>
+        <h2>New chat</h2>
+        <p class="muted card-sub">Work with one model in conversation — compose, react, revise.</p>
         <div class="row">
           <input id="new-title" type="text" placeholder="What are we working on? (optional)">
           <select id="new-model"></select>
           <button type="submit">Start</button>
         </div>
       </form>
+
+      <form id="new-comparison-form" class="card">
+        <h2>New comparison</h2>
+        <p class="muted card-sub">Send one prompt independently to several models (and/or both
+          writing methods) at once, and see every result side by side — no shared history.</p>
+        <textarea id="cmp-prompt" rows="2"
+          placeholder="The prompt every model gets — e.g. “A wistful waltz for solo piano, about a minute.”"></textarea>
+        <div class="cmp-config">
+          <div>
+            <div class="muted lbl">Models</div>
+            <div id="cmp-models" class="checkgrid"></div>
+          </div>
+          <div>
+            <div class="muted lbl">Writing method</div>
+            <label class="rad"><input type="radio" name="cmp-method" value="codegen" checked> code</label>
+            <label class="rad"><input type="radio" name="cmp-method" value="abc"> ABC</label>
+            <label class="rad"><input type="radio" name="cmp-method" value="both"> both</label>
+          </div>
+        </div>
+        <div class="row">
+          <input id="cmp-title" type="text" placeholder="Comparison name (optional)">
+          <button type="submit">Run comparison</button>
+        </div>
+        <p id="cmp-error" class="error" hidden></p>
+      </form>
+
       <section class="card">
-        <h2>Sessions</h2>
-        <div id="session-list"><p class="muted">No sessions yet.</p></div>
+        <h2>History</h2>
+        <div id="session-list"><p class="muted">Nothing yet.</p></div>
       </section>
     </main>
+  </div>
+
+  <div id="compare-view" hidden>
+    <div class="bar chat-bar">
+      <button id="cmp-back" class="ghost">&larr; History</button>
+      <span id="cmp-view-title"></span>
+      <span id="cmp-view-status" class="chip"></span>
+    </div>
+    <div id="cmp-rounds" class="cmp-rounds"></div>
+    <div id="cmp-grid" class="cmp-grid"></div>
+    <form id="cmp-composer" class="cmp-composer">
+      <textarea id="cmp-input" rows="1"
+        placeholder="React or redirect — your message goes to every model, each continuing its own piece"></textarea>
+      <button id="cmp-send" type="submit">Send to all</button>
+    </form>
   </div>
 
   <div id="chat-view" hidden>
@@ -52,6 +94,13 @@
         <p id="piece-note" class="muted"></p>
         <audio id="piece-audio" controls preload="metadata"></audio>
         <div id="score"></div>
+        <div id="piece-features-wrap"></div>
+        <div id="piece-comments" class="comments"></div>
+        <form id="comment-form" class="comment-form">
+          <textarea id="comment-input" rows="1"
+            placeholder="Your thoughts on this version — kept for the record, never sent to the model"></textarea>
+          <button type="submit" class="ghost">Save note</button>
+        </form>
       </div>
     </div>
     <div class="chat-col">
@@ -59,6 +108,19 @@
         <button id="back" class="ghost">&larr; Sessions</button>
         <span id="chat-title"></span>
         <span id="chat-model" class="chip"></span>
+        <button id="prompt-btn" class="ghost" title="Advanced: view or rewrite this session's system prompt">Prompt</button>
+      </div>
+      <div id="prompt-editor" hidden>
+        <p class="muted prompt-hint">Advanced: this is the full system prompt the model receives.
+          Edit and save to take over from the default — the render instructions live in here too,
+          so keep what you still want. Applies from your next message.</p>
+        <textarea id="prompt-text" spellcheck="false"></textarea>
+        <div class="prompt-actions">
+          <button id="prompt-save">Save</button>
+          <button id="prompt-reset" class="ghost">Reset to default</button>
+          <button id="prompt-cancel" class="ghost">Back to chat</button>
+          <span id="prompt-state" class="muted"></span>
+        </div>
       </div>
       <div id="messages"></div>
       <div id="status-line" hidden><span class="dot"></span><span id="status-text">Thinking…</span></div>

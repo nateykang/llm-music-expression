@@ -35,13 +35,15 @@ class SessionStore:
 
     # -- lifecycle ---------------------------------------------------------
 
-    def create(self, model: str, title: str = "") -> dict:
+    def create(self, model: str, title: str = "", kind: str = "chat") -> dict:
         session_id = time.strftime("%Y%m%d-%H%M%S") + "-" + secrets.token_hex(3)
         d = self.sessions_dir / session_id
         (d / "pieces").mkdir(parents=True)
         meta = {
             "id": session_id,
-            "title": title or "Untitled session",
+            "kind": kind,  # "chat" (conversational) or "comparison" (fan-out grid)
+            "title": title or ("Untitled comparison" if kind == "comparison"
+                               else "Untitled session"),
             "model": model,
             "created": time.time(),
             "last_active": time.time(),
@@ -103,6 +105,22 @@ class SessionStore:
 
     def save_messages(self, session_id: str, messages: list) -> None:
         (self._dir(session_id) / "messages.json").write_text(
+            json.dumps(messages, ensure_ascii=False), encoding="utf-8"
+        )
+
+    # Comparison cells each carry an independent conversation; one file per
+    # cell (cells/<index>.json) so concurrent cells never race on a shared file.
+
+    def cell_messages(self, session_id: str, index: int) -> list:
+        path = self._dir(session_id) / "cells" / f"{int(index)}.json"
+        if not path.exists():
+            return []
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    def save_cell_messages(self, session_id: str, index: int, messages: list) -> None:
+        d = self._dir(session_id) / "cells"
+        d.mkdir(exist_ok=True)
+        (d / f"{int(index)}.json").write_text(
             json.dumps(messages, ensure_ascii=False), encoding="utf-8"
         )
 

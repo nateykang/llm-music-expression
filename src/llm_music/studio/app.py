@@ -21,6 +21,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from . import agent
+from . import compare as compare_mod
 from . import config as cfg
 from .auth import LoginLimiter, check_password, make_token, verify_token
 from .sessions import SessionStore
@@ -143,11 +144,41 @@ def get_session(session_id: str):
         raise HTTPException(status_code=404, detail="no such session")
     if meta is None:
         raise HTTPException(status_code=404, detail="no such session")
-    # The UI rebuilds chat + version timeline from the event log; thinking and
-    # raw tool inputs stay server-side (they are research data, not chat).
+    # The UI rebuilds chat/grid from the event log; thinking and raw tool inputs
+    # stay server-side (research data, not shown). "prompt"/"cell" reconstruct a
+    # comparison grid; "user"/"assistant"/"piece" reconstruct a chat; "comment"
+    # is the composer's own annotation on a version (never sent to the model).
     visible = [e for e in store.events(session_id)
-               if e["type"] in ("user", "assistant", "piece", "error")]
+               if e["type"] in ("user", "assistant", "piece", "error",
+                                 "prompt", "cell", "comment")]
     return {"meta": meta, "events": visible}
+
+
+class CommentBody(BaseModel):
+    text: str
+    version: int | None = None  # which piece version the thought is about
+
+
+@app.post("/api/sessions/{session_id}/comments",
+          dependencies=[Depends(require_auth)])
+def post_comment(session_id: str, body: CommentBody):
+    """The composer's written reaction to a piece — research data, appended to
+    the event log and shown in the UI, but never sent to any model."""
+    store = _store()
+    try:
+        meta = store.get(session_id)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="no such session")
+    if meta is None:
+        raise HTTPException(status_code=404, detail="no such session")
+    text = body.text.strip()
+    if not text:
+        raise HTTPException(status_code=400, detail="empty comment")
+    event = {"type": "comment", "text": text, "version": body.version}
+    store.append_event(session_id, event)
+    store.touch(session_id)
+    _notify({"event": "comment", "session": session_id, "text": text[:80]})
+    return {"ok": True}
 
 
 @app.post("/api/sessions/{session_id}/message", dependencies=[Depends(require_auth)])
@@ -176,40 +207,51 @@ async def post_message(session_id: str, body: MessageBody):
         _notify({"event": "session_resumed", "session": session_id,
                  "title": meta.get("title", "")})
 
-    # The turn runs in its own task feeding a queue; the SSE loop only reads the
-    # queue. Two reasons: wait_for-cancelling an async generator's __anext__
-    # (for keepalive pings) would kill the generator mid-turn, and this way a
-    # dropped connection doesn't abort a turn — it finishes and is logged, and
-    # the chat shows it on reload.
+    async def turn():
+        async with lock:
+            async for event in agent.stream_turn(store, session_id, text,
+                                                 mode=body.mode,
+                                                 model=body.model):
+                yield event
+
+    return _stream_events(turn(), store, session_id)
+
+
+def _stream_events(gen, store: SessionStore, session_id: str,
+                   lead: dict | None = None) -> StreamingResponse:
+    """SSE-serialize an event generator, running it in its own task feeding a
+    queue; the SSE loop only reads the queue. Two reasons: wait_for-cancelling
+    an async generator's __anext__ (for keepalive pings) would kill the
+    generator mid-turn, and this way a dropped connection doesn't abort the
+    work — it finishes and is logged, and the session shows it on reload.
+    ``lead`` is emitted first (e.g. the created session's meta for routing)."""
     queue: asyncio.Queue = asyncio.Queue()
 
-    async def run_turn():
-        async with lock:
-            try:
-                async for event in agent.stream_turn(store, session_id, text,
-                                                     mode=body.mode,
-                                                     model=body.model):
-                    queue.put_nowait(event)
-            except Exception as e:
-                import traceback
+    async def run():
+        try:
+            async for event in gen:
+                queue.put_nowait(event)
+        except Exception as e:
+            import traceback
 
-                log.error("turn failed in session %s:\n%s", session_id,
-                          cfg.redact(traceback.format_exc()))
-                err = {"type": "error",
-                       "message": f"turn failed: {cfg.redact(str(e))}"}
-                store.append_event(session_id, err)
-                queue.put_nowait(err)
-            finally:
-                queue.put_nowait(None)
+            log.error("stream failed in session %s:\n%s", session_id,
+                      cfg.redact(traceback.format_exc()))
+            err = {"type": "error", "message": cfg.redact(str(e))}
+            store.append_event(session_id, err)
+            queue.put_nowait(err)
+        finally:
+            queue.put_nowait(None)
 
-    task = asyncio.create_task(run_turn())
+    task = asyncio.create_task(run())
     _turn_tasks.add(task)
     task.add_done_callback(_turn_tasks.discard)
 
     async def sse():
+        if lead is not None:
+            yield "data: " + json.dumps(lead, ensure_ascii=False) + "\n\n"
         while True:
-            # Ping through long thinking silences so proxies keep the
-            # stream open and the browser knows we're alive.
+            # Ping through long silences so proxies keep the stream open and
+            # the browser knows we're alive.
             try:
                 event = await asyncio.wait_for(queue.get(), timeout=15)
             except asyncio.TimeoutError:
@@ -222,6 +264,168 @@ async def post_message(session_id: str, body: MessageBody):
     return StreamingResponse(sse(), media_type="text/event-stream",
                              headers={"Cache-Control": "no-cache",
                                       "X-Accel-Buffering": "no"})
+
+
+class ComparisonBody(BaseModel):
+    prompt: str
+    models: list[str]
+    modes: list[str] = ["codegen"]  # any of codegen | abc
+    title: str = ""
+
+
+@app.post("/api/comparisons", dependencies=[Depends(require_auth)])
+async def create_comparison(body: ComparisonBody):
+    prompt = body.prompt.strip()
+    if not prompt:
+        raise HTTPException(status_code=400, detail="empty prompt")
+    models = [m for m in body.models if m]
+    if not models:
+        raise HTTPException(status_code=400, detail="pick at least one model")
+    bad = [m for m in models if m not in cfg.available_models()]
+    if bad:
+        raise HTTPException(status_code=400, detail=f"unknown model(s): {bad}")
+    bad_modes = [m for m in body.modes if m not in agent.TOOLS_BY_MODE]
+    if bad_modes or not body.modes:
+        raise HTTPException(status_code=400, detail=f"bad mode(s): {bad_modes or 'none'}")
+
+    n_models = len(dict.fromkeys(models))
+    if n_models > compare_mod.MAX_MODELS:
+        # Reject rather than silently truncate — a grid missing models the
+        # composer picked would just look like they were never selected.
+        raise HTTPException(
+            status_code=400,
+            detail=f"{n_models} models selected but the limit is "
+                   f"{compare_mod.MAX_MODELS} per comparison — more than "
+                   f"that is hard to compare side by side")
+    cells = compare_mod.build_cells(models, body.modes)
+    store = _store()
+    meta = store.create(model=models[0], title=body.title.strip(), kind="comparison")
+    comp_id = meta["id"]
+    _notify({"event": "comparison_created", "session": comp_id,
+             "prompt": prompt[:80], "n_cells": len(cells)})
+
+    async def first_round():
+        async with _locks[comp_id]:
+            async for ev in compare_mod.run_round(store, comp_id, prompt, cells, 0):
+                yield ev
+
+    # Lead with the session meta so the browser can route to the grid view.
+    return _stream_events(first_round(), store, comp_id,
+                          lead={"type": "created", "meta": meta})
+
+
+class CompareMessageBody(BaseModel):
+    text: str
+
+
+@app.post("/api/sessions/{session_id}/compare-message",
+          dependencies=[Depends(require_auth)])
+async def post_compare_message(session_id: str, body: CompareMessageBody):
+    """A follow-up composer message to ALL of a comparison's cells; each cell
+    continues its own independent conversation."""
+    store = _store()
+    try:
+        meta = store.get(session_id)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="no such session")
+    if meta is None:
+        raise HTTPException(status_code=404, detail="no such session")
+    if meta.get("kind") != "comparison":
+        raise HTTPException(status_code=400, detail="not a comparison session")
+    text = body.text.strip()
+    if not text:
+        raise HTTPException(status_code=400, detail="empty message")
+    prompts = [e for e in store.events(session_id) if e["type"] == "prompt"]
+    if not prompts:
+        raise HTTPException(status_code=409, detail="comparison has no first round")
+    cells = prompts[0]["cells"]  # the grid is fixed at creation
+    round_idx = len(prompts)
+    lock = _locks[session_id]
+    if lock.locked():
+        raise HTTPException(status_code=409, detail="a round is already running")
+
+    async def next_round():
+        async with lock:
+            async for ev in compare_mod.run_round(store, session_id, text,
+                                                  cells, round_idx):
+                yield ev
+
+    return _stream_events(next_round(), store, session_id)
+
+
+@app.post("/api/sessions/{session_id}/cells/{index}/fork",
+          dependencies=[Depends(require_auth)])
+def fork_cell(session_id: str, index: int):
+    try:
+        chat = compare_mod.fork_cell_to_chat(_store(), session_id, index)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="no such comparison")
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    return chat
+
+
+@app.get("/api/sessions/{session_id}/features/{version}",
+         dependencies=[Depends(require_auth)])
+async def piece_features(session_id: str, version: int):
+    """Measured symbolic features for one version — the same panel the batch
+    analysis computes, so the composer can eyeball (and comment on) them."""
+    from starlette.concurrency import run_in_threadpool
+
+    from . import features as features_mod
+
+    store = _store()
+    try:
+        meta = store.get(session_id)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="no such session")
+    if meta is None:
+        raise HTTPException(status_code=404, detail="no such session")
+    vdir = store.pieces_dir(session_id) / f"v{version}"
+    if not (vdir / "meta.json").exists():
+        raise HTTPException(status_code=404, detail="no such version")
+    feats = await run_in_threadpool(features_mod.piece_features, vdir)
+    if feats is None:
+        return {"ok": False, "error": "this piece could not be analyzed"}
+    return {"ok": True, "features": feats}
+
+
+class PromptBody(BaseModel):
+    text: str | None = None  # None/empty = reset to the default prompt
+
+
+@app.get("/api/sessions/{session_id}/prompt", dependencies=[Depends(require_auth)])
+def get_prompt(session_id: str, mode: str = "codegen"):
+    """The session's effective system prompt: the custom override if set, plus
+    the default for prefilling the editor."""
+    store = _store()
+    try:
+        meta = store.get(session_id)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="no such session")
+    if meta is None:
+        raise HTTPException(status_code=404, detail="no such session")
+    if mode not in agent.TOOLS_BY_MODE:
+        raise HTTPException(status_code=400, detail=f"unknown mode '{mode}'")
+    return {"custom": meta.get("custom_prompt"),
+            "default": agent.system_prompt(mode)}
+
+
+@app.put("/api/sessions/{session_id}/prompt", dependencies=[Depends(require_auth)])
+def put_prompt(session_id: str, body: PromptBody):
+    """Set (or clear) the session's system-prompt override. Logged to the event
+    stream so every generation's prompt provenance is reconstructable."""
+    store = _store()
+    try:
+        meta = store.get(session_id)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="no such session")
+    if meta is None:
+        raise HTTPException(status_code=404, detail="no such session")
+    text = (body.text or "").strip() or None
+    store.append_event(session_id, {"type": "system_prompt", "text": text})
+    meta = store.touch(session_id, custom_prompt=text)
+    return {"custom": meta.get("custom_prompt")}
 
 
 @app.get("/api/sessions/{session_id}/pieces/{version}/{filename}",

@@ -31,9 +31,11 @@ def next_version(pieces_dir: Path) -> int:
     return max(taken, default=0) + 1
 
 
-def render_codegen_version(pieces_dir: Path, code: str, title: str, note: str) -> dict:
-    version = next_version(pieces_dir)
+def render_codegen_version(pieces_dir: Path, code: str, title: str, note: str,
+                           version: int | None = None, extra: dict | None = None) -> dict:
+    version = version if version is not None else next_version(pieces_dir)
     vdir = pieces_dir / f"v{version}"
+    shutil.rmtree(vdir, ignore_errors=True)  # explicit-version reruns overwrite cleanly
     sandbox = run_music21_code(code, vdir)
     if not sandbox.ok:
         shutil.rmtree(vdir, ignore_errors=True)
@@ -41,16 +43,18 @@ def render_codegen_version(pieces_dir: Path, code: str, title: str, note: str) -
     (vdir / "source.py").write_text(code, encoding="utf-8")
     if sandbox.midi_path:
         midi_to_audio(sandbox.midi_path, vdir / "piece.mp3")
-    return _finish(vdir, version, "codegen", title, note)
+    return _finish(vdir, version, "codegen", title, note, extra)
 
 
-def render_abc_version(pieces_dir: Path, abc: str, title: str, note: str) -> dict:
+def render_abc_version(pieces_dir: Path, abc: str, title: str, note: str,
+                       version: int | None = None, extra: dict | None = None) -> dict:
     err = _abc_syntax_error(abc)
     if err:
         return {"ok": False, "error": f"ABC looks malformed: {err}"}
     abc = abc.strip()
-    version = next_version(pieces_dir)
+    version = version if version is not None else next_version(pieces_dir)
     vdir = pieces_dir / f"v{version}"
+    shutil.rmtree(vdir, ignore_errors=True)
     vdir.mkdir(parents=True, exist_ok=True)
     midi_path = abc_to_midi(abc, vdir)
     # abc_to_midi wrote a normalized piece.abc for abc2midi; store the raw ABC
@@ -58,10 +62,11 @@ def render_abc_version(pieces_dir: Path, abc: str, title: str, note: str) -> dic
     (vdir / "piece.abc").write_text(abc + "\n", encoding="utf-8")
     if midi_path:
         midi_to_audio(midi_path, vdir / "piece.mp3")
-    return _finish(vdir, version, "abc", title, note)
+    return _finish(vdir, version, "abc", title, note, extra)
 
 
-def _finish(vdir: Path, version: int, mode: str, title: str, note: str) -> dict:
+def _finish(vdir: Path, version: int, mode: str, title: str, note: str,
+            extra: dict | None = None) -> dict:
     analysis = _analyze(vdir)
     meta = {
         "ok": True,
@@ -72,6 +77,7 @@ def _finish(vdir: Path, version: int, mode: str, title: str, note: str) -> dict:
         "ts": time.time(),
         "files": [f for f in VERSION_FILES if f != "meta.json" and (vdir / f).exists()],
         "analysis": analysis,
+        **(extra or {}),
     }
     (vdir / "meta.json").write_text(
         json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8"
