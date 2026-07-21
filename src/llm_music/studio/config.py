@@ -51,10 +51,17 @@ def notify_url() -> str | None:
     return os.environ.get("STUDIO_NOTIFY_URL") or None
 
 
+# Hidden from the studio picker (still registered for batch runs, and existing
+# sessions that use them keep working). kimi-k3: ~10 min per generation via
+# OpenRouter — one kimi cell stalls a whole comparison round.
+HIDDEN_MODELS = {"kimi-k3"}
+
+
 def available_models() -> list[str]:
     """Friendly model ids the studio offers: every registry entry whose provider
     has a studio backend (anthropic, openai, openrouter — see backends.py).
-    STUDIO_MODELS narrows the list, e.g. to models whose keys are on the server."""
+    STUDIO_MODELS narrows the list, e.g. to models whose keys are on the server
+    (an explicit list also overrides HIDDEN_MODELS)."""
     from .backends import BACKENDS
 
     env = os.environ.get("STUDIO_MODELS")
@@ -67,7 +74,7 @@ def available_models() -> list[str]:
                 f"STUDIO_MODELS entries without a studio backend: {unknown}"
             )
         return wanted
-    return supported
+    return [m for m in supported if m not in HIDDEN_MODELS]
 
 
 def redact(text: str) -> str:

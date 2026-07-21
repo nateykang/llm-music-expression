@@ -12,6 +12,7 @@ const state = {
   pieces: new Map(),      // version (number) -> piece event
   comments: new Map(),    // version (number) -> [comment text] for the open session
   cmpComments: new Map(), // same, for the open comparison's cells
+  cmpLatest: new Map(),   // cell index -> latest ok cell event (dashboard columns)
   currentVersion: null,
   streamingChats: new Set(),  // session ids with a turn in flight from this tab
   cmpStreaming: false,
@@ -82,12 +83,26 @@ $("logout").addEventListener("click", async () => {
   show("login-view");
 });
 
+// Pickers show models grouped by family, alphabetical within each.
+const FAMILY_RANK = { Claude: 0, GPT: 1, Gemini: 2, Grok: 3, Other: 4 };
+function modelFamily(m) {
+  if (/^(opus|sonnet|haiku|fable)/.test(m)) return "Claude";
+  if (/^gpt/.test(m)) return "GPT";
+  if (/^gemini/.test(m)) return "Gemini";
+  if (/^grok/.test(m)) return "Grok";
+  return "Other";
+}
+function sortModels(models) {
+  return [...models].sort((a, b) =>
+    (FAMILY_RANK[modelFamily(a)] - FAMILY_RANK[modelFamily(b)]) || a.localeCompare(b));
+}
+
 function afterLogin(me) {
-  state.models = me.models;
+  state.models = sortModels(me.models);
   state.defaultModel = me.default_model;
   const sel = $("new-model");
   sel.innerHTML = "";
-  for (const m of me.models) {
+  for (const m of state.models) {
     const opt = document.createElement("option");
     opt.value = m;
     opt.textContent = m;
@@ -96,7 +111,15 @@ function afterLogin(me) {
   }
   const grid = $("cmp-models");
   grid.innerHTML = "";
-  for (const m of me.models) {
+  let fam = null;
+  for (const m of state.models) {
+    if (modelFamily(m) !== fam) {
+      fam = modelFamily(m);
+      const h = document.createElement("div");
+      h.className = "fam";
+      h.textContent = fam;
+      grid.appendChild(h);
+    }
     const lbl = document.createElement("label");
     lbl.className = "chk";
     lbl.innerHTML = `<input type="checkbox" value="${m}"> ${esc(m)}`;
@@ -162,11 +185,20 @@ async function openSession(id) {
     opt.textContent = m;
     sel.appendChild(opt);
   }
+  if (![...sel.options].some((o) => o.value === meta.model)) {
+    // Session on a model hidden from the picker (e.g. kimi-k3): keep it selectable here.
+    const opt = document.createElement("option");
+    opt.value = meta.model;
+    opt.textContent = meta.model;
+    sel.appendChild(opt);
+  }
   sel.value = meta.model;
   $("messages").innerHTML = "";
   $("version-tabs").innerHTML = "";
   $("piece-panel").hidden = true;
   $("piece-empty").hidden = false;
+  $("chat-dash").open = false;
+  $("chat-dash-body").innerHTML = "";
   for (const e of events) {
     if (e.type === "user") addUserBubble(e.text);
     else if (e.type === "assistant") addAssistantHtml(md(e.text));
@@ -369,6 +401,7 @@ function registerPiece(e, select) {
     tab.addEventListener("click", () => selectVersion(e.version));
     $("version-tabs").appendChild(tab);
   }
+  if ($("chat-dash").open) buildChatDashboard();  // keep an open dashboard current
   if (select) selectVersion(e.version);
 }
 
@@ -385,9 +418,6 @@ async function selectVersion(version) {
   const modeLabel = MODE_LABELS[e.mode] || e.mode;
   $("piece-note").textContent = [modeLabel, e.model, e.note].filter(Boolean).join(" · ");
   renderComments();
-  const wrap = $("piece-features-wrap");
-  wrap.innerHTML = "";
-  wrap.appendChild(makeFeaturesDetails(state.session.id, version));
 
   const audio = $("piece-audio");
   if (e.files.includes("piece.mp3")) {
@@ -479,35 +509,68 @@ $("prompt-reset").addEventListener("click", async () => {
   }
 });
 
-// ---------- measured features (same metrics as the batch analysis) ----------
+// ---------- features dashboards (same metrics as the batch analysis) ----------
+// One table per view — chat: feature rows × version columns; comparison:
+// feature rows × model columns (each cell's latest render) — so pieces are
+// compared side by side instead of one dropdown per piece.
 
 const FEATURE_SKIP = new Set(["model", "prompt", "mode", "sample", "batch",
                               "title", "features_version"]);
 
-function makeFeaturesDetails(sid, version) {
-  const details = document.createElement("details");
-  details.className = "features";
-  details.innerHTML = "<summary>Measured features</summary>" +
-    '<div class="features-body"></div>';
-  details.addEventListener("toggle", async () => {
-    if (!details.open || details.dataset.loaded) return;
-    details.dataset.loaded = "1";
-    const body = details.querySelector(".features-body");
-    body.innerHTML = '<p class="muted">Measuring…</p>';
-    try {
-      const r = await api(`/api/sessions/${sid}/features/${version}`);
-      if (!r.ok) { body.innerHTML = `<p class="muted">${esc(r.error)}</p>`; return; }
-      const rows = Object.entries(r.features)
-        .filter(([k]) => !FEATURE_SKIP.has(k))
-        .map(([k, v]) => `<tr><td>${esc(k)}</td>` +
-          `<td>${v === null || v === "" ? "—" : esc(String(v))}</td></tr>`);
-      body.innerHTML = `<table class="features-table">${rows.join("")}</table>`;
-    } catch (e) {
-      body.innerHTML = `<p class="error">${esc(e.message)}</p>`;
-    }
-  });
-  return details;
+async function fetchFeatures(sid, version) {
+  try {
+    const r = await api(`/api/sessions/${sid}/features/${version}`);
+    return r.ok ? r.features : null;
+  } catch (e) {
+    return null;
+  }
 }
+
+function dashTable(cols) {
+  // cols: [{label (pre-escaped html), feats (dict|null)}]
+  const keys = [];
+  for (const c of cols) {
+    if (!c.feats) continue;
+    for (const k of Object.keys(c.feats)) {
+      if (!FEATURE_SKIP.has(k) && !keys.includes(k)) keys.push(k);
+    }
+  }
+  if (!keys.length) return '<p class="muted">Nothing analyzable yet.</p>';
+  const head = "<tr><th></th>" + cols.map((c) => `<th>${c.label}</th>`).join("") + "</tr>";
+  const rows = keys.map((k) => `<tr><td>${esc(k)}</td>` + cols.map((c) => {
+    const v = c.feats ? c.feats[k] : undefined;
+    return `<td>${v === null || v === undefined || v === "" ? "—" : esc(String(v))}</td>`;
+  }).join("") + "</tr>").join("");
+  return `<div class="dash-scroll"><table class="features-table dash-table">${head}${rows}</table></div>`;
+}
+
+async function buildChatDashboard() {
+  const body = $("chat-dash-body");
+  const versions = [...state.pieces.keys()].sort((a, b) => a - b);
+  if (!versions.length) { body.innerHTML = '<p class="muted">Nothing rendered yet.</p>'; return; }
+  body.innerHTML = '<p class="muted">Measuring…</p>';
+  const sid = state.session.id;
+  const cols = await Promise.all(versions.map(async (v) => ({
+    label: `v${v}`, feats: await fetchFeatures(sid, v),
+  })));
+  body.innerHTML = dashTable(cols);
+}
+
+async function buildCmpDashboard() {
+  const body = $("cmp-dash-body");
+  const sid = $("cmp-grid").dataset.session;
+  const entries = [...state.cmpLatest.entries()].sort((a, b) => a[0] - b[0]);
+  if (!sid || !entries.length) { body.innerHTML = '<p class="muted">Nothing rendered yet.</p>'; return; }
+  body.innerHTML = '<p class="muted">Measuring…</p>';
+  const cols = await Promise.all(entries.map(async ([, e]) => ({
+    label: `${esc(e.model)}<br><span class="cell-method">${MODE_LABELS[e.mode] || esc(e.mode)}</span>`,
+    feats: await fetchFeatures(sid, e.version),
+  })));
+  body.innerHTML = dashTable(cols);
+}
+
+$("chat-dash").addEventListener("toggle", () => { if ($("chat-dash").open) buildChatDashboard(); });
+$("cmp-dash").addEventListener("toggle", () => { if ($("cmp-dash").open) buildCmpDashboard(); });
 
 // ---------- comments (the composer's own notes; never sent to a model) ----------
 
@@ -516,6 +579,13 @@ function renderComments() {
   $("piece-comments").innerHTML = list.map(
     (t) => `<p class="comment">${esc(t)}</p>`).join("");
 }
+
+$("comment-input").addEventListener("keydown", (ev) => {
+  if (ev.key === "Enter" && !ev.shiftKey) {
+    ev.preventDefault();
+    $("comment-form").requestSubmit();
+  }
+});
 
 $("comment-form").addEventListener("submit", async (ev) => {
   ev.preventDefault();
@@ -751,6 +821,9 @@ function buildGrid(compId, cells) {
   const grid = $("cmp-grid");
   grid.dataset.session = compId;  // late stream events check this before touching DOM
   grid.innerHTML = "";
+  state.cmpLatest = new Map();
+  $("cmp-dash").open = false;
+  $("cmp-dash-body").innerHTML = "";
   cells.forEach((cell, i) => {
     const div = document.createElement("div");
     div.className = "cmp-cell";
@@ -775,6 +848,8 @@ async function fillCell(compId, e) {
       `<p class="error">Didn't render: ${esc(e.error || "unknown")}</p>`;
     return;
   }
+  state.cmpLatest.set(e.index, e);
+  if ($("cmp-dash").open) buildCmpDashboard();  // keep an open dashboard current
   // Each successful round adds a version pill; the newest becomes active.
   const pills = cell.querySelector(".cell-pills");
   const pill = document.createElement("button");
@@ -810,15 +885,6 @@ async function showCellResult(compId, e, cell, pill) {
   score.className = "cell-score";
   body.appendChild(score);
 
-  const iterate = document.createElement("button");
-  iterate.className = "cell-iterate";
-  iterate.textContent = "Iterate in chat →";
-  iterate.title = `Open a chat with ${e.model} continuing this cell's whole conversation`;
-  iterate.addEventListener("click", () => forkCell(compId, e.index, iterate));
-  body.appendChild(iterate);
-
-  body.appendChild(makeFeaturesDetails(compId, e.version));
-
   const comments = document.createElement("div");
   comments.className = "cell-comments";
   const renderCellComments = () => {
@@ -830,11 +896,11 @@ async function showCellResult(compId, e, cell, pill) {
 
   const note = document.createElement("form");
   note.className = "cell-note";
-  note.innerHTML = `<input placeholder="Your thoughts — saved for the record, never sent to the model">` +
+  note.innerHTML = `<textarea rows="2" placeholder="Your thoughts — saved for the record, never sent to the model"></textarea>` +
     `<button class="ghost" type="submit">Save</button>`;
   note.addEventListener("submit", async (ev) => {
     ev.preventDefault();
-    const input = note.querySelector("input");
+    const input = note.querySelector("textarea");
     const text = input.value.trim();
     if (!text) return;
     input.value = "";
@@ -847,7 +913,17 @@ async function showCellResult(compId, e, cell, pill) {
       alert("Couldn't save the note: " + err.message);
     }
   });
+  note.querySelector("textarea").addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter" && !ev.shiftKey) { ev.preventDefault(); note.requestSubmit(); }
+  });
   body.appendChild(note);
+
+  const iterate = document.createElement("button");
+  iterate.className = "cell-iterate";
+  iterate.textContent = "Iterate in chat →";
+  iterate.title = `Open a chat with ${e.model} continuing this cell's whole conversation`;
+  iterate.addEventListener("click", () => forkCell(compId, e.index, iterate));
+  body.appendChild(iterate);
 
   await engraveInto(score, compId, e.version, e.files, 30);
 }

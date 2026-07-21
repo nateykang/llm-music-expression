@@ -6,11 +6,11 @@
   <title>Composer Studio</title>
   <!-- Bump ?v= on any studio.css/studio.js change: browsers cache the old
        assets otherwise, and the composer sees a stale UI after deploys. -->
-  <link rel="stylesheet" href="/static/studio.css?v=20260721">
+  <link rel="stylesheet" href="/static/studio.css?v=20260721b">
   <!-- Same engraving stack as the main site: Verovio for MusicXML, abcjs for ABC. -->
   <script src="https://www.verovio.org/javascript/latest/verovio-toolkit-wasm.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/abcjs@6.4.4/dist/abcjs-basic-min.js" defer></script>
-  <script src="/static/studio.js?v=20260721" defer></script>
+  <script src="/static/studio.js?v=20260721b" defer></script>
 </head>
 <body>
 
@@ -79,6 +79,10 @@
       <span id="cmp-view-status" class="chip"></span>
     </div>
     <div id="cmp-rounds" class="cmp-rounds"></div>
+    <details id="cmp-dash" class="dash cmp-dash">
+      <summary>Features dashboard — all models side by side</summary>
+      <div id="cmp-dash-body" class="dash-body"></div>
+    </details>
     <div id="cmp-grid" class="cmp-grid"></div>
     <form id="cmp-composer" class="cmp-composer">
       <textarea id="cmp-input" rows="1"
@@ -96,10 +100,13 @@
         <p id="piece-note" class="muted"></p>
         <audio id="piece-audio" controls preload="metadata"></audio>
         <div id="score"></div>
-        <div id="piece-features-wrap"></div>
+        <details id="chat-dash" class="dash">
+          <summary>Features dashboard — all versions</summary>
+          <div id="chat-dash-body" class="dash-body"></div>
+        </details>
         <div id="piece-comments" class="comments"></div>
         <form id="comment-form" class="comment-form">
-          <textarea id="comment-input" rows="1"
+          <textarea id="comment-input" rows="2"
             placeholder="Your thoughts on this version — kept for the record, never sent to the model"></textarea>
           <button type="submit" class="ghost">Save note</button>
         </form>
