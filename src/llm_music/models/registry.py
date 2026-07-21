@@ -37,6 +37,9 @@ MODEL_REGISTRY: dict[str, tuple] = {
     "qwen3-max": ("openrouter", "qwen/qwen3-max"),
     "llama-4-maverick": ("openrouter", "meta-llama/llama-4-maverick"),
     "kimi-k3": ("openrouter", "moonshotai/kimi-k3"),
+    # gpt-5.6 ships only as codenamed variants; 'sol' is the one we expose (via
+    # OpenRouter, since the native OpenAI org doesn't list gpt-5.6).
+    "gpt-5.6": ("openrouter", "openai/gpt-5.6-sol"),
 }
 
 
