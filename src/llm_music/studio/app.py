@@ -10,9 +10,11 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import os
 import threading
+import time
 import urllib.request
-from collections import defaultdict
+from collections import defaultdict, deque
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
@@ -41,6 +43,31 @@ _turn_tasks: set[asyncio.Task] = set()  # strong refs so running turns aren't GC
 
 def _store() -> SessionStore:
     return SessionStore(cfg.data_dir())
+
+
+# -- pace limit ---------------------------------------------------------------
+# The API keys have no provider-side caps the composer can set, so the studio
+# itself brakes spending: at most STUDIO_RATE_LIMIT generations per
+# STUDIO_RATE_WINDOW seconds across ALL sessions. One chat message = 1 unit; a
+# comparison round = 1 unit per cell (each cell is its own model conversation).
+# In-memory on purpose — resets on restart, which is fine for a cost brake.
+_pace: deque = deque()  # timestamps of recently started generations
+
+
+def _check_pace(cost: int) -> None:
+    limit = int(os.environ.get("STUDIO_RATE_LIMIT", "100"))
+    window = float(os.environ.get("STUDIO_RATE_WINDOW", "900"))
+    now = time.time()
+    while _pace and _pace[0] <= now - window:
+        _pace.popleft()
+    if len(_pace) + cost > limit:
+        wait = int(_pace[0] + window - now) + 1 if _pace else int(window)
+        raise HTTPException(
+            status_code=429,
+            detail=f"taking a breather — the studio allows {limit} generations "
+                   f"per {int(window // 60)} minutes; try again in about "
+                   f"{max(1, -(-wait // 60))} min")
+    _pace.extend([now] * cost)
 
 
 def require_auth(request: Request) -> None:
@@ -200,8 +227,7 @@ async def post_message(session_id: str, body: MessageBody):
     lock = _locks[session_id]
     if lock.locked():
         raise HTTPException(status_code=409, detail="a turn is already running")
-
-    import time
+    _check_pace(1)
 
     if time.time() - meta.get("last_active", 0) > IDLE_NOTIFY_SECONDS:
         _notify({"event": "session_resumed", "session": session_id,
@@ -298,6 +324,7 @@ async def create_comparison(body: ComparisonBody):
                    f"{compare_mod.MAX_MODELS} per comparison — more than "
                    f"that is hard to compare side by side")
     cells = compare_mod.build_cells(models, body.modes)
+    _check_pace(len(cells))
     store = _store()
     meta = store.create(model=models[0], title=body.title.strip(), kind="comparison")
     comp_id = meta["id"]
@@ -343,6 +370,7 @@ async def post_compare_message(session_id: str, body: CompareMessageBody):
     lock = _locks[session_id]
     if lock.locked():
         raise HTTPException(status_code=409, detail="a round is already running")
+    _check_pace(len(cells))
 
     async def next_round():
         async with lock:
