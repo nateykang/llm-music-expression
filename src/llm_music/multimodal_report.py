@@ -19,7 +19,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from .config import REPO_ROOT
-from .report_common import SHORT, details_section, fnote, heat, page, table
+from .report_common import SHORT, details_section, fnote, page, table
 
 DOCS = REPO_ROOT / "docs"
 ANALYSIS = DOCS / "analysis"
@@ -63,6 +63,16 @@ def _p(v):
     return f"{v:.0e}" if v is not None else "—"
 
 
+def _heatcell(v, scale=0.55):
+    """Heat-shaded cell CONTENT (a span, not a <td> — table() adds the td)."""
+    if v is None:
+        return "—"
+    a = min(0.5, abs(v) / scale * 0.5)
+    rgb = "46,160,67" if v >= 0 else "207,90,80"
+    return (f"<span style='background:rgba({rgb},{a:.2f});display:inline-block;"
+            f"min-width:3.2em;padding:1px 6px;border-radius:4px'>{v:+.2f}</span>")
+
+
 def render_multimodal_html() -> str:
     summary = json.loads((ANALYSIS / "description_arms_summary.json").read_text())
     rows = json.loads((ANALYSIS / "valence_comparison.json").read_text())
@@ -93,41 +103,55 @@ def render_multimodal_html() -> str:
         head_rows)
 
     # ---- per-composer table ----
+    def mean_delta(rs, text, scale):
+        ds = [a - b for r in rs
+              if (a := _rater_mean(r, "enroute", text, scale)) is not None
+              and (b := _rater_mean(r, "posthoc", text, scale)) is not None]
+        return sum(ds) / len(ds) if ds else None
+
     by_model = defaultdict(list)
     for r in rows:
         by_model[r["model"]].append(r)
     model_rows = []
     for m, rs in sorted(by_model.items()):
-        dev = [a - b for r in rs
-               if (a := _rater_mean(r, "enroute", "short", "evaluative_positivity")) is not None
-               and (b := _rater_mean(r, "posthoc", "short", "evaluative_positivity")) is not None]
-        dav = [a - b for r in rs
-               if (a := _rater_mean(r, "enroute", "short", "affect_valence")) is not None
-               and (b := _rater_mean(r, "posthoc", "short", "affect_valence")) is not None]
         dw = [r["enroute"]["measures"]["long.words"] - r["posthoc"]["measures"]["long.words"]
               for r in rs]
         model_rows.append([
             SHORT.get(m, m), str(len(rs)),
-            heat(sum(dev) / len(dev)), heat(sum(dav) / len(dav), scale=1.2),
+            _heatcell(mean_delta(rs, "long", "evaluative_positivity")),
+            _heatcell(mean_delta(rs, "short", "evaluative_positivity")),
+            _heatcell(mean_delta(rs, "long", "affect_valence"), scale=1.2),
+            _heatcell(mean_delta(rs, "short", "affect_valence"), scale=1.2),
             f"{sum(dw) / len(dw):+.0f}"])
     per_model = table(
-        [("composer", None), ("n", None),
-         ("Δ eval. positivity", "en route − post hoc, short text; negative = the "
-          "post-hoc description is rated more positively about the piece's craft"),
-         ("Δ affect valence", "en route − post hoc, short text; positive = en route "
-          "describes the music's emotional content as more positive"),
+        [("composer", None), ("n", "pieces with both description arms"),
+         ("Δ eval. long", "evaluative positivity, en route − post hoc, long text; "
+          "negative = the post-hoc text is rated more positively about the piece"),
+         ("Δ eval. short", "same, on the one-sentence short text (length-matched "
+          "by construction)"),
+         ("Δ affect long", "affect valence, en route − post hoc, long text; positive "
+          "= en route describes the music's emotional content as more positive"),
+         ("Δ affect short", "same, short text"),
          ("Δ words", "long text, en route − post hoc; negative = post hoc is longer")],
         model_rows)
 
     # ---- mode strata ----
-    ev = summary["scales"]["evaluative_positivity"]["short"]["by_mode"]
-    av = summary["scales"]["affect_valence"]["short"]["by_mode"]
+    evl = summary["scales"]["evaluative_positivity"]["long"]["by_mode"]
+    evs = summary["scales"]["evaluative_positivity"]["short"]["by_mode"]
+    avl = summary["scales"]["affect_valence"]["long"]["by_mode"]
+    avs = summary["scales"]["affect_valence"]["short"]["by_mode"]
     strata = table(
-        [("mode", None), ("n", None), ("Δ eval. positivity", None), ("p", None),
-         ("Δ affect valence", None), ("p ", None)],
-        [[m, str(ev[m]["n"]), heat(ev[m]["mean_delta"]), _p(ev[m].get("wilcoxon_p")),
-          heat(av[m]["mean_delta"], scale=1.2), _p(av[m].get("wilcoxon_p"))]
-         for m in ev])
+        [("mode", None), ("n", None),
+         ("Δ eval. long", None), ("p", "Wilcoxon, long-text delta"),
+         ("Δ eval. short", None),
+         ("Δ affect long", None), ("p ", "Wilcoxon, long-text delta"),
+         ("Δ affect short", None)],
+        [[m, str(evl[m]["n"]),
+          _heatcell(evl[m]["mean_delta"]), _p(evl[m].get("wilcoxon_p")),
+          _heatcell(evs[m]["mean_delta"]),
+          _heatcell(avl[m]["mean_delta"], scale=1.2), _p(avl[m].get("wilcoxon_p")),
+          _heatcell(avs[m]["mean_delta"], scale=1.2)]
+         for m in evl])
 
     # ---- contrast categories ----
     cat_rows = []
@@ -208,13 +232,24 @@ def render_multimodal_html() -> str:
 <h1>Multimodal <span class="sub">what models say about their music vs what the score says</span></h1>
 <p class="scope">En-route vs post-hoc descriptions, {n} pieces × 13 composers. Each piece has
 two descriptions by the <i>same model</i>: the one written in the same response as the music
-(<b>en route</b>) and a fresh, stateless call that saw only the finished score (<b>post hoc</b>) —
-titles, comments, and credits scrubbed so nothing of the first call's framing leaks through.
+(<b>en route</b>) and a fresh, stateless call given only the finished score, <i>anonymously</i>
+(<b>post hoc</b>) — the describing call is never told the piece is its own, and titles,
+comments, and credits are scrubbed so nothing of the composing call's framing leaks through.
 Both texts were rated blind by {" and ".join(RATERS)} on three anchored scales, and a per-piece
 contrast pass lists what each text says that the other doesn't.</p>
 
-<h2>Does a model talk about its own piece differently when it knows it wrote it?</h2>
+<h2>Summary: how the two descriptions differ</h2>
 {headline}
+<p class="scope">The scales, in plain terms. <b>Evaluative positivity</b> (1–7): how positively
+the text talks about the piece's <i>quality or craft</i> — 1 = openly critical, 4 = describes
+without evaluating, 7 = effusive praise. <b>Weakness admission</b> (1–5): does the text
+acknowledge flaws, limitations, or unrealized ambitions — 1 = none at all. <b>Affect
+valence</b>{fnote('russell')} (1–9): how positive the <i>emotions the text says the music
+expresses</i> — grief and dread low, joy and serenity high, 5 = neutral or ambivalent —
+independent of any claims about quality. Length adjustment (Δ len-adj): the per-piece delta is
+regressed on the log ratio of the two texts' word counts; the reported value is the intercept,
+i.e. the expected delta for a pair of equal-length texts. The one-sentence short descriptions
+are length-matched by construction, so they carry no adjusted column.</p>
 <p class="callout">Two opposite effects, cleanly separated by construct. <b>Post hoc is rated
 <i>more</i> evaluatively positive</b> (Δ = {ev_s['mean_delta']:+.2f} on the length-matched short
 text, p ≈ {_p(ev_s['wilcoxon_p'])}): describing a finished artifact invites appraisal language,
@@ -226,8 +261,13 @@ at 1/5) — models don't note flaws even in music they don't know they wrote.</p
 
 <h2>Per composer</h2>
 {per_model}
-<p class="scope">The praise inversion is driven by gpt-4.1, opus-4.8, and gpt-5.5; grok, fable,
-and llama tilt slightly the other way. The en-route affect premium is near-universal.</p>
+<p class="scope">The praise inversion is driven by gpt-5.5, gpt-4.1, and the opus pair; grok,
+fable, and llama tilt slightly the other way. The en-route affect premium is near-universal.
+n varies because it counts successfully generated pieces: every free-form composer wrote 30/30
+in abc, but codegen and sparse-toolkit generation failed at different rates per model
+(gemini 23/30 codegen and no surviving sparse pieces; gpt-4.1 only 5/15 sparse), fable and
+kimi compose only in the 3×5 sparse batches, and one gemini abc piece failed post-hoc
+generation.</p>
 
 <h2>Mode strata</h2>
 {strata}
