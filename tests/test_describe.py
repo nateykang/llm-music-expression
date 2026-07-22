@@ -96,6 +96,8 @@ def test_scrub_abc_removes_title_and_comments():
         "X:1\n"
         "T:Where the Light Settles\n"
         "T:a subtitle of yearning\n"
+        "C:Composed by an AI\n"
+        "N:written in a moment of quiet hope\n"
         "% a quiet opening, full of hope\n"
         "M:3/4\n"
         "K:D\n"

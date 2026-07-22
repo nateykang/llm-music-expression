@@ -95,12 +95,17 @@ def describe_music(
     return DescriptionResult(ok=False, attempts=max_attempts, error=last_error)
 
 
+_ABC_METADATA = re.compile(r"^(T|C|N|H|O|S|Z|B|D|F|G):")
+
+
 def scrub_abc(abc: str) -> str:
-    """Drop %-comments and the composer's title (T: is optional in ABC)."""
+    """Drop %-comments and free-text metadata headers (title, composer, notes,
+    history, ...). All are optional in ABC; lyrics (w:/W:) are part of the piece
+    and are kept."""
     out = []
     for line in abc.splitlines():
         stripped = line.strip()
-        if stripped.startswith("%") or stripped.startswith("T:"):
+        if stripped.startswith("%") or _ABC_METADATA.match(stripped):
             continue
         if "%" in line:
             line = line.split("%", 1)[0].rstrip()
