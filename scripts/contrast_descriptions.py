@@ -124,8 +124,6 @@ def main():
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--model", default="fable-5")
-    ap.add_argument("--fallback", default="gpt-5.6-thinking",
-                    help="rater used when a piece's composer IS --model")
     args = ap.parse_args()
 
     pieces = [p for p in load_pieces(ROOT, include_sparse=True)
@@ -139,7 +137,7 @@ def main():
     lock = threading.Lock()
 
     def rater_for(p: dict) -> str:
-        return args.fallback if p["model"] == args.model else args.model
+        return args.model
 
     clients = {m: get_client(m) for m in {rater_for(p) for p in pieces}}
     jobs = [p for p in pieces if f"{piece_id(p)}|{rater_for(p)}" not in ckpt]

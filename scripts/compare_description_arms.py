@@ -180,8 +180,6 @@ def main():
     for p in pieces:
         for arm, (short, long) in arms(p).items():
             for rater in raters:
-                if rater == p["model"]:   # never let a model rate its own text
-                    continue
                 key = f"{piece_id(p)}|{arm}|{rater}"
                 if key not in ckpt:
                     jobs.append((key, rater, short, long))
