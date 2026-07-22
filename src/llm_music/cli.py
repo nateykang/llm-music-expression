@@ -334,6 +334,14 @@ def cmd_embed_report(args) -> int:
     return 0
 
 
+def cmd_multimodal_report(_args) -> int:
+    from .multimodal_report import write_multimodal_report
+
+    out = write_multimodal_report()
+    print(f"Wrote multimodal page → {out}")
+    return 0
+
+
 def cmd_genre_report(args) -> int:
     from .genre_report import render_genre_html
 
@@ -434,6 +442,10 @@ def build_parser() -> argparse.ArgumentParser:
                         help="build the human-corpora genre-bias page (genre.html)")
     pg.add_argument("--data-dir", default="docs/data")
     pg.set_defaults(func=cmd_genre_report)
+
+    pmm = sub.add_parser("multimodal-report",
+                         help="build the description↔music page (multimodal.html)")
+    pmm.set_defaults(func=cmd_multimodal_report)
 
     prp = sub.add_parser("report", help="build the analysis dashboard (results.html + charts)")
     prp.add_argument("--data-dir", default="docs/data",

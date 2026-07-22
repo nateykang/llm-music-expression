@@ -190,6 +190,10 @@ REFS = {
     "fluidsynth": ('<a href="https://www.fluidsynth.org/">FluidSynth</a> — an open-source '
                    'software synthesizer that renders MIDI files to audio using sampled '
                    'instrument sounds (SoundFonts).'),
+    "vader": ('Hutto &amp; Gilbert, "VADER: A Parsimonious Rule-based Model for Sentiment '
+              'Analysis of Social Media Text," ICWSM 2014. Rule-based sentiment scorer; '
+              'compound score in [-1, 1]. Used here as a deterministic, length-normalized '
+              'robustness check on the LLM valence ratings.'),
     "sara-fish": ('Project after <a href="https://github.com/sara-fish/llm-musical-self-expression">'
                   'sara-fish/llm-musical-self-expression</a>.'),
 }
@@ -310,7 +314,7 @@ def details_section(summary_html, body_html):
 TABS = [("index.html", "Browse outputs"), ("results.html", "Results &amp; analysis"),
         ("judge.html", "LLM judge"), ("audio.html", "Audio emotion"),
         ("selfpref.html", "Self-preference"), ("genre.html", "Genre bias"),
-        ("studio.html", "Studio")]
+        ("multimodal.html", "Multimodal"), ("studio.html", "Studio")]
 
 SHARED_CSS = """
   .wrap { max-width: 980px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
