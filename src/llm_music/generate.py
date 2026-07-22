@@ -33,6 +33,10 @@ class PieceResult:
     title: str = ""
     short_description: str = ""
     long_description: str = ""
+    original_short_description: str = ""
+    original_long_description: str = ""
+    independent_description: dict | None = None
+    independent_description_error: str | None = None
     attempts: int = 0
     midi_path: Path | None = None
     musicxml_path: Path | None = None
@@ -84,6 +88,8 @@ def generate_piece(
     work_dir: Path,
     max_attempts: int = 5,
     bake_audio: bool = True,
+    independent_description: bool = False,
+    description_max_attempts: int = 3,
 ) -> PieceResult:
     if mode not in MODES:
         raise ValueError(f"unknown mode '{mode}'. Known: {', '.join(MODES)}")
@@ -143,6 +149,25 @@ def generate_piece(
     if not result.ok:
         result.error = result.errors[-1] if result.errors else "generation failed"
         return result
+
+    if independent_description:
+        from .describe import describe_music, description_metadata
+
+        music = result.abc or result.code
+        representation = "abc" if result.abc else "music21"
+        described = describe_music(
+            client, music, representation, max_attempts=description_max_attempts
+        )
+        if described.ok:
+            result.original_short_description = result.short_description
+            result.original_long_description = result.long_description
+            result.short_description = described.short_description
+            result.long_description = described.long_description
+            result.independent_description = description_metadata(
+                client.name, representation, described.attempts
+            )
+        else:
+            result.independent_description_error = described.error
 
     # Pre-render audio for code-gen (MIDI -> FluidSynth). ABC pieces carry no MIDI:
     # abcjs engraves and plays the raw ABC client-side.
