@@ -96,17 +96,11 @@ def describe_music(
 
 
 def scrub_abc(abc: str) -> str:
-    """Drop %-comments and replace the composer's title with a neutral one."""
+    """Drop %-comments and the composer's title (T: is optional in ABC)."""
     out = []
-    saw_title = False
     for line in abc.splitlines():
         stripped = line.strip()
-        if stripped.startswith("%"):
-            continue
-        if stripped.startswith("T:"):
-            if not saw_title:
-                out.append("T:Untitled")
-                saw_title = True
+        if stripped.startswith("%") or stripped.startswith("T:"):
             continue
         if "%" in line:
             line = line.split("%", 1)[0].rstrip()
@@ -145,16 +139,15 @@ def scrub_music21_code(code: str) -> str:
             out.append(line)
     except (tokenize.TokenError, IndentationError, SyntaxError):
         out = [l for l in lines if not l.lstrip().startswith("#")]
-    return _TITLE_ASSIGNMENT.sub(r"\1\2Untitled\2", "\n".join(out))
+    return _TITLE_ASSIGNMENT.sub(r"\1\2\2", "\n".join(out))
 
 
 def scrub_musicxml(xml: str) -> str:
-    """Blank title elements and drop creator/credit/rights metadata."""
-    xml = re.sub(r"<(work-title|movement-title)>.*?</\1>",
-                 r"<\1>Untitled</\1>", xml, flags=re.S)
-    for tag in ("creator", "credit", "rights"):
+    """Drop title elements and creator/credit/rights metadata entirely."""
+    for tag in ("work-title", "movement-title", "creator", "credit", "rights"):
         xml = re.sub(rf"[ \t]*<{tag}\b[^>]*>.*?</{tag}>\n?", "", xml, flags=re.S)
         xml = re.sub(rf"[ \t]*<{tag}\b[^>]*/>\n?", "", xml)
+    xml = re.sub(r"[ \t]*<work>\s*</work>\n?", "", xml)
     return xml
 
 

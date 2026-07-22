@@ -102,7 +102,6 @@ def test_scrub_abc_removes_title_and_comments():
     scrubbed = scrub_abc(abc)
     assert scrubbed == (
         "X:1\n"
-        "T:Untitled\n"
         "M:3/4\n"
         "K:D\n"
         "DFA d2 A |\n"
@@ -121,7 +120,7 @@ def test_scrub_code_keeps_sharps_and_blanks_titles():
     assert "solitude" not in scrubbed
     assert "yearning" not in scrubbed
     assert "note.Note('C#4')" in scrubbed
-    assert 'md.title = "Untitled"' in scrubbed
+    assert 'md.title = ""' in scrubbed
     assert "s.append(n)" in scrubbed
 
 
@@ -143,10 +142,10 @@ def test_scrub_musicxml_blanks_titles_and_credits():
     scrubbed = scrub_musicxml(xml)
     assert "Emergent Reflections" not in scrubbed
     assert "AI Composer" not in scrubbed
-    assert "<creator" not in scrubbed
-    assert "<work-title>Untitled</work-title>" in scrubbed
-    assert "<movement-title>Untitled</movement-title>" in scrubbed
+    for tag in ("creator", "credit", "work-title", "movement-title", "work"):
+        assert f"<{tag}" not in scrubbed
     assert "<part-list/>" in scrubbed
+    assert "<identification>" in scrubbed
 
 
 def test_generation_option_replaces_notes_and_preserves_originals(monkeypatch, tmp_path):
