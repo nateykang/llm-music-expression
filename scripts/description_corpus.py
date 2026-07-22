@@ -22,6 +22,16 @@ FREEFORM_BATCHES = [
     "20260623_105811__models_11_prompts_1",   # codegen: all 11
 ]
 
+# The July 2026 sparse-toolkit ablation runs (codegen-sparse, 13 models x ~5,
+# incl. fable-5 / kimi-k3 / gemini-2.5-pro). Generated under a manipulated
+# toolkit-doc variable, so experiments that include them should stratify by
+# mode rather than pool.
+SPARSE_TOOLKIT_BATCHES = [
+    "20260720_014910__models_13_prompts_1",
+    "20260720_025945__models_13_prompts_1",
+    "20260720_151138__models_13_prompts_1",
+]
+
 
 def piece_id(p: dict) -> str:
     """Stable content key: batch|model|mode|sample."""
@@ -39,9 +49,12 @@ def _features_by_key(batch_dir: Path) -> dict:
     return out
 
 
-def load_pieces(root: Path, batches: list[str] | None = None) -> list[dict]:
+def load_pieces(root: Path, batches: list[str] | None = None,
+                include_sparse: bool = False) -> list[dict]:
+    if batches is None:
+        batches = FREEFORM_BATCHES + (SPARSE_TOOLKIT_BATCHES if include_sparse else [])
     rows = []
-    for batch in batches or FREEFORM_BATCHES:
+    for batch in batches:
         batch_dir = root / "docs/data" / batch
         data = json.loads((batch_dir / "data.json").read_text(encoding="utf-8"))
         feats = _features_by_key(batch_dir)

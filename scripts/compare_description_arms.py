@@ -165,7 +165,7 @@ def main():
     args = ap.parse_args()
     raters = [r.strip() for r in args.raters.split(",") if r.strip()]
 
-    pieces = [p for p in load_pieces(ROOT) if arms(p)]
+    pieces = [p for p in load_pieces(ROOT, include_sparse=True) if arms(p)]
     if args.limit:
         pieces = pieces[: args.limit]
     print(f"{len(pieces)} pieces with both description arms", flush=True)
@@ -180,12 +180,13 @@ def main():
     for p in pieces:
         for arm, (short, long) in arms(p).items():
             for rater in raters:
+                if rater == p["model"]:   # never let a model rate its own text
+                    continue
                 key = f"{piece_id(p)}|{arm}|{rater}"
                 if key not in ckpt:
                     jobs.append((key, rater, short, long))
     random.Random(SEED).shuffle(jobs)
-    print(f"{len(jobs)} rating calls to make "
-          f"({len(pieces) * 2 * len(raters) - len(jobs)} cached)", flush=True)
+    print(f"{len(jobs)} rating calls to make", flush=True)
 
     def save():
         tmp = ckpt_path.with_suffix(".tmp")

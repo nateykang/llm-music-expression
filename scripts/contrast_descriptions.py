@@ -124,9 +124,11 @@ def main():
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--model", default="fable-5")
+    ap.add_argument("--fallback", default="gpt-5.6-thinking",
+                    help="rater used when a piece's composer IS --model")
     args = ap.parse_args()
 
-    pieces = [p for p in load_pieces(ROOT)
+    pieces = [p for p in load_pieces(ROOT, include_sparse=True)
               if p.get("independent_description", {})
               and p["independent_description"].get("short_description")]
     if args.limit:
@@ -135,8 +137,12 @@ def main():
     ckpt = json.loads(ckpt_path.read_text(encoding="utf-8")) \
         if ckpt_path.exists() else {}
     lock = threading.Lock()
-    client = get_client(args.model)
-    jobs = [p for p in pieces if f"{piece_id(p)}|{args.model}" not in ckpt]
+
+    def rater_for(p: dict) -> str:
+        return args.fallback if p["model"] == args.model else args.model
+
+    clients = {m: get_client(m) for m in {rater_for(p) for p in pieces}}
+    jobs = [p for p in pieces if f"{piece_id(p)}|{rater_for(p)}" not in ckpt]
     print(f"{len(pieces)} pieces: {len(jobs)} to contrast, "
           f"{len(pieces) - len(jobs)} cached", flush=True)
 
@@ -147,11 +153,11 @@ def main():
 
     done = 0
     with ThreadPoolExecutor(max_workers=max(1, args.workers)) as ex:
-        futs = {ex.submit(contrast_one, client, p): p for p in jobs}
+        futs = {ex.submit(contrast_one, clients[rater_for(p)], p): p for p in jobs}
         for fut in as_completed(futs):
             p = futs[fut]
             with lock:
-                ckpt[f"{piece_id(p)}|{args.model}"] = fut.result()
+                ckpt[f"{piece_id(p)}|{rater_for(p)}"] = fut.result()
                 done += 1
                 if done % 20 == 0 or done == len(jobs):
                     save()
@@ -160,11 +166,11 @@ def main():
 
     rows, counts = [], {"only_enroute": Counter(), "only_posthoc": Counter()}
     for p in pieces:
-        res = ckpt.get(f"{piece_id(p)}|{args.model}")
+        res = ckpt.get(f"{piece_id(p)}|{rater_for(p)}")
         if not res:
             continue
         rows.append({"id": piece_id(p), "model": p["model"], "mode": p["mode"],
-                     "sample": p["sample"], "rater": args.model, **res})
+                     "sample": p["sample"], "rater": rater_for(p), **res})
         for side in counts:
             counts[side].update(it["category"] for it in res[side])
     out = {"pieces": rows,
