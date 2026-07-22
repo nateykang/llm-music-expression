@@ -619,7 +619,14 @@ def _toolkit_style_effect_html(data_dir: Path) -> str:
              ("dynamic_changes", "dynamic changes"),
              ("n_dynamic_marks", "dynamic marks"),
              ("note_density", "note density"),
-             ("length_seconds", "length (s)"),
+             ("length_quarters", "length (quarter notes)"),
+             ("minor_share", "minor share"),
+             ("pitch_range", "pitch range (semitones)"),
+             ("pitch_interval", "mean melodic interval"),
+             ("n_pitches_used", "distinct pitches"),
+             ("pitch_entropy", "pitch entropy"),
+             ("n_voices", "voices"),
+             ("chord_tone_rate", "chord-tone rate"),
              ("n_instruments", "instruments"),
              ("scale_consistency", "scale consistency"),
              ("structureness", "structure")]
@@ -646,6 +653,15 @@ def _toolkit_style_effect_html(data_dir: Path) -> str:
                     v = fnum(r.get(k))
                     if v is not None:
                         dest[r["model"]][k].append(v)
+                # tempo-invariant length: invert the seconds computation with the
+                # same bpm the analyzer used (declared tempo, else the 120 fallback)
+                ls = fnum(r.get("length_seconds"))
+                if ls is not None:
+                    bpm = fnum(r.get("tempo_bpm")) or 120.0
+                    dest[r["model"]]["length_quarters"].append(ls * bpm / 60.0)
+                km = r.get("key_mode_best")
+                if km in ("major", "minor"):
+                    dest[r["model"]]["minor_share"].append(1.0 if km == "minor" else 0.0)
     models = [m for m in canon
               if len(canon[m].get("dynamic_span", [])) >= 5
               and len(sparse.get(m, {}).get("dynamic_span", [])) >= 5]
@@ -675,14 +691,25 @@ def _toolkit_style_effect_html(data_dir: Path) -> str:
                  ("models +", "how many models move in the positive direction"),
                  ("effect size", "mean per-model difference in pooled-SD units")],
                 rows_out)
-        + "<p class='scope'>The doc is a measurable style prime, but a narrow one: with it, "
-        "models write far more dynamics (≈0.8 SD — its import list puts "
-        "<code>dynamics</code>/<code>articulations</code> in view), denser lines, and "
-        "shorter pieces (every model runs longer without the doc's measure-by-measure "
-        "scaffolding). Instrumentation, scale consistency, and structure are essentially "
-        "unchanged — so the orchestration and harmony findings elsewhere on this site don't "
-        "inherit this bias, while written-dynamics comparisons in code-gen do, and should "
-        "be read with that caveat.</p>")
+        + "<p class='scope'>The doc is a measurable style prime along two lines. First, "
+        "<b>expressiveness</b>: with it, models write far more dynamics (≈0.8 SD — its "
+        "import list puts <code>dynamics</code>/<code>articulations</code> in view) and a "
+        "richer pitch world (wider range, larger melodic intervals, more distinct pitches, "
+        "higher pitch entropy, more voices). Second, <b>mode</b>: toolkit pieces are about "
+        "20 points more often minor. The doc's only concrete key example is "
+        "<code>key.Key(tonic, mode)</code> “e.g. tonic <code>'E'</code> and mode "
+        "<code>'minor'</code>” — a plausible anchor, which would mean part of code-gen's "
+        "dark skew is prompt-inherited rather than preference. Instrumentation, scale "
+        "consistency, and structure are essentially unchanged, so the orchestration and "
+        "harmony findings elsewhere on this site don't inherit the bias.</p>"
+        "<p class='scope'>Measurement notes: length is compared in quarter notes because "
+        "an earlier music21 export bug (fixed 2026-07-16) dropped tempo marks that models "
+        "placed at part level, as the toolkit instructs — the June corpus artifacts "
+        "predate the fix, so wall-clock length, tempo, and arousal comparisons between "
+        "arms reflect harness versions, not model behavior, and are excluded here. In "
+        "quarter notes the once-striking “sparse pieces run longer” effect largely "
+        "dissolves. The same bug means canonical code-gen audio rendered at the 120 BPM "
+        "fallback whenever the model followed the doc's tempo placement.</p>")
 
 
 # --- reliability (from manifests, not features.csv) ---------------------------
