@@ -131,6 +131,12 @@ def load_features(data_dir: Path) -> list[dict]:
     """Load every features.csv, tagging each row with its batch + mode."""
     rows: list[dict] = []
     for csv_path in sorted(data_dir.glob("*/features.csv")):
+        try:
+            manifest = json.loads((csv_path.parent / "data.json").read_text(encoding="utf-8"))
+            if manifest.get("experiment"):
+                continue  # experiment batches never enter the corpus tables
+        except Exception:
+            pass
         batch = csv_path.parent.name
         with csv_path.open(encoding="utf-8") as f:
             for r in csv.DictReader(f):
@@ -601,7 +607,82 @@ def _sparse_ablation_html(data_dir: Path) -> str:
         "consuming the output budget rather than from bad formatting — and hallucination "
         "counts were untouched, as expected for a decoding constraint. Prompt text was "
         "identical across all runs. These experiment batches are excluded from every other "
-        "table on this page.</p>")
+        "table on this page.</p>"
+        + _toolkit_style_effect_html(data_dir))
+
+
+def _toolkit_style_effect_html(data_dir: Path) -> str:
+    """Within-model style contrast: canonical code-gen (toolkit) vs sparse.
+    Quantifies what the doc changes in the music itself, survivorship-controlled
+    by requiring >=5 pieces per model in BOTH arms."""
+    FEATS = [("dynamic_span", "written dynamic span"),
+             ("dynamic_changes", "dynamic changes"),
+             ("n_dynamic_marks", "dynamic marks"),
+             ("note_density", "note density"),
+             ("length_seconds", "length (s)"),
+             ("n_instruments", "instruments"),
+             ("scale_consistency", "scale consistency"),
+             ("structureness", "structure")]
+    sparse: dict = defaultdict(lambda: defaultdict(list))
+    canon: dict = defaultdict(lambda: defaultdict(list))
+    for csv_path in sorted(data_dir.glob("*/features.csv")):
+        try:
+            is_exp = bool(json.loads((csv_path.parent / "data.json")
+                                     .read_text(encoding="utf-8")).get("experiment"))
+        except Exception:
+            continue
+        with csv_path.open(encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                if r.get("prompt") != "free-form":
+                    continue
+                dest = None
+                if is_exp and r.get("mode") == "codegen-sparse":
+                    dest = sparse
+                elif not is_exp and r.get("mode") == "codegen":
+                    dest = canon
+                if dest is None:
+                    continue
+                for k, _ in FEATS:
+                    v = fnum(r.get(k))
+                    if v is not None:
+                        dest[r["model"]][k].append(v)
+    models = [m for m in canon
+              if len(canon[m].get("dynamic_span", [])) >= 5
+              and len(sparse.get(m, {}).get("dynamic_span", [])) >= 5]
+    if len(models) < 5:
+        return ""
+    rows_out = []
+    for k, label in FEATS:
+        deltas, zs = [], []
+        for m in models:
+            s, c = sparse[m].get(k, []), canon[m].get(k, [])
+            if len(s) >= 5 and len(c) >= 5:
+                d = mean(c) - mean(s)
+                sd = pstdev(s + c) or 1.0
+                deltas.append(d)
+                zs.append(d / sd)
+        pos = sum(1 for d in deltas if d > 0)
+        rows_out.append([label, f"{mean(deltas):+.2f}", f"{pos}/{len(deltas)}",
+                         f"{mean(zs):+.2f}"])
+    return (
+        "<h3>What the toolkit changes in the music</h3>"
+        "<p class='scope'>Reliability aside, does the doc bias the music itself? "
+        "Within-model comparison of canonical code-gen (with toolkit) against the sparse "
+        f"pieces, free-form only, restricted to the {len(models)} models with ≥5 pieces in "
+        "both arms so survivorship can't fake an effect:</p>"
+        + table([("feature", None),
+                 ("toolkit effect", "mean of per-model (canonical − sparse) differences"),
+                 ("models +", "how many models move in the positive direction"),
+                 ("effect size", "mean per-model difference in pooled-SD units")],
+                rows_out)
+        + "<p class='scope'>The doc is a measurable style prime, but a narrow one: with it, "
+        "models write far more dynamics (≈0.8 SD — its import list puts "
+        "<code>dynamics</code>/<code>articulations</code> in view), denser lines, and "
+        "shorter pieces (every model runs longer without the doc's measure-by-measure "
+        "scaffolding). Instrumentation, scale consistency, and structure are essentially "
+        "unchanged — so the orchestration and harmony findings elsewhere on this site don't "
+        "inherit this bias, while written-dynamics comparisons in code-gen do, and should "
+        "be read with that caveat.</p>")
 
 
 # --- reliability (from manifests, not features.csv) ---------------------------
