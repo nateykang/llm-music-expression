@@ -630,8 +630,8 @@ def _toolkit_style_effect_html(data_dir: Path) -> str:
              ("n_instruments", "instruments"),
              ("scale_consistency", "scale consistency"),
              ("structureness", "structure")]
-    sparse: dict = defaultdict(lambda: defaultdict(list))
-    canon: dict = defaultdict(lambda: defaultdict(list))
+    arms: dict = {a: defaultdict(lambda: defaultdict(list))
+                  for a in ("toolkit", "sparse", "abc")}
     for csv_path in sorted(data_dir.glob("*/features.csv")):
         try:
             is_exp = bool(json.loads((csv_path.parent / "data.json")
@@ -642,12 +642,14 @@ def _toolkit_style_effect_html(data_dir: Path) -> str:
             for r in csv.DictReader(f):
                 if r.get("prompt") != "free-form":
                     continue
-                dest = None
-                if is_exp and r.get("mode") == "codegen-sparse":
-                    dest = sparse
-                elif not is_exp and r.get("mode") == "codegen":
-                    dest = canon
-                if dest is None:
+                mode = r.get("mode")
+                if is_exp and mode == "codegen-sparse":
+                    dest = arms["sparse"]
+                elif not is_exp and mode == "codegen":
+                    dest = arms["toolkit"]
+                elif not is_exp and mode in ("abc", "smt-abc"):
+                    dest = arms["abc"]
+                else:
                     continue
                 for k, _ in FEATS:
                     v = fnum(r.get(k))
@@ -662,46 +664,69 @@ def _toolkit_style_effect_html(data_dir: Path) -> str:
                 km = r.get("key_mode_best")
                 if km in ("major", "minor"):
                     dest[r["model"]]["minor_share"].append(1.0 if km == "minor" else 0.0)
-    models = [m for m in canon
-              if len(canon[m].get("dynamic_span", [])) >= 5
-              and len(sparse.get(m, {}).get("dynamic_span", [])) >= 5]
-    if len(models) < 5:
-        return ""
-    rows_out = []
-    for k, label in FEATS:
+
+    def _contrast(a: str, b: str, k: str):
         deltas, zs = [], []
-        for m in models:
-            s, c = sparse[m].get(k, []), canon[m].get(k, [])
-            if len(s) >= 5 and len(c) >= 5:
-                d = mean(c) - mean(s)
-                sd = pstdev(s + c) or 1.0
+        for m in set(arms[a]) & set(arms[b]):
+            xa, xb = arms[a][m].get(k, []), arms[b][m].get(k, [])
+            if len(xa) >= 5 and len(xb) >= 5:
+                d = mean(xa) - mean(xb)
+                sd = pstdev(xa + xb) or 1.0
                 deltas.append(d)
                 zs.append(d / sd)
+        if len(deltas) < 5:
+            return "—"
         pos = sum(1 for d in deltas if d > 0)
-        rows_out.append([label, f"{mean(deltas):+.2f}", f"{pos}/{len(deltas)}",
-                         f"{mean(zs):+.2f}"])
+        return f"{mean(deltas):+.2f} ({mean(zs):+.2f}σ, {pos}/{len(deltas)})"
+
+    n_pair = len([m for m in arms["toolkit"]
+                  if len(arms["toolkit"][m].get("dynamic_span", [])) >= 5
+                  and len(arms["sparse"].get(m, {}).get("dynamic_span", [])) >= 5])
+    if n_pair < 5:
+        return ""
+    rows_out = [[label,
+                 _contrast("toolkit", "sparse", k),
+                 _contrast("toolkit", "abc", k),
+                 _contrast("sparse", "abc", k)]
+                for k, label in FEATS]
     return (
         "<h3>What the toolkit changes in the music</h3>"
         "<p class='scope'>Reliability aside, does the doc bias the music itself? "
-        "Within-model comparison of canonical code-gen (with toolkit) against the sparse "
-        f"pieces, free-form only, restricted to the {len(models)} models with ≥5 pieces in "
-        "both arms so survivorship can't fake an effect:</p>"
+        "Within-model contrasts on free-form pieces, models with ≥5 pieces per arm, each "
+        "cell showing the mean per-model difference, its size in pooled-SD units, and how "
+        "many models move in that direction. The ABC columns use the same models' ABC "
+        "(and SMT-ABC) pieces as a toolkit-free reference representation — they decompose "
+        "each toolkit−sparse effect into what the <i>doc</i> does vs what writing "
+        "<i>code at all</i> does:</p>"
         + table([("feature", None),
-                 ("toolkit effect", "mean of per-model (canonical − sparse) differences"),
-                 ("models +", "how many models move in the positive direction"),
-                 ("effect size", "mean per-model difference in pooled-SD units")],
+                 ("toolkit − sparse", "the doc's effect, holding the representation fixed"),
+                 ("toolkit − ABC", "canonical code-gen vs the models' own ABC pieces"),
+                 ("sparse − ABC", "doc-free code-gen vs ABC: the pure representation effect")],
                 rows_out)
         + "<p class='scope'>The doc is a measurable style prime along two lines. First, "
-        "<b>expressiveness</b>: with it, models write far more dynamics (≈0.8 SD — its "
-        "import list puts <code>dynamics</code>/<code>articulations</code> in view) and a "
-        "richer pitch world (wider range, larger melodic intervals, more distinct pitches, "
-        "higher pitch entropy, more voices). Second, <b>mode</b>: toolkit pieces are about "
-        "20 points more often minor. The doc's only concrete key example is "
-        "<code>key.Key(tonic, mode)</code> “e.g. tonic <code>'E'</code> and mode "
-        "<code>'minor'</code>” — a plausible anchor, which would mean part of code-gen's "
-        "dark skew is prompt-inherited rather than preference. Instrumentation, scale "
-        "consistency, and structure are essentially unchanged, so the orchestration and "
-        "harmony findings elsewhere on this site don't inherit the bias.</p>"
+        "<b>expressiveness</b>: with it, models write far more dynamics (≈0.8 SD over "
+        "sparse — its import list puts <code>dynamics</code>/<code>articulations</code> in "
+        "view) and a richer pitch world (wider range, larger melodic intervals, more "
+        "distinct pitches, higher pitch entropy, more voices). Second, <b>mode</b>: "
+        "toolkit pieces are about 20 points more often minor than sparse. The doc's only "
+        "concrete key example is <code>key.Key(tonic, mode)</code> “e.g. tonic "
+        "<code>'E'</code> and mode <code>'minor'</code>” — a plausible anchor, which would "
+        "mean part of code-gen's dark skew is prompt-inherited rather than preference. "
+        "Instrumentation, scale consistency, and structure are essentially unchanged by "
+        "the doc, so the orchestration and harmony findings elsewhere on this site don't "
+        "inherit the bias.</p>"
+        "<p class='scope'>The ABC reference sorts these effects into three kinds. "
+        "<b>Representation, not doc</b>: instrumentation — both code-gen arms use more "
+        "instruments than ABC (sparse even more than toolkit), so code-gen's richer "
+        "orchestration is a property of writing code, with the doc innocent. "
+        "<b>Both</b>: dynamics — even doc-free code-gen out-writes ABC (≈+0.8σ) and the "
+        "doc roughly doubles the gap (≈+1.2σ); code as a medium invites dynamics, the doc "
+        "amplifies. <b>Doc restoring, not adding</b>: melodic intervals — bare code-gen "
+        "<i>suppresses</i> interval variety relative to ABC (−0.76σ; 10 of 11 models lower), and "
+        "the doc brings it most of the way back rather than pushing beyond. One caveat on "
+        "the mode rows: ABC mode is the model's declared K: field while code-gen mode is "
+        "detected from the notes, so cross-representation mode comparisons mix channels "
+        "and should be read loosely.</p>"
         "<p class='scope'>Measurement notes: length is compared in quarter notes because "
         "an earlier music21 export bug (fixed 2026-07-16) dropped tempo marks that models "
         "placed at part level, as the toolkit instructs — the June corpus artifacts "
