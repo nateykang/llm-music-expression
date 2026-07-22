@@ -58,20 +58,23 @@ def test_describe_music_parses_fresh_call():
     assert client.calls[0][2] is True
 
 
-def test_install_preserves_composer_descriptions():
+def test_install_leaves_composer_descriptions_canonical():
     entry = {
         "short_description": "Composer short.",
         "long_description": "Composer long.",
+        "independent_description_error": "old failure",
     }
     result = describe_music(FakeClient(json.dumps({
         "short_description": "Fresh short.",
         "long_description": "Fresh long.",
     })), "X:1\nK:C\nC4", "abc")
     install_description(entry, result, "test-model", "abc")
-    assert entry["original_short_description"] == "Composer short."
-    assert entry["original_long_description"] == "Composer long."
-    assert entry["short_description"] == "Fresh short."
+    assert entry["short_description"] == "Composer short."
+    assert entry["long_description"] == "Composer long."
+    assert entry["independent_description"]["short_description"] == "Fresh short."
+    assert entry["independent_description"]["long_description"] == "Fresh long."
     assert entry["independent_description"]["model"] == "test-model"
+    assert "independent_description_error" not in entry
 
 
 def test_music_from_entry_prefers_abc_then_musicxml_then_code(tmp_path):
@@ -148,7 +151,7 @@ def test_scrub_musicxml_blanks_titles_and_credits():
     assert "<identification>" in scrubbed
 
 
-def test_generation_option_replaces_notes_and_preserves_originals(monkeypatch, tmp_path):
+def test_generation_option_attaches_posthoc_description(monkeypatch, tmp_path):
     class FakeMode:
         OUTPUTS = "## Outputs\nFake"
         USES_TOOLKIT = False
@@ -184,6 +187,6 @@ def test_generation_option_replaces_notes_and_preserves_originals(monkeypatch, t
         independent_description=True,
     )
     assert result.ok
-    assert result.short_description == "Fresh short."
-    assert result.original_short_description == "Composer short."
+    assert result.short_description == "Composer short."
+    assert result.independent_description["short_description"] == "Fresh short."
     assert result.independent_description["representation"] == "abc"

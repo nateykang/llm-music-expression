@@ -70,11 +70,12 @@ Output lands in `docs/data/<timestamp>__models_N_prompts_M/`. The batch folder a
 its `data.json` are written incrementally — one piece at a time — so an interrupted
 run still leaves a valid, viewable partial batch.
 
-With `--independent-description`, the composing call's notes are retained as
-`original_short_description` and `original_long_description`; the fresh music-only
-call becomes the canonical description used by existing reports. `redescribe` does
-the same retroactively, checkpoints after every piece, and skips completed pieces
-unless `--force` is given. It prefers stored ABC, then the rendered MusicXML score,
+With `--independent-description`, the composing call's descriptions stay canonical
+and untouched; the fresh music-only call's text is stored alongside them, with its
+full provenance, under the piece's `independent_description` key. Existing reports
+keep showing the composer's own text — analyses opt into the post-hoc arm
+explicitly. `redescribe` does the same retroactively, checkpoints after every
+piece, and skips completed pieces unless `--force` is given. It prefers stored ABC, then the rendered MusicXML score,
 with raw music21 code as a fallback. Composer-authored scaffolding text is scrubbed
 from the artifact before the describing call sees it — ABC titles and %-comments,
 code #-comments and title strings, MusicXML title/creator/credit elements — so the

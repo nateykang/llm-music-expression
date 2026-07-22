@@ -33,8 +33,6 @@ class PieceResult:
     title: str = ""
     short_description: str = ""
     long_description: str = ""
-    original_short_description: str = ""
-    original_long_description: str = ""
     independent_description: dict | None = None
     independent_description_error: str | None = None
     attempts: int = 0
@@ -151,7 +149,7 @@ def generate_piece(
         return result
 
     if independent_description:
-        from .describe import describe_music, description_metadata, scrubbed_music
+        from .describe import describe_music, description_record, scrubbed_music
 
         xml = None
         if result.musicxml_path and result.musicxml_path.is_file():
@@ -161,12 +159,8 @@ def generate_piece(
             client, music, representation, max_attempts=description_max_attempts
         )
         if described.ok:
-            result.original_short_description = result.short_description
-            result.original_long_description = result.long_description
-            result.short_description = described.short_description
-            result.long_description = described.long_description
-            result.independent_description = description_metadata(
-                client.name, representation, described.attempts
+            result.independent_description = description_record(
+                described, client.name, representation
             )
         else:
             result.independent_description_error = described.error

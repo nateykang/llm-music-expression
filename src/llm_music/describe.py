@@ -179,11 +179,15 @@ def music_from_entry(entry: dict, batch: Path) -> tuple[str, str]:
     return scrubbed_music(abc, xml, code)
 
 
-def description_metadata(model: str, representation: str, attempts: int) -> dict:
+def description_record(result: DescriptionResult, model: str,
+                       representation: str) -> dict:
+    """Bundle the post-hoc text with its provenance in one self-contained dict."""
     return {
+        "short_description": result.short_description,
+        "long_description": result.long_description,
         "model": model,
         "representation": representation,
-        "attempts": attempts,
+        "attempts": result.attempts,
         "system_prompt": SYSTEM_PROMPT,
         "prompt_template": build_description_prompt("<MUSIC ARTIFACT>", representation),
         "method": "music-only fresh call (titles/comments/credits scrubbed)",
@@ -192,12 +196,6 @@ def description_metadata(model: str, representation: str, attempts: int) -> dict
 
 def install_description(entry: dict, result: DescriptionResult, model: str,
                         representation: str) -> None:
-    """Replace canonical descriptions while retaining the composing call's text."""
-    entry.setdefault("original_short_description", entry.get("short_description", ""))
-    entry.setdefault("original_long_description", entry.get("long_description", ""))
-    entry["short_description"] = result.short_description
-    entry["long_description"] = result.long_description
-    entry["independent_description"] = description_metadata(
-        model, representation, result.attempts
-    )
+    """Attach the post-hoc description; the composing call's fields stay canonical."""
+    entry["independent_description"] = description_record(result, model, representation)
     entry.pop("independent_description_error", None)

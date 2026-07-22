@@ -61,8 +61,6 @@ def append_result(batch: Path, result: PieceResult, sample: int = 0) -> dict:
         "attempts": r.attempts,
     }
     if r.independent_description:
-        entry["original_short_description"] = r.original_short_description
-        entry["original_long_description"] = r.original_long_description
         entry["independent_description"] = r.independent_description
     if r.independent_description_error:
         entry["independent_description_error"] = r.independent_description_error
