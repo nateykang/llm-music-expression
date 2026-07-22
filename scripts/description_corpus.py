@@ -59,6 +59,7 @@ def load_pieces(root: Path, batches: list[str] | None = None) -> list[dict]:
                 "long_description": p.get("long_description", ""),
                 "abc": p.get("abc"),
                 "score": p.get("score"),
+                "independent_description": p.get("independent_description"),
                 "audio": audio if audio and audio.exists() else None,
                 "features": feats.get((p["model"], p["mode"], p["sample"])),
             })
