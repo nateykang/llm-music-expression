@@ -6,6 +6,9 @@ from llm_music.describe import (
     describe_music,
     install_description,
     music_from_entry,
+    scrub_abc,
+    scrub_music21_code,
+    scrub_musicxml,
 )
 from llm_music.generate import generate_piece
 from llm_music.modes import MODES
@@ -71,7 +74,7 @@ def test_install_preserves_composer_descriptions():
     assert entry["independent_description"]["model"] == "test-model"
 
 
-def test_music_from_entry_prefers_abc_then_code_then_musicxml(tmp_path):
+def test_music_from_entry_prefers_abc_then_musicxml_then_code(tmp_path):
     assert music_from_entry({"abc": "X:1\nK:C\nC4", "code": "score = 1"}, tmp_path) == (
         "X:1\nK:C\nC4", "abc"
     )
@@ -80,9 +83,70 @@ def test_music_from_entry_prefers_abc_then_code_then_musicxml(tmp_path):
     )
     score = tmp_path / "piece.musicxml"
     score.write_text("<score-partwise/>", encoding="utf-8")
-    assert music_from_entry({"score": "piece.musicxml"}, tmp_path) == (
-        "<score-partwise/>", "musicxml"
+    assert music_from_entry(
+        {"score": "piece.musicxml", "code": "score = 1"}, tmp_path
+    ) == ("<score-partwise/>", "musicxml")
+
+
+def test_scrub_abc_removes_title_and_comments():
+    abc = (
+        "X:1\n"
+        "T:Where the Light Settles\n"
+        "T:a subtitle of yearning\n"
+        "% a quiet opening, full of hope\n"
+        "M:3/4\n"
+        "K:D\n"
+        "DFA d2 A | % the theme blooms\n"
+        "w: la la la\n"
     )
+    scrubbed = scrub_abc(abc)
+    assert scrubbed == (
+        "X:1\n"
+        "T:Untitled\n"
+        "M:3/4\n"
+        "K:D\n"
+        "DFA d2 A |\n"
+        "w: la la la"
+    )
+
+
+def test_scrub_code_keeps_sharps_and_blanks_titles():
+    code = (
+        "# --- Section A: solitude, a single line searching ---\n"
+        "n = note.Note('C#4')  # yearning upward\n"
+        "md.title = \"Fragments of Longing\"\n"
+        "s.append(n)\n"
+    )
+    scrubbed = scrub_music21_code(code)
+    assert "solitude" not in scrubbed
+    assert "yearning" not in scrubbed
+    assert "note.Note('C#4')" in scrubbed
+    assert 'md.title = "Untitled"' in scrubbed
+    assert "s.append(n)" in scrubbed
+
+
+def test_scrub_musicxml_blanks_titles_and_credits():
+    xml = (
+        "<score-partwise>\n"
+        "  <work>\n"
+        "    <work-title>Emergent Reflections</work-title>\n"
+        "  </work>\n"
+        "  <movement-title>Emergent Reflections</movement-title>\n"
+        "  <identification>\n"
+        '    <creator type="composer">AI Composer</creator>\n'
+        '    <creator type="lyricist" />\n'
+        "  </identification>\n"
+        "  <credit><credit-words>Emergent Reflections</credit-words></credit>\n"
+        "  <part-list/>\n"
+        "</score-partwise>"
+    )
+    scrubbed = scrub_musicxml(xml)
+    assert "Emergent Reflections" not in scrubbed
+    assert "AI Composer" not in scrubbed
+    assert "<creator" not in scrubbed
+    assert "<work-title>Untitled</work-title>" in scrubbed
+    assert "<movement-title>Untitled</movement-title>" in scrubbed
+    assert "<part-list/>" in scrubbed
 
 
 def test_generation_option_replaces_notes_and_preserves_originals(monkeypatch, tmp_path):

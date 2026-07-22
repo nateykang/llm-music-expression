@@ -74,8 +74,12 @@ With `--independent-description`, the composing call's notes are retained as
 `original_short_description` and `original_long_description`; the fresh music-only
 call becomes the canonical description used by existing reports. `redescribe` does
 the same retroactively, checkpoints after every piece, and skips completed pieces
-unless `--force` is given. It prefers stored ABC, then music21 code, with MusicXML as
-a fallback for older codegen batches that predate code storage.
+unless `--force` is given. It prefers stored ABC, then the rendered MusicXML score,
+with raw music21 code as a fallback. Composer-authored scaffolding text is scrubbed
+from the artifact before the describing call sees it — ABC titles and %-comments,
+code #-comments and title strings, MusicXML title/creator/credit elements — so the
+fresh call cannot inherit the composing call's framing. Lyrics and performance
+directions are part of the score and are kept.
 
 ### Prompts
 

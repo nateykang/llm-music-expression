@@ -3,11 +3,17 @@
 The prompt deliberately mirrors the description fields in the composition
 prompt. It does not ask the model to be neutral, critical, or evidence-bound:
 the intervention is only that the music is supplied without the first call's
-descriptions.
+descriptions. To keep that true, composer-authored scaffolding text is
+scrubbed from the artifact before it is shown: titles, comment lines, and
+credits all quote the first call's framing. Text that is part of the score
+itself (lyrics, performance directions) is kept.
 """
 
 from __future__ import annotations
 
+import io
+import re
+import tokenize
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -89,18 +95,95 @@ def describe_music(
     return DescriptionResult(ok=False, attempts=max_attempts, error=last_error)
 
 
+def scrub_abc(abc: str) -> str:
+    """Drop %-comments and replace the composer's title with a neutral one."""
+    out = []
+    saw_title = False
+    for line in abc.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("%"):
+            continue
+        if stripped.startswith("T:"):
+            if not saw_title:
+                out.append("T:Untitled")
+                saw_title = True
+            continue
+        if "%" in line:
+            line = line.split("%", 1)[0].rstrip()
+            if not line:
+                continue
+        out.append(line)
+    return "\n".join(out)
+
+
+_TITLE_ASSIGNMENT = re.compile(
+    r"((?:title|movementName)\s*=\s*)(['\"])(?:[^'\"\\]|\\.)*\2"
+)
+
+
+def scrub_music21_code(code: str) -> str:
+    """Strip # comments and blank title strings.
+
+    Tokenizing rather than splitting on '#' keeps sharps inside string
+    literals ("C#4") intact. Generated code has already executed, so a
+    tokenizer failure is unexpected; if it happens anyway, only whole-line
+    comments are dropped.
+    """
+    lines = code.splitlines()
+    try:
+        comment_col = {}
+        for tok in tokenize.generate_tokens(io.StringIO(code).readline):
+            if tok.type == tokenize.COMMENT:
+                row, col = tok.start
+                comment_col[row] = min(col, comment_col.get(row, col))
+        out = []
+        for row, line in enumerate(lines, start=1):
+            if row in comment_col:
+                line = line[: comment_col[row]].rstrip()
+                if not line:
+                    continue
+            out.append(line)
+    except (tokenize.TokenError, IndentationError, SyntaxError):
+        out = [l for l in lines if not l.lstrip().startswith("#")]
+    return _TITLE_ASSIGNMENT.sub(r"\1\2Untitled\2", "\n".join(out))
+
+
+def scrub_musicxml(xml: str) -> str:
+    """Blank title elements and drop creator/credit/rights metadata."""
+    xml = re.sub(r"<(work-title|movement-title)>.*?</\1>",
+                 r"<\1>Untitled</\1>", xml, flags=re.S)
+    for tag in ("creator", "credit", "rights"):
+        xml = re.sub(rf"[ \t]*<{tag}\b[^>]*>.*?</{tag}>\n?", "", xml, flags=re.S)
+        xml = re.sub(rf"[ \t]*<{tag}\b[^>]*/>\n?", "", xml)
+    return xml
+
+
+def scrubbed_music(abc: str | None, musicxml: str | None,
+                   code: str | None) -> tuple[str, str]:
+    """Pick the best artifact and scrub composer-authored scaffolding text.
+
+    MusicXML outranks raw code: it is what the code deterministically
+    produced, and it carries no comments to leak the composing call's
+    framing.
+    """
+    if abc and abc.strip():
+        return scrub_abc(abc), "abc"
+    if musicxml and musicxml.strip():
+        return scrub_musicxml(musicxml), "musicxml"
+    if code and code.strip():
+        return scrub_music21_code(code), "music21"
+    raise ValueError("piece has no stored ABC, MusicXML score, or music21 code")
+
+
 def music_from_entry(entry: dict, batch: Path) -> tuple[str, str]:
     """Resolve the best symbolic artifact available in a manifest entry."""
-    if isinstance(entry.get("abc"), str) and entry["abc"].strip():
-        return entry["abc"], "abc"
-    if isinstance(entry.get("code"), str) and entry["code"].strip():
-        return entry["code"], "music21"
+    xml = None
     score = entry.get("score")
-    if score:
-        path = batch / score
-        if path.is_file():
-            return path.read_text(encoding="utf-8"), "musicxml"
-    raise ValueError("piece has no stored ABC, music21 code, or MusicXML score")
+    if score and (batch / score).is_file():
+        xml = (batch / score).read_text(encoding="utf-8")
+    abc = entry.get("abc") if isinstance(entry.get("abc"), str) else None
+    code = entry.get("code") if isinstance(entry.get("code"), str) else None
+    return scrubbed_music(abc, xml, code)
 
 
 def description_metadata(model: str, representation: str, attempts: int) -> dict:
@@ -110,7 +193,7 @@ def description_metadata(model: str, representation: str, attempts: int) -> dict
         "attempts": attempts,
         "system_prompt": SYSTEM_PROMPT,
         "prompt_template": build_description_prompt("<MUSIC ARTIFACT>", representation),
-        "method": "music-only fresh call",
+        "method": "music-only fresh call (titles/comments/credits scrubbed)",
     }
 
 

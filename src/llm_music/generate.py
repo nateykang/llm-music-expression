@@ -151,10 +151,12 @@ def generate_piece(
         return result
 
     if independent_description:
-        from .describe import describe_music, description_metadata
+        from .describe import describe_music, description_metadata, scrubbed_music
 
-        music = result.abc or result.code
-        representation = "abc" if result.abc else "music21"
+        xml = None
+        if result.musicxml_path and result.musicxml_path.is_file():
+            xml = result.musicxml_path.read_text(encoding="utf-8")
+        music, representation = scrubbed_music(result.abc, xml, result.code)
         described = describe_music(
             client, music, representation, max_attempts=description_max_attempts
         )
