@@ -13,7 +13,7 @@ from __future__ import annotations
 import csv
 import html
 import json
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 from statistics import mean, pstdev
 
@@ -498,6 +498,112 @@ def _key_widget_html(dists):
             .replace("__REF__", json.dumps(_key_reference())))
 
 
+# --- sparse-toolkit ablation (experiment batches; own section, not the corpus) --
+
+def _sparse_ablation_html(data_dir: Path) -> str:
+    """Results of the toolkit ablation: codegen with the 104-line music21 toolkit
+    doc removed (mode codegen-sparse). Reads the experiment-tagged batches and
+    renders successes, attempts, error classes, and run notes."""
+    batches = []
+    for f in sorted(data_dir.glob("*/data.json")):
+        try:
+            m = json.loads(f.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if m.get("experiment") == "sparse-toolkit-ablation":
+            batches.append(m)
+    if not batches:
+        return ""
+
+    def err_bucket(tail: str) -> str:
+        if ("could not parse JSON" in tail or "Invalid control character" in tail
+                or "Expecting value" in tail):
+            return "malformed/empty response"
+        if "line continuation" in tail:
+            return "JSON double-escaping"
+        if "has no attribute" in tail:
+            return "hallucinated music21 API"
+        if "Degenerate score" in tail:
+            return "degenerate score (guard)"
+        if "API error" in tail:
+            return "provider error"
+        return "other music21/python"
+
+    per = {}  # model -> dict(ok, n, first, att_sum, runs: [ok/5 per run])
+    err_by_cond: dict[str, Counter] = {}
+    for i, m in enumerate(batches, 1):
+        cond = m.get("experiment_condition", f"run {i}")
+        ec = err_by_cond.setdefault(cond, Counter())
+        for p in m.get("pieces", []):
+            st = per.setdefault(p["model"], {"ok": 0, "n": 0, "first": 0, "att": 0,
+                                             "runs": [0] * len(batches)})
+            st["n"] += 1
+            st["att"] += p.get("attempts", 0)
+            if p.get("ok"):
+                st["ok"] += 1
+                st["runs"][i - 1] += 1
+                if p.get("attempts") == 1:
+                    st["first"] += 1
+            trail = [fa["error"] for fa in (p.get("failed_attempts") or []) if fa.get("error")]
+            if not trail and not p.get("ok") and p.get("error"):
+                trail = [p["error"]]
+            for e in trail:
+                ec[err_bucket(e.strip().splitlines()[-1])] += 1
+
+    n_runs = len(batches)
+    hdr = [("model", None)] + [(f"run {i}", batches[i - 1].get("experiment_condition"))
+                               for i in range(1, n_runs + 1)] \
+        + [("total", None), ("first-try", "succeeded on attempt 1"),
+           ("mean attempts", "of up to 5 per piece")]
+    body_rows = []
+    for mo in sorted(per, key=lambda m: (-per[m]["ok"], per[m]["att"])):
+        st = per[mo]
+        body_rows.append([mo] + [f"{r}/5" for r in st["runs"]]
+                         + [f"{st['ok']}/{st['n']}", f"{st['first']}/{st['n']}",
+                            f"{st['att'] / st['n']:.1f}"])
+
+    err_rows = []
+    all_buckets = sorted({b for c in err_by_cond.values() for b in c},
+                         key=lambda b: -sum(c[b] for c in err_by_cond.values()))
+    conds = list(err_by_cond)
+    for b in all_buckets:
+        err_rows.append([b] + [str(err_by_cond[c].get(b, 0)) for c in conds])
+
+    return (
+        "<h2 id='ablation'>Toolkit ablation <span class='sub'>(sparse code-gen: the music21 "
+        "guide removed)</span></h2>"
+        "<p class='scope'>The code-gen prompt normally includes a 104-line music21 toolkit "
+        "doc (API guide + harness contract). To measure what it actually does, "
+        f"{sum(len(m.get('pieces', [])) for m in batches)} pieces were generated in "
+        "<code>codegen-sparse</code> mode — the identical prompt minus that doc, leaving only "
+        "the ABC-sized output contract. Every piece's code is stored in the batch manifests, "
+        "including the final code of failures; runs 2–3 also keep each failed attempt's "
+        "draft.</p>"
+        + table(hdr, body_rows)
+        + "<p class='scope'>Three tiers: fable-5, opus-4.8, and grok-4.3 never needed the "
+        "toolkit (near-perfect, almost all first-try); a middle tier (gpt-5.5, kimi-k3, "
+        "sonnet, qwen, deepseek) stumbles on the music21 API but recovers via the "
+        "error-feedback retries — deepseek almost never lands attempt 1 and almost always "
+        "lands eventually; and gemini-2.5-pro (0 successes) plus gpt-4.1 (~1 in 3) genuinely "
+        "depend on the doc. The failures are model-characteristic: gpt-4.1 invents plausible "
+        "API names widely (a whole imaginary <code>dynamics</code> family, "
+        "<code>stream.Metadata</code> ×7); gemini repeats one hallucination "
+        "(<code>instrument.Cello</code>, 11+ attempts) and does not correct it even with the "
+        "traceback quoted back; llama mostly fails before music21 runs (malformed JSON "
+        "envelopes).</p>"
+        + table([("error class", None)] + [(f"run {i + 1}", c) for i, c in enumerate(conds)],
+                err_rows)
+        + "<p class='scope'>Run conditions differ only in harness bookkeeping: run 2 added "
+        "per-attempt draft capture; run 3 added <code>json_mode</code> (the decoder enforces "
+        "the JSON envelope the prompt already demands). That fix eliminated the malformed-"
+        "envelope failures of the models that emit invalid JSON (llama 7→0, its only clean "
+        "5/5 run) but did not help gemini, whose empty responses come from reasoning "
+        "consuming the output budget rather than from bad formatting — and hallucination "
+        "counts were untouched, as expected for a decoding constraint. Prompt text was "
+        "identical across all runs. These experiment batches are excluded from every other "
+        "table on this page.</p>")
+
+
 # --- reliability (from manifests, not features.csv) ---------------------------
 
 def load_reliability(data_dir: Path) -> list[dict]:
@@ -508,6 +614,8 @@ def load_reliability(data_dir: Path) -> list[dict]:
             m = json.loads(f.read_text(encoding="utf-8"))
         except Exception:
             continue
+        if m.get("experiment"):
+            continue  # experiment batches report in their own section, not here
         for p in m.get("pieces", []):
             agg.setdefault((p["model"], p.get("mode")), []).append(p)
     rows = []
@@ -562,6 +670,8 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
             f"ChatMusician-style format-success view{fnote('chatmusician')}.</figcaption>{rel_panes}</figure>"
         )
 
+    ablation_section = _sparse_ablation_html(out_path.parent / "data")
+
     chart_html = "".join(
         f"<figure class='chart'><img src='analysis/{fn}' alt='{html.escape(cap)}'>"
         f"<figcaption>{html.escape(cap)}</figcaption></figure>"
@@ -596,6 +706,7 @@ def render_html(rows: list[dict], charts: list[tuple[str, str]], out_path: Path,
   {key_widget}
 
   {rel_section}
+  {ablation_section}
 
   <h2>Charts</h2>
   <div class="charts">{chart_html}</div>

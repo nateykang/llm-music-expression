@@ -101,8 +101,14 @@ def cmd_analyze(args) -> int:
     from .analyze import analyze_batch, write_csv
 
     if args.all:
+        import json as _json
+
         base = Path(args.data_dir)
         batches = sorted(p for p in base.iterdir() if p.is_dir() and (p / "data.json").exists())
+        # experiment batches (e.g. the sparse-toolkit ablation) never enter the
+        # corpus feature tables — they report in their own results.html section
+        batches = [b for b in batches
+                   if not _json.loads((b / "data.json").read_text(encoding="utf-8")).get("experiment")]
         if not batches:
             print(f"no batches under {base}")
             return 1
