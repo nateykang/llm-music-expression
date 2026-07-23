@@ -78,7 +78,9 @@ _MASKS = [
     (re.compile(rf"\b(?:in\s+(?:the\s+key\s+of\s+)?)?{_NOTE}[\s-]+(?:{_MODES})\b",
                 re.I), "[key]"),
     (re.compile(rf"\bkey\s+of\s+{_NOTE}\b", re.I), "[key]"),
-    (re.compile(rf"\b(?:{_MODES})\s+(?:key|mode|tonality|scale)\b", re.I), "[key]"),
+    (re.compile(rf"\b(?:{_MODES})[\s-]+(?:key|mode|tonality|scale)\b", re.I), "[key]"),
+    (re.compile(r"\b(?:ionian|dorian|phrygian|lydian|mixolydian|aeolian|locrian)\b",
+                re.I), "[key]"),
     (re.compile(r"\b(?:quarter[- ]note\s*=\s*)?\d{2,3}\s*(?:bpm|beats per minute)\b",
                 re.I), "[tempo]"),
     (re.compile(r"[♩♪♫]\s*=\s*\d{2,3}"), "[tempo]"),
@@ -97,8 +99,10 @@ def mask_description(text: str) -> str:
 
 # ------------------------------------------------------------------ puzzles
 
-def build_puzzles(pieces: list[dict]) -> list[dict]:
-    """Per method: shuffle within composer, round i = i-th piece per composer."""
+def build_puzzles(pieces: list[dict], scope: str = "cross") -> list[dict]:
+    """cross: shuffle within composer, round i = i-th piece per composer (11-way).
+    within: one puzzle per composer x method holding ALL its pieces (30-way) —
+    composer style can't discriminate, only piece-specific content can."""
     rng = random.Random(SEED)
     puzzles = []
     for method in ("abc", "codegen"):
@@ -109,6 +113,17 @@ def build_puzzles(pieces: list[dict]) -> list[dict]:
         for g in groups.values():
             g.sort(key=piece_id)
             rng.shuffle(g)
+        if scope == "within":
+            # blocks of 10 (chance 10%, same size as cross puzzles); sub-5
+            # remainders are dropped and logged by the caller
+            for model, g in sorted(groups.items()):
+                for b in range(0, len(g), 10):
+                    block = g[b:b + 10]
+                    if len(block) >= 5:
+                        puzzles.append({"method": method,
+                                        "round": f"{model}#{b // 10}",
+                                        "pieces": block})
+            continue
         n_rounds = max(len(g) for g in groups.values())
         for r in range(n_rounds):
             members = [g[r] for g in groups.values() if r < len(g)]
@@ -117,18 +132,23 @@ def build_puzzles(pieces: list[dict]) -> list[dict]:
     return puzzles
 
 
-SYSTEM = (
-    "You are an expert musicologist. You are shown N short pieces in symbolic "
-    "notation and N composer self-descriptions, in scrambled order. Each "
-    "description was written by the composer of exactly one of the pieces. "
-    "Some technical identifiers in the descriptions (key, tempo, meter, "
-    "instruments, voice counts) are masked as [key], [tempo], [meter], "
-    "[instrument], [voices]; match on musical content — melodic contour, "
-    "texture, form, development, rhythmic character, emotional arc. Think "
-    "carefully, then return ONLY one JSON object mapping every description id "
-    "to a distinct score id, e.g. {\"D1\": \"S3\", ...}. Use each score id "
-    "exactly once."
-)
+def system_prompt(text_mode: str) -> str:
+    what = {"description": "composer self-descriptions",
+            "short": "one-sentence composer summaries",
+            "title": ("piece titles (each the title the composer gave exactly "
+                      "one of the pieces)")}[text_mode]
+    return (
+        f"You are an expert musicologist. You are shown N short pieces in "
+        f"symbolic notation and N {what}, in scrambled order. Each was written "
+        "by the composer of exactly one of the pieces. Some technical "
+        "identifiers in the texts (key, tempo, meter, instruments, voice "
+        "counts) are masked as [key], [tempo], [meter], [instrument], "
+        "[voices]; match on musical content — melodic contour, texture, form, "
+        "development, rhythmic character, emotional arc. Think carefully, "
+        "then return ONLY one JSON object mapping every description id to a "
+        "distinct score id, e.g. {\"D1\": \"S3\", ...}. Use each score id "
+        "exactly once."
+    )
 
 
 def build_user(scores: list[tuple[str, str]], descs: list[tuple[str, str]]) -> str:
@@ -143,10 +163,11 @@ def build_user(scores: list[tuple[str, str]], descs: list[tuple[str, str]]) -> s
     return "".join(parts)
 
 
-def solve(client, user: str, n: int, attempts: int = 3) -> dict | None:
+def solve(client, user: str, n: int, text_mode: str = "description",
+          attempts: int = 3) -> dict | None:
     for a in range(attempts):
         try:
-            raw = client.complete(SYSTEM, user, json_mode=True)
+            raw = client.complete(system_prompt(text_mode), user, json_mode=True)
             obj = _extract_json(raw, expect_keys=("D1",))
         except Exception as e:
             if not is_retryable(e):
@@ -158,7 +179,7 @@ def solve(client, user: str, n: int, attempts: int = 3) -> dict | None:
             out = {}
             for i in range(1, n + 1):
                 v = str(obj.get(f"D{i}", "")).strip().upper()
-                if re.fullmatch(rf"S([1-9]|1[0-9])", v) and 1 <= int(v[1:]) <= n:
+                if re.fullmatch(r"S([1-9]|[12][0-9]|3[0-9])", v) and 1 <= int(v[1:]) <= n:
                     out[f"D{i}"] = v
             if len(out) >= n - 1:  # tolerate one dropped answer
                 return out
@@ -167,8 +188,17 @@ def solve(client, user: str, n: int, attempts: int = 3) -> dict | None:
     return None
 
 
+def _piece_text(p: dict, text_mode: str) -> str:
+    if text_mode == "title":
+        return (p["title"] or "(untitled)").strip()
+    if text_mode == "short":
+        return p["short_description"].strip()
+    return f"{p['short_description']} {p['long_description']}".strip()
+
+
 def run_puzzle(client, puzzle: dict, rep_cache: dict, judge: str,
-               mask: bool) -> dict | None:
+               mask: bool, text_mode: str = "description",
+               foil_pool: dict | None = None) -> dict | None:
     members = puzzle["pieces"]
     rng = random.Random(f"{SEED}|{puzzle['method']}|{puzzle['round']}|{judge}")
     score_order = list(members)
@@ -176,11 +206,22 @@ def run_puzzle(client, puzzle: dict, rep_cache: dict, judge: str,
     rng.shuffle(score_order)
     rng.shuffle(desc_order)
     scores = [(f"S{i+1}", rep_cache[piece_id(p)]) for i, p in enumerate(score_order)]
-    descs = []
+    in_puzzle = {piece_id(p) for p in members}
+    descs, foil_src = [], {}
     for i, p in enumerate(desc_order):
-        text = f"{p['short_description']} {p['long_description']}".strip()
+        src = p
+        if foil_pool is not None:
+            # same composer, different piece, outside this puzzle; fixed per
+            # (puzzle, piece) so every judge sees the same foil
+            rf = random.Random(f"{SEED}|foil|{puzzle['method']}|"
+                               f"{puzzle['round']}|{piece_id(p)}")
+            others = [q for q in foil_pool[(p["model"], p["mode"])]
+                      if piece_id(q) not in in_puzzle]
+            src = rf.choice(others)
+            foil_src[piece_id(p)] = piece_id(src)
+        text = _piece_text(src, text_mode)
         descs.append((f"D{i+1}", mask_description(text) if mask else text))
-    ans = solve(client, build_user(scores, descs), len(members))
+    ans = solve(client, build_user(scores, descs), len(members), text_mode)
     if ans is None:
         return None
     sid_of = {piece_id(p): f"S{i+1}" for i, p in enumerate(score_order)}
@@ -188,9 +229,12 @@ def run_puzzle(client, puzzle: dict, rep_cache: dict, judge: str,
     rows = []
     for i, p in enumerate(desc_order):
         pred = ans.get(f"D{i+1}")
-        rows.append({"composer": p["model"], "piece": piece_id(p),
-                     "predicted_composer": composer_of_sid.get(pred),
-                     "correct": bool(pred and pred == sid_of[piece_id(p)])})
+        row = {"composer": p["model"], "piece": piece_id(p),
+               "predicted_composer": composer_of_sid.get(pred),
+               "correct": bool(pred and pred == sid_of[piece_id(p)])}
+        if foil_src:
+            row["foil_of"] = foil_src[piece_id(p)]
+        rows.append(row)
     return {"method": puzzle["method"], "round": puzzle["round"], "judge": judge,
             "size": len(members), "results": rows}
 
@@ -243,15 +287,37 @@ def main():
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--no-mask", action="store_true",
                     help="leave descriptions verbatim (header-leak ablation)")
+    ap.add_argument("--text", choices=("description", "short", "title"),
+                    default="description",
+                    help="what the judge matches: full description, the "
+                         "one-sentence summary, or the title alone")
+    ap.add_argument("--scope", choices=("cross", "within"), default="cross",
+                    help="cross: one piece per composer per puzzle; within: "
+                         "10-way blocks inside one composer")
+    ap.add_argument("--foil", action="store_true",
+                    help="style-channel control: swap each text for one from "
+                         "a DIFFERENT piece by the same composer; accuracy "
+                         "then measures composer-routing, not piece content")
     args = ap.parse_args()
     judges = [j.strip() for j in args.judges.split(",") if j.strip()]
     mask = not args.no_mask
-    tag = "" if mask else "_nomask"
+    tag = "" if (mask and args.text == "description" and args.scope == "cross") \
+        else f"_{args.text}_{args.scope}" + ("" if mask else "_nomask")
+    if tag == "_description_cross_nomask":
+        tag = "_nomask"  # keep the original ablation's file names
+    if args.foil:
+        tag = (tag or "_description_cross") + "_foil"
 
     pieces = load_pieces(ROOT)
-    puzzles = build_puzzles(pieces)
+    foil_pool = None
+    if args.foil:
+        foil_pool = defaultdict(list)
+        for p in pieces:
+            foil_pool[(p["model"], p["mode"])].append(p)
+    puzzles = build_puzzles(pieces, args.scope)
     if args.rounds is not None:
-        puzzles = [pz for pz in puzzles if pz["round"] < args.rounds]
+        puzzles = ([pz for pz in puzzles if pz["round"] < args.rounds]
+                   if args.scope == "cross" else puzzles[: args.rounds])
     need = {piece_id(p) for pz in puzzles for p in pz["pieces"]}
     print(f"{len(puzzles)} puzzles, {len(need)} distinct pieces, "
           f"judges: {', '.join(judges)}, mask={mask}", flush=True)
@@ -291,7 +357,8 @@ def main():
     def work(job):
         pz, j = job
         return (f"{pz['method']}|{pz['round']}|{j}",
-                run_puzzle(clients[j], pz, rep_cache, j, mask))
+                run_puzzle(clients[j], pz, rep_cache, j, mask, args.text,
+                           foil_pool))
 
     done = 0
     with ThreadPoolExecutor(max_workers=max(1, args.workers)) as ex:

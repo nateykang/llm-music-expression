@@ -1,0 +1,204 @@
+{
+ "abc": {
+  "n_puzzles": 363,
+  "n_assignments": 3630,
+  "chance": 0.1,
+  "per_judge_acc": {
+   "deepseek-v4-pro": 0.282,
+   "fable-5": 0.385,
+   "gemini-2.5-pro": 0.297,
+   "gpt-4.1": 0.27,
+   "gpt-5.5": 0.403,
+   "grok-4.3": 0.248,
+   "llama-4-maverick": 0.209,
+   "opus-4.8": 0.273,
+   "opus-4.8-thinking": 0.355,
+   "qwen3-max": 0.227,
+   "sonnet-4.6": 0.291
+  },
+  "per_composer_matchability": {
+   "deepseek-v4-pro": 0.391,
+   "gemini-2.5-pro": 0.436,
+   "gpt-4.1": 0.152,
+   "gpt-5.5": 0.136,
+   "grok-4.3": 0.194,
+   "llama-4-maverick": 0.145,
+   "opus-4.8": 0.455,
+   "opus-4.8-thinking": 0.336,
+   "qwen3-max": 0.236,
+   "sonnet-4.6": 0.403,
+   "sonnet-4.6-thinking": 0.355
+  },
+  "self_vs_other": {
+   "deepseek-v4-pro": {
+    "self": 0.433,
+    "other": 0.387,
+    "n_self": 30
+   },
+   "gemini-2.5-pro": {
+    "self": 0.433,
+    "other": 0.437,
+    "n_self": 30
+   },
+   "gpt-4.1": {
+    "self": 0.267,
+    "other": 0.14,
+    "n_self": 30
+   },
+   "gpt-5.5": {
+    "self": 0.1,
+    "other": 0.14,
+    "n_self": 30
+   },
+   "grok-4.3": {
+    "self": 0.1,
+    "other": 0.203,
+    "n_self": 30
+   },
+   "llama-4-maverick": {
+    "self": 0.133,
+    "other": 0.147,
+    "n_self": 30
+   },
+   "opus-4.8": {
+    "self": 0.367,
+    "other": 0.463,
+    "n_self": 30
+   },
+   "opus-4.8-thinking": {
+    "self": 0.433,
+    "other": 0.327,
+    "n_self": 30
+   },
+   "qwen3-max": {
+    "self": 0.2,
+    "other": 0.24,
+    "n_self": 30
+   },
+   "sonnet-4.6": {
+    "self": 0.367,
+    "other": 0.407,
+    "n_self": 30
+   },
+   "sonnet-4.6-thinking": {
+    "self": null,
+    "other": 0.355,
+    "n_self": 0
+   }
+  },
+  "confusion_top": {
+   "deepseek-v4-pro->deepseek-v4-pro": 330,
+   "gpt-4.1->gpt-4.1": 330,
+   "gpt-5.5->gpt-5.5": 330,
+   "grok-4.3->grok-4.3": 330,
+   "llama-4-maverick->llama-4-maverick": 330,
+   "opus-4.8->opus-4.8": 330,
+   "opus-4.8-thinking->opus-4.8-thinking": 330,
+   "qwen3-max->qwen3-max": 330,
+   "sonnet-4.6->sonnet-4.6": 330,
+   "sonnet-4.6-thinking->sonnet-4.6-thinking": 330,
+   "gemini-2.5-pro->gemini-2.5-pro": 329
+  }
+ },
+ "codegen": {
+  "n_puzzles": 351,
+  "n_assignments": 3422,
+  "chance": 0.103,
+  "per_judge_acc": {
+   "deepseek-v4-pro": 0.356,
+   "fable-5": 0.484,
+   "gemini-2.5-pro": 0.413,
+   "gpt-4.1": 0.228,
+   "gpt-5.5": 0.548,
+   "grok-4.3": 0.269,
+   "llama-4-maverick": 0.192,
+   "opus-4.8": 0.266,
+   "opus-4.8-thinking": 0.467,
+   "qwen3-max": 0.231,
+   "sonnet-4.6": 0.301
+  },
+  "per_composer_matchability": {
+   "deepseek-v4-pro": 0.364,
+   "gemini-2.5-pro": 0.359,
+   "gpt-4.1": 0.337,
+   "gpt-5.5": 0.181,
+   "grok-4.3": 0.291,
+   "llama-4-maverick": 0.483,
+   "opus-4.8": 0.385,
+   "opus-4.8-thinking": 0.288,
+   "qwen3-max": 0.357,
+   "sonnet-4.6": 0.364,
+   "sonnet-4.6-thinking": 0.364
+  },
+  "self_vs_other": {
+   "deepseek-v4-pro": {
+    "self": 0.533,
+    "other": 0.347,
+    "n_self": 30
+   },
+   "gemini-2.5-pro": {
+    "self": 0.5,
+    "other": 0.345,
+    "n_self": 20
+   },
+   "gpt-4.1": {
+    "self": 0.296,
+    "other": 0.341,
+    "n_self": 27
+   },
+   "gpt-5.5": {
+    "self": 0.2,
+    "other": 0.179,
+    "n_self": 30
+   },
+   "grok-4.3": {
+    "self": 0.2,
+    "other": 0.3,
+    "n_self": 30
+   },
+   "llama-4-maverick": {
+    "self": 0.5,
+    "other": 0.481,
+    "n_self": 26
+   },
+   "opus-4.8": {
+    "self": 0.1,
+    "other": 0.413,
+    "n_self": 30
+   },
+   "opus-4.8-thinking": {
+    "self": 0.4,
+    "other": 0.277,
+    "n_self": 30
+   },
+   "qwen3-max": {
+    "self": 0.241,
+    "other": 0.369,
+    "n_self": 29
+   },
+   "sonnet-4.6": {
+    "self": 0.3,
+    "other": 0.37,
+    "n_self": 30
+   },
+   "sonnet-4.6-thinking": {
+    "self": null,
+    "other": 0.364,
+    "n_self": 0
+   }
+  },
+  "confusion_top": {
+   "deepseek-v4-pro->deepseek-v4-pro": 330,
+   "grok-4.3->grok-4.3": 330,
+   "opus-4.8-thinking->opus-4.8-thinking": 330,
+   "sonnet-4.6->sonnet-4.6": 330,
+   "sonnet-4.6-thinking->sonnet-4.6-thinking": 330,
+   "opus-4.8->opus-4.8": 329,
+   "gpt-5.5->gpt-5.5": 319,
+   "qwen3-max->qwen3-max": 319,
+   "gpt-4.1->gpt-4.1": 297,
+   "llama-4-maverick->llama-4-maverick": 286,
+   "gemini-2.5-pro->gemini-2.5-pro": 220
+  }
+ }
+}
