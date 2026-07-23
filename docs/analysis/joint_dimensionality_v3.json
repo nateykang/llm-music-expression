@@ -1,0 +1,183 @@
+{
+ "seed": 20260725,
+ "n_perm": 999,
+ "clap_clap_v3": {
+  "abc": {
+   "rank_audio": 11,
+   "rank_text": 20,
+   "d_overlap": 3.2,
+   "d_overlap_null_mean": 0.43,
+   "d_overlap_null_95": 0.49,
+   "d_overlap_p": 0.005,
+   "aligned_vs_rotation_null": 11,
+   "strong_cos_gt_0.7": 2,
+   "principal_cosines": [
+    0.76,
+    0.72,
+    0.68,
+    0.61,
+    0.6,
+    0.49,
+    0.46,
+    0.39,
+    0.37,
+    0.32,
+    0.25
+   ]
+  },
+  "codegen": {
+   "rank_audio": 13,
+   "rank_text": 19,
+   "d_overlap": 4.3,
+   "d_overlap_null_mean": 0.48,
+   "d_overlap_null_95": 0.54,
+   "d_overlap_p": 0.005,
+   "aligned_vs_rotation_null": 13,
+   "strong_cos_gt_0.7": 3,
+   "principal_cosines": [
+    0.78,
+    0.76,
+    0.72,
+    0.69,
+    0.67,
+    0.63,
+    0.58,
+    0.53,
+    0.45,
+    0.42,
+    0.39,
+    0.3
+   ]
+  },
+  "all": {
+   "rank_audio": 16,
+   "rank_text": 22,
+   "d_overlap": 5.3,
+   "d_overlap_null_mean": 0.69,
+   "d_overlap_null_95": 0.77,
+   "d_overlap_p": 0.005,
+   "aligned_vs_rotation_null": 16,
+   "strong_cos_gt_0.7": 5,
+   "principal_cosines": [
+    0.79,
+    0.78,
+    0.76,
+    0.74,
+    0.71,
+    0.68,
+    0.61,
+    0.6,
+    0.56,
+    0.51,
+    0.46,
+    0.42
+   ]
+  }
+ },
+ "stepdown_cca": {
+  "held_out_corrs": [
+   0.907,
+   0.77,
+   0.768,
+   0.706,
+   0.572,
+   0.581,
+   0.576,
+   0.308,
+   0.333,
+   0.279
+  ],
+  "p_adjusted": [
+   0.001,
+   0.065,
+   0.065,
+   0.065,
+   0.065,
+   0.065,
+   0.065,
+   0.074,
+   0.065,
+   0.074
+  ],
+  "significant_fwer_05": 1
+ },
+ "subspace_stability": {
+  "audio_side_cosines": [
+   0.99,
+   0.98,
+   0.97,
+   0.96,
+   0.56
+  ],
+  "text_side_cosines": [
+   0.99,
+   0.97,
+   0.96,
+   0.93,
+   0.55
+  ]
+ },
+ "loco": {
+  "mean_held_out_corrs": [
+   0.783,
+   0.529,
+   0.514,
+   0.474,
+   0.407,
+   0.212,
+   0.323,
+   0.103,
+   0.138,
+   0.086
+  ],
+  "mean_null_95": [
+   0.233,
+   0.22,
+   0.216,
+   0.217,
+   0.216,
+   0.22,
+   0.221,
+   0.22,
+   0.215,
+   0.221
+  ],
+  "components_above_null": 6
+ },
+ "synthetic_nuisance": {
+  "true_piece_level_dZ": 3,
+  "unrestricted": {
+   "significant_fwer_05": 10,
+   "corrs": [
+    1.0,
+    1.0,
+    1.0,
+    0.99,
+    1.0,
+    0.99
+   ]
+  },
+  "mode": {
+   "significant_fwer_05": 1,
+   "corrs": [
+    1.0,
+    1.0,
+    1.0,
+    0.99,
+    1.0,
+    0.99
+   ]
+  },
+  "composer_x_mode": {
+   "significant_fwer_05": 1,
+   "corrs": [
+    1.0,
+    1.0,
+    1.0,
+    0.99,
+    1.0,
+    0.99
+   ]
+  }
+ }
+}

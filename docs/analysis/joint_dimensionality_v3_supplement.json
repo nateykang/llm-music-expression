@@ -1,0 +1,109 @@
+{
+ "seed": 20260726,
+ "overlap_uncertainty": {
+  "abc": {
+   "d_overlap": 3.2,
+   "sub90": [
+    2.8,
+    3.2
+   ]
+  },
+  "codegen": {
+   "d_overlap": 4.3,
+   "sub90": [
+    3.7,
+    4.1
+   ]
+  },
+  "all": {
+   "d_overlap": 5.3,
+   "sub90": [
+    5.0,
+    5.3
+   ]
+  }
+ },
+ "synthetic_grid": {
+  "nuisance_only": {
+   "unrestricted": {
+    "significant_fwer_05": 10,
+    "top_corrs": [
+     1.0,
+     0.99,
+     0.99,
+     0.99
+    ]
+   },
+   "composer_x_mode": {
+    "significant_fwer_05": 0,
+    "top_corrs": [
+     1.0,
+     0.99,
+     0.99,
+     0.99
+    ]
+   }
+  },
+  "piece_only": {
+   "unrestricted": {
+    "significant_fwer_05": 3,
+    "top_corrs": [
+     1.0,
+     1.0,
+     1.0,
+     0.06
+    ]
+   },
+   "composer_x_mode": {
+    "significant_fwer_05": 3,
+    "top_corrs": [
+     1.0,
+     1.0,
+     1.0,
+     0.07
+    ]
+   }
+  },
+  "both": {
+   "unrestricted": {
+    "significant_fwer_05": 10,
+    "top_corrs": [
+     1.0,
+     1.0,
+     1.0,
+     0.99
+    ]
+   },
+   "composer_x_mode": {
+    "significant_fwer_05": 1,
+    "top_corrs": [
+     1.0,
+     1.0,
+     1.0,
+     0.99
+    ]
+   }
+  },
+  "neither": {
+   "unrestricted": {
+    "significant_fwer_05": 0,
+    "top_corrs": [
+     -0.08,
+     0.04,
+     0.02,
+     -0.05
+    ]
+   },
+   "composer_x_mode": {
+    "significant_fwer_05": 0,
+    "top_corrs": [
+     -0.11,
+     0.07,
+     -0.03,
+     -0.1
+    ]
+   }
+  }
+ },
+ "critical_success_nuisance_only": true
+}
