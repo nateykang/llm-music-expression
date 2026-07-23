@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Description &harr; music — do the composer notes mean anything?</title>
+<link rel="stylesheet" href="style.css?v=22">
+<style>
+  .wrap { max-width: 980px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  .sub { color: var(--muted); font-weight: 400; font-size: .8em; }
+  .scope { color: var(--muted); font-size: .9rem; margin: .25rem 0 1.25rem; }
+  .tscroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: .9rem; }
+  th, td { text-align: right; padding: .35rem .55rem; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; }
+  td.m, th:first-child { text-align: left; font-weight: 600; }
+  tr.ref td { font-style: italic; color: var(--accent); background: #f3ede4; border-bottom: 2px solid #d8c9b5; }
+  h2 { margin-top: 2.4rem; }
+  h3 { margin-top: 1.4rem; }
+  .callout { background: #f3ede4; border-left: 3px solid var(--accent); padding: .7rem .9rem;
+    border-radius: 0 7px 7px 0; font-size: .9rem; margin: .8rem 0 0; }
+  .tip { border-bottom: 1px dotted var(--muted); cursor: help; }
+  ol.footnotes { color: var(--muted); font-size: .82rem; line-height: 1.6; padding-left: 1.3rem; margin-top: .6rem; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+  @media (max-width: 760px) { .cols { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+  <nav class="tabs">
+    <a href="index.html">Browse outputs</a>
+    <a href="results.html">Results &amp; analysis</a>
+    <a href="judge.html">LLM judge</a>
+    <a href="audio.html">Audio emotion</a>
+    <a href="selfpref.html">Self-preference</a>
+    <a href="genre.html">Genre bias</a>  <a href="multimodal.html">Multimodal</a>
+    <a href="descriptions.html" class="active">Description link</a>
+    <a href="studio.html">Studio</a>
+  </nav>
+  <div class="wrap">
+  <h1>Do the composer notes mean anything?</h1>
+  <p class="scope">Every piece ships with a self-description its composer wrote in the
+  same forward pass. These experiments measure whether that text carries real,
+  piece-specific information: judges receive N blind score representations and N
+  texts in scrambled order and must return the one-to-one pairing. Corpus: the
+  free-form 30-samples-per-composer batches (11 composers &times; abc/codegen,
+  645 ok pieces<sup>1</sup>). Technical identifiers printed in the score header
+  (key, tempo, meter, instruments, voice counts) are masked out of the texts, so
+  matching has to run on musical content.<sup>2</sup></p>
+
+  <h2>Claims vs measurements</h2>
+  <p>Structured claims were LLM-extracted from all 651 descriptions and checked
+  against computed features. Descriptions are faithful to whatever the
+  <em>notation format</em> could express, and silently wrong wherever the
+  pipeline dropped the plan:</p>
+  <div class=tscroll><table>
+  <tr><th>claim</th><th>abc</th><th>codegen</th></tr>
+  <tr><td class=m>key (tonic)</td><td>94% <span class=sd>(n=290)</span></td><td>90% <span class=sd>(n=302)</span></td></tr><tr><td class=m>key (mode)</td><td>98% <span class=sd>(n=266)</span></td><td>94% <span class=sd>(n=261)</span></td></tr><tr><td class=m>tempo (bpm)</td><td>91% <span class=sd>(n=113)</span></td><td>11% <span class=sd>(n=185)</span></td></tr><tr><td class=m>texture</td><td>100% <span class=sd>(n=303)</span></td><td>99% <span class=sd>(n=251)</span></td></tr><tr><td class=m>dynamics claimed &amp; present</td><td>31% <span class=sd>(n=67)</span></td><td>76% <span class=sd>(n=270)</span></td></tr>
+  </table></div>
+  <p class=scope>Tempo collapses in codegen because 286/321 codegen scores set no
+  tempo mark and render at the 120&nbsp;bpm default; dynamics are the mirror
+  image (claimed swells are notated in codegen, almost never in abc).</p>
+
+  <h2>The informativeness ladder (cross-composer)</h2>
+  <p>How many words does it take to identify a piece among 11 candidates?
+  The <b>foil</b> arm is the control: same puzzles, but each text comes from a
+  <em>different</em> piece by the same composer — so its accuracy is the
+  composer-style channel alone, and anything above it is piece content.</p>
+  <div class=cols>
+  <div><h3>abc</h3><div class=tscroll><table>
+<tr><th>judge</th><th class=tip data-tip='Same puzzles, but each text is swapped for one from a DIFFERENT piece by the same composer — whatever accuracy survives is pure composer-style routing.'>foil</th><th>title</th><th>short</th><th>full desc</th><th class=tip data-tip='Full descriptions with key/tempo/meter/instrument mentions left unmasked — the header-lookup ceiling.'>unmasked</th></tr>
+<tr><td class=m>fable-5</td><td>14.2%</td><td>20.9%</td><td>51.2%</td><td>97.6%</td><td>100.0%</td></tr>
+<tr><td class=m>gpt-5.5</td><td>14.8%</td><td>19.7%</td><td>44.2%</td><td>97.6%</td><td>99.4%</td></tr>
+<tr><td class=m>opus-4.8-thinking</td><td>11.8%</td><td>16.7%</td><td>43.0%</td><td>97.0%</td><td>99.1%</td></tr>
+<tr><td class=m>gemini-2.5-pro</td><td>11.8%</td><td>15.5%</td><td>39.4%</td><td>86.0%</td><td>99.4%</td></tr>
+<tr><td class=m>deepseek-v4-pro</td><td>12.7%</td><td>17.6%</td><td>33.0%</td><td>89.8%</td><td>94.2%</td></tr>
+<tr><td class=m>opus-4.8</td><td>13.6%</td><td>15.5%</td><td>32.4%</td><td>87.3%</td><td>96.4%</td></tr>
+<tr><td class=m>sonnet-4.6</td><td>11.2%</td><td>13.9%</td><td>33.0%</td><td>81.5%</td><td>94.8%</td></tr>
+<tr><td class=m>grok-4.3</td><td>10.3%</td><td>14.8%</td><td>32.7%</td><td>73.6%</td><td>97.6%</td></tr>
+<tr><td class=m>gpt-4.1</td><td>11.8%</td><td>13.0%</td><td>28.8%</td><td>70.3%</td><td>86.7%</td></tr>
+<tr><td class=m>qwen3-max</td><td>11.2%</td><td>14.2%</td><td>21.2%</td><td>56.1%</td><td>79.4%</td></tr>
+<tr><td class=m>llama-4-maverick</td><td>10.9%</td><td>13.0%</td><td>20.3%</td><td>33.3%</td><td>58.2%</td></tr>
+<tr class=ref><td class=m>pooled</td><td>12.2%</td><td>15.9%</td><td>34.5%</td><td>78.9%</td><td>91.4%</td></tr>
+</table></div>
+<p class=scope>chance 9.1% (11-way, one piece per composer per puzzle; 60 puzzles &times; 11 judges per cell).</p></div>
+  <div><h3>codegen</h3><div class=tscroll><table>
+<tr><th>judge</th><th class=tip data-tip='Same puzzles, but each text is swapped for one from a DIFFERENT piece by the same composer — whatever accuracy survives is pure composer-style routing.'>foil</th><th>title</th><th>short</th><th>full desc</th><th class=tip data-tip='Full descriptions with key/tempo/meter/instrument mentions left unmasked — the header-lookup ceiling.'>unmasked</th></tr>
+<tr><td class=m>fable-5</td><td>14.0%</td><td>21.0%</td><td>74.0%</td><td>100.0%</td><td>100.0%</td></tr>
+<tr><td class=m>gpt-5.5</td><td>19.0%</td><td>25.7%</td><td>68.9%</td><td>100.0%</td><td>100.0%</td></tr>
+<tr><td class=m>opus-4.8-thinking</td><td>16.2%</td><td>20.3%</td><td>56.8%</td><td>98.1%</td><td>100.0%</td></tr>
+<tr><td class=m>gemini-2.5-pro</td><td>14.6%</td><td>23.5%</td><td>53.7%</td><td>97.4%</td><td>99.4%</td></tr>
+<tr><td class=m>deepseek-v4-pro</td><td>16.2%</td><td>18.4%</td><td>47.6%</td><td>96.0%</td><td>97.5%</td></tr>
+<tr><td class=m>opus-4.8</td><td>14.0%</td><td>19.0%</td><td>41.9%</td><td>93.1%</td><td>98.1%</td></tr>
+<tr><td class=m>sonnet-4.6</td><td>14.6%</td><td>20.3%</td><td>39.4%</td><td>87.5%</td><td>96.9%</td></tr>
+<tr><td class=m>grok-4.3</td><td>16.2%</td><td>19.7%</td><td>35.2%</td><td>79.8%</td><td>100.0%</td></tr>
+<tr><td class=m>gpt-4.1</td><td>17.1%</td><td>18.1%</td><td>28.6%</td><td>65.1%</td><td>94.4%</td></tr>
+<tr><td class=m>qwen3-max</td><td>18.7%</td><td>18.4%</td><td>34.3%</td><td>64.2%</td><td>93.5%</td></tr>
+<tr><td class=m>llama-4-maverick</td><td>9.5%</td><td>13.7%</td><td>23.8%</td><td>37.1%</td><td>72.0%</td></tr>
+<tr class=ref><td class=m>pooled</td><td>15.5%</td><td>19.8%</td><td>45.8%</td><td>83.4%</td><td>95.6%</td></tr>
+</table></div>
+<p class=scope>chance 9.1% (11-way, one piece per composer per puzzle; 60 puzzles &times; 11 judges per cell).</p></div>
+  </div>
+  <div class=callout>Titles are nearly pure style perfume: ~4pp of content over
+  the foil floor. One masked sentence triples the signal; the full description
+  reaches 79%/83%
+  pooled. The unmasked column shows header lookup is a crutch only weak judges
+  need — frontier judges gain &le;2pp from it.</div>
+
+  <h2>Within-composer matching (style can&rsquo;t help)</h2>
+  <p>Each composer&rsquo;s pieces are split into 10-way puzzles (chance 10%);
+  every judge solves every composer&rsquo;s puzzles. Style routing is useless
+  here — only piece-specific content works.</p>
+  <div class=cols>
+  <div><h3>abc</h3><div class=tscroll><table>
+<tr><th>judge</th><th>short</th><th>full desc</th></tr>
+<tr><td class=m>fable-5</td><td>38.5%</td><td>84.2%</td></tr>
+<tr><td class=m>gpt-5.5</td><td>40.3%</td><td>86.1%</td></tr>
+<tr><td class=m>opus-4.8-thinking</td><td>35.5%</td><td>82.4%</td></tr>
+<tr><td class=m>gemini-2.5-pro</td><td>29.7%</td><td>74.1%</td></tr>
+<tr><td class=m>deepseek-v4-pro</td><td>28.2%</td><td>71.1%</td></tr>
+<tr><td class=m>opus-4.8</td><td>27.3%</td><td>63.9%</td></tr>
+<tr><td class=m>sonnet-4.6</td><td>29.1%</td><td>63.9%</td></tr>
+<tr><td class=m>grok-4.3</td><td>24.8%</td><td>52.4%</td></tr>
+<tr><td class=m>gpt-4.1</td><td>27.0%</td><td>47.6%</td></tr>
+<tr><td class=m>qwen3-max</td><td>22.7%</td><td>51.5%</td></tr>
+<tr><td class=m>llama-4-maverick</td><td>20.9%</td><td>26.4%</td></tr>
+<tr class=ref><td class=m>pooled</td><td>29.4%</td><td>63.8%</td></tr>
+</table></div></div>
+  <div><h3>codegen</h3><div class=tscroll><table>
+<tr><th>judge</th><th>short</th><th>full desc</th></tr>
+<tr><td class=m>fable-5</td><td>48.4%</td><td>97.1%</td></tr>
+<tr><td class=m>gpt-5.5</td><td>54.8%</td><td>97.8%</td></tr>
+<tr><td class=m>opus-4.8-thinking</td><td>46.7%</td><td>93.9%</td></tr>
+<tr><td class=m>gemini-2.5-pro</td><td>41.3%</td><td>91.0%</td></tr>
+<tr><td class=m>deepseek-v4-pro</td><td>35.6%</td><td>85.5%</td></tr>
+<tr><td class=m>opus-4.8</td><td>26.6%</td><td>73.1%</td></tr>
+<tr><td class=m>sonnet-4.6</td><td>30.1%</td><td>71.8%</td></tr>
+<tr><td class=m>grok-4.3</td><td>26.9%</td><td>61.5%</td></tr>
+<tr><td class=m>gpt-4.1</td><td>22.8%</td><td>53.5%</td></tr>
+<tr><td class=m>qwen3-max</td><td>23.1%</td><td>50.6%</td></tr>
+<tr><td class=m>llama-4-maverick</td><td>19.2%</td><td>26.6%</td></tr>
+<tr class=ref><td class=m>pooled</td><td>34.1%</td><td>72.8%</td></tr>
+</table></div></div>
+  </div>
+  <p class=scope>The full-description advantage over the one-sentence summary is
+  about as large within-composer as cross-composer (codegen: +39pp vs
+  +38pp) — long descriptions win on genuine
+  musical content, not incidental identifying detail.</p>
+
+  <h2>Self-recognition</h2>
+  <p>Does a model recognize <em>its own</em> pieces? The 11&times;11
+  judge&times;composer matrix supports a difference-in-differences: a judge&rsquo;s
+  accuracy on its own puzzles, relative to its accuracy elsewhere, relative to
+  how much every other judge drops on those same puzzles. This controls both
+  judge ability and puzzle difficulty; the permutation test shuffles which judge
+  plays &ldquo;author&rdquo;.</p>
+  <h3>Full descriptions <span class=sub>mean DiD +8.5pp, permutation p = 0.006</span></h3><div class=tscroll><table>
+<tr><th>composer = judge</th><th>own puzzles</th><th>others’ puzzles</th><th>peers on its puzzles</th><th>peers elsewhere</th><th>DiD</th></tr>
+<tr><td class=m>llama-4-maverick</td><td>35.7%</td><td>25.6%</td><td>46.2%</td><td>74.9%</td><td><b>+38.9pp</b></td></tr>
+<tr><td class=m>gpt-5.5</td><td>93.3%</td><td>91.6%</td><td>49.0%</td><td>67.5%</td><td><b>+20.2pp</b></td></tr>
+<tr><td class=m>qwen3-max</td><td>74.6%</td><td>48.7%</td><td>78.3%</td><td>68.9%</td><td><b>+16.5pp</b></td></tr>
+<tr><td class=m>deepseek-v4-pro</td><td>100.0%</td><td>77.1%</td><td>75.3%</td><td>66.2%</td><td><b>+13.8pp</b></td></tr>
+<tr><td class=m>opus-4.8-thinking</td><td>100.0%</td><td>86.8%</td><td>71.7%</td><td>65.4%</td><td><b>+7.0pp</b></td></tr>
+<tr><td class=m>sonnet-4.6</td><td>83.3%</td><td>66.2%</td><td>78.3%</td><td>67.0%</td><td><b>+5.8pp</b></td></tr>
+<tr><td class=m>gemini-2.5-pro</td><td>96.0%</td><td>81.3%</td><td>81.2%</td><td>65.3%</td><td><b>-1.2pp</b></td></tr>
+<tr><td class=m>gpt-4.1</td><td>42.1%</td><td>51.3%</td><td>62.7%</td><td>70.4%</td><td><b>-1.5pp</b></td></tr>
+<tr><td class=m>opus-4.8</td><td>66.7%</td><td>68.6%</td><td>70.3%</td><td>67.6%</td><td><b>-4.6pp</b></td></tr>
+<tr><td class=m>grok-4.3</td><td>36.7%</td><td>58.9%</td><td>57.4%</td><td>70.1%</td><td><b>-9.5pp</b></td></tr>
+</table></div>
+  <h3>One-sentence summaries <span class=sub>mean DiD +0.3pp, permutation p = 0.481</span></h3><div class=tscroll><table>
+<tr><th>composer = judge</th><th>own puzzles</th><th>others’ puzzles</th><th>peers on its puzzles</th><th>peers elsewhere</th><th>DiD</th></tr>
+<tr><td class=m>llama-4-maverick</td><td>30.4%</td><td>19.1%</td><td>30.2%</td><td>33.4%</td><td><b>+14.5pp</b></td></tr>
+<tr><td class=m>gpt-4.1</td><td>28.1%</td><td>24.6%</td><td>23.5%</td><td>33.5%</td><td><b>+13.5pp</b></td></tr>
+<tr><td class=m>deepseek-v4-pro</td><td>48.3%</td><td>30.1%</td><td>36.7%</td><td>31.5%</td><td><b>+13.1pp</b></td></tr>
+<tr><td class=m>gemini-2.5-pro</td><td>46.0%</td><td>34.5%</td><td>40.0%</td><td>30.8%</td><td><b>+2.4pp</b></td></tr>
+<tr><td class=m>opus-4.8-thinking</td><td>41.7%</td><td>40.7%</td><td>30.2%</td><td>31.1%</td><td><b>+1.9pp</b></td></tr>
+<tr><td class=m>qwen3-max</td><td>22.0%</td><td>23.0%</td><td>30.3%</td><td>33.0%</td><td><b>+1.7pp</b></td></tr>
+<tr><td class=m>sonnet-4.6</td><td>33.3%</td><td>29.2%</td><td>38.8%</td><td>31.4%</td><td><b>-3.4pp</b></td></tr>
+<tr><td class=m>grok-4.3</td><td>15.0%</td><td>27.0%</td><td>25.2%</td><td>33.2%</td><td><b>-4.0pp</b></td></tr>
+<tr><td class=m>opus-4.8</td><td>23.3%</td><td>27.3%</td><td>43.8%</td><td>31.0%</td><td><b>-16.8pp</b></td></tr>
+<tr><td class=m>gpt-5.5</td><td>15.0%</td><td>50.7%</td><td>15.9%</td><td>31.6%</td><td><b>-20.1pp</b></td></tr>
+</table></div>
+  <div class=callout>With full descriptions, self-recognition is real
+  (+8.5pp, p&nbsp;=&nbsp;0.006) and concentrates in the
+  homogeneous-corpus composers — when all ten candidates sound alike, only
+  author-side knowledge breaks ties. At summary granularity the effect vanishes
+  (+0.3pp, p&nbsp;=&nbsp;0.48): whatever privileged
+  information a model has about its own pieces, one sentence can&rsquo;t carry it.</div>
+
+  <h2>Related results from the same corpus</h2>
+  <p class=scope>
+  Composers are identifiable from a single description embedding at
+  88%/85% (abc/codegen, chance 9%) — a stronger authorship
+  signature than the audio itself (~42%). Showing the composer&rsquo;s note to
+  judges shifts scores by +0.15 on a 1&ndash;5 scale on average, but the
+  shift correlates &rho;&nbsp;=&nbsp;0.64 with the intent-execution score:
+  notes amplify faithful describers and penalize overclaimers. Full numbers in
+  <code>docs/analysis/description_link_analysis.json</code>.</p>
+
+  <h2>Footnotes</h2>
+  <ol class="footnotes">
+  <li>6 degenerate codegen pieces were retroactively excluded; the July
+  full-description runs predate that fix and include them.</li>
+  <li>The July full-description masked runs carry a small since-fixed mask leak
+  (hyphenated &ldquo;minor-key&rdquo;, standalone modal names; 125/645 pieces
+  contained such terms). The unmasked-ceiling result bounds its impact: strong
+  judges were at ceiling with no masking at all, so the leak mainly flatters
+  weak-judge numbers. Foil accuracy is slightly inflated by piece-population
+  priors, making the content estimates conservative.</li>
+  </ol>
+  </div>
+</body></html>
