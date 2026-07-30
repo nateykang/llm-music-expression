@@ -785,7 +785,7 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
             ax.spines[s].set_visible(False)
         ax.axhline(0, color=MUTED, lw=.6)
         ax.legend(frameon=False, fontsize=8, loc="upper left")
-        ax.set_xlabel("share of the judge's OWN free-form pieces in major keys",
+        ax.set_xlabel("share of the judge's own free-form pieces in major keys",
                       fontsize=9, color=MUTED)
         ax.set_ylabel("bias towards pieces in major keys", fontsize=9, color=MUTED)
         ax.set_title("LLMs' Bias in Generation Persisting in Evaluation",
