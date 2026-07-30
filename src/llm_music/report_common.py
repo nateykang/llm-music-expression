@@ -43,7 +43,7 @@ def drop_degenerate(rows, analysis: Path):
                  str(r.get("sample") or 0)) not in bad]
 
 # Site palette — keep in sync with the CSS variables in docs/style.css.
-BG = "#faf9f7"
+BG = "#ffffff"
 INK = "#1d1b18"
 MUTED = "#6b665d"
 ACCENT = "#7a5c3e"
@@ -470,7 +470,7 @@ def page(title, active, body, extra_css="", extra_head=""):
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{html.escape(title)}</title>
-<link rel="stylesheet" href="style.css?v=22">
+<link rel="stylesheet" href="style.css?v=23">
 <style>{style}</style>
 {extra_head}
 </head><body>

@@ -769,6 +769,29 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
                      f"perm p = {p_b:.3f})", color=INK, fontsize=11)
     _fig("bach_mode_bias.png", bachfig, figsize=(7.4, 5))
 
+    def combofig(ax, f):
+        for pairs, color, label in ((bach_pairs, "#7a5c3e", "Bach chorales"),
+                                    (wa_pairs, "#4a5a7a", "LLM pieces")):
+            xs_ = [a for a, _, _ in pairs]
+            ys_ = [b for _, b, _ in pairs]
+            ax.scatter(xs_, ys_, s=42, color=color, label=label)
+            for a, b, j in pairs:
+                ax.annotate(SHORT.get(j, j), (a, b), fontsize=7, color=MUTED,
+                            xytext=(4, 3), textcoords="offset points")
+            z = np.polyfit(xs_, ys_, 1)
+            xr = np.linspace(min(xs_), max(xs_), 10)
+            ax.plot(xr, z[0] * xr + z[1], color=color, ls=":", lw=1)
+        for s in ("top", "right"):
+            ax.spines[s].set_visible(False)
+        ax.axhline(0, color=MUTED, lw=.6)
+        ax.legend(frameon=False, fontsize=8, loc="upper left")
+        ax.set_xlabel("share of the judge's OWN free-form pieces in major keys",
+                      fontsize=9, color=MUTED)
+        ax.set_ylabel("bias towards pieces in major keys", fontsize=9, color=MUTED)
+        ax.set_title("LLMs' Bias in Generation Persisting in Evaluation",
+                     color=INK, fontsize=11)
+    _fig("mode_bias_combined.png", combofig, figsize=(7.4, 5))
+
     # mode vs specific key: does a judge's favorite key get extra points on Bach,
     # beyond its favorite mode? For each judge, take its most-written (tonic, mode)
     # and compare its deviation on Bach chorales in exactly that key against other
@@ -875,6 +898,11 @@ def render_selfpref_html(analysis: Path, data_dir: Path, out_path: Path) -> Path
                   "correlation. (Because the y-axis is measured relative to the panel, it "
                   "crosses zero near the panel's average major-writing rate, "
                   f"~{100 * mean(a for a, _, _ in bach_pairs):.0f}%, rather than at 50%.)")
+        + _figure("mode_bias_combined.png", "Both experiments on one axis: each point is a "
+                  "judge, placed by how much of its own music is in major keys (x) and how "
+                  "much it favors major-key pieces when judging (y). Brown = its bias on the "
+                  "Bach chorales; slate = the same bias within the LLM-generated corpus "
+                  "(author held fixed). Dotted lines are least-squares fits per setting.")
         + table([("judge", None), ("writes major", "share of its own free-form pieces in major"),
                  ("favors major on Bach", "major-minus-minor deviation vs the panel, points")],
                 [r for _, r in bach_rows])
