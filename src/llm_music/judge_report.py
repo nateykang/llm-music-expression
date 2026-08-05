@@ -285,7 +285,10 @@ def _affinity_figure(xs, ys, labels, out_dir: Path, name: str, *,
     p = sum(abs(float(np.corrcoef(rng.permutation(np.asarray(xs, float)), ys)[0, 1])) >= abs(r0)
             for _ in range(20000)) / 20000
 
-    fig, ax = plt.subplots(figsize=(7.4, 5))
+    from .report_common import BG
+    fig, ax = plt.subplots(figsize=(7.0, 4.4), dpi=130)
+    fig.patch.set_facecolor(BG)
+    ax.set_facecolor(BG)
     ax.scatter(xs, ys, s=42, color="#4a5a7a", label="LLM pieces (v2)")
     for x, y, lab in zip(xs, ys, labels):
         ax.annotate(lab, (x, y), fontsize=7, color=MUTED, xytext=(4, 3),
@@ -301,9 +304,10 @@ def _affinity_figure(xs, ys, labels, out_dir: Path, name: str, *,
     ax.set_ylabel(ylabel, fontsize=9, color=MUTED)
     ax.set_title(f"{title}  (r = {r0:+.2f}, perm p = {p:.3f})", color=INK, fontsize=11)
     fig.tight_layout()
-    fig.savefig(out_dir / name, dpi=160)
+    fig.savefig(out_dir / name, facecolor=BG)
     plt.close(fig)
-    return (f"<figure class='chart'><img src='analysis/{name}' alt='{xlabel} vs {ylabel}'>"
+    return (f"<figure class='chart'><img src='analysis/{name}' "
+            f"style='max-width:100%;height:auto' alt='{xlabel} vs {ylabel}'>"
             f"<figcaption>{caption}</figcaption></figure>")
 
 def _panel_rows(raw, panel):
