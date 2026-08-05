@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import os
 
+from .base import load_sdk
+
 _BASE_URL = "https://openrouter.ai/api/v1"
 
 
@@ -17,6 +19,7 @@ class OpenRouterClient:
         self.name = name
         self.model_id = model_id
         self.max_output_tokens = max_output_tokens
+        self._sdk = load_sdk("openai", "OpenAI")
         self._client = None
 
     def _ensure_client(self):
@@ -26,12 +29,11 @@ class OpenRouterClient:
                 raise RuntimeError(
                     "OPENROUTER_API_KEY is not set. Add it to .env (see .env.example)."
                 )
-            from openai import OpenAI
-
             # Bound each request so a hung call can't pin a worker thread forever.
             # Generous (10 min) so reasoning models (gemini, deepseek, …) get their full
             # think time — the cap is a hang backstop, NOT a budget on legitimate reasoning.
-            self._client = OpenAI(base_url=_BASE_URL, api_key=key, timeout=600.0, max_retries=2)
+            self._client = self._sdk(base_url=_BASE_URL, api_key=key, timeout=600.0,
+                                     max_retries=2)
         return self._client
 
     def complete(self, system: str, user: str, json_mode: bool = False) -> str:

@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import os
 
+from .base import load_sdk
+
 
 class OpenAIClient:
     """LLMClient implementation backed by the OpenAI API."""
@@ -18,7 +20,8 @@ class OpenAIClient:
         self.name = name
         self.model_id = model_id
         self.max_output_tokens = max_output_tokens
-        self._client = None  # lazy: import/key only needed when actually used
+        self._sdk = load_sdk("openai", "OpenAI")
+        self._client = None  # lazy: the key is only needed when actually used
 
     def _ensure_client(self):
         if self._client is None:
@@ -27,9 +30,7 @@ class OpenAIClient:
                     "OPENAI_API_KEY is not set. Add it to .env "
                     "(see .env.example)."
                 )
-            from openai import OpenAI
-
-            self._client = OpenAI()
+            self._client = self._sdk()
         return self._client
 
     def complete(self, system: str, user: str, json_mode: bool = False) -> str:

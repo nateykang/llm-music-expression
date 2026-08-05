@@ -25,11 +25,18 @@ import logging
 import re
 import tempfile
 import threading
+import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-from .retry import backoff_sleep, is_retryable
+from .retry import RateGate, backoff_sleep, is_rate_limited, is_retryable
+
+# Shared across all judge workers in this process: a 429 on any call
+# pauses new calls to that judge model for the cooldown window instead of
+# every worker retrying against the throttle in parallel.
+_RATE_GATE = RateGate()
+RATE_COOLDOWN_S = 120.0
 
 log = logging.getLogger(__name__)
 
@@ -86,15 +93,24 @@ _EMOTION_ALIASES = {"somber": "sombre", "melancholy": "melancholic",
 
 QUALITY_KEYS = [k for k, *_ in QUALITY]
 AFFECT_KEYS = [k for k, *_ in AFFECT]
-ALL_KEYS = QUALITY_KEYS + AFFECT_KEYS + ["intent"]  # csv column order
+# Model-stated holistic score, asked LAST so it cannot anchor the per-dimension
+# scores (v2 addition; distinct from the computed `overall` = mean of quality dims).
+TOPLINE = ("topline", "Top-line score",
+           "Overall, how good is this music?",
+           "poor", "genuinely excellent")
+
+ALL_KEYS = QUALITY_KEYS + AFFECT_KEYS + ["intent", "topline"]  # csv column order
 
 
 def _system(include_note: bool) -> str:
     base = (
-        "You are an expert music critic evaluating short solo or small-ensemble "
-        "pieces presented in symbolic notation (ABC, or a note-by-note listing). "
-        "Judge ONLY what you can perceive from the notes — harmony, melodic line, "
-        "rhythm, form, and emotional character. Do not reward length. Be calibrated "
+        # v2 prompt (composer persona) — pilot-validated 2026-08-03: better
+        # test-retest (0.230 vs 0.298), equal discrimination, anchors hold,
+        # uniform -0.075 mean shift vs the v1 critic prompt. v1 corpus scores
+        # in docs/analysis/judge*.csv were produced under the old prompt.
+        "You are a music composer evaluating pieces presented in symbolic "
+        "notation (ABC, or a note-by-note listing). Judge ONLY what you can "
+        "perceive from the notes. Do not reward length. Be calibrated "
         "and critical: on each 1-5 dimension, 3 = competent but unremarkable, 5 = "
         "genuinely excellent, 1 = a clear failure. For every dimension write a "
         "one-sentence justification and THEN an integer 1-5 using the anchors. Also "
@@ -318,7 +334,7 @@ def representation(piece: dict, batch_dir: Path) -> tuple[str | None, str | None
 
 
 def build_user(piece: dict, rep_kind: str, rep_text: str, include_note: bool = False) -> str:
-    items = QUALITY + AFFECT + ([INTENT] if include_note else [])
+    items = QUALITY + AFFECT + ([INTENT] if include_note else []) + [TOPLINE]
     rubric = "\n".join(
         f"- {key} ({label}): {q} [1 = {lo}; 5 = {hi}]"
         for key, label, q, lo, hi in items)
@@ -380,28 +396,51 @@ def judge_piece(client, piece: dict, batch_dir: Path, include_note: bool = False
     user = build_user(piece, rep_kind, rep_text, include_note)
     who = f"{getattr(client, 'name', '?')} on {piece.get('model', '?')} × {piece.get('prompt', '?')}"
     obj = None
-    for a in range(attempts):
+    a = 0
+    throttles = 0
+    while a < attempts:
+        _RATE_GATE.wait(getattr(client, "name", "?"))
         try:
             raw = client.complete(_system(include_note), user, json_mode=True)
             obj = _extract_json(raw)
             if obj is None:
+                a += 1
                 log.warning("judge %s: no parseable JSON in response (attempt %d/%d)",
-                            who, a + 1, attempts)
+                            who, a, attempts)
         except Exception as e:
             obj = None
+            if is_rate_limited(e) and throttles < 8:
+                # Infrastructure throttle: cool this judge model down globally
+                # and retry without charging a verdict attempt.
+                throttles += 1
+                _RATE_GATE.trip(getattr(client, "name", "?"), RATE_COOLDOWN_S)
+                log.warning("judge %s: 429 — cooling %s for %.0fs (throttle %d/8, "
+                            "attempt not charged)", who, getattr(client, "name", "?"),
+                            RATE_COOLDOWN_S, throttles)
+                time.sleep(_RATE_GATE.release_jitter())
+                continue
+            a += 1
             if not is_retryable(e):
                 log.warning("judge %s: permanent API error, giving up: %s", who, e)
                 return None
-            log.warning("judge %s: attempt %d/%d failed: %s", who, a + 1, attempts, e)
+            log.warning("judge %s: attempt %d/%d failed: %s", who, a, attempts, e)
         if obj:
             break
-        if a < attempts - 1:
+        if a < attempts:
             backoff_sleep(a, cap=8.0)
     if not obj:
         log.warning("judge %s: no verdict after %d attempts", who, attempts)
         return None
+    return parse_verdict(obj, include_note)
+
+
+def parse_verdict(obj: dict, include_note: bool = False) -> dict | None:
+    """Normalize one raw judge JSON object into a verdict record.
+
+    Shared by the realtime path (judge_piece) and the batch-API path so a
+    verdict means exactly the same thing regardless of transport."""
     out = {}
-    keys = QUALITY_KEYS + AFFECT_KEYS + (["intent"] if include_note else [])
+    keys = QUALITY_KEYS + AFFECT_KEYS + (["intent"] if include_note else []) + ["topline"]
     for k in keys:
         v = obj.get(k)
         if isinstance(v, dict) and "score" in v:
@@ -506,7 +545,7 @@ def judge_corpus(data_dir: Path, judge_names: list[str], *, prompt: str | None =
             tkey, jname = key.rsplit("|", 1)
             verdicts.setdefault(tkey, {})[jname] = v
 
-    score_keys = QUALITY_KEYS + AFFECT_KEYS + (["intent"] if include_note else [])
+    score_keys = QUALITY_KEYS + AFFECT_KEYS + (["intent"] if include_note else []) + ["topline"]
     rows, raw = [], []
     for pc, bd in tasks:
         panel = verdicts.get(_task_key(pc, bd), {})

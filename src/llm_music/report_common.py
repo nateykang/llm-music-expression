@@ -55,7 +55,12 @@ SHORT = {"fable-5": "fable", "gpt-5.5": "gpt-5.5", "gemini-2.5-pro": "gemini", "
          "opus-4.8-thinking": "opus-think", "sonnet-4.6": "sonnet",
          "sonnet-4.6-thinking": "sonnet-think", "deepseek-v4-pro": "deepseek",
          "gpt-4.1": "gpt-4.1", "grok-4.3": "grok", "qwen3-max": "qwen",
-         "llama-4-maverick": "llama"}
+         "llama-4-maverick": "llama",
+         # v2 roster additions (order here fixes column order in heat tables)
+         "gpt-5.2": "gpt-5.2", "gpt-5.6": "gpt-5.6",
+         "gpt-5.6-thinking": "gpt-5.6-think",
+         "gemini-3.6-flash": "gemini-3.6", "grok-4.5": "grok-4.5",
+         "deepseek-v4-flash": "ds-flash", "kimi-k3": "kimi"}
 
 # Generation-mode toggle (judge/audio pages): ABC groups abc + smt-abc.
 MODE_TOGGLE = [("abc", "ABC"), ("code", "code-gen"), ("all", "both")]

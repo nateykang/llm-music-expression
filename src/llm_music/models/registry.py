@@ -33,9 +33,20 @@ MODEL_REGISTRY: dict[str, tuple] = {
     "gemini-2.5-pro": ("openrouter", "google/gemini-2.5-pro"),
     # Gemini 3.1 Pro ships only as -preview on OpenRouter.
     "gemini-3.1-pro": ("openrouter", "google/gemini-3.1-pro-preview"),
+    # v2-corpus Google slot: 3.6 Flash (GA 2026-07-21) beats 3.1 Pro on all
+    # published coding/agentic benchmarks; 3.1 Pro keeps only the PhD-science
+    # lead (GPQA/HLE) and remains preview-only.
+    "gemini-3.6-flash": ("openrouter", "google/gemini-3.6-flash"),
+    # v2 roster extension: mid-generation GA flash flagship (2026-05-19) —
+    # completes the Google lineage 3.5-flash -> 3.6-flash alongside 3.1-pro.
+    "gemini-3.5-flash": ("openrouter", "google/gemini-3.5-flash"),
     "grok-4.3": ("openrouter", "x-ai/grok-4.3"),
     "grok-4.5": ("openrouter", "x-ai/grok-4.5"),
     "deepseek-v4-pro": ("openrouter", "deepseek/deepseek-v4-pro"),
+    # v2-corpus DeepSeek slot: the 0731 retrain outscores V4-Pro on all nine
+    # of DeepSeek's published agent/coding benchmarks. Pinned snapshot (not
+    # -latest) for corpus reproducibility.
+    "deepseek-v4-flash": ("openrouter", "deepseek/deepseek-v4-flash-0731"),
     "qwen3-max": ("openrouter", "qwen/qwen3-max"),
     "llama-4-maverick": ("openrouter", "meta-llama/llama-4-maverick"),
     "kimi-k3": ("openrouter", "moonshotai/kimi-k3"),

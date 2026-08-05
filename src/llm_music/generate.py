@@ -11,7 +11,7 @@ from .config import PROMPTS_DIR
 from .models.base import LLMClient
 from .modes import MODES
 from .render import midi_to_audio
-from .retry import backoff_sleep, is_retryable
+from .retry import backoff_sleep, is_overloaded, is_rate_limited, is_retryable
 
 log = logging.getLogger(__name__)
 
@@ -105,8 +105,15 @@ def generate_piece(
     )
     prior_error: str | None = None
 
-    for attempt in range(1, max_attempts + 1):
-        result.attempts = attempt
+    # 529-class overloads are provider capacity backpressure, not a property of
+    # the model, so they never consume one of the model's attempts (attempts is
+    # a reliability covariate in analyses). They get their own bounded budget so
+    # a sustained outage still terminates; only past that budget do they start
+    # charging attempts like any other API error.
+    OVERLOAD_RETRIES = 6
+    overloads = 0
+    attempt = 0
+    while attempt < max_attempts:
         user = mode_mod.build_user_prompt(base_user, prior_error)
         try:
             # json_mode enforces at the decoder what the prompt already demands
@@ -115,6 +122,18 @@ def generate_piece(
             # trace (same fix the judge path has always used). Prompt text unchanged.
             response = client.complete(SYSTEM_PROMPT, user, json_mode=True)
         except Exception as e:  # API/network failure
+            if (is_overloaded(e) or is_rate_limited(e)) and overloads < OVERLOAD_RETRIES:
+                # 529 overload and 429 throttle alike: infrastructure signals,
+                # never charged against the model's attempts.
+                overloads += 1
+                result.errors.append(f"infra backpressure (attempt not charged): {e}")
+                log.warning("%s × %s: provider backpressure (%d/%d), waiting — "
+                            "not counted as an attempt",
+                            client.name, prompt_name, overloads, OVERLOAD_RETRIES)
+                backoff_sleep(overloads + 2)  # capacity dips need longer waits
+                continue
+            attempt += 1
+            result.attempts = attempt
             prior_error = f"API error: {e}"
             result.errors.append(prior_error)
             result.failed_attempts.append({"error": prior_error, "code": ""})
@@ -124,8 +143,10 @@ def generate_piece(
                 break  # e.g. 400 unknown/unverified model, bad key — retrying won't help
             log.warning("%s × %s: attempt %d/%d failed (%s), backing off",
                         client.name, prompt_name, attempt, max_attempts, e)
-            backoff_sleep(attempt)  # exponential backoff (esp. for overload)
+            backoff_sleep(attempt)  # exponential backoff
             continue
+        attempt += 1
+        result.attempts = attempt
 
         outcome = mode_mod.generate(response, work_dir)
         if getattr(outcome, "code", ""):

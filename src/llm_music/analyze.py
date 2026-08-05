@@ -512,7 +512,15 @@ def analyze_batch(batch_dir: Path) -> list[dict]:
     for p in manifest["pieces"]:
         if not p.get("ok"):
             continue
-        feats = extract_features(p, batch_dir)
+        try:
+            feats = extract_features(p, batch_dir)
+        except Exception as exc:
+            # One malformed piece (e.g. a truncated MIDI meta-event out of
+            # abc2midi) must not kill the whole batch — quarantine and continue.
+            log.warning("%s: feature extraction CRASHED on %s × %s s%s (%s: %s) — skipped",
+                        batch_dir.name, p.get("model"), p.get("prompt"),
+                        p.get("sample", 0), type(exc).__name__, exc)
+            continue
         if feats:
             rows.append(feats)
         else:

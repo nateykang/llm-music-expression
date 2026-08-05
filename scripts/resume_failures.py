@@ -23,7 +23,9 @@ from llm_music.generate import generate_piece  # noqa: E402
 from llm_music.models import get_client  # noqa: E402
 from llm_music.store import append_result, write_manifest  # noqa: E402
 
-RECOVERABLE = re.compile(r"overload|could not parse JSON", re.I)
+# 429s are infrastructure throttling (never the model's fault — see
+# generate.py's uncharged-attempt handling) and fully recoverable.
+RECOVERABLE = re.compile(r"overload|could not parse JSON|429", re.I)
 
 
 def main():

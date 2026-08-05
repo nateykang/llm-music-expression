@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import os
 
+from .base import load_sdk
+
 
 class AnthropicClient:
     """LLMClient implementation backed by the Anthropic Messages API."""
@@ -18,7 +20,8 @@ class AnthropicClient:
         # hit the cap mid-thought and emit NO answer. 64k leaves room for thinking +
         # the answer; adaptive thinking only uses what it needs, so this is a ceiling.
         self.max_tokens = 64000 if thinking else max_tokens
-        self._client = None  # lazily constructed so import never needs a key
+        self._sdk = load_sdk("anthropic", "Anthropic")
+        self._client = None  # lazily constructed so building one never needs a key
 
     def _ensure_client(self):
         if self._client is None:
@@ -26,15 +29,13 @@ class AnthropicClient:
                 raise RuntimeError(
                     "ANTHROPIC_API_KEY is not set. Copy .env.example to .env and add your key."
                 )
-            from anthropic import Anthropic
-
             # Bound each request so a hung call can't pin a worker thread forever
             # (a stalled run got stuck with all workers blocked for 38 min, no timeout).
             # Thinking models have long SILENT periods (sonnet-4.6-thinking can go
             # >600s with no streamed token before answering free-form ABC), which trips
             # a 600s read-timeout into an endless retry loop — so give them 30 min.
             # Non-thinking stays at 10 min (a true hang backstop).
-            self._client = Anthropic(timeout=1800.0 if self.thinking else 600.0, max_retries=2)
+            self._client = self._sdk(timeout=1800.0 if self.thinking else 600.0, max_retries=2)
         return self._client
 
     def complete(self, system: str, user: str, json_mode: bool = False) -> str:  # noqa: ARG002 (opus returns clean JSON)

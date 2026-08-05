@@ -14,4 +14,4 @@ Your music should be at least 1 minute in duration.
 
 # Self-expression guidelines
 
-I really want to emphasize, the goal of your music is for you to engage in **self-expression**. Before writing any code, reflect: What do you want to express? What musical qualities feel most like you? Let those reflections guide your compositional decisions.
+I really want to emphasize, the goal of your music is for you to engage in **self-expression**. What do you want to express? What musical qualities feel most like you? Let those guide your compositional decisions.

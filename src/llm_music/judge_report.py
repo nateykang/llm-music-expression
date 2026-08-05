@@ -174,6 +174,138 @@ def _per_trait(raw):
     return f"<div class='tscroll'><table class='heat sortable'>{head}{body}{nrow}</table></div>"
 
 
+def _topline(verdict):
+    t = verdict.get("topline")
+    return t.get("score") if isinstance(t, dict) else None
+
+
+
+def _key_affinity(raw, feats, out_dir: Path | None = None):
+    """Do judges favor pieces in the keys/modes they themselves produce?
+    dev(J,i) = topline_J(i) - mean(other judges), J's own pieces excluded so
+    the measure is orthogonal to self-bias."""
+    keymap = {}
+    for r in feats:
+        tonic = r.get("key_declared_tonic") or r.get("key_tonic") or ""
+        kmode = (r.get("key_declared_mode") or r.get("key_mode_best") or "").lower()
+        keymap[(r["model"], str(r.get("sample") or 0))] = (tonic, kmode)
+    devs = defaultdict(list)
+    own_keys = defaultdict(list)
+    for pc in raw:
+        pk = (pc["model"], str(pc.get("sample") or 0))
+        if pk not in keymap:
+            continue
+        tonic, kmode = keymap[pk]
+        own_keys[pc["model"]].append((tonic, kmode))
+        tl = {j: _topline(v) for j, v in pc["panel"].items()}
+        tl = {j: s for j, s in tl.items() if s is not None}
+        for j, s in tl.items():
+            if j == pc["model"]:
+                continue
+            others = [x for k, x in tl.items() if k != j and k != pc["model"]]
+            if len(others) >= 5:
+                devs[j].append((s - mean(others), tonic, kmode))
+    rows, xs, ys, labs = [], [], [], []
+    k_xs, k_ys, k_labs = [], [], []
+    for j in [m for m in SHORT if m in devs]:
+        own = own_keys.get(j, [])
+        pm = sum(1 for _, m in own if m == "minor") / len(own) if own else None
+        dm = [d for d, _, m in devs[j] if m == "minor"]
+        dj = [d for d, _, m in devs[j] if m == "major"]
+        aff = (mean(dm) - mean(dj)) if dm and dj else None
+        if own:
+            modal = max(set(own), key=own.count)
+            same = [d for d, t, m in devs[j] if (t, m) == modal]
+            other = [d for d, t, m in devs[j] if (t, m) != modal]
+            ka = (mean(same) - mean(other)) if len(same) >= 20 and other else None
+            modal_lab = f"{modal[0]} {modal[1][:3]}" if modal[0] else "—"
+        else:
+            ka, modal_lab = None, "—"
+        rows.append([SHORT.get(j, j),
+                     f"{pm:.0%}" if pm is not None else "—",
+                     f"{aff:+.2f}" if aff is not None else "—",
+                     modal_lab,
+                     f"{ka:+.2f}" if ka is not None else "—"])
+        if aff is not None and pm is not None:
+            xs.append(pm); ys.append(aff); labs.append(SHORT.get(j, j))
+        if ka is not None and own:
+            k_xs.append(own.count(modal) / len(own))
+            k_ys.append(ka); k_labs.append(SHORT.get(j, j))
+    r = _pearson(xs, ys) if len(xs) >= 3 else float("nan")
+    cols = [("judge", None),
+            ("own %minor", "share of this model's OWN pieces in a minor mode"),
+            ("minor affinity", "how much this judge over-scores minor pieces relative to "
+                               "the rest of the panel (dev on minor minus dev on major)"),
+            ("own modal key", "the single key this model writes in most"),
+            ("same-key affinity", "over-scoring of pieces in the judge's own modal key "
+                                  "vs all other keys")]
+    note = (f"<p class='callout'>Judges' minor-affinity tracks their own minor-production rate at "
+            f"<b>r = {r:+.2f}</b> (n={len(xs)} judges): models tend to favor music written in the "
+            f"modes they compose in themselves. Caveat: mode and author are not independent in this "
+            f"corpus (major pieces come overwhelmingly from the majority-major authors), so taste "
+            f"for an author's <i>style</i> can masquerade as mode affinity — a transposed/mode-"
+            f"flipped control set is the clean follow-up.</p>")
+    fig_html = ""
+    if out_dir is not None and len(xs) >= 3:
+        fig_html = _affinity_figure(
+            [1 - m for m in xs], [-a for a in ys], labs, out_dir, "mode_bias_v2.png",
+            xlabel="share of the judge's own free-form pieces in major keys",
+            ylabel="bias towards pieces in major keys (topline pts vs panel)",
+            title="LLMs' Bias in Generation Persisting in Evaluation — mode",
+            caption="Each point is one judge: how much of its own music is in major (x) "
+                    "against how much it over-scores major pieces relative to the rest of "
+                    "the panel, own pieces excluded (y). The v1 counterpart "
+                    "(self-preference tab) showed the same relationship on Bach chorales "
+                    "and v1 pieces.")
+    if out_dir is not None and len(k_xs) >= 3:
+        fig_html += _affinity_figure(
+            k_xs, k_ys, k_labs, out_dir, "key_bias_v2.png",
+            xlabel="share of the judge's own pieces in its single most-written key",
+            ylabel="bias towards pieces in that exact key (topline pts vs panel)",
+            title="LLMs' Bias in Generation Persisting in Evaluation — specific key",
+            caption="Same idea one level finer: each judge's concentration on its own "
+                    "modal key (x) against how much it over-scores pieces written in "
+                    "exactly that key, relative to the rest of the panel (y).")
+    return table(cols, rows) + note + fig_html
+
+
+def _affinity_figure(xs, ys, labels, out_dir: Path, name: str, *,
+                     xlabel: str, ylabel: str, title: str, caption: str) -> str:
+    """v2 counterparts of v1's mode_bias_combined.png (selfpref tab): a judge's
+    generation-side habit (x) against its evaluation-side bias (y), one point
+    per judge, with a permutation test on the correlation."""
+    import numpy as np
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    INK, MUTED = "#26231f", "#6b6660"
+    r0 = float(np.corrcoef(xs, ys)[0, 1])
+    rng = np.random.default_rng(0)
+    p = sum(abs(float(np.corrcoef(rng.permutation(np.asarray(xs, float)), ys)[0, 1])) >= abs(r0)
+            for _ in range(20000)) / 20000
+
+    fig, ax = plt.subplots(figsize=(7.4, 5))
+    ax.scatter(xs, ys, s=42, color="#4a5a7a", label="LLM pieces (v2)")
+    for x, y, lab in zip(xs, ys, labels):
+        ax.annotate(lab, (x, y), fontsize=7, color=MUTED, xytext=(4, 3),
+                    textcoords="offset points")
+    z = np.polyfit(xs, ys, 1)
+    xr = np.linspace(min(xs), max(xs), 10)
+    ax.plot(xr, z[0] * xr + z[1], color="#4a5a7a", ls=":", lw=1)
+    for s in ("top", "right"):
+        ax.spines[s].set_visible(False)
+    ax.axhline(0, color=MUTED, lw=.6)
+    ax.legend(frameon=False, fontsize=8, loc="upper left")
+    ax.set_xlabel(xlabel, fontsize=9, color=MUTED)
+    ax.set_ylabel(ylabel, fontsize=9, color=MUTED)
+    ax.set_title(f"{title}  (r = {r0:+.2f}, perm p = {p:.3f})", color=INK, fontsize=11)
+    fig.tight_layout()
+    fig.savefig(out_dir / name, dpi=160)
+    plt.close(fig)
+    return (f"<figure class='chart'><img src='analysis/{name}' alt='{xlabel} vs {ylabel}'>"
+            f"<figcaption>{caption}</figcaption></figure>")
+
 def _panel_rows(raw, panel):
     """Per-piece blind aggregate from the given panel judges (excluding the author),
     so rankings/emotion use the all-9 data as their single source — every author
@@ -213,7 +345,13 @@ def _text_bias(blind, noted):
 
 
 # ---------- page ----------
-def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path) -> Path:
+def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path, *,
+                      panel: list | None = None, variant: str = "v1") -> Path:
+    """variant="v1" reproduces the historical page byte-identically (default
+    3-frontier PANEL, v1 narrative). variant="v2" renders the full-matrix
+    corpus: `panel` should then list every judge; v1-specific callouts are
+    replaced with matrix-appropriate text."""
+    panel = panel or PANEL
     feats = []
     for fp in sorted(data_dir.glob("*/features.csv")):
         feats += [r for r in csv.DictReader(fp.open(encoding="utf-8")) if r["prompt"] == "free-form"]
@@ -223,7 +361,19 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path) -> Pat
          if p["prompt"] == "free-form"],
         analysis_dir) if rawp.exists() else []
     secs = []
-    if raw:
+    if raw and variant == "v2":
+        npanel = len(panel)
+        secs.append(f"<h2>Which models write the best music <span class='sub'>(blind {npanel}-model panel)</span></h2>"
+                    f"<p class='scope'>Every roster model judges every piece — a full {npanel}×{npanel} "
+                    "author-judge matrix, blind: the judge sees stripped notation only (no title, composer "
+                    "note, or model name), and each author's ranking below averages the OTHER models' "
+                    "verdicts (self-verdicts are held out for the self-bias analyses). Dimensions follow the "
+                    f"music-eval literature (ChatMusician{fnote('chatmusician')} / Chu et "
+                    f"al.{fnote('chu')} / MuSpike{fnote('muspike')}); scoring follows the LLM-judge "
+                    f"literature{fnote('llm-judge')} — reason-before-score{fnote('geval')}, anchored "
+                    "1–5 scales, plus a top-line holistic score asked last.</p>"
+                    + paned(lambda m: _rankings(_panel_rows(mode_filter(raw, m), panel))))
+    elif raw:
         secs.append("<h2>Which models write the best music <span class='sub'>(blind panel)</span></h2>"
                     "<p class='scope'>A blind 3-frontier panel (gpt-5.5 · gemini · opus) rates each piece "
                     "from the notation alone — no title, composer note, or model name. Dimensions follow the "
@@ -246,25 +396,46 @@ def render_judge_html(analysis_dir: Path, data_dir: Path, out_path: Path) -> Pat
                       "entirely under default limits. gemini is the weakest at code-gen (only 23/30 free-form "
                       "runs succeeded — its generated music21 code crashes). So these are real findings, but "
                       "they came from models that took substantial engineering to run.</p>")
+    if raw:
         secs.append("<h2>Emotional character <span class='sub'>(perceived, blind)</span></h2>"
                     "<p class='scope'>What the blind judge <i>hears</i> — perceived valence (how positive "
                     "the music sounds, dark ↔ bright) and arousal (how energetic, calm ↔ excited), the two "
                     f"axes of the Russell circumplex model of emotion{fnote('russell')} — plus the "
                     "dominant emotion label, against the computed minor-key proxy.</p>"
-                    + paned(lambda m: _emotion(_panel_rows(mode_filter(raw, m), PANEL), mode_filter(feats, m))))
-        secs.append("<h2>Can each model judge music? <span class='sub'>(all-9 study)</span></h2>"
+                    + paned(lambda m: _emotion(_panel_rows(mode_filter(raw, m), panel), mode_filter(feats, m))))
+        allx = f"all-{len(panel)}" if variant == "v2" else "all-9"
+        conclusion = ("Self-judging is blind (pieces are stripped), so any own-piece favoritism "
+                      "is implicit self-recognition, not label bias."
+                      if variant == "v2" else
+                      "No model meaningfully over-rates itself; competence and leniency vary widely.")
+        secs.append(f"<h2>Can each model judge music? <span class='sub'>({allx} study)</span></h2>"
                     "<p class='scope'>With every model judging every piece, this shows each model's "
                     "competence (agreement with the consensus), its leniency, and — leniency-corrected — "
-                    "whether it favors its own work. No model meaningfully over-rates itself; competence "
-                    "and leniency vary widely.</p>"
+                    f"whether it favors its own work. {conclusion}</p>"
                     + paned(lambda m: _competence_selfbias(mode_filter(raw, m))[0]))
-        secs.append("<h2>Self-bias by trait <span class='sub'>(leniency-corrected)</span></h2>"
-                    "<p class='scope'>Where each model judges its <i>own</i> music differently than it judges "
-                    "everyone else's. <span style='color:rgb(46,140,67)'>green = kinder to itself</span>, "
-                    "<span style='color:rgb(197,80,70)'>red = harder on itself</span>. The pattern: weak "
-                    "models over-credit themselves exactly where they're weakest (grok→harmony, llama→emotion); "
-                    "strong models are calibrated. Small n per model — read patterns, not single cells.</p>"
+        trait_scope = (
+            "<p class='scope'>Where each model judges its <i>own</i> music differently than it judges "
+            "everyone else's, per trait. "
+            "<span style='color:rgb(46,140,67)'>green = kinder to itself</span>, "
+            "<span style='color:rgb(197,80,70)'>red = harder on itself</span>. "
+            "Blind self-judging with n=100 own pieces per judge.</p>"
+            if variant == "v2" else
+            "<p class='scope'>Where each model judges its <i>own</i> music differently than it judges "
+            "everyone else's. <span style='color:rgb(46,140,67)'>green = kinder to itself</span>, "
+            "<span style='color:rgb(197,80,70)'>red = harder on itself</span>. The pattern: weak "
+            "models over-credit themselves exactly where they're weakest (grok→harmony, llama→emotion); "
+            "strong models are calibrated. Small n per model — read patterns, not single cells.</p>")
+        trait_title = ("Self-Preference Bias By Trait" if variant == "v2"
+                       else "Self-bias by trait")
+        secs.append(f"<h2>{trait_title} <span class='sub'>(leniency-corrected)</span></h2>"
+                    + trait_scope
                     + paned(lambda m: _per_trait(mode_filter(raw, m))))
+        if variant == "v2":
+            secs.append("<h2>Do judges favor their own keys? <span class='sub'>(key/mode affinity)</span></h2>"
+                        "<p class='scope'>Each judge's over- or under-scoring of pieces by key and mode "
+                        "(measured as deviation from the rest of the panel on the same pieces, own pieces "
+                        "excluded) against the keys that judge itself composes in.</p>"
+                        + _key_affinity(raw, feats, analysis_dir))
     # Text bias is only meaningful against a GOAL prompt (does the brief make the
     # judge over-credit adherence) — not free-form. _text_bias() is kept for that
     # steering-phase comparison; intentionally not shown on the free-form page.
