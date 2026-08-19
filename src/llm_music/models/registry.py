@@ -86,6 +86,10 @@ MODEL_REGISTRY: dict[str, tuple] = {
     "grok-4.3": ("openrouter", "x-ai/grok-4.3", {"reasoning": {"enabled": False}}),
     "grok-4.3-thinking": ("openrouter", "x-ai/grok-4.3", {"reasoning": {"effort": "high"}}),
     "grok-4.5": ("openrouter", "x-ai/grok-4.5"),
+    # grok-4.6 (Aug 2026): reasoning is mandatory (enabled:false -> 400), so
+    # the ± pair is effort low vs high, like gemini 3.5+ flash and kimi-k3.
+    "grok-4.6": ("openrouter", "x-ai/grok-4.6", {"reasoning": {"effort": "low"}}),
+    "grok-4.6-thinking": ("openrouter", "x-ai/grok-4.6", {"reasoning": {"effort": "high"}}),
     "deepseek-v4-pro": ("openrouter", "deepseek/deepseek-v4-pro"),
     # v2-corpus DeepSeek slot: the 0731 retrain outscores V4-Pro on all nine
     # of DeepSeek's published agent/coding benchmarks. Pinned snapshot (not
