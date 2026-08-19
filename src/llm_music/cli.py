@@ -28,21 +28,32 @@ def _split(csv: str) -> list[str]:
 
 def _run_matrix(models: list[str], prompts: list[str], mode: str, max_attempts: int,
                 samples: int = 1, workers: int = 6, bake_audio: bool = True,
-                independent_description: bool = False):
+                independent_description: bool = False, resume: Path | None = None):
     # The batch folder + manifest are created up front and rewritten after every
-    # piece, so an interrupted run still leaves a valid, viewable partial batch.
-    ts = _timestamp()
-    batch = open_batch(ts, models, prompts)
-    print(f"  → writing to {batch}")
+    # piece, so an interrupted run still leaves a valid, viewable partial batch —
+    # and `resume` continues one: cells already recorded in its manifest (ok OR
+    # failed-after-retries; both are results) are skipped, missing ones run.
+    if resume:
+        manifest = json.loads((resume / "data.json").read_text(encoding="utf-8"))
+        ts, batch = manifest["timestamp"], resume
+        entries = list(manifest["pieces"])
+        done = {(e["model"], e["prompt"], e.get("sample", 0)) for e in entries}
+        print(f"  → resuming {batch}: {len(done)} pieces already recorded")
+    else:
+        ts = _timestamp()
+        batch = open_batch(ts, models, prompts)
+        entries, done = [], set()
+        print(f"  → writing to {batch}")
 
     # Generation is network-bound API calls, so we fan out across independent cells
     # with a thread pool. Clients are created once per model and shared (the SDKs are
     # thread-safe for concurrent requests). Cells are ordered sample-major so the
     # first `len(models)` in flight hit *different* providers — spreads rate limits.
     clients = {m: get_client(m) for m in models}
-    cells = [(m, p, s) for s in range(samples) for p in prompts for m in models]
+    cells = [(m, p, s) for s in range(samples) for p in prompts for m in models
+             if (m, p, s) not in done]
     total = len(cells)
-    results, entries = [], []
+    results = []
     lock = threading.Lock()
 
     with tempfile.TemporaryDirectory(prefix="llm_music_batch_") as scratch:
@@ -84,9 +95,14 @@ def cmd_batch(args) -> int:
     n_cells = len(models) * len(prompts) * args.samples
     print(f"Batch: {len(models)} model(s) × {len(prompts)} prompt(s) × {args.samples} "
           f"sample(s) = {n_cells} [{args.mode}], {args.workers} workers")
+    resume = Path(args.resume) if args.resume else None
+    if resume and not (resume / "data.json").is_file():
+        print(f"error: --resume {resume} has no data.json", file=sys.stderr)
+        return 2
     batch, results = _run_matrix(models, prompts, args.mode, args.max_attempts,
                                  args.samples, args.workers, bake_audio=not args.no_audio,
-                                 independent_description=args.independent_description)
+                                 independent_description=args.independent_description,
+                                 resume=resume)
     n_ok = sum(r.ok for r in results)
     n_description_failed = sum(bool(r.independent_description_error) for r in results)
     print(f"\nWrote batch: {batch}  ({n_ok}/{len(results)} succeeded)")
@@ -380,6 +396,9 @@ def build_parser() -> argparse.ArgumentParser:
                     help="concurrent generations (network-bound; raise to go faster)")
     pb.add_argument("--no-audio", action="store_true",
                     help="skip audio baking (for large sampling runs — keeps the site lean)")
+    pb.add_argument("--resume", default=None, metavar="BATCH_DIR",
+                    help="continue an interrupted batch: skip cells already in its "
+                         "data.json, generate only the missing ones (same flags + this)")
     pb.set_defaults(func=cmd_batch)
 
     pm = sub.add_parser("models", help="list registered models")
