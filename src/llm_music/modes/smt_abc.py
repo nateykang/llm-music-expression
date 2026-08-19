@@ -14,6 +14,7 @@ from . import abc as _abc
 # Reuse ABC mode's response handling (extract JSON, store raw ABC, coarse gate).
 generate = _abc.generate
 build_user_prompt = _abc.build_user_prompt
+TASK = _abc.TASK
 USES_TOOLKIT = False
 
 OUTPUTS = """\

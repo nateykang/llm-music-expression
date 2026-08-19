@@ -155,6 +155,7 @@ def test_scrub_musicxml_blanks_titles_and_credits():
 
 def test_generation_option_attaches_posthoc_description(monkeypatch, tmp_path):
     class FakeMode:
+        TASK = "a fake format"
         OUTPUTS = "## Outputs\nFake"
         USES_TOOLKIT = False
 
@@ -182,7 +183,7 @@ def test_generation_option_attaches_posthoc_description(monkeypatch, tmp_path):
     ])
     result = generate_piece(
         client,
-        "free-form",
+        "express-yourself",
         "fake-description-mode",
         tmp_path,
         bake_audio=False,

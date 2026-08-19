@@ -367,12 +367,13 @@ def build_parser() -> argparse.ArgumentParser:
 
     pr = sub.add_parser("run", parents=[common], help="generate one model × prompt")
     pr.add_argument("--model", required=True)
-    pr.add_argument("--prompt", default="free-form")
+    pr.add_argument("--prompt", default="express-yourself")
     pr.set_defaults(func=cmd_run)
 
     pb = sub.add_parser("batch", parents=[common], help="generate a model × prompt matrix")
     pb.add_argument("--models", required=True, help="comma-separated friendly ids")
-    pb.add_argument("--prompts", default="free-form", help="comma-separated prompt names")
+    pb.add_argument("--prompts", default="express-yourself",
+                    help="comma-separated variant ids (see prompts/variants.csv)")
     pb.add_argument("--samples", type=int, default=1,
                     help="repeats per model×prompt cell (for sampling distributions)")
     pb.add_argument("--workers", type=int, default=6,
@@ -411,8 +412,8 @@ def build_parser() -> argparse.ArgumentParser:
     pj = sub.add_parser("judge", help="run the LLM-judge panel over the corpus → judge.csv")
     pj.add_argument("--judges", default="gpt-5.5,gemini-2.5-pro,opus-4.8",
                     help="comma-separated panelist model ids (frontier; diverse)")
-    pj.add_argument("--prompt", default="free-form",
-                    help="restrict to one prompt (default free-form; '' for all)")
+    pj.add_argument("--prompt", default="",
+                    help="restrict to one prompt id (default: judge all prompts)")
     pj.add_argument("--limit", type=int, default=None, help="cap number of pieces (for a pilot)")
     pj.add_argument("--workers", type=int, default=6, help="concurrent judge calls")
     pj.add_argument("--no-exclude-self", action="store_true",

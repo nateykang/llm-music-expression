@@ -15,10 +15,15 @@ _BASE_URL = "https://openrouter.ai/api/v1"
 class OpenRouterClient:
     """LLMClient implementation backed by OpenRouter's OpenAI-compatible API."""
 
-    def __init__(self, name: str, model_id: str, max_output_tokens: int = 32000):
+    def __init__(self, name: str, model_id: str, max_output_tokens: int = 32000,
+                 reasoning: dict | None = None):
         self.name = name
         self.model_id = model_id
         self.max_output_tokens = max_output_tokens
+        # OpenRouter's unified reasoning control ({"effort": ...}, {"max_tokens": ...}
+        # or {"enabled": False}), translated per upstream provider — how the registry
+        # delineates thinking/non-thinking arms. None = provider default.
+        self.reasoning = reasoning
         self._sdk = load_sdk("openai", "OpenAI")
         self._client = None
 
@@ -46,6 +51,9 @@ class OpenRouterClient:
             ],
             max_tokens=self.max_output_tokens,
         )
+        if self.reasoning:
+            # Must ride extra_body: the OpenAI SDK rejects unknown top-level kwargs.
+            kwargs["extra_body"] = {"reasoning": self.reasoning}
         if json_mode:
             # Force valid JSON into `content` so reasoning models can't strand the
             # answer in their reasoning trace (the gemini judge-parse-failure fix).

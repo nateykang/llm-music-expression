@@ -27,7 +27,7 @@ from dotenv import load_dotenv  # noqa: E402
 
 load_dotenv(ROOT / ".env")
 
-from llm_music.generate import SYSTEM_PROMPT, _load_prompt  # noqa: E402
+from llm_music.generate import SYSTEM_TEMPLATE, _load_prompt, _variant_row  # noqa: E402
 from llm_music.models import get_client  # noqa: E402
 from llm_music.modes import MODES  # noqa: E402
 from llm_music.modes._common import extract_json  # noqa: E402
@@ -37,6 +37,8 @@ from llm_music.sandbox import run_music21_code  # noqa: E402
 MODELS = ["fable-5", "gpt-4.1", "deepseek-v4-pro"]
 SAMPLES = 3
 MODE = "codegen-sparse"
+PROMPT = "express-yourself"
+SYSTEM_PROMPT = SYSTEM_TEMPLATE.format(variant=_variant_row(PROMPT)["instruction"])
 OUT = ROOT / "docs/experiments/toolkit_ablation"
 
 
@@ -88,7 +90,7 @@ def main():
         shutil.rmtree(OUT)
     (OUT / "scores").mkdir(parents=True)
     (OUT / "audio").mkdir(parents=True)
-    base_user = _load_prompt("free-form", MODES[MODE])
+    base_user = _load_prompt(MODES[MODE])
     (OUT / "prompt.txt").write_text(base_user, encoding="utf-8")
 
     pieces = []

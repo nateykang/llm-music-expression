@@ -6,6 +6,6 @@ mode (and prompts/toolkit.md) are untouched.
 
 from __future__ import annotations
 
-from .codegen import OUTPUTS, build_user_prompt, generate  # noqa: F401
+from .codegen import OUTPUTS, TASK, build_user_prompt, generate  # noqa: F401
 
 USES_TOOLKIT = False

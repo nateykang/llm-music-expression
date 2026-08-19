@@ -16,10 +16,14 @@ from .base import load_sdk
 class OpenAIClient:
     """LLMClient implementation backed by the OpenAI API."""
 
-    def __init__(self, name: str, model_id: str, max_output_tokens: int = 16000):
+    def __init__(self, name: str, model_id: str, max_output_tokens: int = 16000,
+                 reasoning_effort: str | None = None):
         self.name = name
         self.model_id = model_id
         self.max_output_tokens = max_output_tokens
+        # Reasoning dial (minimal..high) — how the registry delineates the
+        # thinking/non-thinking arms of one gpt-5.x model. None = provider default.
+        self.reasoning_effort = reasoning_effort
         self._sdk = load_sdk("openai", "OpenAI")
         self._client = None  # lazy: the key is only needed when actually used
 
@@ -35,12 +39,16 @@ class OpenAIClient:
 
     def complete(self, system: str, user: str, json_mode: bool = False) -> str:
         client = self._ensure_client()  # json_mode unused: gpt-* already return clean JSON
+        kwargs = {}
+        if self.reasoning_effort:
+            kwargs["reasoning"] = {"effort": self.reasoning_effort}
         try:
             resp = client.responses.create(
                 model=self.model_id,
                 instructions=system,
                 input=user,
                 max_output_tokens=self.max_output_tokens,
+                **kwargs,
             )
             text = getattr(resp, "output_text", None)
             if text:
@@ -61,6 +69,8 @@ class OpenAIClient:
             ],
             "max_completion_tokens": self.max_output_tokens,
         }
+        if self.reasoning_effort:
+            kwargs["reasoning_effort"] = self.reasoning_effort
         resp = client.chat.completions.create(**kwargs)
         return resp.choices[0].message.content or ""
 

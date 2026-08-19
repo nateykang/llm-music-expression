@@ -11,6 +11,9 @@ from pathlib import Path
 from ..sandbox import run_music21_code
 from ._common import ModeResult, extract_json
 
+# Task phrase for the user-prompt frame ("Your task is to write music in ...").
+TASK = "Python using the music21 library"
+
 # The "## Outputs" section of the prompt. Mirrors sara-fish's prompt.md, with the
 # code contract adapted to our sandbox (bind a top-level `score`, no render()).
 OUTPUTS = """\
@@ -27,8 +30,10 @@ You must respond with a single JSON object (and nothing else) with these fields:
 - `long_description`: A detailed explanation of your compositional choices. Can be any length.
 """
 
-# Codegen gets the music21 toolkit documentation appended (see prompts/toolkit.md).
-USES_TOOLKIT = True
+# The corpus protocol ships codegen with no toolkit doc — musical examples in
+# the prompt prime the very choices under study. Flip to True to re-append
+# prompts/toolkit.md as a "# Music documentation" section.
+USES_TOOLKIT = False
 
 
 def build_user_prompt(base: str, prior_error: str | None) -> str:

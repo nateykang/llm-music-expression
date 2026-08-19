@@ -15,10 +15,7 @@ from .retry import backoff_sleep, is_overloaded, is_rate_limited, is_retryable
 
 log = logging.getLogger(__name__)
 
-SYSTEM_PROMPT = (
-    "You are a composer expressing yourself through music. Follow the output "
-    "format exactly."
-)
+SYSTEM_TEMPLATE = "You are a composer. {variant}"
 
 
 @dataclass
@@ -49,34 +46,44 @@ class PieceResult:
     failed_attempts: list[dict] = field(default_factory=list)
 
 
-def _form_row(prompt_name: str) -> dict:
-    """Look up a prompt's row (id, label, instruction) from sara's CSV."""
-    path = PROMPTS_DIR / "form_instructions.csv"
+def _csv_row(path: Path, prompt_name: str) -> dict | None:
     with path.open(encoding="utf-8", newline="") as f:
         for row in csv.DictReader(f):
             if row["id"] == prompt_name:
                 return row
+    return None
+
+
+def _variant_row(prompt_name: str) -> dict:
+    """Look up a self-expression variant's row (id, label, instruction)."""
+    path = PROMPTS_DIR / "variants.csv"
+    row = _csv_row(path, prompt_name)
+    if row is not None:
+        return row
     with path.open(encoding="utf-8", newline="") as f:
         known = ", ".join(p["id"] for p in csv.DictReader(f))
     raise KeyError(f"unknown prompt '{prompt_name}'. Known: {known}")
 
 
 def prompt_label(prompt_name: str) -> str:
-    """Human-readable label for a prompt id (e.g. 'free-form' -> 'Free form')."""
-    return _form_row(prompt_name).get("label") or prompt_name
+    """Human-readable label for a variant id. Legacy form-instruction ids
+    (free-form, fugue, ...) still resolve so pre-redesign batches keep labels."""
+    legacy = _csv_row(PROMPTS_DIR / "form_instructions.csv", prompt_name)
+    if legacy is not None:
+        return legacy.get("label") or prompt_name
+    return _variant_row(prompt_name).get("label") or prompt_name
 
 
-def _load_prompt(prompt_name: str, mode_mod) -> str:
-    """Assemble the full prompt: sara's prompt.md frame + form instruction + the
-    mode's Outputs section (plus the music21 toolkit doc for codegen)."""
+def _load_prompt(mode_mod) -> str:
+    """Assemble the user prompt: the fixed prompt.md frame + the mode's task
+    phrase and Outputs section. The self-expression variant does NOT appear
+    here — it lives in the system prompt (SYSTEM_TEMPLATE)."""
     template = (PROMPTS_DIR / "prompt.md").read_text(encoding="utf-8")
     mode_block = mode_mod.OUTPUTS.strip()
     if getattr(mode_mod, "USES_TOOLKIT", False):
         toolkit = (PROMPTS_DIR / "toolkit.md").read_text(encoding="utf-8").strip()
         mode_block += "\n\n# Music documentation\n\n" + toolkit
-    return template.format(
-        form_instruction=_form_row(prompt_name)["instruction"], mode_block=mode_block
-    )
+    return template.format(mode_task=mode_mod.TASK, mode_block=mode_block)
 
 
 def generate_piece(
@@ -92,16 +99,18 @@ def generate_piece(
     if mode not in MODES:
         raise ValueError(f"unknown mode '{mode}'. Known: {', '.join(MODES)}")
     mode_mod = MODES[mode]
-    base_user = _load_prompt(prompt_name, mode_mod)
+    base_user = _load_prompt(mode_mod)
+    variant = _variant_row(prompt_name)
+    system = SYSTEM_TEMPLATE.format(variant=variant["instruction"])
 
     result = PieceResult(
         ok=False,
         model=client.name,
         prompt=prompt_name,
         mode=mode,
-        prompt_label=prompt_label(prompt_name),
+        prompt_label=variant.get("label") or prompt_name,
         prompt_text=base_user,
-        system_prompt=SYSTEM_PROMPT,
+        system_prompt=system,
     )
     prior_error: str | None = None
 
@@ -120,7 +129,7 @@ def generate_piece(
             # ("a single JSON object and nothing else") — on OpenRouter reasoning
             # models it stops the answer being stranded/truncated in the reasoning
             # trace (same fix the judge path has always used). Prompt text unchanged.
-            response = client.complete(SYSTEM_PROMPT, user, json_mode=True)
+            response = client.complete(system, user, json_mode=True)
         except Exception as e:  # API/network failure
             if (is_overloaded(e) or is_rate_limited(e)) and overloads < OVERLOAD_RETRIES:
                 # 529 overload and 429 throttle alike: infrastructure signals,

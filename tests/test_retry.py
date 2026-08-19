@@ -71,7 +71,7 @@ def test_overload_does_not_consume_attempts(monkeypatch, tmp_path):
             raise _StatusError(status_code=400, msg="bad request")
 
     monkeypatch.setattr(gen, "backoff_sleep", lambda *a, **k: None)
-    result = gen.generate_piece(FlakyClient(), "free-form", "abc", tmp_path,
+    result = gen.generate_piece(FlakyClient(), "express-yourself", "abc", tmp_path,
                                 max_attempts=5, bake_audio=False)
     assert not result.ok
     assert result.attempts == 1              # only the 400 charged an attempt
@@ -94,7 +94,7 @@ def test_429_not_charged_in_generation(monkeypatch, tmp_path):
             raise _StatusError(status_code=400, msg="bad request")
 
     monkeypatch.setattr(gen, "backoff_sleep", lambda *a, **k: None)
-    result = gen.generate_piece(Flaky(), "free-form", "abc", tmp_path,
+    result = gen.generate_piece(Flaky(), "express-yourself", "abc", tmp_path,
                                 max_attempts=5, bake_audio=False)
     assert result.attempts == 1
     assert len(result.failed_attempts) == 1

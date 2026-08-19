@@ -11,10 +11,13 @@ class AnthropicClient:
     """LLMClient implementation backed by the Anthropic Messages API."""
 
     def __init__(self, name: str, model_id: str, max_tokens: int = 16000,
-                 thinking: dict | None = None):
+                 thinking: dict | None = None, effort: str | None = None):
         self.name = name
         self.model_id = model_id
         self.thinking = thinking
+        # output_config effort (low..max) — the thinking-depth dial on models
+        # whose thinking can't be disabled (fable-5): the registry's arm split.
+        self.effort = effort
         # Thinking tokens count toward max_tokens. Some models over-think hard tasks
         # (sonnet-4.6-thinking spends ~31k thinking on free-form ABC) and at 32k they
         # hit the cap mid-thought and emit NO answer. 64k leaves room for thinking +
@@ -46,6 +49,9 @@ class AnthropicClient:
             system=system,
             messages=[{"role": "user", "content": user}],
         )
+        if self.effort:
+            # extra_body so older SDK versions without the typed kwarg still work.
+            kwargs["extra_body"] = {"output_config": {"effort": self.effort}}
         if self.thinking:
             # Extended thinking requires temperature=1 (the default, so left unset)
             # and, with our high max_tokens, streaming (the SDK refuses non-streaming

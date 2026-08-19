@@ -11,6 +11,9 @@ from pathlib import Path
 
 from ._common import ModeResult, extract_json
 
+# Task phrase for the user-prompt frame ("Your task is to write music in ...").
+TASK = "ABC notation"
+
 # The "## Outputs" section of the prompt. ABC mode is our addition (sara is
 # codegen-only); it executes no code and needs no toolkit documentation.
 OUTPUTS = """\
