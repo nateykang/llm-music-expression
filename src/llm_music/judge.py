@@ -30,7 +30,8 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-from .retry import RateGate, backoff_sleep, is_rate_limited, is_retryable
+from .retry import (RateGate, backoff_sleep, is_connection_error,
+                    is_rate_limited, is_retryable)
 
 # Shared across all judge workers in this process: a 429 on any call
 # pauses new calls to that judge model for the cooldown window instead of
@@ -409,14 +410,15 @@ def judge_piece(client, piece: dict, batch_dir: Path, include_note: bool = False
                             who, a, attempts)
         except Exception as e:
             obj = None
-            if is_rate_limited(e) and throttles < 8:
-                # Infrastructure throttle: cool this judge model down globally
-                # and retry without charging a verdict attempt.
+            if (is_rate_limited(e) or is_connection_error(e)) and throttles < 8:
+                # Infrastructure throttle or transport failure: cool this judge
+                # model down and retry without charging a verdict attempt.
                 throttles += 1
                 _RATE_GATE.trip(getattr(client, "name", "?"), RATE_COOLDOWN_S)
-                log.warning("judge %s: 429 — cooling %s for %.0fs (throttle %d/8, "
-                            "attempt not charged)", who, getattr(client, "name", "?"),
-                            RATE_COOLDOWN_S, throttles)
+                log.warning("judge %s: %s — cooling %s for %.0fs (throttle %d/8, "
+                            "attempt not charged)", who,
+                            "429" if is_rate_limited(e) else "connection error",
+                            getattr(client, "name", "?"), RATE_COOLDOWN_S, throttles)
                 time.sleep(_RATE_GATE.release_jitter())
                 continue
             a += 1

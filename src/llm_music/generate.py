@@ -11,7 +11,8 @@ from .config import PROMPTS_DIR
 from .models.base import LLMClient
 from .modes import MODES
 from .render import midi_to_audio
-from .retry import backoff_sleep, is_overloaded, is_rate_limited, is_retryable
+from .retry import (backoff_sleep, is_connection_error, is_overloaded,
+                    is_rate_limited, is_retryable)
 
 log = logging.getLogger(__name__)
 
@@ -131,9 +132,11 @@ def generate_piece(
             # trace (same fix the judge path has always used). Prompt text unchanged.
             response = client.complete(system, user, json_mode=True)
         except Exception as e:  # API/network failure
-            if (is_overloaded(e) or is_rate_limited(e)) and overloads < OVERLOAD_RETRIES:
-                # 529 overload and 429 throttle alike: infrastructure signals,
-                # never charged against the model's attempts.
+            if ((is_overloaded(e) or is_rate_limited(e) or is_connection_error(e))
+                    and overloads < OVERLOAD_RETRIES):
+                # 529 overload, 429 throttle, and transport failures alike:
+                # infrastructure signals, never charged against the model's
+                # attempts (the request never reached the model).
                 overloads += 1
                 result.errors.append(f"infra backpressure (attempt not charged): {e}")
                 log.warning("%s × %s: provider backpressure (%d/%d), waiting — "

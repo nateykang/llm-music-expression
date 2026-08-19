@@ -56,6 +56,35 @@ def is_rate_limited(exc: Exception) -> bool:
     return "Error code: 429" in str(exc)
 
 
+# Transport-failure fingerprints: SDK exception class names (openai/anthropic
+# raise APIConnectionError/APITimeoutError; httpx raises ConnectError,
+# ReadTimeout, RemoteProtocolError) and the message fragments they surface.
+_CONN_CLASS_MARKERS = ("connect", "timeout")
+_CONN_MSG_MARKERS = ("connection error", "connection reset", "timed out",
+                     "connection refused", "network is unreachable",
+                     "server disconnected", "remote protocol error",
+                     "ssl", "eof occurred", "name resolution")
+
+
+def is_connection_error(exc: Exception) -> bool:
+    """Network/transport failure before any HTTP response — the request never
+    reached the model, so this is an infrastructure signal, not a property of
+    the model, and callers must not charge it as a model attempt (a pod-side
+    network flap once burned all 5 attempts of four arms at once).
+
+    Only exceptions WITHOUT an HTTP status qualify: a real status (even one
+    whose message mentions timeouts) is a provider verdict, handled elsewhere.
+    """
+    status = getattr(exc, "status_code", None) or getattr(exc, "status", None)
+    if status is not None:
+        return False
+    cls = type(exc).__name__.lower()
+    if any(m in cls for m in _CONN_CLASS_MARKERS):
+        return True
+    msg = str(exc).lower()
+    return any(m in msg for m in _CONN_MSG_MARKERS)
+
+
 class RateGate:
     """Shared per-key cooldown: when any worker sees a 429 for a key (model
     name), ALL workers pause new calls for that key until the cooldown lapses,

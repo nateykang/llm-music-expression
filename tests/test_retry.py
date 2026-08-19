@@ -134,3 +134,41 @@ def test_429_cools_down_and_does_not_burn_attempts(monkeypatch, tmp_path):
     v = jmod.judge_piece(Flaky(), {"model": "m", "prompt": "p"}, tmp_path, attempts=1)
     assert v is not None and v["coherence"]["score"] == 4.0
     assert calls["n"] == 3   # two throttled tries + one real, within attempts=1
+
+
+def test_connection_error_classification():
+    from llm_music.retry import is_connection_error
+
+    class APIConnectionError(Exception):
+        pass
+
+    assert is_connection_error(APIConnectionError("Connection error."))
+    assert is_connection_error(Exception("connection reset by peer"))
+    assert is_connection_error(Exception("Request timed out."))
+    # A real HTTP status is a provider verdict, never a transport failure —
+    # even when the message mentions timeouts.
+    assert not is_connection_error(_StatusError(status_code=400, msg="request timed out"))
+    assert not is_connection_error(_StatusError(status_code=429, msg="Error code: 429"))
+    assert not is_connection_error(Exception("could not parse JSON response"))
+
+
+def test_connection_errors_not_charged_in_generation(monkeypatch, tmp_path):
+    from llm_music import generate as gen
+
+    calls = {"n": 0}
+
+    class Flaky:
+        name = "fake"
+
+        def complete(self, system, user, json_mode=False):
+            calls["n"] += 1
+            if calls["n"] <= 3:
+                raise ConnectionError("Connection error.")
+            raise _StatusError(status_code=400, msg="bad request")
+
+    monkeypatch.setattr(gen, "backoff_sleep", lambda *a, **k: None)
+    result = gen.generate_piece(Flaky(), "express-yourself", "abc", tmp_path,
+                                max_attempts=5, bake_audio=False)
+    assert result.attempts == 1              # only the 400 charged an attempt
+    assert len(result.failed_attempts) == 1
+    assert sum("not charged" in e for e in result.errors) == 3
