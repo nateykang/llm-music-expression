@@ -6,11 +6,11 @@
   <title>Composer Studio</title>
   <!-- Bump ?v= on any studio.css/studio.js change: browsers cache the old
        assets otherwise, and the composer sees a stale UI after deploys. -->
-  <link rel="stylesheet" href="/static/studio.css?v=20260721c">
+  <link rel="stylesheet" href="/static/studio.css?v=20260820a">
   <!-- Same engraving stack as the main site: Verovio for MusicXML, abcjs for ABC. -->
   <script src="https://www.verovio.org/javascript/latest/verovio-toolkit-wasm.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/abcjs@6.4.4/dist/abcjs-basic-min.js" defer></script>
-  <script src="/static/studio.js?v=20260721c" defer></script>
+  <script src="/static/studio.js?v=20260820a" defer></script>
 </head>
 <body>
 
@@ -65,6 +65,34 @@
         <p id="cmp-error" class="error" hidden></p>
       </form>
 
+      <form id="new-review-form" class="card">
+        <h2>New listening session</h2>
+        <p class="muted card-sub">A listening flight from generated batches: randomly chosen
+          already-generated pieces, blind by default — react in writing; no models are called.
+          Pick two batches to hear both writing methods side by side.</p>
+        <div class="cmp-config">
+          <div>
+            <div class="muted lbl">Batches</div>
+            <div id="rev-batches" class="rev-batch-list"></div>
+          </div>
+          <div>
+            <div class="muted lbl">Models (successful pieces in the chosen batches)</div>
+            <div id="rev-models" class="checkgrid"></div>
+          </div>
+          <div>
+            <div class="muted lbl">Pieces per model &times; prompt &times; method</div>
+            <input id="rev-per-cell" type="number" min="1" max="10" value="1">
+            <label class="chk rev-blind"><input id="rev-blind" type="checkbox" checked>
+              blind — hide model names until revealed</label>
+          </div>
+        </div>
+        <div class="row">
+          <input id="rev-title" type="text" placeholder="Session name (optional)">
+          <button type="submit">Create</button>
+        </div>
+        <p id="rev-error" class="error" hidden></p>
+      </form>
+
       <section class="card">
         <h2>History</h2>
         <div id="session-list"><p class="muted">Nothing yet.</p></div>
@@ -89,6 +117,31 @@
         placeholder="React or redirect — your message goes to every model, each continuing its own piece"></textarea>
       <button id="cmp-send" type="submit">Send to all</button>
     </form>
+  </div>
+
+  <div id="review-view" hidden>
+    <div class="bar chat-bar">
+      <button id="rev-back" class="ghost">&larr; History</button>
+      <span id="rev-view-title"></span>
+      <span id="rev-view-status" class="chip"></span>
+      <button id="rev-reveal" class="ghost" hidden
+        title="Show which model wrote each piece — logged; best saved for after your notes">Reveal models</button>
+    </div>
+    <div class="rev-main">
+      <p id="rev-hint" class="muted rev-hint"></p>
+      <div id="rev-pieces" class="rev-pieces"></div>
+      <section class="card">
+        <h2>Comparing notes</h2>
+        <p class="muted card-sub">Overall thoughts across the set — differences between models,
+          between the writing methods, anything worth keeping.</p>
+        <div id="rev-overall-notes" class="comments"></div>
+        <form id="rev-overall-form" class="comment-form">
+          <textarea id="rev-overall-input" rows="3"
+            placeholder="What stood out, compared across the pieces…"></textarea>
+          <button type="submit" class="ghost">Save note</button>
+        </form>
+      </section>
+    </div>
   </div>
 
   <div id="chat-view" hidden>

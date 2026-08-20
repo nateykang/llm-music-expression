@@ -229,3 +229,36 @@ input, select, textarea {
   border: 1px solid var(--border);
 }
 .cell-iterate:hover:not(:disabled) { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* listening sessions: home form */
+.rev-batch-list {
+  display: flex; flex-direction: column; gap: .2rem;
+  max-height: 11rem; overflow-y: auto; padding-right: .5rem;
+}
+#rev-per-cell { width: 5rem; }
+.rev-blind { margin-top: .6rem; }
+
+/* listening session view */
+#review-view { min-height: 100vh; display: flex; flex-direction: column; }
+#rev-view-title { font-weight: 600; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rev-main {
+  max-width: 900px; margin: 1rem auto 2.5rem; padding: 0 1.5rem; width: 100%;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.rev-hint { margin: 0; font-size: .88rem; }
+.rev-pieces { display: flex; flex-direction: column; gap: 1rem; }
+.rev-piece-head { display: flex; align-items: baseline; gap: .55rem; flex-wrap: wrap; margin-bottom: .3rem; }
+.rev-piece-head .plabel { font-weight: 700; color: var(--accent); }
+.rev-piece-head .ptitle { font-style: italic; color: var(--muted); }
+.rev-piece audio { width: 100%; margin: .3rem 0 .4rem; }
+.rev-piece details { font-size: .9rem; }
+.rev-piece summary { cursor: pointer; color: var(--muted); }
+.rev-score {
+  overflow-x: auto; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: .5rem; margin-top: .4rem;
+}
+.rev-score svg { max-width: 100%; height: auto; }
+.after-reveal {
+  font-size: .7rem; color: var(--accent); text-transform: uppercase;
+  letter-spacing: .04em; margin-left: .4rem;
+}

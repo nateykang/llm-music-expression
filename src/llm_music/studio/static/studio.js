@@ -14,6 +14,7 @@ const state = {
   cmpComments: new Map(), // same, for the open comparison's cells
   cmpLatest: new Map(),   // cell index -> latest ok cell event (dashboard columns)
   currentVersion: null,
+  review: null,           // open listening session: {id, revealed, notes, overall}
   streamingChats: new Set(),  // session ids with a turn in flight from this tab
   cmpStreaming: false,
   mode: localStorage.getItem("studio-mode") || "codegen",  // codegen | abc
@@ -54,7 +55,7 @@ function md(text) {
 function show(view) {
   // Leaving a view silences it — music shouldn't follow you to the homepage.
   for (const a of document.querySelectorAll("audio")) a.pause();
-  for (const v of ["login-view", "home-view", "chat-view", "compare-view"])
+  for (const v of ["login-view", "home-view", "chat-view", "compare-view", "review-view"])
     $(v).hidden = v !== view;
 }
 
@@ -99,6 +100,29 @@ function sortModels(models) {
     (FAMILY_RANK[modelFamily(a)] - FAMILY_RANK[modelFamily(b)]) || a.localeCompare(b));
 }
 
+// Family-grouped checkbox grid, shared by the comparison and listening pickers.
+function buildModelCheckgrid(grid, models, labelFn) {
+  grid.innerHTML = "";
+  let fam = null;
+  for (const m of models) {
+    if (modelFamily(m) !== fam) {
+      fam = modelFamily(m);
+      const h = document.createElement("div");
+      h.className = "fam";
+      h.textContent = fam;
+      grid.appendChild(h);
+    }
+    const lbl = document.createElement("label");
+    lbl.className = "chk";
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.value = m;
+    lbl.appendChild(cb);
+    lbl.appendChild(document.createTextNode(" " + (labelFn ? labelFn(m) : m)));
+    grid.appendChild(lbl);
+  }
+}
+
 function afterLogin(me) {
   state.models = sortModels(me.models);
   state.defaultModel = me.default_model;
@@ -111,22 +135,8 @@ function afterLogin(me) {
     if (m === me.default_model) opt.selected = true;
     sel.appendChild(opt);
   }
-  const grid = $("cmp-models");
-  grid.innerHTML = "";
-  let fam = null;
-  for (const m of state.models) {
-    if (modelFamily(m) !== fam) {
-      fam = modelFamily(m);
-      const h = document.createElement("div");
-      h.className = "fam";
-      h.textContent = fam;
-      grid.appendChild(h);
-    }
-    const lbl = document.createElement("label");
-    lbl.className = "chk";
-    lbl.innerHTML = `<input type="checkbox" value="${m}"> ${esc(m)}`;
-    grid.appendChild(lbl);
-  }
+  buildModelCheckgrid($("cmp-models"), state.models);
+  loadReviewBatches();  // fills the listening-session picker in the background
   showHome();
 }
 
@@ -142,17 +152,22 @@ async function showHome() {
     return;
   }
   for (const s of sessions) {
-    const isCmp = s.kind === "comparison";
+    const kind = s.kind || "chat";
     const btn = document.createElement("button");
     btn.className = "session-item";
-    const tag = isCmp ? '<span class="kind">comparison</span>' : "";
-    const count = isCmp
+    const tag = kind === "comparison" ? '<span class="kind">comparison</span>'
+      : kind === "review" ? '<span class="kind">listening</span>' : "";
+    const count = kind === "comparison"
       ? `${s.n_versions} result${s.n_versions === 1 ? "" : "s"}`
+      : kind === "review"
+      ? `${s.n_pieces ?? "?"} pieces · ${s.n_notes ?? 0} note${(s.n_notes ?? 0) === 1 ? "" : "s"}`
       : `${esc(s.model)} · ${s.n_versions} version${s.n_versions === 1 ? "" : "s"}`;
     btn.innerHTML =
       `<div class="title">${tag}${esc(s.title)}</div>` +
       `<div class="meta">${new Date(s.last_active * 1000).toLocaleString()} · ${count}</div>`;
-    btn.addEventListener("click", () => isCmp ? openComparison(s.id) : openSession(s.id));
+    btn.addEventListener("click", () =>
+      kind === "comparison" ? openComparison(s.id)
+      : kind === "review" ? openReview(s.id) : openSession(s.id));
     list.appendChild(btn);
   }
 }
@@ -651,15 +666,15 @@ async function renderMusicXml(container, xml, version) {
   container.innerHTML = svgs;
 }
 
-// Engrave one piece into an arbitrary container (used by the comparison grid;
-// no global race-guard — each call renders once). Verovio's toolkit is a single
-// shared instance, so callers await this sequentially to avoid interleaving.
-async function engraveInto(container, sessionId, version, files, scale) {
-  const url = (name) => `/api/sessions/${sessionId}/pieces/v${version}/${name}`;
+// Engrave into an arbitrary container from a MusicXML or ABC URL (used by the
+// comparison grid and the listening view; no global race-guard — each call
+// renders once). Verovio's toolkit is a single shared instance, so callers
+// await this sequentially to avoid interleaving.
+async function engraveSources(container, xmlUrl, abcUrl, scale) {
   container.innerHTML = '<p class="muted">Engraving…</p>';
   try {
-    if (files.includes("piece.musicxml")) {
-      const xml = await (await fetch(url("piece.musicxml"))).text();
+    if (xmlUrl) {
+      const xml = await (await fetch(xmlUrl)).text();
       const tk = await getToolkit();
       tk.setOptions({ scale, footer: "none", adjustPageHeight: true,
         pageWidth: Math.max(520, container.clientWidth - 12) * (100 / scale) });
@@ -667,8 +682,8 @@ async function engraveInto(container, sessionId, version, files, scale) {
       let svgs = "";
       for (let p = 1; p <= tk.getPageCount(); p++) svgs += tk.renderToSVG(p);
       container.innerHTML = svgs;
-    } else if (files.includes("piece.abc")) {
-      const abc = await (await fetch(url("piece.abc"))).text();
+    } else if (abcUrl) {
+      const abc = await (await fetch(abcUrl)).text();
       container.innerHTML = "";
       ABCJS.renderAbc(container, abc, { responsive: "resize", staffwidth: 480 });
     } else {
@@ -678,6 +693,258 @@ async function engraveInto(container, sessionId, version, files, scale) {
     container.innerHTML = `<p class="error">Could not engrave: ${esc(String(err))}</p>`;
   }
 }
+
+async function engraveInto(container, sessionId, version, files, scale) {
+  const url = (name) => `/api/sessions/${sessionId}/pieces/v${version}/${name}`;
+  await engraveSources(container,
+    files.includes("piece.musicxml") ? url("piece.musicxml") : null,
+    files.includes("piece.abc") ? url("piece.abc") : null, scale);
+}
+
+// ---------- listening sessions (blind review of batch pieces) ----------
+// No model is called anywhere here: pieces are already-generated batch output,
+// and the composer's notes are research data. While blind, the server sends
+// only "Model A/B/C" group labels; identities arrive after a logged reveal.
+
+let reviewBatches = [];
+
+function fmtBatchTs(ts) {
+  const m = /^(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})/.exec(ts || "");
+  return m ? `${m[1]}-${m[2]}-${m[3]} ${m[4]}:${m[5]}` : ts;
+}
+
+async function loadReviewBatches() {
+  const list = $("rev-batches");
+  try {
+    reviewBatches = (await api("/api/review/batches")).batches;
+  } catch (e) {
+    reviewBatches = [];
+  }
+  list.innerHTML = "";
+  if (!reviewBatches.length) {
+    list.innerHTML = '<p class="muted">No batches found.</p>';
+    fillReviewModels();
+    return;
+  }
+  reviewBatches.forEach((b, i) => {
+    const n = Object.keys(b.model_counts).length;
+    const lbl = document.createElement("label");
+    lbl.className = "chk";
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.value = b.name;
+    cb.checked = i === 0;  // newest pre-checked
+    cb.addEventListener("change", fillReviewModels);
+    lbl.appendChild(cb);
+    lbl.appendChild(document.createTextNode(
+      ` ${fmtBatchTs(b.timestamp)} — ${n} model${n === 1 ? "" : "s"}, ` +
+      `${b.prompts.length} prompt${b.prompts.length === 1 ? "" : "s"}` +
+      (b.modes.length ? ` (${b.modes.map((m) => MODE_LABELS[m] || m).join("+")})` : "")));
+    list.appendChild(lbl);
+  });
+  fillReviewModels();
+}
+
+function checkedReviewBatches() {
+  return [...document.querySelectorAll("#rev-batches input:checked")].map((c) => c.value);
+}
+
+function fillReviewModels() {
+  const chosen = new Set(checkedReviewBatches());
+  const counts = {};  // model -> total ok pieces across the chosen batches
+  for (const b of reviewBatches) {
+    if (!chosen.has(b.name)) continue;
+    for (const [m, n] of Object.entries(b.model_counts)) {
+      counts[m] = (counts[m] || 0) + n;
+    }
+  }
+  buildModelCheckgrid($("rev-models"), sortModels(Object.keys(counts)),
+    (m) => `${m} (${counts[m]})`);
+}
+
+function revError(msg) {
+  $("rev-error").textContent = msg;
+  $("rev-error").hidden = false;
+}
+
+$("new-review-form").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  $("rev-error").hidden = true;
+  const batches = checkedReviewBatches();
+  const models = [...document.querySelectorAll("#rev-models input:checked")].map((c) => c.value);
+  if (!batches.length) return revError("Pick at least one batch.");
+  if (!models.length) return revError("Pick at least one model.");
+  const body = {
+    batches, models,
+    per_cell: parseInt($("rev-per-cell").value, 10) || 1,
+    blind: $("rev-blind").checked,
+    // A fresh seed per session so the slice varies; it's logged server-side,
+    // so any queue stays reproducible.
+    seed: Math.floor(Math.random() * 1e9),
+    title: $("rev-title").value.trim(),
+  };
+  try {
+    const res = await api("/api/reviews", { method: "POST", body: JSON.stringify(body) });
+    $("rev-title").value = "";
+    openReview(res.meta.id);
+  } catch (e) {
+    revError(e.message);
+  }
+});
+
+$("rev-back").addEventListener("click", showHome);
+
+// One piece at a time, same as the comparison grid.
+$("rev-pieces").addEventListener("play", (ev) => {
+  for (const a of $("rev-pieces").querySelectorAll("audio")) {
+    if (a !== ev.target) a.pause();
+  }
+}, true);
+
+async function openReview(id) {
+  const r = await api(`/api/reviews/${id}`);
+  state.review = { id, revealed: r.revealed, notes: new Map(), overall: [] };
+  for (const n of r.notes) {
+    if (n.piece == null) state.review.overall.push(n);
+    else {
+      if (!state.review.notes.has(n.piece)) state.review.notes.set(n.piece, []);
+      state.review.notes.get(n.piece).push(n);
+    }
+  }
+  $("rev-view-title").textContent = r.meta.title;
+  $("rev-view-status").textContent =
+    `${r.pieces.length} piece${r.pieces.length === 1 ? "" : "s"} · ` +
+    (r.revealed ? "models shown" : "blind");
+  $("rev-reveal").hidden = r.revealed;
+  $("rev-hint").textContent = r.revealed
+    ? Object.entries(r.groups || {}).map(([g, m]) => `${g} = ${m}`).join(" · ")
+    : "Model names are hidden — pieces sharing a letter are by the same model. " +
+      "Reveal when you're done listening.";
+  const list = $("rev-pieces");
+  list.innerHTML = "";
+  for (const p of r.pieces) list.appendChild(reviewPieceCard(p));
+  renderOverallNotes();
+  show("review-view");
+  window.scrollTo(0, 0);
+}
+
+function noteHtml(n) {
+  return `<p class="comment">${esc(n.text)}` +
+    (n.revealed ? ' <span class="after-reveal">after reveal</span>' : "") + "</p>";
+}
+
+function reviewPieceCard(p) {
+  const sid = state.review.id;
+  const card = document.createElement("div");
+  card.className = "card rev-piece";
+  const who = state.review.revealed && p.model ? p.model : p.group;
+  const head = document.createElement("div");
+  head.className = "rev-piece-head";
+  head.innerHTML =
+    `<span class="plabel">Piece ${p.idx + 1}</span>` +
+    `<span class="chip">${esc(who)}</span>` +
+    `<span class="cell-method">${MODE_LABELS[p.mode] || esc(p.mode)}</span>` +
+    (p.prompt_label ? `<span class="cell-method">${esc(p.prompt_label)}</span>` : "") +
+    (p.title ? `<span class="ptitle">${esc(p.title)}</span>` : "");
+  card.appendChild(head);
+
+  if (p.has_audio) {
+    const audio = document.createElement("audio");
+    audio.controls = true;
+    audio.preload = "metadata";
+    audio.src = `/api/reviews/${sid}/pieces/${p.idx}/audio`;
+    card.appendChild(audio);
+  }
+
+  const det = document.createElement("details");
+  det.innerHTML = "<summary>Score</summary>";
+  const scoreDiv = document.createElement("div");
+  scoreDiv.className = "rev-score";
+  det.appendChild(scoreDiv);
+  det.addEventListener("toggle", () => {  // engrave lazily, once
+    if (!det.open || det.dataset.engraved) return;
+    det.dataset.engraved = "1";
+    engraveSources(scoreDiv,
+      p.has_score ? `/api/reviews/${sid}/pieces/${p.idx}/score` : null,
+      p.has_abc ? `/api/reviews/${sid}/pieces/${p.idx}/abc` : null, 34);
+  });
+  card.appendChild(det);
+
+  const comments = document.createElement("div");
+  comments.className = "comments";
+  const renderNotes = () => {
+    comments.innerHTML = (state.review.notes.get(p.idx) || []).map(noteHtml).join("");
+  };
+  renderNotes();
+  card.appendChild(comments);
+
+  const form = document.createElement("form");
+  form.className = "comment-form";
+  form.innerHTML =
+    `<textarea rows="2" placeholder="Your thoughts on this piece…"></textarea>` +
+    `<button type="submit" class="ghost">Save note</button>`;
+  form.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const input = form.querySelector("textarea");
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+    try {
+      await api(`/api/reviews/${sid}/notes`, {
+        method: "POST", body: JSON.stringify({ text, piece: p.idx }),
+      });
+      if (!state.review.notes.has(p.idx)) state.review.notes.set(p.idx, []);
+      state.review.notes.get(p.idx).push({ text, revealed: state.review.revealed });
+      renderNotes();
+    } catch (e) {
+      alert("Couldn't save the note: " + e.message);
+    }
+  });
+  form.querySelector("textarea").addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter" && !ev.shiftKey) { ev.preventDefault(); form.requestSubmit(); }
+  });
+  card.appendChild(form);
+  return card;
+}
+
+function renderOverallNotes() {
+  $("rev-overall-notes").innerHTML = state.review.overall.map(noteHtml).join("");
+}
+
+$("rev-overall-form").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  if (!state.review) return;
+  const text = $("rev-overall-input").value.trim();
+  if (!text) return;
+  $("rev-overall-input").value = "";
+  try {
+    await api(`/api/reviews/${state.review.id}/notes`, {
+      method: "POST", body: JSON.stringify({ text, piece: null }),
+    });
+    state.review.overall.push({ text, revealed: state.review.revealed });
+    renderOverallNotes();
+  } catch (e) {
+    alert("Couldn't save the note: " + e.message);
+  }
+});
+$("rev-overall-input").addEventListener("keydown", (ev) => {
+  if (ev.key === "Enter" && !ev.shiftKey) {
+    ev.preventDefault();
+    $("rev-overall-form").requestSubmit();
+  }
+});
+
+$("rev-reveal").addEventListener("click", async () => {
+  if (!state.review) return;
+  if (!confirm("Reveal which model wrote each piece? The reveal is logged, and " +
+               "notes written afterwards are marked as post-reveal.")) return;
+  try {
+    await api(`/api/reviews/${state.review.id}/reveal`, { method: "POST" });
+    openReview(state.review.id);  // refetch: names, groups legend, status chip
+  } catch (e) {
+    alert("Couldn't reveal: " + e.message);
+  }
+});
 
 // ---------- comparison ----------
 

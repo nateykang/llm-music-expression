@@ -18,13 +18,14 @@ from collections import defaultdict, deque
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.responses import FileResponse, PlainTextResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from . import agent
 from . import compare as compare_mod
 from . import config as cfg
+from . import review as review_mod
 from .auth import LoginLimiter, check_password, make_token, verify_token
 from .sessions import SessionStore
 
@@ -392,6 +393,136 @@ def fork_cell(session_id: str, index: int):
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
     return chat
+
+
+# -- listening sessions -------------------------------------------------------
+# Qualitative review of already-generated batch pieces: no model is called,
+# nothing is spent. Blind sessions never send model identities (or even the
+# model-named file paths) to the browser until an explicit, logged reveal.
+
+
+@app.get("/api/review/batches", dependencies=[Depends(require_auth)])
+def review_batches():
+    return {"batches": review_mod.list_batches(cfg.batches_dir())}
+
+
+class NewReviewBody(BaseModel):
+    batches: list[str]
+    models: list[str]
+    per_cell: int = 1  # pieces per (model x prompt x writing method) cell
+    blind: bool = True
+    seed: int = 0  # logged in the setup event, so any queue is reproducible
+    title: str = ""
+
+
+@app.post("/api/reviews", dependencies=[Depends(require_auth)])
+def create_review(body: NewReviewBody):
+    batches = [b for b in dict.fromkeys(body.batches) if b]
+    models = [m for m in dict.fromkeys(body.models) if m]
+    if not batches:
+        raise HTTPException(status_code=400, detail="pick at least one batch")
+    if not models:
+        raise HTTPException(status_code=400, detail="pick at least one model")
+    if body.per_cell < 1:
+        raise HTTPException(status_code=400, detail="pieces per cell must be at least 1")
+    try:
+        setup = review_mod.build_setup(cfg.batches_dir(), batches, models,
+                                       body.per_cell, body.seed, body.blind)
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    ts = batches[0].split("__")[0]
+    store = _store()
+    meta = store.create(
+        model="",
+        title=body.title.strip() or f"Listening session {ts[:4]}-{ts[4:6]}-{ts[6:8]}",
+        kind="review")
+    store.append_event(meta["id"], {"type": "review_setup", **setup})
+    meta = store.touch(meta["id"], batches=batches, blind=body.blind,
+                       revealed=not body.blind, n_pieces=len(setup["pieces"]))
+    _notify({"event": "review_created", "session": meta["id"],
+             "title": meta["title"], "n_pieces": len(setup["pieces"])})
+    return {"meta": meta, **review_mod.client_view(setup, revealed=meta["revealed"])}
+
+
+def _review(session_id: str) -> tuple[SessionStore, dict, dict]:
+    store = _store()
+    try:
+        meta = store.get(session_id)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="no such session")
+    if meta is None or meta.get("kind") != "review":
+        raise HTTPException(status_code=404, detail="no such listening session")
+    setups = [e for e in store.events(session_id) if e["type"] == "review_setup"]
+    if not setups:
+        raise HTTPException(status_code=409, detail="listening session has no pieces")
+    return store, meta, setups[0]
+
+
+@app.get("/api/reviews/{session_id}", dependencies=[Depends(require_auth)])
+def get_review(session_id: str):
+    store, meta, setup = _review(session_id)
+    notes = [{"piece": e.get("piece"), "text": e["text"],
+              "revealed": e.get("revealed", False)}
+             for e in store.events(session_id) if e["type"] == "review_note"]
+    return {"meta": meta, "notes": notes,
+            **review_mod.client_view(setup, revealed=meta.get("revealed", False))}
+
+
+class ReviewNoteBody(BaseModel):
+    text: str
+    piece: int | None = None  # queue index; None = overall comparison notes
+
+
+@app.post("/api/reviews/{session_id}/notes", dependencies=[Depends(require_auth)])
+def post_review_note(session_id: str, body: ReviewNoteBody):
+    store, meta, setup = _review(session_id)
+    text = body.text.strip()
+    if not text:
+        raise HTTPException(status_code=400, detail="empty note")
+    if body.piece is not None and not 0 <= body.piece < len(setup["pieces"]):
+        raise HTTPException(status_code=404, detail="no such piece")
+    # Stamp the blind state at write time: blind notes and post-reveal notes
+    # are different data in the qualitative analysis.
+    store.append_event(session_id, {"type": "review_note", "piece": body.piece,
+                                    "text": text,
+                                    "revealed": bool(meta.get("revealed"))})
+    store.touch(session_id, n_notes=meta.get("n_notes", 0) + 1)
+    _notify({"event": "review_note", "session": session_id, "text": text[:80]})
+    return {"ok": True}
+
+
+@app.post("/api/reviews/{session_id}/reveal", dependencies=[Depends(require_auth)])
+def reveal_review(session_id: str):
+    store, meta, setup = _review(session_id)
+    if not meta.get("revealed"):
+        store.append_event(session_id, {"type": "review_reveal"})
+        store.touch(session_id, revealed=True)
+        _notify({"event": "review_reveal", "session": session_id})
+    return review_mod.client_view(setup, revealed=True)
+
+
+@app.get("/api/reviews/{session_id}/pieces/{idx}/{kind}",
+         dependencies=[Depends(require_auth)])
+def review_piece_file(session_id: str, idx: int, kind: str):
+    _, _, setup = _review(session_id)
+    if not 0 <= idx < len(setup["pieces"]):
+        raise HTTPException(status_code=404, detail="no such piece")
+    p = setup["pieces"][idx]
+    if kind == "abc":
+        if not p.get("abc"):
+            raise HTTPException(status_code=404, detail="no ABC for this piece")
+        return PlainTextResponse(p["abc"])
+    if kind not in ("audio", "score") or not p.get(kind):
+        raise HTTPException(status_code=404, detail="no such file")
+    try:
+        path = review_mod.resolve_batch_file(cfg.batches_dir(), p["batch"], p[kind])
+    except KeyError:
+        raise HTTPException(status_code=404, detail="no such file")
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="no such file")
+    return FileResponse(path)
 
 
 @app.get("/api/sessions/{session_id}/features/{version}",

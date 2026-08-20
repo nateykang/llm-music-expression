@@ -37,6 +37,12 @@ def data_dir() -> Path:
     return Path(os.environ.get("STUDIO_DATA_DIR", str(REPO_ROOT / "studio_data")))
 
 
+def batches_dir() -> Path:
+    """Where generation batches live (the static site's data folder). Listening
+    sessions read pieces straight out of here; nothing is copied."""
+    return Path(os.environ.get("STUDIO_BATCHES_DIR", str(REPO_ROOT / "docs" / "data")))
+
+
 def password() -> str | None:
     return os.environ.get("STUDIO_PASSWORD") or None
 
