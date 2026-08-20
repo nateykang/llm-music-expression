@@ -4,8 +4,10 @@ blind listening sessions ("windows") over the final corpus, instead of one
 mixed queue.
 
 The suite (for models M1..M3 across an ABC batch and a codegen batch):
-  - "Code vs ABC — Model X"           one window per model; per prompt, one
-                                       codegen piece and one ABC piece (6 pieces)
+  - "Code vs ABC — Model X — P"        one window per model, each on a single
+                                       prompt (window i gets prompt i): one
+                                       codegen piece + one ABC piece (2 pieces —
+                                       deliberately light on the listener)
   - "Model comparison (ABC|code) — P"  one window per (method, prompt); one
                                        piece per model (3 pieces), so a composer
                                        who prefers one method can focus on it
@@ -91,9 +93,11 @@ def build(args):
     used: set = set()
     windows = []
     for i, model in enumerate(order):
-        windows.append(_window(root, used, f"Code vs ABC — {letters[model]}",
+        prompt = prompts[i % len(prompts)]
+        windows.append(_window(root, used,
+                               f"Code vs ABC — {letters[model]} — {labels.get(prompt, prompt)}",
                                [args.abc_batch, args.codegen_batch], [model],
-                               args.seed + i + 1))
+                               args.seed + i + 1, prompts=[prompt]))
     for mode, batch in (("abc", args.abc_batch), ("codegen", args.codegen_batch)):
         for j, prompt in enumerate(prompts):
             title = (f"Model comparison ({MODE_LABELS[mode]}) — "
