@@ -63,6 +63,7 @@ _CONN_CLASS_MARKERS = ("connect", "timeout")
 _CONN_MSG_MARKERS = ("connection error", "connection reset", "timed out",
                      "connection refused", "network is unreachable",
                      "server disconnected", "remote protocol error",
+                     "peer closed connection", "incomplete chunked read",
                      "ssl", "eof occurred", "name resolution")
 
 

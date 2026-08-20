@@ -172,3 +172,14 @@ def test_connection_errors_not_charged_in_generation(monkeypatch, tmp_path):
     assert result.attempts == 1              # only the 400 charged an attempt
     assert len(result.failed_attempts) == 1
     assert sum("not charged" in e for e in result.errors) == 3
+
+
+def test_mid_stream_transport_failures_are_connection_errors():
+    from llm_music.retry import is_connection_error
+
+    class RemoteProtocolError(Exception):
+        pass
+
+    assert is_connection_error(RemoteProtocolError(
+        "peer closed connection without sending complete message body "
+        "(incomplete chunked read)"))

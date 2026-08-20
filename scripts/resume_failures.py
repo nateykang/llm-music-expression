@@ -25,7 +25,9 @@ from llm_music.store import append_result, write_manifest  # noqa: E402
 
 # 429s are infrastructure throttling (never the model's fault — see
 # generate.py's uncharged-attempt handling) and fully recoverable.
-RECOVERABLE = re.compile(r"overload|could not parse JSON|429|connection error", re.I)
+RECOVERABLE = re.compile(
+    r"overload|could not parse JSON|429|connection error|peer closed connection"
+    r"|incomplete chunked read", re.I)
 
 
 def main():
