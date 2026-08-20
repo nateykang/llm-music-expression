@@ -397,6 +397,24 @@ def test_review_multi_listener_isolation(client, batch_root):
     assert nobody["revealed"] is False and nobody["notes"] == []
 
 
+def test_session_list_note_counts_are_per_user(client, batch_root):
+    login(client)
+    sid = client.post("/api/reviews", json={
+        "batches": [BATCH_NAME], "models": ["fable-5"],
+        "per_cell": 1, "blind": True, "seed": 2}).json()["meta"]["id"]
+    client.post(f"/api/reviews/{sid}/notes",
+                json={"text": "note", "piece": 0, "user": "Nathaniel"})
+
+    def count(user=None):
+        params = {"user": user} if user is not None else {}
+        rows = client.get("/api/sessions", params=params).json()["sessions"]
+        return next(s["n_notes"] for s in rows if s["id"] == sid)
+
+    assert count("Nathaniel") == 1
+    assert count("Caio") == 0
+    assert count() == 0  # unregistered viewers see no one's progress
+
+
 def test_user_registry(client, studio_env):
     assert client.get("/api/users").status_code == 401
     login(client)

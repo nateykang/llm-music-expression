@@ -193,8 +193,18 @@ class MessageBody(BaseModel):
 
 
 @app.get("/api/sessions", dependencies=[Depends(require_auth)])
-def list_sessions():
-    return {"sessions": _store().list()}
+def list_sessions(user: str = ""):
+    store = _store()
+    user = user.strip()
+    sessions = store.list()
+    for meta in sessions:
+        if meta.get("kind") == "review":
+            # The list shows the requesting listener's own progress: notes are
+            # per person, so someone new sees 0, not the previous reviewer's.
+            meta["n_notes"] = sum(
+                1 for e in store.events(meta["id"])
+                if e["type"] == "review_note" and e.get("user", "") == user)
+    return {"sessions": sessions}
 
 
 @app.post("/api/sessions", dependencies=[Depends(require_auth)])

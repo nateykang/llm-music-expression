@@ -170,6 +170,7 @@ $("user-save").addEventListener("click", async () => {
     state.user = r.name;  // server echoes the canonical casing
     localStorage.setItem("studio-user", r.name);
     refreshUserBox();
+    if (!$("home-view").hidden) showHome();  // note counts are per person
   } catch (e) {
     alert("Couldn't register the name: " + e.message);
   }
@@ -182,6 +183,7 @@ $("user-change").addEventListener("click", () => {
   state.user = "";
   localStorage.removeItem("studio-user");
   refreshUserBox();
+  if (!$("home-view").hidden) showHome();  // counts reset until re-registered
   $("user-input").focus();
 });
 
@@ -209,7 +211,7 @@ $("tab-btn-listen").addEventListener("click", () => setHomeTab("listen"));
 async function showHome() {
   show("home-view");
   setHomeTab(state.homeTab);
-  const { sessions } = await api("/api/sessions");
+  const { sessions } = await api(`/api/sessions?user=${encodeURIComponent(state.user)}`);
   renderSessionList($("session-list"),
     sessions.filter((s) => s.kind !== "review"),
     "No sessions yet — start one above.");
@@ -237,9 +239,15 @@ function renderSessionList(list, sessions, emptyMsg) {
     btn.innerHTML =
       `<div class="title">${tag}${esc(s.title)}</div>` +
       `<div class="meta">${new Date(s.last_active * 1000).toLocaleString()} · ${count}</div>`;
-    btn.addEventListener("click", () =>
-      kind === "comparison" ? openComparison(s.id)
-      : kind === "review" ? openReview(s.id) : openSession(s.id));
+    btn.addEventListener("click", () => {
+      if (kind === "comparison") return openComparison(s.id);
+      if (kind === "review") {
+        // Listening is per person: no anonymous notes, no anonymous reveals.
+        if (!requireUser()) return;
+        return openReview(s.id);
+      }
+      return openSession(s.id);
+    });
     list.appendChild(btn);
   }
 }
