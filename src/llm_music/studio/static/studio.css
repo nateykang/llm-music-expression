@@ -230,6 +230,14 @@ input, select, textarea {
 }
 .cell-iterate:hover:not(:disabled) { background: var(--accent); color: #fff; border-color: var(--accent); }
 
+/* home tabs: Compose (model-calling) vs Listen (batch review) */
+.home-tabs { display: flex; gap: .25rem; border: 1px solid var(--border); border-radius: 999px; padding: .15rem; }
+.home-tabs .tab {
+  background: transparent; border: none; color: var(--muted);
+  padding: .25rem 1rem; border-radius: 999px; font-weight: 600; font-size: .9rem;
+}
+.home-tabs .tab.active { background: var(--accent); color: #fff; }
+
 /* listening sessions: home form */
 .rev-batch-list {
   display: flex; flex-direction: column; gap: .2rem;

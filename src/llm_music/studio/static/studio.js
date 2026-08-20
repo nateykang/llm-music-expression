@@ -18,6 +18,7 @@ const state = {
   streamingChats: new Set(),  // session ids with a turn in flight from this tab
   cmpStreaming: false,
   mode: localStorage.getItem("studio-mode") || "codegen",  // codegen | abc
+  homeTab: localStorage.getItem("studio-home-tab") || "compose",  // compose | listen
 };
 
 const MODE_LABELS = { codegen: "code", abc: "ABC" };
@@ -141,22 +142,43 @@ function afterLogin(me) {
 }
 
 // ---------- home ----------
+// Two tabs: "Compose" (chats, comparisons — everything that calls a model)
+// and "Listen" (blind review of already-generated batch pieces).
+
+function setHomeTab(tab) {
+  state.homeTab = tab;
+  localStorage.setItem("studio-home-tab", tab);
+  $("tab-compose").hidden = tab !== "compose";
+  $("tab-listen").hidden = tab !== "listen";
+  $("tab-btn-compose").classList.toggle("active", tab === "compose");
+  $("tab-btn-listen").classList.toggle("active", tab === "listen");
+}
+$("tab-btn-compose").addEventListener("click", () => setHomeTab("compose"));
+$("tab-btn-listen").addEventListener("click", () => setHomeTab("listen"));
 
 async function showHome() {
   show("home-view");
+  setHomeTab(state.homeTab);
   const { sessions } = await api("/api/sessions");
-  const list = $("session-list");
+  renderSessionList($("session-list"),
+    sessions.filter((s) => s.kind !== "review"),
+    "No sessions yet — start one above.");
+  renderSessionList($("rev-session-list"),
+    sessions.filter((s) => s.kind === "review"),
+    "No listening sessions yet — create one above.");
+}
+
+function renderSessionList(list, sessions, emptyMsg) {
   list.innerHTML = "";
   if (!sessions.length) {
-    list.innerHTML = '<p class="muted">No sessions yet — start one above.</p>';
+    list.innerHTML = `<p class="muted">${emptyMsg}</p>`;
     return;
   }
   for (const s of sessions) {
     const kind = s.kind || "chat";
     const btn = document.createElement("button");
     btn.className = "session-item";
-    const tag = kind === "comparison" ? '<span class="kind">comparison</span>'
-      : kind === "review" ? '<span class="kind">listening</span>' : "";
+    const tag = kind === "comparison" ? '<span class="kind">comparison</span>' : "";
     const count = kind === "comparison"
       ? `${s.n_versions} result${s.n_versions === 1 ? "" : "s"}`
       : kind === "review"
@@ -182,7 +204,7 @@ $("new-session-form").addEventListener("submit", async (ev) => {
   openSession(meta.id);
 });
 
-$("back").addEventListener("click", showHome);
+$("back").addEventListener("click", () => { setHomeTab("compose"); showHome(); });
 
 // ---------- chat ----------
 
@@ -792,7 +814,7 @@ $("new-review-form").addEventListener("submit", async (ev) => {
   }
 });
 
-$("rev-back").addEventListener("click", showHome);
+$("rev-back").addEventListener("click", () => { setHomeTab("listen"); showHome(); });
 
 // One piece at a time, same as the comparison grid.
 $("rev-pieces").addEventListener("play", (ev) => {
@@ -952,7 +974,7 @@ const MAX_CMP_MODELS = 5;  // mirrors compare.MAX_MODELS server-side
 
 function modesFromMethod(v) { return v === "both" ? ["codegen", "abc"] : [v]; }
 
-$("cmp-back").addEventListener("click", showHome);
+$("cmp-back").addEventListener("click", () => { setHomeTab("compose"); showHome(); });
 
 // One piece at a time: starting any player in the grid pauses the others.
 // ('play' doesn't bubble, so listen in the capture phase.)

@@ -6,11 +6,11 @@
   <title>Composer Studio</title>
   <!-- Bump ?v= on any studio.css/studio.js change: browsers cache the old
        assets otherwise, and the composer sees a stale UI after deploys. -->
-  <link rel="stylesheet" href="/static/studio.css?v=20260820a">
+  <link rel="stylesheet" href="/static/studio.css?v=20260820b">
   <!-- Same engraving stack as the main site: Verovio for MusicXML, abcjs for ABC. -->
   <script src="https://www.verovio.org/javascript/latest/verovio-toolkit-wasm.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/abcjs@6.4.4/dist/abcjs-basic-min.js" defer></script>
-  <script src="/static/studio.js?v=20260820a" defer></script>
+  <script src="/static/studio.js?v=20260820b" defer></script>
 </head>
 <body>
 
@@ -27,9 +27,13 @@
   <div id="home-view" hidden>
     <header class="bar">
       <h1>Composer Studio</h1>
+      <nav class="home-tabs" role="tablist" aria-label="Studio sections">
+        <button id="tab-btn-compose" class="tab active" role="tab">Compose</button>
+        <button id="tab-btn-listen" class="tab" role="tab">Listen</button>
+      </nav>
       <button id="logout" class="ghost">Log out</button>
     </header>
-    <main class="home-main">
+    <main class="home-main" id="tab-compose">
       <form id="new-session-form" class="card">
         <h2>New chat</h2>
         <p class="muted card-sub">Work with one model in conversation — compose, react, revise.</p>
@@ -65,6 +69,13 @@
         <p id="cmp-error" class="error" hidden></p>
       </form>
 
+      <section class="card">
+        <h2>History</h2>
+        <div id="session-list"><p class="muted">Nothing yet.</p></div>
+      </section>
+    </main>
+
+    <main class="home-main" id="tab-listen" hidden>
       <form id="new-review-form" class="card">
         <h2>New listening session</h2>
         <p class="muted card-sub">A listening flight from generated batches: randomly chosen
@@ -94,8 +105,8 @@
       </form>
 
       <section class="card">
-        <h2>History</h2>
-        <div id="session-list"><p class="muted">Nothing yet.</p></div>
+        <h2>Listening sessions</h2>
+        <div id="rev-session-list"><p class="muted">Nothing yet.</p></div>
       </section>
     </main>
   </div>
