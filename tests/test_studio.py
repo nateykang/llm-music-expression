@@ -398,6 +398,17 @@ def test_review_cross_batch_stratified(client, batch_root):
             assert audio.content.startswith(b"ID3-fake-")
 
 
+def test_review_prompt_filter(client, batch_root):
+    login(client)
+    r = client.post("/api/reviews", json={
+        "batches": [CODEGEN_BATCH], "models": list(BATCH_MODELS),
+        "prompts": ["uniquely-you"], "per_cell": 1, "blind": False, "seed": 1})
+    assert r.status_code == 200, r.text
+    pieces = r.json()["pieces"]
+    assert len(pieces) == 3
+    assert {p["prompt_label"] for p in pieces} == {"Uniquely you"}
+
+
 def test_review_seed_reproducible_and_unblind(client, batch_root):
     login(client)
     body = {"batches": [BATCH_NAME], "models": ["fable-5", "gpt-5.6"],

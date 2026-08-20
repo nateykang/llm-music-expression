@@ -409,6 +409,7 @@ def review_batches():
 class NewReviewBody(BaseModel):
     batches: list[str]
     models: list[str]
+    prompts: list[str] = []  # empty = every prompt in the chosen batches
     per_cell: int = 1  # pieces per (model x prompt x writing method) cell
     blind: bool = True
     seed: int = 0  # logged in the setup event, so any queue is reproducible
@@ -427,7 +428,8 @@ def create_review(body: NewReviewBody):
         raise HTTPException(status_code=400, detail="pieces per cell must be at least 1")
     try:
         setup = review_mod.build_setup(cfg.batches_dir(), batches, models,
-                                       body.per_cell, body.seed, body.blind)
+                                       body.per_cell, body.seed, body.blind,
+                                       prompts=[p for p in body.prompts if p] or None)
     except KeyError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except ValueError as e:

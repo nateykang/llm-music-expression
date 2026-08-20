@@ -67,10 +67,11 @@ def list_batches(root: Path) -> list[dict]:
 
 
 def build_setup(root: Path, batches: list[str], models: list[str], per_cell: int,
-                seed: int, blind: bool) -> dict:
+                seed: int, blind: bool, prompts: list[str] | None = None) -> dict:
     """Sample the review queue: per_cell random ok pieces from every
     (model × prompt × writing method) cell found across the given batches —
     stratified, so a multi-prompt or two-method session comes out balanced.
+    ``prompts`` narrows the session to those prompts (default: all found).
     Pieces are ordered prompt by prompt (shuffled within each prompt), and
     anonymous group labels are assigned per model. The returned dict is the
     session's review_setup event — the full unblinded record; what the browser
@@ -81,9 +82,11 @@ def build_setup(root: Path, batches: list[str], models: list[str], per_cell: int
     for batch in batches:
         manifest = load_manifest(root, batch)
         for prompt in manifest.get("prompts", []):
-            if prompt not in prompt_order:
+            if prompt not in prompt_order and (not prompts or prompt in prompts):
                 prompt_order.append(prompt)
         for p in manifest.get("pieces", []):
+            if prompts and p.get("prompt") not in prompts:
+                continue
             if p.get("ok") and p.get("model") in models:
                 key = (p["model"], p.get("prompt"), p.get("mode"))
                 cells.setdefault(key, []).append({**p, "batch": batch})
