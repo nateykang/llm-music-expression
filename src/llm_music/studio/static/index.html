@@ -6,11 +6,11 @@
   <title>Composer Studio</title>
   <!-- Bump ?v= on any studio.css/studio.js change: browsers cache the old
        assets otherwise, and the composer sees a stale UI after deploys. -->
-  <link rel="stylesheet" href="/static/studio.css?v=20260820e">
+  <link rel="stylesheet" href="/static/studio.css?v=20260820f">
   <!-- Same engraving stack as the main site: Verovio for MusicXML, abcjs for ABC. -->
   <script src="https://www.verovio.org/javascript/latest/verovio-toolkit-wasm.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/abcjs@6.4.4/dist/abcjs-basic-min.js" defer></script>
-  <script src="/static/studio.js?v=20260820e" defer></script>
+  <script src="/static/studio.js?v=20260820f" defer></script>
 </head>
 <body>
 
@@ -88,9 +88,6 @@
     <main class="home-main" id="tab-listen" hidden>
       <section class="card">
         <h2>Listening sessions</h2>
-        <p class="muted card-sub">Prepared listening tasks over already-generated pieces —
-          each window asks one question, and model names stay hidden until you reveal them.
-          Nothing here talks to a model; your notes are kept for the record.</p>
         <div id="rev-session-list"><p class="muted">Nothing yet.</p></div>
       </section>
     </main>
