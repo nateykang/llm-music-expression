@@ -457,8 +457,9 @@ SHARED_JS = r"""
 
 
 def _nav(active):
+    active_cls = ' class="active"'
     links = "\n".join(
-        f'  <a href="{f}"{" class=\"active\"" if f == active else ""}>{lbl}</a>'
+        f'  <a href="{f}"{active_cls if f == active else ""}>{lbl}</a>'
         for f, lbl in TABS)
     return f'<nav class="tabs">\n{links}\n</nav>'
 
