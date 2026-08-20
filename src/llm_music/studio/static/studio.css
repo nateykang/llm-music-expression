@@ -238,14 +238,6 @@ input, select, textarea {
 }
 .home-tabs .tab.active { background: var(--accent); color: #fff; }
 
-/* listening sessions: home form */
-.rev-batch-list {
-  display: flex; flex-direction: column; gap: .2rem;
-  max-height: 11rem; overflow-y: auto; padding-right: .5rem;
-}
-#rev-per-cell { width: 5rem; }
-.rev-blind { margin-top: .6rem; }
-
 /* listening session view */
 #review-view { min-height: 100vh; display: flex; flex-direction: column; }
 #rev-view-title { font-weight: 600; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

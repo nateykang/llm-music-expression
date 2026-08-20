@@ -137,7 +137,6 @@ function afterLogin(me) {
     sel.appendChild(opt);
   }
   buildModelCheckgrid($("cmp-models"), state.models);
-  loadReviewBatches();  // fills the listening-session picker in the background
   showHome();
 }
 
@@ -165,7 +164,7 @@ async function showHome() {
     "No sessions yet — start one above.");
   renderSessionList($("rev-session-list"),
     sessions.filter((s) => s.kind === "review"),
-    "No listening sessions yet — create one above.");
+    "No listening sessions yet — they appear here when one is prepared for you.");
 }
 
 function renderSessionList(list, sessions, emptyMsg) {
@@ -727,92 +726,8 @@ async function engraveInto(container, sessionId, version, files, scale) {
 // No model is called anywhere here: pieces are already-generated batch output,
 // and the composer's notes are research data. While blind, the server sends
 // only "Model A/B/C" group labels; identities arrive after a logged reveal.
-
-let reviewBatches = [];
-
-function fmtBatchTs(ts) {
-  const m = /^(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})/.exec(ts || "");
-  return m ? `${m[1]}-${m[2]}-${m[3]} ${m[4]}:${m[5]}` : ts;
-}
-
-async function loadReviewBatches() {
-  const list = $("rev-batches");
-  try {
-    reviewBatches = (await api("/api/review/batches")).batches;
-  } catch (e) {
-    reviewBatches = [];
-  }
-  list.innerHTML = "";
-  if (!reviewBatches.length) {
-    list.innerHTML = '<p class="muted">No batches found.</p>';
-    fillReviewModels();
-    return;
-  }
-  reviewBatches.forEach((b, i) => {
-    const n = Object.keys(b.model_counts).length;
-    const lbl = document.createElement("label");
-    lbl.className = "chk";
-    const cb = document.createElement("input");
-    cb.type = "checkbox";
-    cb.value = b.name;
-    cb.checked = i === 0;  // newest pre-checked
-    cb.addEventListener("change", fillReviewModels);
-    lbl.appendChild(cb);
-    lbl.appendChild(document.createTextNode(
-      ` ${fmtBatchTs(b.timestamp)} — ${n} model${n === 1 ? "" : "s"}, ` +
-      `${b.prompts.length} prompt${b.prompts.length === 1 ? "" : "s"}` +
-      (b.modes.length ? ` (${b.modes.map((m) => MODE_LABELS[m] || m).join("+")})` : "")));
-    list.appendChild(lbl);
-  });
-  fillReviewModels();
-}
-
-function checkedReviewBatches() {
-  return [...document.querySelectorAll("#rev-batches input:checked")].map((c) => c.value);
-}
-
-function fillReviewModels() {
-  const chosen = new Set(checkedReviewBatches());
-  const counts = {};  // model -> total ok pieces across the chosen batches
-  for (const b of reviewBatches) {
-    if (!chosen.has(b.name)) continue;
-    for (const [m, n] of Object.entries(b.model_counts)) {
-      counts[m] = (counts[m] || 0) + n;
-    }
-  }
-  buildModelCheckgrid($("rev-models"), sortModels(Object.keys(counts)),
-    (m) => `${m} (${counts[m]})`);
-}
-
-function revError(msg) {
-  $("rev-error").textContent = msg;
-  $("rev-error").hidden = false;
-}
-
-$("new-review-form").addEventListener("submit", async (ev) => {
-  ev.preventDefault();
-  $("rev-error").hidden = true;
-  const batches = checkedReviewBatches();
-  const models = [...document.querySelectorAll("#rev-models input:checked")].map((c) => c.value);
-  if (!batches.length) return revError("Pick at least one batch.");
-  if (!models.length) return revError("Pick at least one model.");
-  const body = {
-    batches, models,
-    per_cell: parseInt($("rev-per-cell").value, 10) || 1,
-    blind: $("rev-blind").checked,
-    // A fresh seed per session so the slice varies; it's logged server-side,
-    // so any queue stays reproducible.
-    seed: Math.floor(Math.random() * 1e9),
-    title: $("rev-title").value.trim(),
-  };
-  try {
-    const res = await api("/api/reviews", { method: "POST", body: JSON.stringify(body) });
-    $("rev-title").value = "";
-    openReview(res.meta.id);
-  } catch (e) {
-    revError(e.message);
-  }
-});
+// Sessions are prepared server-side (scripts/listening_suite.py / the reviews
+// API) — the studio UI only plays them, so the Listen tab stays undistracting.
 
 $("rev-back").addEventListener("click", () => { setHomeTab("listen"); showHome(); });
 

@@ -6,11 +6,11 @@
   <title>Composer Studio</title>
   <!-- Bump ?v= on any studio.css/studio.js change: browsers cache the old
        assets otherwise, and the composer sees a stale UI after deploys. -->
-  <link rel="stylesheet" href="/static/studio.css?v=20260820b">
+  <link rel="stylesheet" href="/static/studio.css?v=20260820c">
   <!-- Same engraving stack as the main site: Verovio for MusicXML, abcjs for ABC. -->
   <script src="https://www.verovio.org/javascript/latest/verovio-toolkit-wasm.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/abcjs@6.4.4/dist/abcjs-basic-min.js" defer></script>
-  <script src="/static/studio.js?v=20260820b" defer></script>
+  <script src="/static/studio.js?v=20260820c" defer></script>
 </head>
 <body>
 
@@ -76,36 +76,11 @@
     </main>
 
     <main class="home-main" id="tab-listen" hidden>
-      <form id="new-review-form" class="card">
-        <h2>New listening session</h2>
-        <p class="muted card-sub">A listening flight from generated batches: randomly chosen
-          already-generated pieces, blind by default — react in writing; no models are called.
-          Pick two batches to hear both writing methods side by side.</p>
-        <div class="cmp-config">
-          <div>
-            <div class="muted lbl">Batches</div>
-            <div id="rev-batches" class="rev-batch-list"></div>
-          </div>
-          <div>
-            <div class="muted lbl">Models (successful pieces in the chosen batches)</div>
-            <div id="rev-models" class="checkgrid"></div>
-          </div>
-          <div>
-            <div class="muted lbl">Pieces per model &times; prompt &times; method</div>
-            <input id="rev-per-cell" type="number" min="1" max="10" value="1">
-            <label class="chk rev-blind"><input id="rev-blind" type="checkbox" checked>
-              blind — hide model names until revealed</label>
-          </div>
-        </div>
-        <div class="row">
-          <input id="rev-title" type="text" placeholder="Session name (optional)">
-          <button type="submit">Create</button>
-        </div>
-        <p id="rev-error" class="error" hidden></p>
-      </form>
-
       <section class="card">
         <h2>Listening sessions</h2>
+        <p class="muted card-sub">Prepared listening tasks over already-generated pieces —
+          each window asks one question, and model names stay hidden until you reveal them.
+          Nothing here talks to a model; your notes are kept for the record.</p>
         <div id="rev-session-list"><p class="muted">Nothing yet.</p></div>
       </section>
     </main>
