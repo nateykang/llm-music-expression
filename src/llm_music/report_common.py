@@ -97,8 +97,9 @@ def paned(fn, options=MODE_TOGGLE, default="all"):
 
 def toggle(options=MODE_TOGGLE, default="all", label="Generation", note=""):
     """The sticky pane-switcher matching ``paned()``. One per page."""
+    pressed = ' aria-pressed="true"'
     btns = "".join(
-        f"<button data-mode='{key}'{' aria-pressed=\"true\"' if key == default else ''}>{lbl}</button>"
+        f"<button data-mode='{key}'{pressed if key == default else ''}>{lbl}</button>"
         for key, lbl in options)
     note_html = f"<span class='note'>{note}</span>" if note else ""
     return (f"<div class='mode-toggle' data-default='{default}'>"
