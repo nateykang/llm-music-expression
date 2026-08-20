@@ -6,11 +6,11 @@
   <title>Composer Studio</title>
   <!-- Bump ?v= on any studio.css/studio.js change: browsers cache the old
        assets otherwise, and the composer sees a stale UI after deploys. -->
-  <link rel="stylesheet" href="/static/studio.css?v=20260820c">
+  <link rel="stylesheet" href="/static/studio.css?v=20260820d">
   <!-- Same engraving stack as the main site: Verovio for MusicXML, abcjs for ABC. -->
   <script src="https://www.verovio.org/javascript/latest/verovio-toolkit-wasm.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/abcjs@6.4.4/dist/abcjs-basic-min.js" defer></script>
-  <script src="/static/studio.js?v=20260820c" defer></script>
+  <script src="/static/studio.js?v=20260820d" defer></script>
 </head>
 <body>
 
@@ -31,6 +31,16 @@
         <button id="tab-btn-compose" class="tab active" role="tab">Compose</button>
         <button id="tab-btn-listen" class="tab" role="tab">Listen</button>
       </nav>
+      <span id="user-box">
+        <span id="user-setup">
+          <input id="user-input" list="user-list" placeholder="Your name" maxlength="40">
+          <datalist id="user-list"></datalist>
+          <button id="user-save" type="button">Register</button>
+        </span>
+        <span id="user-chip" class="chip" hidden></span>
+        <button id="user-change" class="ghost" type="button" hidden
+          title="Notes you save are tagged with this name">Change</button>
+      </span>
       <button id="logout" class="ghost">Log out</button>
     </header>
     <main class="home-main" id="tab-compose">

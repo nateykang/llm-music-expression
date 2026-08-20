@@ -346,19 +346,24 @@ def test_review_blind_flow(client, batch_root):
     assert client.get(f"/api/reviews/{sid}/pieces/99/audio").status_code == 404
     assert client.get(f"/api/reviews/{sid}/pieces/0/score").status_code == 404
     assert client.get(f"/api/reviews/{sid}/pieces/0/source").status_code == 404
-    # notes are stamped with the blind state at write time
+    # notes need a listener name, and are stamped with the blind state at write time
     assert client.post(f"/api/reviews/{sid}/notes",
-                       json={"text": "lovely voice-leading", "piece": 0}).status_code == 200
+                       json={"text": "anonymous", "piece": 0}).status_code == 400
     assert client.post(f"/api/reviews/{sid}/notes",
-                       json={"text": "Model B repeats itself"}).status_code == 200
-    got = client.get(f"/api/reviews/{sid}").json()
+                       json={"text": "lovely voice-leading", "piece": 0,
+                             "user": "Caio"}).status_code == 200
+    assert client.post(f"/api/reviews/{sid}/notes",
+                       json={"text": "Model B repeats itself", "user": "Caio"}).status_code == 200
+    got = client.get(f"/api/reviews/{sid}", params={"user": "Caio"}).json()
     assert [n["piece"] for n in got["notes"]] == [0, None]
     assert all(n["revealed"] is False for n in got["notes"])
-    # reveal is logged; later notes are marked post-reveal
-    rev = client.post(f"/api/reviews/{sid}/reveal").json()
+    # reveal is logged per listener; later notes are marked post-reveal
+    assert client.post(f"/api/reviews/{sid}/reveal", json={}).status_code == 400
+    rev = client.post(f"/api/reviews/{sid}/reveal", json={"user": "Caio"}).json()
     assert all("model" in p for p in rev["pieces"])
-    client.post(f"/api/reviews/{sid}/notes", json={"text": "so that was fable", "piece": 0})
-    got = client.get(f"/api/reviews/{sid}").json()
+    client.post(f"/api/reviews/{sid}/notes",
+                json={"text": "so that was fable", "piece": 0, "user": "Caio"})
+    got = client.get(f"/api/reviews/{sid}", params={"user": "Caio"}).json()
     assert got["revealed"] is True
     assert set(got["groups"].values()) == set(BATCH_MODELS)
     assert got["notes"][-1]["revealed"] is True
@@ -366,6 +371,42 @@ def test_review_blind_flow(client, batch_root):
     for p in got["pieces"]:
         by_model.setdefault(p["model"], set()).add(p["group"])
     assert all(len(groups) == 1 for groups in by_model.values())  # one letter per model
+
+
+def test_review_multi_listener_isolation(client, batch_root):
+    """Two listeners on the same window: notes stay private to their author,
+    and one person's reveal must not unblind anyone else."""
+    login(client)
+    sid = client.post("/api/reviews", json={
+        "batches": [BATCH_NAME], "models": list(BATCH_MODELS),
+        "per_cell": 1, "blind": True, "seed": 5}).json()["meta"]["id"]
+    client.post(f"/api/reviews/{sid}/notes",
+                json={"text": "caio's blind note", "piece": 0, "user": "Caio"})
+    client.post(f"/api/reviews/{sid}/reveal", json={"user": "Caio"})
+    client.post(f"/api/reviews/{sid}/notes",
+                json={"text": "sara's note", "piece": 0, "user": "Sara"})
+
+    caio = client.get(f"/api/reviews/{sid}", params={"user": "Caio"}).json()
+    sara = client.get(f"/api/reviews/{sid}", params={"user": "Sara"}).json()
+    nobody = client.get(f"/api/reviews/{sid}").json()
+    assert [n["text"] for n in caio["notes"]] == ["caio's blind note"]
+    assert [n["text"] for n in sara["notes"]] == ["sara's note"]
+    assert caio["revealed"] is True and "model" in caio["pieces"][0]
+    assert sara["revealed"] is False and "model" not in sara["pieces"][0]
+    assert sara["notes"][0]["revealed"] is False  # written after CAIO's reveal, still blind for Sara
+    assert nobody["revealed"] is False and nobody["notes"] == []
+
+
+def test_user_registry(client, studio_env):
+    assert client.get("/api/users").status_code == 401
+    login(client)
+    assert client.get("/api/users").json()["users"] == []
+    r = client.post("/api/users", json={"name": "  Caio   Souza "})
+    assert r.status_code == 200 and r.json()["name"] == "Caio Souza"
+    # case-insensitive dedupe: the canonical (first-seen) casing comes back
+    r2 = client.post("/api/users", json={"name": "caio souza"})
+    assert r2.json()["name"] == "Caio Souza" and r2.json()["users"] == ["Caio Souza"]
+    assert client.post("/api/users", json={"name": "   "}).status_code == 400
 
 
 def test_review_cross_batch_stratified(client, batch_root):

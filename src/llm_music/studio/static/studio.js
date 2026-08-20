@@ -19,6 +19,7 @@ const state = {
   cmpStreaming: false,
   mode: localStorage.getItem("studio-mode") || "codegen",  // codegen | abc
   homeTab: localStorage.getItem("studio-home-tab") || "compose",  // compose | listen
+  user: localStorage.getItem("studio-user") || "",  // display name tagging notes
 };
 
 const MODE_LABELS = { codegen: "code", abc: "ABC" };
@@ -137,7 +138,57 @@ function afterLogin(me) {
     sel.appendChild(opt);
   }
   buildModelCheckgrid($("cmp-models"), state.models);
+  refreshUserBox();
+  loadKnownUsers();
   showHome();
+}
+
+// ---------- listener identity ----------
+// A self-declared name (shared password, several people): it tags every note
+// so reviewers don't collide, and reveal state is tracked per name.
+
+function refreshUserBox() {
+  const has = !!state.user;
+  $("user-setup").hidden = has;
+  $("user-chip").hidden = !has;
+  $("user-change").hidden = !has;
+  if (has) $("user-chip").textContent = state.user;
+}
+
+async function loadKnownUsers() {
+  try {
+    const { users } = await api("/api/users");
+    $("user-list").innerHTML = users.map((u) => `<option value="${esc(u)}">`).join("");
+  } catch (e) { /* the datalist is a convenience; free typing still works */ }
+}
+
+$("user-save").addEventListener("click", async () => {
+  const name = $("user-input").value.trim();
+  if (!name) return;
+  try {
+    const r = await api("/api/users", { method: "POST", body: JSON.stringify({ name }) });
+    state.user = r.name;  // server echoes the canonical casing
+    localStorage.setItem("studio-user", r.name);
+    refreshUserBox();
+  } catch (e) {
+    alert("Couldn't register the name: " + e.message);
+  }
+});
+$("user-input").addEventListener("keydown", (ev) => {
+  if (ev.key === "Enter") { ev.preventDefault(); $("user-save").click(); }
+});
+$("user-change").addEventListener("click", () => {
+  $("user-input").value = state.user;
+  state.user = "";
+  localStorage.removeItem("studio-user");
+  refreshUserBox();
+  $("user-input").focus();
+});
+
+function requireUser() {
+  if (state.user) return true;
+  alert("First add your name at the top of the studio (so your notes are yours).");
+  return false;
 }
 
 // ---------- home ----------
@@ -634,7 +685,7 @@ $("comment-form").addEventListener("submit", async (ev) => {
   $("comment-input").value = "";
   try {
     await api(`/api/sessions/${sid}/comments`, {
-      method: "POST", body: JSON.stringify({ text, version }),
+      method: "POST", body: JSON.stringify({ text, version, user: state.user }),
     });
     recordComment({ text, version });
     if (state.session && state.session.id === sid) renderComments();
@@ -645,7 +696,7 @@ $("comment-form").addEventListener("submit", async (ev) => {
 
 async function saveCellComment(compId, version, text) {
   await api(`/api/sessions/${compId}/comments`, {
-    method: "POST", body: JSON.stringify({ text, version }),
+    method: "POST", body: JSON.stringify({ text, version, user: state.user }),
   });
 }
 
@@ -739,7 +790,7 @@ $("rev-pieces").addEventListener("play", (ev) => {
 }, true);
 
 async function openReview(id) {
-  const r = await api(`/api/reviews/${id}`);
+  const r = await api(`/api/reviews/${id}?user=${encodeURIComponent(state.user)}`);
   state.review = { id, revealed: r.revealed, notes: new Map(), overall: [] };
   for (const n of r.notes) {
     if (n.piece == null) state.review.overall.push(n);
@@ -822,13 +873,14 @@ function reviewPieceCard(p) {
     `<button type="submit" class="ghost">Save note</button>`;
   form.addEventListener("submit", async (ev) => {
     ev.preventDefault();
+    if (!requireUser()) return;
     const input = form.querySelector("textarea");
     const text = input.value.trim();
     if (!text) return;
     input.value = "";
     try {
       await api(`/api/reviews/${sid}/notes`, {
-        method: "POST", body: JSON.stringify({ text, piece: p.idx }),
+        method: "POST", body: JSON.stringify({ text, piece: p.idx, user: state.user }),
       });
       if (!state.review.notes.has(p.idx)) state.review.notes.set(p.idx, []);
       state.review.notes.get(p.idx).push({ text, revealed: state.review.revealed });
@@ -850,13 +902,13 @@ function renderOverallNotes() {
 
 $("rev-overall-form").addEventListener("submit", async (ev) => {
   ev.preventDefault();
-  if (!state.review) return;
+  if (!state.review || !requireUser()) return;
   const text = $("rev-overall-input").value.trim();
   if (!text) return;
   $("rev-overall-input").value = "";
   try {
     await api(`/api/reviews/${state.review.id}/notes`, {
-      method: "POST", body: JSON.stringify({ text, piece: null }),
+      method: "POST", body: JSON.stringify({ text, piece: null, user: state.user }),
     });
     state.review.overall.push({ text, revealed: state.review.revealed });
     renderOverallNotes();
@@ -872,11 +924,13 @@ $("rev-overall-input").addEventListener("keydown", (ev) => {
 });
 
 $("rev-reveal").addEventListener("click", async () => {
-  if (!state.review) return;
-  if (!confirm("Reveal which model wrote each piece? The reveal is logged, and " +
-               "notes written afterwards are marked as post-reveal.")) return;
+  if (!state.review || !requireUser()) return;
+  if (!confirm("Reveal which model wrote each piece? Only your own view unblinds; " +
+               "the reveal is logged, and notes you write afterwards are marked " +
+               "as post-reveal.")) return;
   try {
-    await api(`/api/reviews/${state.review.id}/reveal`, { method: "POST" });
+    await api(`/api/reviews/${state.review.id}/reveal`,
+      { method: "POST", body: JSON.stringify({ user: state.user }) });
     openReview(state.review.id);  // refetch: names, groups legend, status chip
   } catch (e) {
     alert("Couldn't reveal: " + e.message);

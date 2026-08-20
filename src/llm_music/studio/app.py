@@ -135,6 +135,49 @@ def me():
     return {"models": cfg.available_models(), "default_model": cfg.default_model()}
 
 
+# -- listeners ---------------------------------------------------------------
+# The studio is shared by several people behind one password. A "user" here is
+# just a self-declared display name that tags what they write (and scopes what
+# they see back), so reviewers don't collide — it is labeling, not auth.
+
+
+def _users_path() -> Path:
+    return cfg.data_dir() / "users.json"
+
+
+def _load_users() -> list[str]:
+    path = _users_path()
+    if not path.exists():
+        return []
+    return json.loads(path.read_text(encoding="utf-8")).get("users", [])
+
+
+class UserBody(BaseModel):
+    name: str
+
+
+@app.get("/api/users", dependencies=[Depends(require_auth)])
+def list_users():
+    return {"users": _load_users()}
+
+
+@app.post("/api/users", dependencies=[Depends(require_auth)])
+def register_user(body: UserBody):
+    name = " ".join(body.name.split())[:40]
+    if not name:
+        raise HTTPException(status_code=400, detail="empty name")
+    users = _load_users()
+    match = next((u for u in users if u.lower() == name.lower()), None)
+    if match is None:
+        users.append(name)
+        _users_path().parent.mkdir(parents=True, exist_ok=True)
+        _users_path().write_text(json.dumps({"users": users}, indent=2),
+                                 encoding="utf-8")
+        _notify({"event": "user_registered", "name": name})
+        match = name
+    return {"users": users, "name": match}
+
+
 # -- sessions ----------------------------------------------------------------
 
 
@@ -186,6 +229,7 @@ def get_session(session_id: str):
 class CommentBody(BaseModel):
     text: str
     version: int | None = None  # which piece version the thought is about
+    user: str = ""  # optional display name (see /api/users)
 
 
 @app.post("/api/sessions/{session_id}/comments",
@@ -204,6 +248,8 @@ def post_comment(session_id: str, body: CommentBody):
     if not text:
         raise HTTPException(status_code=400, detail="empty comment")
     event = {"type": "comment", "text": text, "version": body.version}
+    if body.user.strip():
+        event["user"] = body.user.strip()
     store.append_event(session_id, event)
     store.touch(session_id)
     _notify({"event": "comment", "session": session_id, "text": text[:80]})
@@ -462,46 +508,72 @@ def _review(session_id: str) -> tuple[SessionStore, dict, dict]:
     return store, meta, setups[0]
 
 
+def _user_revealed(meta: dict, user: str) -> bool:
+    # Reveal state is per listener: one person unblinding must not unblind the
+    # next. (meta["revealed"] survives as a legacy whole-session flag.)
+    return bool(meta.get("revealed")) or (bool(user) and
+                                          user in meta.get("revealed_by", []))
+
+
 @app.get("/api/reviews/{session_id}", dependencies=[Depends(require_auth)])
-def get_review(session_id: str):
+def get_review(session_id: str, user: str = ""):
     store, meta, setup = _review(session_id)
+    user = user.strip()
+    # Each listener sees only their own notes — independent judgments, no
+    # anchoring on what someone else already wrote.
     notes = [{"piece": e.get("piece"), "text": e["text"],
               "revealed": e.get("revealed", False)}
-             for e in store.events(session_id) if e["type"] == "review_note"]
-    return {"meta": meta, "notes": notes,
-            **review_mod.client_view(setup, revealed=meta.get("revealed", False))}
+             for e in store.events(session_id)
+             if e["type"] == "review_note" and e.get("user", "") == user]
+    return {"meta": meta, "notes": notes, "user": user,
+            **review_mod.client_view(setup, revealed=_user_revealed(meta, user))}
 
 
 class ReviewNoteBody(BaseModel):
     text: str
     piece: int | None = None  # queue index; None = overall comparison notes
+    user: str = ""
 
 
 @app.post("/api/reviews/{session_id}/notes", dependencies=[Depends(require_auth)])
 def post_review_note(session_id: str, body: ReviewNoteBody):
     store, meta, setup = _review(session_id)
     text = body.text.strip()
+    user = body.user.strip()
     if not text:
         raise HTTPException(status_code=400, detail="empty note")
+    if not user:
+        raise HTTPException(status_code=400,
+                            detail="add your name at the top of the studio first")
     if body.piece is not None and not 0 <= body.piece < len(setup["pieces"]):
         raise HTTPException(status_code=404, detail="no such piece")
     # Stamp the blind state at write time: blind notes and post-reveal notes
     # are different data in the qualitative analysis.
     store.append_event(session_id, {"type": "review_note", "piece": body.piece,
-                                    "text": text,
-                                    "revealed": bool(meta.get("revealed"))})
+                                    "text": text, "user": user,
+                                    "revealed": _user_revealed(meta, user)})
     store.touch(session_id, n_notes=meta.get("n_notes", 0) + 1)
-    _notify({"event": "review_note", "session": session_id, "text": text[:80]})
+    _notify({"event": "review_note", "session": session_id, "user": user,
+             "text": text[:80]})
     return {"ok": True}
 
 
+class RevealBody(BaseModel):
+    user: str = ""
+
+
 @app.post("/api/reviews/{session_id}/reveal", dependencies=[Depends(require_auth)])
-def reveal_review(session_id: str):
+def reveal_review(session_id: str, body: RevealBody):
     store, meta, setup = _review(session_id)
-    if not meta.get("revealed"):
-        store.append_event(session_id, {"type": "review_reveal"})
-        store.touch(session_id, revealed=True)
-        _notify({"event": "review_reveal", "session": session_id})
+    user = body.user.strip()
+    if not user:
+        raise HTTPException(status_code=400,
+                            detail="add your name at the top of the studio first")
+    if not _user_revealed(meta, user):
+        store.append_event(session_id, {"type": "review_reveal", "user": user})
+        store.touch(session_id,
+                    revealed_by=meta.get("revealed_by", []) + [user])
+        _notify({"event": "review_reveal", "session": session_id, "user": user})
     return review_mod.client_view(setup, revealed=True)
 
 
