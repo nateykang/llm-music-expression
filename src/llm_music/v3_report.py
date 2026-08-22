@@ -14,8 +14,11 @@ import statistics as st
 from collections import Counter
 from pathlib import Path
 
+import json
+
 from .config import DOCS_DIR
-from .report_common import cell, heat, page, paned, table, toggle
+from .report import KEY_WIDGET_CSS, KEY_WIDGET_TMPL, _key_reference
+from .report_common import cell, fnote, heat, page, paned, table, toggle
 
 V3_BATCHES = ["20260819_201530__models_40_prompts_3",
               "20260819_203512__models_2_prompts_3",
@@ -250,6 +253,38 @@ def _trend_section(feats):
         + table([("feature", None), ("ρ", None)], rows) + "</figure>")
 
 
+def _key_widget(feats):
+    """The v1 interactive circle-of-fifths histogram, fed with v3 data: all
+    three prompt variants, ±thinking arms pooled per base model (21 buttons)."""
+    from collections import Counter as C
+    buckets = {"text": {}, "code": {}, "all": {}}
+    for r in feats:
+        tonic = (r.get("key_declared_tonic") or r.get("key_tonic") or "").replace("-", "b")
+        mode = r.get("key_mode_best") or r.get("key_mode")
+        if not tonic or mode in ("", "?", None):
+            continue
+        lab = tonic if mode == "major" else tonic + "m"
+        rep = "code" if r.get("mode") == "codegen" else "text"
+        b = _base(r["model"])
+        for k in (rep, "all"):
+            buckets[k].setdefault(b, C())[lab] += 1
+    dists = {k: {m: dict(c) for m, c in v.items() if sum(c.values()) >= 10}
+             for k, v in buckets.items()}
+    models = [b for b in BASES if b in (set(dists["all"]) | set(dists["text"]))]
+    html_out = (KEY_WIDGET_TMPL
+                .replace("in free-form, as a share of its pieces",
+                         "across the three self-expression variants, as a share of its "
+                         "pieces (±thinking arms pooled)")
+                .replace("__FN_COF__", fnote("circle-of-fifths"))
+                .replace("__FN_GIGA__", fnote("gigamidi"))
+                .replace("__TEXT__", json.dumps(dists["text"]))
+                .replace("__CODE__", json.dumps(dists["code"]))
+                .replace("__ALL__", json.dumps(dists["all"]))
+                .replace("__MODELS__", json.dumps(models))
+                .replace("__REF__", json.dumps(_key_reference())))
+    return html_out
+
+
 def _keys_section(feats):
     sub = [r for r in feats if r.get("mode") in ("abc", "smt-abc")]
     rows = []
@@ -345,10 +380,12 @@ def build() -> Path:
         + _thinking_section(feats)
         + _family_section(feats)
         + _trend_section(feats)
+        + _key_widget(feats)
         + _keys_section(feats)
         + _prompt_section(feats)
     )
-    html_text = page("v3 corpus — objective features", "results.html", body)
+    html_text = page("v3 corpus — objective features", "results.html", body,
+                     extra_css=KEY_WIDGET_CSS)
     # subdir page: nav + asset links go up one level; then add the corpus pill.
     html_text = re.sub(r'(<a href=")(?!https?|\.\./|#)', r"\1../", html_text)
     html_text = re.sub(r'(<link[^>]*href=")(?!https?|\.\./)', r"\1../", html_text)

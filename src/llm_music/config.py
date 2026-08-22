@@ -30,4 +30,12 @@ def find_soundfont() -> Path | None:
             hits = sorted(SOUNDFONTS_DIR.glob(pattern))
             if hits:
                 return hits[0]
+    # System packages (e.g. Debian fluid-soundfont-gm) — without this fallback a
+    # fresh machine bakes no audio and the pipeline treats it as non-fatal, so
+    # the gap is silent (it cost ~2,200 mp3s on a pod rebuild once).
+    for sysdir in (Path("/usr/share/sounds/sf2"), Path("/usr/local/share/sounds/sf2")):
+        if sysdir.is_dir():
+            hits = sorted(sysdir.glob("*.sf2"))
+            if hits:
+                return hits[0]
     return None
