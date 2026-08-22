@@ -18,7 +18,7 @@ import json
 
 from .config import DOCS_DIR
 from .report import KEY_WIDGET_CSS, KEY_WIDGET_TMPL, _key_reference
-from .report_common import cell, fnote, heat, page, paned, table, toggle
+from .report_common import cell, fnote, heat, page, paned, table, tip, toggle
 
 V3_BATCHES = ["20260819_201530__models_40_prompts_3",
               "20260819_203512__models_2_prompts_3",
@@ -44,6 +44,14 @@ BASES = list(RELEASE)  # insertion order groups families, oldest first
 COMPLEXITY = ["pitch_class_entropy", "rhythm_entropy", "polyphony", "structureness",
               "n_pitches_used", "pitch_range"]
 HARMONY = ["consonance_rate", "chord_tone_rate", "scale_consistency"]
+
+
+def _table_raw(cols, rows):
+    """Like report_common.table() but rows are lists of fully-formed <td> cells
+    (needed when cells carry their own style/class, e.g. heat())."""
+    head = "<thead><tr>" + "".join(tip(l, t) for l, t in cols) + "</tr></thead>"
+    body = "<tbody>" + "".join("<tr>" + "".join(r) + "</tr>" for r in rows) + "</tbody>"
+    return f"<div class='tscroll'><table class='sortable'>{head}{body}</table></div>"
 
 
 def _num(v):
@@ -117,7 +125,7 @@ FEAT_COLS = [
 
 def _arm_row(arm, rows):
     return [
-        f"<td class='m'>{arm}</td>",
+        arm,
         cell(len(rows), "int"),
         cell((_minor_pct(rows) or 0) / 100, "pct"),
         cell(_med(rows, "length_seconds"), "f0"),
@@ -144,7 +152,7 @@ def _completion_section(pieces):
     for b in BASES:
         fam, rel = RELEASE[b]
         cells = [f"<td class='m'>{b}</td>", f"<td class='m'>{fam}</td>",
-                 f"<td class='m'>{rel}</td>"]
+                 f"<td class='m'>{rel}</td>"]  # raw <td>s: rendered via _table_raw
         for gm in ("abc", "codegen"):
             for arm in (b, b + "-thinking"):
                 n, k = tot.get((arm, gm), 0), ok.get((arm, gm), 0)
@@ -162,7 +170,7 @@ def _completion_section(pieces):
         "reasoning — every code-gen failure is a hallucinated music21 API call, so this "
         "column measures closed-book library recall, not musicality. Cells are ok/attempted "
         "after up to 5 error-fed retries; red intensity marks the shortfall.</figcaption>"
-        + table(cols, rows, left=3) + "</figure>")
+        + _table_raw(cols, rows) + "</figure>")
 
 
 def _per_arm_section(feats):
@@ -211,10 +219,10 @@ def _thinking_section(feats):
         "non-thinking arms on the same prompts. Green = the thinking arm is higher. "
         "For always-thinking models (fable-5, kimi-k3, gemini pro/3.5+ flash, grok-4.6) "
         "the pair is effort low vs high rather than off vs on.</figcaption>"
-        + table([c for c in [("model", None), ("len s", None), ("notes/beat", None),
-                             ("pc entropy", None), ("rhy entropy", None),
-                             ("structure", None), ("instr", None)]],
-                rows) + "</figure>")
+        + _table_raw([("model", None), ("len s", None), ("notes/beat", None),
+                      ("pc entropy", None), ("rhy entropy", None),
+                      ("structure", None), ("instr", None)],
+                     rows) + "</figure>")
 
 
 def _family_section(feats):
@@ -244,13 +252,13 @@ def _trend_section(feats):
                 ys.append(_med(mine, feat))
         rho = _spearman(xs, ys)
         rows.append([f"<td class='m'>{feat}</td>",
-                     heat(rho, 1.0) if rho is not None else "<td>—</td>"])
+                     heat(rho, 1.0) if rho is not None else "<td>—</td>"])  # raw
     return (
         "<h2>Do newer models write more complex music? <span class='sub'>(release rank vs feature, Spearman)</span></h2>"
         "<figure><figcaption>Correlation between a model's release date (rank across the "
         "21 base models) and its median feature value, ABC pieces. Exploratory: n=21 "
         "models, so |ρ| below ~0.45 is within noise.</figcaption>"
-        + table([("feature", None), ("ρ", None)], rows) + "</figure>")
+        + _table_raw([("feature", None), ("ρ", None)], rows) + "</figure>")
 
 
 def _key_widget(feats):
@@ -299,14 +307,12 @@ def _keys_section(feats):
             if tonic and mode:
                 keys[f"{tonic} {mode}"] += 1
         top = ", ".join(f"{k} {100*v/len(mine):.0f}%" for k, v in keys.most_common(3))
-        rows.append([f"<td class='m'>{b}</td>",
-                     cell((_minor_pct(mine) or 0) / 100, "pct"),
-                     f"<td class='m'>{top}</td>"])
+        rows.append([b, top, cell((_minor_pct(mine) or 0) / 100, "pct")])
     return (
         "<h2>Key &amp; mode signatures <span class='sub'>(ABC, declared keys)</span></h2>"
         "<figure><figcaption>What each model reaches for tonally when asked only to "
         "express itself. Both arms pooled per model.</figcaption>"
-        + table([("model", None), ("minor", None), ("top keys", None)], rows, left=1)
+        + table([("model", None), ("top keys", None), ("minor", None)], rows, left=2)
         + "</figure>")
 
 
@@ -315,7 +321,7 @@ def _prompt_section(feats):
     rows = []
     for p in ("express-yourself", "uniquely-you", "emotional-state"):
         mine = [r for r in sub if r["prompt"] == p]
-        rows.append([f"<td class='m'>{p}</td>", cell(len(mine), "int"),
+        rows.append([p, cell(len(mine), "int"),
                      cell((_minor_pct(mine) or 0) / 100, "pct"),
                      cell(_med(mine, "length_seconds"), "f0"),
                      cell(_med(mine, "note_density"), "f2"),
