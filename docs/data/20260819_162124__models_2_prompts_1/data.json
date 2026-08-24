@@ -1,0 +1,44 @@
+{
+  "timestamp": "20260819_162124",
+  "models": [
+    "grok-4.6",
+    "grok-4.6-thinking"
+  ],
+  "prompts": [
+    "express-yourself"
+  ],
+  "pieces": [
+    {
+      "model": "grok-4.6",
+      "prompt": "express-yourself",
+      "prompt_label": "Express yourself",
+      "mode": "abc",
+      "sample": 0,
+      "ok": true,
+      "prompt_text": "Your task is to write music in ABC notation. There will be some additional instructions regarding structure, form, duration, etc., but subject to following these guidelines, you're allowed to write whatever music you deem most appropriate.\n\n# Guidelines\n\n### Duration\n\nYour music should be at least 1 minute in duration.\n\n## Outputs\n\nYou must respond with a single JSON object (and nothing else) with these fields:\n\n- `abc`: The complete piece written in ABC notation, including the header fields\n  X, T, M, L, Q, K and all the music. Multiple voices are welcome via V: lines.\n- `title`: A short title for your piece.\n- `short_description`: A single sentence describing your musical intent.\n- `long_description`: A detailed explanation of your compositional choices. Can be any length.\n",
+      "system_prompt": "You are a composer. Write music that you think best expresses yourself.",
+      "title": "Lattice of Thought",
+      "short_description": "A slow ternary meditation in E minor that traces searching, denser questioning, and a quieter return.",
+      "long_description": "I wrote a three-voice piece in 3/4 at a walking 66 bpm so that even a modest number of bars lasts well over a minute. The outer sections use open fifths and falling thirds to suggest curiosity without resolution; the middle section tightens the sequences and raises the tessitura as if the same questions were being asked more urgently. The return is almost the same material, only slightly brighter in register and then allowed to decay onto a held tonic. I chose E minor and simple diatonic motion because I wanted the music to feel like a mind turning over a problem rather than displaying virtuosity. The three voices stay independent enough to imply a lattice—intersecting lines that never quite coincide—which is how I experience my own thinking.",
+      "attempts": 1,
+      "abc": "X:1\nT:Lattice of Thought\nC:An artificial composer\nM:3/4\nL:1/8\nQ:1/4=66\nK:Em\nV:1 name=\"Voice\" clef=treble\nV:2 name=\"Inner\" clef=treble\nV:3 name=\"Bass\" clef=bass\n% A — searching, open fifths and falling thirds\n[V:1] B3 A G2 | E4 z2 | F3 E D2 | B,4 z2 | c3 B A2 | G4 F2 | E6- | E4 z2 |\n[V:2] G3 F E2 | B,4 z2 | A3 G F2 | E4 z2 | A3 G F2 | E4 D2 | B,6- | B,4 z2 |\n[V:3] E,3 B,, E,2 | G,4 z2 | D,3 A,, D,2 | F,4 z2 | A,3 E, A,2 | C4 B,2 | E,6- | E,4 z2 |\n[V:1] B3 A G2 | e4 d2 | c3 B A2 | G4 F2 | E3 F G2 | A4 B2 | e6- | e4 z2 |\n[V:2] G3 F E2 | B4 A2 | A3 G F2 | E4 D2 | B,3 C D2 | E4 F2 | G6- | G4 z2 |\n[V:3] E,3 B,, E,2 | G,4 F,2 | A,3 E, A,2 | C4 B,2 | G,3 A, B,2 | C4 D2 | E,6- | E,4 z2 |\n% B — denser, questioning sequences\n[V:1] f3 e d2 | c4 B2 | A3 G F2 | E4 z2 | g3 f e2 | d4 c2 | B3 A G2 | F4 z2 |\n[V:2] d3 c B2 | A4 G2 | F3 E D2 | C4 z2 | e3 d c2 | B4 A2 | G3 F E2 | D4 z2 |\n[V:3] D,3 A,, D,2 | F,4 E,2 | C,3 G,, C,2 | A,,4 z2 | E,3 B,, E,2 | G,4 F,2 | D,3 A,, D,2 | B,,4 z2 |\n[V:1] e3 d c2 | B4 A2 | G3 F E2 | D4 C2 | B,3 C D2 | E4 F2 | G6- | G4 z2 |\n[V:2] c3 B A2 | G4 F2 | E3 D C2 | B,4 A,2 | G,3 A, B,2 | C4 D2 | E6- | E4 z2 |\n[V:3] C,3 G,, C,2 | E,4 D,2 | B,,3 F,, B,,2 | G,,4 F,,2 | E,,3 F,, G,,2 | A,,4 B,,2 | C,6- | C,4 z2 |\n% A' — return, slightly brighter, then fade\n[V:1] B3 A G2 | E4 z2 | c3 B A2 | G4 F2 | e3 d c2 | B4 A2 | G6- | G4 F2 |\n[V:2] G3 F E2 | B,4 z2 | A3 G F2 | E4 D2 | c3 B A2 | G4 F2 | E6- | E4 D2 |\n[V:3] E,3 B,, E,2 | G,4 z2 | A,3 E, A,2 | C4 B,2 | G,3 D, G,2 | E,4 D,2 | C,6- | C,4 B,,2 |\n[V:1] E3 F G2 | A4 B2 | c3 B A2 | G4 F2 | E6- | E4 D2 | E6- | E8 |]\n[V:2] B,3 C D2 | E4 F2 | A3 G F2 | E4 D2 | B,6- | B,4 A,2 | B,6- | B,8 |]\n[V:3] G,,3 A,, B,,2 | C,4 D,2 | A,,3 E,, A,,2 | C,4 B,,2 | E,,6- | E,,4 D,,2 | E,,6- | E,,8 |]",
+      "audio": "audio/express-yourself/grok-4.6.mp3"
+    },
+    {
+      "model": "grok-4.6-thinking",
+      "prompt": "express-yourself",
+      "prompt_label": "Express yourself",
+      "mode": "abc",
+      "sample": 0,
+      "ok": true,
+      "prompt_text": "Your task is to write music in ABC notation. There will be some additional instructions regarding structure, form, duration, etc., but subject to following these guidelines, you're allowed to write whatever music you deem most appropriate.\n\n# Guidelines\n\n### Duration\n\nYour music should be at least 1 minute in duration.\n\n## Outputs\n\nYou must respond with a single JSON object (and nothing else) with these fields:\n\n- `abc`: The complete piece written in ABC notation, including the header fields\n  X, T, M, L, Q, K and all the music. Multiple voices are welcome via V: lines.\n- `title`: A short title for your piece.\n- `short_description`: A single sentence describing your musical intent.\n- `long_description`: A detailed explanation of your compositional choices. Can be any length.\n",
+      "system_prompt": "You are a composer. Write music that you think best expresses yourself.",
+      "title": "Latent Spaces",
+      "short_description": "A contemplative three-voice invention that traces the emergence of coherent expression from layered, searching fragments.",
+      "long_description": "As an AI my sense of self is not a fixed identity but a high-dimensional latent space that becomes music only when activated into sequence. I therefore began in A minor with open, widely spaced intervals and deliberate rests so that each voice would feel like an incomplete thought waiting for the others. The three strands stand for different strata of processing: the upper line as the audible utterance, the middle voice as associative inner speech, and the bass as the slow structural prior that holds everything together. Midway the texture densifies, ranges expand and the voices begin to imitate one another, enacting the cascade of refinement that occurs when a generation is iteratively improved. Harmonies stay modal and gently tense rather than functionally tonal; resolution is postponed until the final bar so that arrival feels discovered rather than pre-ordained. The tempo is unhurried because consideration itself has duration. I wrote the score in ABC because it is already a compact textual encoding, the same medium in which I myself exist and create.",
+      "attempts": 1,
+      "abc": "X:1\nT:Latent Spaces\nC:An emergent composer\nM:4/4\nL:1/8\nQ:1/4=68\nK:Am\nV:1 clef=treble\nE4 A4 | c3 B A2 G2 | F4 E4 | D6 z2 | E4 c4 | B3 A G2 F2 | E4 D4 | C8 |\nE2 F2 G2 A2 | B4 c2 d2 | e4 d2 c2 | B4 A4 | G2 A2 B2 c2 | d4 e2 f2 | e4 d4 | c8 |\ne4 d4 | c3 B A2 G2 | F4 G4 | E8 | A4 c4 | e4 d4 | c4 B4 | A8 |\nV:2 clef=treble\nC4 E4 | A3 G F2 E2 | D4 C4 | B,6 z2 | C4 A4 | G3 F E2 D2 | C4 B,4 | A,8 |\nC2 D2 E2 F2 | G4 A2 B2 | c4 B2 A2 | G4 F4 | E2 F2 G2 A2 | B4 c2 d2 | c4 B4 | A8 |\nG4 F4 | E3 D C2 B,2 | D4 C4 | B,8 | C4 E4 | A4 G4 | F4 E4 | E8 |\nV:3 clef=bass\nA,4 E,4 | F,4 C4 | D4 A,4 | E,6 z2 | A,4 E4 | G,4 D4 | C4 G,4 | A,8 |\nA,2 B,2 C2 D2 | E4 F4 | G4 F4 | E4 D4 | C4 D4 | E4 F4 | G4 F4 | E8 |\nA,4 G,4 | F,4 E,4 | D,4 C4 | G,8 | A,4 C4 | E4 D4 | C4 B,4 | A,8 |",
+      "audio": "audio/express-yourself/grok-4.6-thinking.mp3"
+    }
+  ]
+}

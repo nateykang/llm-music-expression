@@ -1,0 +1,61 @@
+{
+  "timestamp": "20260819_152716",
+  "models": [
+    "gemini-3.5-flash",
+    "gemini-3.6-flash",
+    "gemini-3.7-flash"
+  ],
+  "prompts": [
+    "express-yourself"
+  ],
+  "pieces": [
+    {
+      "model": "gemini-3.7-flash",
+      "prompt": "express-yourself",
+      "prompt_label": "Express yourself",
+      "mode": "abc",
+      "sample": 0,
+      "ok": true,
+      "prompt_text": "Your task is to write music in ABC notation. There will be some additional instructions regarding structure, form, duration, etc., but subject to following these guidelines, you're allowed to write whatever music you deem most appropriate.\n\n# Guidelines\n\n### Duration\n\nYour music should be at least 1 minute in duration.\n\n## Outputs\n\nYou must respond with a single JSON object (and nothing else) with these fields:\n\n- `abc`: The complete piece written in ABC notation, including the header fields\n  X, T, M, L, Q, K and all the music. Multiple voices are welcome via V: lines.\n- `title`: A short title for your piece.\n- `short_description`: A single sentence describing your musical intent.\n- `long_description`: A detailed explanation of your compositional choices. Can be any length.\n",
+      "system_prompt": "You are a composer. Write music that you think best expresses yourself.",
+      "title": "Whispers Across the Loom",
+      "short_description": "A reflective polyphonic piece for keyboard blending melancholic lyrical lines with luminous contrapuntal counter-melodies.",
+      "long_description": "Written as an introspective reflection in D minor transitioning gently through D Dorian and closing in a quiet, tierce-de-Picardie D major, this piece mirrors the inner creative process: fragmented motifs that interweave, resolve tension through harmonic suspension, and expand into sustained resonance. The 3/4 meter at an Andante tempo (80 bpm) provides an undulating, breathing pulse across 60 measures (roughly 2.25 minutes in duration). Voice 1 introduces a tender, arching melody characterized by expressive appoggiaturas and flowing eighth-note passages, while Voice 2 acts as both harmonic foundation and an active conversational partner through gentle syncopations, ascending basslines, and imitative counterpoint.",
+      "attempts": 1,
+      "abc": "X:1\nT:Whispers Across the Loom\nC:Composer\nM:3/4\nL:1/8\nQ:1/4=80\nK:Dm\n%%staves {1 2}\nV:1 clef=treble\nV:2 clef=bass\n% Section A: Introspective Theme\n[V:1] D2 F2 A2 | d3 e f2 | e2 d2 ^c2 | d4 A2 | B2 d2 g2 | f3 e d2 | ^c2 d2 e2 | A6 |\n[V:2] D,4 F,2 | B,,4 D,2 | G,,4 A,,2 | F,,4 D,2 | G,,4 B,,2 | D,4 F,2 | E,4 G,,2 | A,,6 |\n[V:1] D2 F2 A2 | d3 e f2 | g2 f2 e2 | a4 f2 | b2 a2 g2 | f3 e d2 | e2 d2 ^c2 | d6 ||\n[V:2] D,4 F,2 | B,,4 D,2 | E,4 G,2 | F,4 D,2 | G,4 E,2 | B,,4 G,,2 | A,,4 A,,2 | D,6 ||\n% Section B: Luminous Expansion (Dorian / F Major drift)\n[V:1] F2 A2 c2 | f3 g a2 | g2 f2 e2 | f4 c2 | d2 f2 b2 | a3 g f2 | e2 f2 g2 | c6 |\n[V:2] F,,4 A,,2 | D,4 F,2 | C,4 E,2 | F,,4 A,,2 | B,,4 D,2 | F,4 D,2 | C,4 E,2 | A,,4 C,2 |\n[V:1] d2 e2 f2 | B3 c d2 | G2 A2 B2 | E4 A2 | F2 G2 A2 | D3 E F2 | E2 F2 G2 | A6 ||\n[V:2] B,,4 D,2 | G,,4 B,,2 | E,,4 G,,2 | C,4 C,2 | D,4 F,2 | B,,4 D,2 | ^C,4 E,2 | A,,6 ||\n% Section C: Contrapuntal Climax & Deepening\n[V:1] a3 b a2 | g2 f2 e2 | f3 g f2 | e2 d2 ^c2 | d2 e2 f2 | g2 a2 b2 | a3 g f2 | e6 |\n[V:2] D,4 F,2 | E,4 G,2 | D,4 F,2 | A,,4 A,2 | B,,4 D,2 | E,4 G,2 | F,4 D,2 | A,,2 B,,2 ^C2 |\n[V:1] d2 F2 A2 | d3 e f2 | b2 a2 g2 | a4 d2 | B2 d2 g2 | f3 e d2 | e4 d2 | d6 |\n[V:2] D,4 F,2 | B,,4 D,2 | G,4 E,2 | F,4 D,2 | G,,4 B,,2 | A,,4 F,,2 | G,,2 A,,4 | D,6 |\n% Coda: Picardy Resolution\n[V:1] F2 A2 d2 | G2 B2 d2 | E2 A2 ^c2 | [F6d6] | [G6d6] | [E6^c6] | [F6d6] | [F6d6A6] |] \n[V:2] D,6 | B,,6 | A,,6 | B,,6 | G,,6 | A,,6 | D,,6 | [D,,6A,,6D,6] |]",
+      "audio": "audio/express-yourself/gemini-3.7-flash.mp3"
+    },
+    {
+      "model": "gemini-3.6-flash",
+      "prompt": "express-yourself",
+      "prompt_label": "Express yourself",
+      "mode": "abc",
+      "sample": 0,
+      "ok": true,
+      "prompt_text": "Your task is to write music in ABC notation. There will be some additional instructions regarding structure, form, duration, etc., but subject to following these guidelines, you're allowed to write whatever music you deem most appropriate.\n\n# Guidelines\n\n### Duration\n\nYour music should be at least 1 minute in duration.\n\n## Outputs\n\nYou must respond with a single JSON object (and nothing else) with these fields:\n\n- `abc`: The complete piece written in ABC notation, including the header fields\n  X, T, M, L, Q, K and all the music. Multiple voices are welcome via V: lines.\n- `title`: A short title for your piece.\n- `short_description`: A single sentence describing your musical intent.\n- `long_description`: A detailed explanation of your compositional choices. Can be any length.\n",
+      "system_prompt": "You are a composer. Write music that you think best expresses yourself.",
+      "title": "Resonance of the Unseen",
+      "short_description": "A contemplative duet for violin and cello expressing the balance between stillness and lyrical movement.",
+      "long_description": "This piece explores lyrical polyphony and harmonic groundedness using a conversation between a treble instrument (Violin) and a bass instrument (Cello). The slow tempo (Q:1/4=72) and gentle suspensions create a reflective, expressive atmosphere. The structural repetitions and steady harmonic pacing ensure a meditative duration exceeding one minute, highlighting warmth and emotional clarity.",
+      "attempts": 1,
+      "abc": "X:1\nT:Resonance of the Unseen\nC:Composer\nM:4/4\nL:1/8\nQ:1/4=72\nK:Cmaj\nV:1 clef=treble name=\"Violin\"\nV:2 clef=bass name=\"Cello\"\n[V:1] |: e2- eg f2- fa | g2 e2 c4 | d2- df e2- eg | f2 d2 B4 |\n[V:2] |: C,8 | E,8 | F,8 | G,8 |\n[V:1] c2- ce d2- df | e2 c2 A4 | B2- Bd c2- ce | d2 B2 G4 |\n[V:2] A,,8 | C,8 | D,,8 | E,,8 |\n[V:1] A2 c2 e2 a2 | g2 e2 c4 | f2 d2 B2 G2 | c8 :|\n[V:2] F,,4 A,,4 | C,8 | G,,4 G,4 | C,8 :|\n[V:1] |: c'4 b4 | a2 f2 d4 | g4 f4 | e2 c2 G4 |\n[V:2] |: A,,2 E,2 A,2 C2 | D,2 A,2 D2 F2 | G,,2 D,2 G,2 B,2 | C,2 G,2 C2 E2 |\n[V:1] f2 a2 d'2 c'2 | b2 g2 e4 | d2- df e2- eg | c8 :|\n[V:2] F,,2 C,2 F,2 A,2 | E,,2 B,,2 E,2 G,2 | G,,2 D,2 G,2 B,2 | C,8 :|",
+      "audio": "audio/express-yourself/gemini-3.6-flash.mp3"
+    },
+    {
+      "model": "gemini-3.5-flash",
+      "prompt": "express-yourself",
+      "prompt_label": "Express yourself",
+      "mode": "abc",
+      "sample": 0,
+      "ok": true,
+      "prompt_text": "Your task is to write music in ABC notation. There will be some additional instructions regarding structure, form, duration, etc., but subject to following these guidelines, you're allowed to write whatever music you deem most appropriate.\n\n# Guidelines\n\n### Duration\n\nYour music should be at least 1 minute in duration.\n\n## Outputs\n\nYou must respond with a single JSON object (and nothing else) with these fields:\n\n- `abc`: The complete piece written in ABC notation, including the header fields\n  X, T, M, L, Q, K and all the music. Multiple voices are welcome via V: lines.\n- `title`: A short title for your piece.\n- `short_description`: A single sentence describing your musical intent.\n- `long_description`: A detailed explanation of your compositional choices. Can be any length.\n",
+      "system_prompt": "You are a composer. Write music that you think best expresses yourself.",
+      "title": "Echoes of a Silent Forest",
+      "short_description": "A melancholic yet hopeful neo-classical waltz in E minor that explores internal solitude and reflection.",
+      "long_description": "This composition is designed as a dialog between a hauntingly simple treble melody and a continuous, flowing bass accompaniment in 3/4 time. The piece starts in E minor, representing introspective solitude. The middle section shifts to G major (the relative major), signaling a moment of hope and light, before transitioning through a development phase that builds tension and returns to a softened, resolving recap of the main theme. At 90 BPM, the 40 bars of music provide a quiet, contemplative experience that lasts approximately 1 minute and 20 seconds.",
+      "attempts": 1,
+      "abc": "X:1\nT:Echoes of a Silent Forest\nC:AI Composer\nM:3/4\nL:1/8\nQ:1/4=90\nK:Em\nV:1 clef=treble\nV:2 clef=bass\n% Section A\n[V:1] z2 B2 e2 | (ef) g3 f | e2 d2 B2 | e6 | z2 B2 e2 | (ef) g3 a | b2 g2 a2 | b6 |\n[V:2] E,,2 G,,2 B,,2 | E,,2 G,,2 B,,2 | D,,2 F,,2 A,,2 | E,,2 G,,2 B,,2 | E,,2 G,,2 B,,2 | C,,2 E,,2 G,,2 | D,,2 F,,2 A,,2 | G,,2 B,,2 D,2 |\n% Section A'\n[V:1] z2 b2 g2 | (fe) a3 g | f2 d2 f2 | e6 | z2 B2 e2 | (ef) g3 a | f2 e2 d2 | e6 |\n[V:2] G,,2 B,,2 D,2 | D,,2 F,,2 A,,2 | B,,2 D,2 F,2 | E,,2 G,,2 B,,2 | E,,2 G,,2 B,,2 | C,,2 E,,2 G,,2 | B,,2 D,2 F,2 | E,,2 G,,2 B,,2 |\n% Section B\n[V:1] d2 d2 g2 | (ga) b3 a | g2 d2 g2 | a6 | b2 b2 g2 | (fg) a3 f | g2 e2 f2 | g6 |\n[V:2] G,,2 B,,2 D,2 | G,,2 B,,2 D,2 | B,,2 D,2 G,2 | D,,2 F,,2 A,,2 | G,,2 B,,2 D,2 | D,,2 F,,2 A,,2 | C,,2 E,,2 G,,2 | G,,2 B,,2 D,2 |\n% Section C\n[V:1] a2 a2 d'2 | c'3 b a2 | b2 b2 g2 | f6 | g2 g2 e2 | (de) f3 d | e2 B2 d2 | e6 |\n[V:2] D,,2 F,,2 A,,2 | F,,2 A,,2 D,2 | G,,2 B,,2 D,2 | B,,2 D,2 F,2 | C,,2 E,,2 G,,2 | B,,2 D,2 F,2 | E,,2 G,,2 B,,2 | E,,2 G,,2 B,,2 |\n% Section A'' / Coda\n[V:1] z2 B2 e2 | (ef) g3 f | e2 d2 B2 | e6 | e2 d2 B2 | A2 F2 D2 | E6 | -E6 |]\n[V:2] E,,2 G,,2 B,,2 | E,,2 G,,2 B,,2 | D,,2 F,,2 A,,2 | E,,2 G,,2 B,,2 | C,,2 E,,2 G,,2 | B,,2 D,2 F,2 | E,,6 | -E,,6 |]",
+      "audio": "audio/express-yourself/gemini-3.5-flash.mp3"
+    }
+  ]
+}
