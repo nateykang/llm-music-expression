@@ -6,11 +6,11 @@
   <title>Composer Studio</title>
   <!-- Bump ?v= on any studio.css/studio.js change: browsers cache the old
        assets otherwise, and the composer sees a stale UI after deploys. -->
-  <link rel="stylesheet" href="/static/studio.css?v=20260820f">
+  <link rel="stylesheet" href="/static/studio.css?v=20260826a">
   <!-- Same engraving stack as the main site: Verovio for MusicXML, abcjs for ABC. -->
   <script src="https://www.verovio.org/javascript/latest/verovio-toolkit-wasm.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/abcjs@6.4.4/dist/abcjs-basic-min.js" defer></script>
-  <script src="/static/studio.js?v=20260820f" defer></script>
+  <script src="/static/studio.js?v=20260826a" defer></script>
 </head>
 <body>
 
@@ -27,10 +27,6 @@
   <div id="home-view" hidden>
     <header class="bar">
       <h1>Composer Studio</h1>
-      <nav class="home-tabs" role="tablist" aria-label="Studio sections">
-        <button id="tab-btn-compose" class="tab active" role="tab">Compose</button>
-        <button id="tab-btn-listen" class="tab" role="tab">Listen</button>
-      </nav>
       <span id="user-box">
         <span id="user-setup">
           <input id="user-input" list="user-list" placeholder="Your name" maxlength="40">
@@ -43,7 +39,10 @@
       </span>
       <button id="logout" class="ghost">Log out</button>
     </header>
-    <main class="home-main" id="tab-compose">
+    <!-- Compose (chat, comparisons — anything that calls a model) is parked
+         while the listening study runs: markup stays for the dormant JS that
+         references it, but nothing routes here. -->
+    <main class="home-main" id="tab-compose" hidden>
       <form id="new-session-form" class="card">
         <h2>New chat</h2>
         <p class="muted card-sub">Work with one model in conversation — compose, react, revise.</p>
@@ -85,7 +84,7 @@
       </section>
     </main>
 
-    <main class="home-main" id="tab-listen" hidden>
+    <main class="home-main" id="tab-listen">
       <section class="card">
         <h2>Listening sessions</h2>
         <div id="rev-session-list"><p class="muted">Nothing yet.</p></div>

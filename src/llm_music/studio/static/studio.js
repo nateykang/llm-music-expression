@@ -18,7 +18,6 @@ const state = {
   streamingChats: new Set(),  // session ids with a turn in flight from this tab
   cmpStreaming: false,
   mode: localStorage.getItem("studio-mode") || "codegen",  // codegen | abc
-  homeTab: localStorage.getItem("studio-home-tab") || "compose",  // compose | listen
   user: localStorage.getItem("studio-user") || "",  // display name tagging notes
 };
 
@@ -194,23 +193,12 @@ function requireUser() {
 }
 
 // ---------- home ----------
-// Two tabs: "Compose" (chats, comparisons — everything that calls a model)
-// and "Listen" (blind review of already-generated batch pieces).
-
-function setHomeTab(tab) {
-  state.homeTab = tab;
-  localStorage.setItem("studio-home-tab", tab);
-  $("tab-compose").hidden = tab !== "compose";
-  $("tab-listen").hidden = tab !== "listen";
-  $("tab-btn-compose").classList.toggle("active", tab === "compose");
-  $("tab-btn-listen").classList.toggle("active", tab === "listen");
-}
-$("tab-btn-compose").addEventListener("click", () => setHomeTab("compose"));
-$("tab-btn-listen").addEventListener("click", () => setHomeTab("listen"));
+// Listening-only mode: the Compose side (chats, comparisons — everything that
+// calls a model) is parked while the listening study runs. Its markup and code
+// stay dormant behind the hidden #tab-compose block so it can come back later.
 
 async function showHome() {
   show("home-view");
-  setHomeTab(state.homeTab);
   const { sessions } = await api(`/api/sessions?user=${encodeURIComponent(state.user)}`);
   renderSessionList($("session-list"),
     sessions.filter((s) => s.kind !== "review"),
@@ -262,7 +250,7 @@ $("new-session-form").addEventListener("submit", async (ev) => {
   openSession(meta.id);
 });
 
-$("back").addEventListener("click", () => { setHomeTab("compose"); showHome(); });
+$("back").addEventListener("click", showHome);
 
 // ---------- chat ----------
 
@@ -788,7 +776,7 @@ async function engraveInto(container, sessionId, version, files, scale) {
 // Sessions are prepared server-side (scripts/listening_suite.py / the reviews
 // API) — the studio UI only plays them, so the Listen tab stays undistracting.
 
-$("rev-back").addEventListener("click", () => { setHomeTab("listen"); showHome(); });
+$("rev-back").addEventListener("click", showHome);
 
 // One piece at a time, same as the comparison grid.
 $("rev-pieces").addEventListener("play", (ev) => {
@@ -951,7 +939,7 @@ const MAX_CMP_MODELS = 5;  // mirrors compare.MAX_MODELS server-side
 
 function modesFromMethod(v) { return v === "both" ? ["codegen", "abc"] : [v]; }
 
-$("cmp-back").addEventListener("click", () => { setHomeTab("compose"); showHome(); });
+$("cmp-back").addEventListener("click", showHome);
 
 // One piece at a time: starting any player in the grid pauses the others.
 // ('play' doesn't bubble, so listen in the capture phase.)
