@@ -415,6 +415,24 @@ def test_session_list_note_counts_are_per_user(client, batch_root):
     assert count() == 0  # unregistered viewers see no one's progress
 
 
+def test_review_list_order_is_fixed(client, batch_root):
+    """Windows must not reshuffle by activity: the suite is a sequence."""
+    login(client)
+    ids = []
+    for seed in (1, 2, 3):
+        ids.append(client.post("/api/reviews", json={
+            "batches": [BATCH_NAME], "models": ["fable-5"],
+            "per_cell": 1, "blind": True, "seed": seed}).json()["meta"]["id"])
+    order = lambda: [s["id"] for s in client.get("/api/sessions").json()["sessions"]
+                     if s["kind"] == "review"]
+    before = order()
+    assert before == list(reversed(ids))  # newest-created first
+    # activity on the oldest window must not move it
+    client.post(f"/api/reviews/{ids[0]}/notes",
+                json={"text": "note", "piece": 0, "user": "Caio"})
+    assert order() == before
+
+
 def test_user_registry(client, studio_env):
     assert client.get("/api/users").status_code == 401
     login(client)

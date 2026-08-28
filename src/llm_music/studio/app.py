@@ -204,7 +204,14 @@ def list_sessions(user: str = ""):
             meta["n_notes"] = sum(
                 1 for e in store.events(meta["id"])
                 if e["type"] == "review_note" and e.get("user", "") == user)
-    return {"sessions": sessions}
+    # Listening windows keep a FIXED order: a curated suite is a sequence, and
+    # windows must not reshuffle as people work through them. Creation time is
+    # immutable and encodes the intended order (suites are created newest-last,
+    # so created-desc reads top-to-bottom). Chats/comparisons stay recency-first.
+    reviews = sorted((m for m in sessions if m.get("kind") == "review"),
+                     key=lambda m: m["created"], reverse=True)
+    others = [m for m in sessions if m.get("kind") != "review"]
+    return {"sessions": others + reviews}
 
 
 @app.post("/api/sessions", dependencies=[Depends(require_auth)])

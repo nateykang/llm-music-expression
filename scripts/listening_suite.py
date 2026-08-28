@@ -176,8 +176,9 @@ def create(args):
     suite = json.loads(Path(args.suite).read_text(encoding="utf-8"))
     store = SessionStore(cfg.data_dir())
     problems = 0
-    # Newest-last: the session list sorts by last_active desc, so creating in
-    # reverse shows the suite top-to-bottom in its intended order.
+    # Newest-last: the Listen tab orders windows by creation time (newest
+    # first, immutable), so creating in reverse shows the suite top-to-bottom
+    # in its intended order — and it stays put as listeners work.
     for w in reversed(suite["windows"]):
         setup = w["setup"]
         for p in setup["pieces"]:
