@@ -18,10 +18,62 @@ import argparse
 import base64
 import json
 import shutil
+import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
 MODE_LABELS = {"codegen": "code", "abc": "ABC"}
+
+# Appended to the model's code when rendering the DISPLAY score only: models
+# sometimes write a sustained chord and a melody into one measure as
+# overlapping inserts without Voice objects; music21's MusicXML export then
+# flattens them into a sequential 8-beat measure even though the MIDI (and so
+# the mp3) overlaps them correctly. Grouping into voices fixes the engraving
+# without touching the piece itself.
+DISPLAY_POSTLUDE = """
+
+for _part in score.parts:
+    for _m in _part.getElementsByClass('Measure'):
+        try:
+            _bar = _m.barDuration.quarterLength
+        except Exception:
+            continue
+        _sum = sum(_n.quarterLength for _n in _m.notesAndRests)
+        if _sum > _bar + 0.001 and not _m.voices:
+            _m.makeVoices(inPlace=True)
+"""
+
+
+def display_score(code: str, out_path: Path) -> bool:
+    """Render the engraving copy of a codegen piece from its stored source,
+    with the voice-separation postlude. Returns False if the sandbox fails."""
+    from llm_music.sandbox import run_music21_code
+
+    with tempfile.TemporaryDirectory(prefix="listen_score_") as td:
+        res = run_music21_code(code + DISPLAY_POSTLUDE, Path(td))
+        xml = Path(td) / "piece.musicxml"
+        if not res.ok or not xml.exists():
+            return False
+        shutil.copyfile(xml, out_path)
+    return True
+
+
+_manifests: dict = {}
+
+
+def piece_code(data_root: Path, p: dict) -> str:
+    """The stored music21 source for a sampled codegen piece."""
+    name = p["batch"]
+    if name not in _manifests:
+        _manifests[name] = json.loads(
+            (data_root / name / "data.json").read_text(encoding="utf-8"))
+    for e in _manifests[name]["pieces"]:
+        if (e["model"], e.get("prompt"), e.get("mode"), e.get("sample", 0)) == \
+           (p["model"], p["prompt"], p["mode"], p["sample"]):
+            return e["code"]
+    raise SystemExit(f"piece not in manifest: {p['model']} {p['prompt']} s{p['sample']}")
 
 
 def main():
@@ -61,9 +113,10 @@ def main():
                 "title": p["title"],
                 "audio": f"media/{stem}.mp3",
             }
-            if p["mode"] == "codegen" and p.get("score"):
-                shutil.copyfile(data_root / p["batch"] / p["score"],
-                                media / f"{stem}.musicxml")
+            if p["mode"] == "codegen":
+                code = piece_code(data_root, p)
+                if not display_score(code, media / f"{stem}.musicxml"):
+                    raise SystemExit(f"display render failed: {w['title']} idx {p['idx']}")
                 piece["score"] = f"media/{stem}.musicxml"
                 n_files += 1
             elif p.get("abc"):
