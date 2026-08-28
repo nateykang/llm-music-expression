@@ -107,10 +107,14 @@ else
 fi
 
 # --- run the studio under a restart loop (no systemd in pod containers) -------
-echo "=== studio starting on 0.0.0.0:8321 ==="
-echo "URL: https://${RUNPOD_POD_ID:-<pod-id>}-8321.proxy.runpod.net"
+# Port must be one of the pod's exposed HTTP ports (Edit Pod exposes new ones
+# but wipes the container — prefer STUDIO_PORT when the pod already exposes
+# something else, e.g. the 19123 many CPU templates ship with).
+PORT="${STUDIO_PORT:-8321}"
+echo "=== studio starting on 0.0.0.0:${PORT} ==="
+echo "URL: https://${RUNPOD_POD_ID:-<pod-id>}-${PORT}.proxy.runpod.net"
 while true; do
-    .venv/bin/llm-music-studio --host 0.0.0.0 --port 8321 --proxy-headers || true
+    .venv/bin/llm-music-studio --host 0.0.0.0 --port "${PORT}" --proxy-headers || true
     echo "studio exited — restarting in 5s" >&2
     sleep 5
 done
