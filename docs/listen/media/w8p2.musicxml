@@ -19,33 +19,33 @@
     </scaling>
   </defaults>
   <part-list>
-    <score-part id="Pc7e081d375d0ec2bfd6fe5ccb0fdae3b">
+    <score-part id="P9b60e78ec27635c74dd6170589a8ddd1">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="Ic64e9ac70d94afdd81cfad29fb07c322">
+      <score-instrument id="I5bfbde9261aae13a47ba6033c2564631">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Ic64e9ac70d94afdd81cfad29fb07c322">
+      <midi-instrument id="I5bfbde9261aae13a47ba6033c2564631">
         <midi-channel>1</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
     </score-part>
-    <score-part id="P487aac00c50dc883422e7670dda811c7">
+    <score-part id="Pe9a9bba7e781672d8b61309733bd4053">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="If771acdcca1bfdcd9acdd09a5046a847">
+      <score-instrument id="Iab1f68c423dfc183570eb1c7522b6bcb">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="If771acdcca1bfdcd9acdd09a5046a847">
+      <midi-instrument id="Iab1f68c423dfc183570eb1c7522b6bcb">
         <midi-channel>2</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
     </score-part>
   </part-list>
   <!--=========================== Part 1 ===========================-->
-  <part id="Pc7e081d375d0ec2bfd6fe5ccb0fdae3b">
+  <part id="P9b60e78ec27635c74dd6170589a8ddd1">
     <!--========================= Measure 1 ==========================-->
     <measure implicit="no" number="1">
       <attributes>
@@ -313,6 +313,12 @@
     </measure>
     <!--========================= Measure 11 =========================-->
     <measure implicit="no" number="11">
+      <note print-object="no" print-spacing="yes">
+        <rest />
+        <duration>15120</duration>
+        <type>quarter</type>
+        <dot />
+      </note>
       <note>
         <pitch>
           <step>C</step>
@@ -332,6 +338,7 @@
             <mp />
           </dynamics>
         </direction-type>
+        <offset sound="yes">-15120</offset>
         <sound dynamics="57" />
       </direction>
       <note>
@@ -652,6 +659,12 @@
     </measure>
     <!--========================= Measure 23 =========================-->
     <measure implicit="no" number="23">
+      <note print-object="no" print-spacing="yes">
+        <rest />
+        <duration>15120</duration>
+        <type>quarter</type>
+        <dot />
+      </note>
       <note>
         <pitch>
           <step>C</step>
@@ -671,6 +684,7 @@
             <pp />
           </dynamics>
         </direction-type>
+        <offset sound="yes">-15120</offset>
         <sound dynamics="31" />
       </direction>
       <note>
@@ -711,6 +725,12 @@
     </measure>
     <!--========================= Measure 25 =========================-->
     <measure implicit="no" number="25">
+      <note print-object="no" print-spacing="yes">
+        <rest />
+        <duration>15120</duration>
+        <type>quarter</type>
+        <dot />
+      </note>
       <note>
         <pitch>
           <step>G</step>
@@ -786,6 +806,12 @@
     </measure>
     <!--========================= Measure 28 =========================-->
     <measure implicit="no" number="28">
+      <note print-object="no" print-spacing="yes">
+        <rest />
+        <duration>15120</duration>
+        <type>quarter</type>
+        <dot />
+      </note>
       <note>
         <pitch>
           <step>E</step>
@@ -860,6 +886,12 @@
     </measure>
     <!--========================= Measure 31 =========================-->
     <measure implicit="no" number="31">
+      <note print-object="no" print-spacing="yes">
+        <rest />
+        <duration>15120</duration>
+        <type>quarter</type>
+        <dot />
+      </note>
       <note>
         <pitch>
           <step>F</step>
@@ -934,6 +966,12 @@
     </measure>
     <!--========================= Measure 34 =========================-->
     <measure implicit="no" number="34">
+      <note print-object="no" print-spacing="yes">
+        <rest />
+        <duration>15120</duration>
+        <type>quarter</type>
+        <dot />
+      </note>
       <note>
         <pitch>
           <step>B</step>
@@ -964,6 +1002,10 @@
     </measure>
     <!--========================= Measure 35 =========================-->
     <measure implicit="no" number="35">
+      <note print-object="no" print-spacing="yes">
+        <rest measure="yes" />
+        <duration>30240</duration>
+      </note>
       <note>
         <pitch>
           <step>C</step>
@@ -982,6 +1024,12 @@
     </measure>
     <!--========================= Measure 36 =========================-->
     <measure implicit="no" number="36">
+      <note print-object="no" print-spacing="yes">
+        <rest />
+        <duration>15120</duration>
+        <type>quarter</type>
+        <dot />
+      </note>
       <note>
         <pitch>
           <step>C</step>
@@ -1040,6 +1088,10 @@
     </measure>
     <!--========================= Measure 37 =========================-->
     <measure implicit="no" number="37">
+      <note print-object="no" print-spacing="yes">
+        <rest measure="yes" />
+        <duration>30240</duration>
+      </note>
       <note>
         <pitch>
           <step>G</step>
@@ -1091,6 +1143,10 @@
     </measure>
     <!--========================= Measure 38 =========================-->
     <measure implicit="no" number="38">
+      <note print-object="no" print-spacing="yes">
+        <rest measure="yes" />
+        <duration>30240</duration>
+      </note>
       <note>
         <pitch>
           <step>G</step>
@@ -1139,7 +1195,7 @@
     </measure>
   </part>
   <!--=========================== Part 2 ===========================-->
-  <part id="P487aac00c50dc883422e7670dda811c7">
+  <part id="Pe9a9bba7e781672d8b61309733bd4053">
     <!--========================= Measure 1 ==========================-->
     <measure implicit="no" number="1">
       <attributes>
@@ -3498,6 +3554,10 @@
     </measure>
     <!--========================= Measure 37 =========================-->
     <measure implicit="no" number="37">
+      <note print-object="no" print-spacing="yes">
+        <rest measure="yes" />
+        <duration>30240</duration>
+      </note>
       <note>
         <pitch>
           <step>C</step>
@@ -3538,15 +3598,6 @@
         <notations>
           <tied type="stop" />
         </notations>
-      </note>
-    </measure>
-    <!--========================= Measure 38 =========================-->
-    <measure implicit="no" number="38">
-      <note print-object="no" print-spacing="yes">
-        <rest />
-        <duration>15120</duration>
-        <type>quarter</type>
-        <dot />
       </note>
       <barline location="right">
         <bar-style>light-heavy</bar-style>

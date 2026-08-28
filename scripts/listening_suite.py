@@ -130,6 +130,14 @@ def build(args):
     return 1 if missing else 0
 
 
+def _audio_abc(abc: str) -> str:
+    """abc2midi rejects octave-up marks on uppercase notes (D' etc.) and plays
+    them an octave low; abcjs engraves them as written. Rewrite D' -> d (same
+    pitch) for the AUDIO path only, so score and sound agree."""
+    import re
+    return re.sub(r"([A-G])'", lambda m: m.group(1).lower(), abc)
+
+
 def _render_missing(root, windows):
     """MP3s for sampled pieces that lack them (writes audio files only — never
     a batch data.json, which a running batch may be rewriting)."""
@@ -155,7 +163,7 @@ def _render_missing(root, windows):
                 midi = None
                 try:
                     if p.get("abc"):
-                        midi = abc_to_midi(p["abc"], Path(td))
+                        midi = abc_to_midi(_audio_abc(p["abc"]), Path(td))
                     elif p.get("score"):
                         midi = Path(td) / "piece.mid"
                         converter.parse(str(root / p["batch"] / p["score"])).write(

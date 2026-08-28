@@ -26,14 +26,49 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 MODE_LABELS = {"codegen": "code", "abc": "ABC"}
 
-# Appended to the model's code when rendering the DISPLAY score only: models
-# sometimes write a sustained chord and a melody into one measure as
-# overlapping inserts without Voice objects; music21's MusicXML export then
-# flattens them into a sequential 8-beat measure even though the MIDI (and so
-# the mp3) overlaps them correctly. Grouping into voices fixes the engraving
-# without touching the piece itself.
+# Appended to the model's code when rendering the DISPLAY score only. Three
+# salvage passes for expressive content the models wrote but music21's
+# MusicXML export would drop or mangle (audio/MIDI is unaffected by all three):
+#   1. dynamics/text left at the Part level (outside any Measure) vanish on
+#      export — move them into the measure at their offset;
+#   2. Crescendo/Diminuendo spanners inserted bare (no anchored notes) export
+#      as nothing — anchor them to their measure's first/last notes;
+#   3. overlapping inserts without Voice objects flatten into sequential
+#      8-beat measures — group them into voices.
 DISPLAY_POSTLUDE = """
 
+for _part in score.parts:
+    try:
+        if not _part.getElementsByClass('Measure'):
+            _part.makeMeasures(inPlace=True)
+    except Exception:
+        pass
+for _part in score.parts:
+    _meas = list(_part.getElementsByClass('Measure'))
+    if not _meas:
+        continue
+    for _dyn in list(_part.getElementsByClass(('Dynamic', 'TextExpression'))):
+        try:
+            _off = _part.elementOffset(_dyn)
+            _target, _local = None, 0.0
+            for _m in _meas:
+                _mo = _part.elementOffset(_m)
+                if _mo <= _off:
+                    _target, _local = _m, _off - _mo
+            if _target is not None:
+                _part.remove(_dyn)
+                _target.insert(min(_local, _target.barDuration.quarterLength), _dyn)
+        except Exception:
+            pass
+for _sp in list(score.recurse().getElementsByClass(('Crescendo', 'Diminuendo'))):
+    try:
+        if not _sp.getSpannedElements():
+            _site = _sp.activeSite
+            _notes = list(_site.notes) if _site is not None else []
+            if _notes:
+                _sp.addSpannedElements([_notes[0], _notes[-1]])
+    except Exception:
+        pass
 for _part in score.parts:
     for _m in _part.getElementsByClass('Measure'):
         try:

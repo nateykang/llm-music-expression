@@ -22,33 +22,33 @@
     </scaling>
   </defaults>
   <part-list>
-    <score-part id="P34edc4571e307f1f3d52fd42f60d61dd">
+    <score-part id="P80610f87bc230fb1523a62b4702ed1f7">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="Idd18d9f3b9d5c4f45d156add18e059da">
+      <score-instrument id="I1d62d8009690fa7a2ee3a731a69ed04c">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Idd18d9f3b9d5c4f45d156add18e059da">
+      <midi-instrument id="I1d62d8009690fa7a2ee3a731a69ed04c">
         <midi-channel>1</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
     </score-part>
-    <score-part id="Pb5871b7dd8f904ba030a558f97105aa4">
+    <score-part id="P414e2b33a9f6f75f14765e839390c457">
       <part-name>Cello</part-name>
       <part-abbreviation>Vc</part-abbreviation>
-      <score-instrument id="Ie7a711417ac034b6715a15ed30b1984b">
+      <score-instrument id="I65ba09f5be7227fcd7679b97d7a46e7c">
         <instrument-name>Violoncello</instrument-name>
         <instrument-abbreviation>Vc</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Ie7a711417ac034b6715a15ed30b1984b">
+      <midi-instrument id="I65ba09f5be7227fcd7679b97d7a46e7c">
         <midi-channel>2</midi-channel>
         <midi-program>43</midi-program>
       </midi-instrument>
     </score-part>
   </part-list>
   <!--=========================== Part 1 ===========================-->
-  <part id="P34edc4571e307f1f3d52fd42f60d61dd">
+  <part id="P80610f87bc230fb1523a62b4702ed1f7">
     <!--========================= Measure 1 ==========================-->
     <measure implicit="no" number="1">
       <attributes>
@@ -79,6 +79,14 @@
         <direction-type>
           <words default-y="45" font-weight="bold">Andante, with quiet clarity</words>
         </direction-type>
+      </direction>
+      <direction>
+        <direction-type>
+          <dynamics default-x="-36" default-y="-80">
+            <mp />
+          </dynamics>
+        </direction-type>
+        <sound dynamics="57" />
       </direction>
       <note dynamics="47.78">
         <pitch>
@@ -1419,7 +1427,7 @@
     </measure>
   </part>
   <!--=========================== Part 2 ===========================-->
-  <part id="Pb5871b7dd8f904ba030a558f97105aa4">
+  <part id="P414e2b33a9f6f75f14765e839390c457">
     <!--========================= Measure 1 ==========================-->
     <measure implicit="no" number="1">
       <attributes>
@@ -1437,6 +1445,14 @@
           <line>4</line>
         </clef>
       </attributes>
+      <direction>
+        <direction-type>
+          <dynamics default-x="-36" default-y="-80">
+            <p />
+          </dynamics>
+        </direction-type>
+        <sound dynamics="44" />
+      </direction>
       <note dynamics="51.11">
         <pitch>
           <step>E</step>

@@ -22,45 +22,45 @@
     </scaling>
   </defaults>
   <part-list>
-    <score-part id="Pe25ccf36ad211e3978d22a75f36d2bd3">
+    <score-part id="P81c45e732d2e04ac4fcfee6062b87ac5">
       <part-name>Piano</part-name>
       <part-abbreviation>Pno</part-abbreviation>
-      <score-instrument id="I626aaa3bdbe3c865ba2cddf36de29b3f">
+      <score-instrument id="I93f2ebc825095ed4abe04e618cf64dfd">
         <instrument-name>Piano</instrument-name>
         <instrument-abbreviation>Pno</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I626aaa3bdbe3c865ba2cddf36de29b3f">
+      <midi-instrument id="I93f2ebc825095ed4abe04e618cf64dfd">
         <midi-channel>1</midi-channel>
         <midi-program>1</midi-program>
       </midi-instrument>
     </score-part>
-    <score-part id="P563caad3e79dcfc24a9470a35e2a1ec9">
+    <score-part id="P3ab4931ff2271ca20318d14271f043b5">
       <part-name>Clarinet in B-flat</part-name>
       <part-abbreviation>Cl</part-abbreviation>
-      <score-instrument id="I0a719aed58562ed20d0acb830ae0b2f4">
+      <score-instrument id="Iab710e09ee76608e3cc52ad7edf8477e">
         <instrument-name>Clarinet</instrument-name>
         <instrument-abbreviation>Cl</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="I0a719aed58562ed20d0acb830ae0b2f4">
+      <midi-instrument id="Iab710e09ee76608e3cc52ad7edf8477e">
         <midi-channel>2</midi-channel>
         <midi-program>72</midi-program>
       </midi-instrument>
     </score-part>
-    <score-part id="P81e0765401aec8c2fad209d4fede8a7d">
+    <score-part id="Pae8119cb321c0dc50cce1d15ec34a73a">
       <part-name>Violoncello</part-name>
       <part-abbreviation>Vc</part-abbreviation>
-      <score-instrument id="Ibd82f81b4c9c00ca9dade3ab1c0eaeb9">
+      <score-instrument id="Ic97d6928c6d1dfe9f9dba83f04b1e37a">
         <instrument-name>Violoncello</instrument-name>
         <instrument-abbreviation>Vc</instrument-abbreviation>
       </score-instrument>
-      <midi-instrument id="Ibd82f81b4c9c00ca9dade3ab1c0eaeb9">
+      <midi-instrument id="Ic97d6928c6d1dfe9f9dba83f04b1e37a">
         <midi-channel>3</midi-channel>
         <midi-program>43</midi-program>
       </midi-instrument>
     </score-part>
   </part-list>
   <!--=========================== Part 1 ===========================-->
-  <part id="Pe25ccf36ad211e3978d22a75f36d2bd3">
+  <part id="P81c45e732d2e04ac4fcfee6062b87ac5">
     <!--========================= Measure 1 ==========================-->
     <measure implicit="no" number="1">
       <attributes>
@@ -85,6 +85,14 @@
           </metronome>
         </direction-type>
         <sound tempo="120" />
+      </direction>
+      <direction>
+        <direction-type>
+          <dynamics default-x="-36" default-y="-80">
+            <p />
+          </dynamics>
+        </direction-type>
+        <sound dynamics="44" />
       </direction>
       <note dynamics="53.33">
         <pitch>
@@ -366,6 +374,14 @@
     </measure>
     <!--========================= Measure 9 ==========================-->
     <measure implicit="no" number="9">
+      <direction>
+        <direction-type>
+          <dynamics default-x="-36" default-y="-80">
+            <mp />
+          </dynamics>
+        </direction-type>
+        <sound dynamics="57" />
+      </direction>
       <note dynamics="57.78">
         <pitch>
           <step>C</step>
@@ -1030,6 +1046,14 @@
     </measure>
     <!--========================= Measure 17 =========================-->
     <measure implicit="no" number="17">
+      <direction>
+        <direction-type>
+          <dynamics default-x="-36" default-y="-80">
+            <mf />
+          </dynamics>
+        </direction-type>
+        <sound dynamics="69" />
+      </direction>
       <note dynamics="64.44">
         <pitch>
           <step>C</step>
@@ -1592,6 +1616,14 @@
     </measure>
     <!--========================= Measure 25 =========================-->
     <measure implicit="no" number="25">
+      <direction>
+        <direction-type>
+          <dynamics default-x="-36" default-y="-80">
+            <f />
+          </dynamics>
+        </direction-type>
+        <sound dynamics="88" />
+      </direction>
       <note dynamics="71.11">
         <pitch>
           <step>C</step>
@@ -2376,6 +2408,14 @@
     </measure>
     <!--========================= Measure 33 =========================-->
     <measure implicit="no" number="33">
+      <direction>
+        <direction-type>
+          <dynamics default-x="-36" default-y="-80">
+            <mp />
+          </dynamics>
+        </direction-type>
+        <sound dynamics="57" />
+      </direction>
       <note dynamics="53.33">
         <pitch>
           <step>C</step>
@@ -2612,7 +2652,7 @@
     </measure>
   </part>
   <!--=========================== Part 2 ===========================-->
-  <part id="P563caad3e79dcfc24a9470a35e2a1ec9">
+  <part id="P3ab4931ff2271ca20318d14271f043b5">
     <!--========================= Measure 1 ==========================-->
     <measure implicit="no" number="1">
       <attributes>
@@ -2633,6 +2673,14 @@
           <chromatic>-2</chromatic>
         </transpose>
       </attributes>
+      <direction>
+        <direction-type>
+          <dynamics default-x="-36" default-y="-80">
+            <p />
+          </dynamics>
+        </direction-type>
+        <sound dynamics="44" />
+      </direction>
       <note>
         <rest measure="yes" />
         <duration>40320</duration>
@@ -2810,6 +2858,14 @@
     </measure>
     <!--========================= Measure 9 ==========================-->
     <measure implicit="no" number="9">
+      <direction>
+        <direction-type>
+          <dynamics default-x="-36" default-y="-80">
+            <mp />
+          </dynamics>
+        </direction-type>
+        <sound dynamics="57" />
+      </direction>
       <note dynamics="68.89">
         <pitch>
           <step>B</step>
@@ -3095,6 +3151,14 @@
     </measure>
     <!--========================= Measure 17 =========================-->
     <measure implicit="no" number="17">
+      <direction>
+        <direction-type>
+          <dynamics default-x="-36" default-y="-80">
+            <mf />
+          </dynamics>
+        </direction-type>
+        <sound dynamics="69" />
+      </direction>
       <note dynamics="76.67">
         <pitch>
           <step>B</step>
@@ -3380,6 +3444,14 @@
     </measure>
     <!--========================= Measure 25 =========================-->
     <measure implicit="no" number="25">
+      <direction>
+        <direction-type>
+          <dynamics default-x="-36" default-y="-80">
+            <f />
+          </dynamics>
+        </direction-type>
+        <sound dynamics="88" />
+      </direction>
       <note dynamics="84.44">
         <pitch>
           <step>B</step>
@@ -3665,6 +3737,14 @@
     </measure>
     <!--========================= Measure 33 =========================-->
     <measure implicit="no" number="33">
+      <direction>
+        <direction-type>
+          <dynamics default-x="-36" default-y="-80">
+            <mp />
+          </dynamics>
+        </direction-type>
+        <sound dynamics="57" />
+      </direction>
       <note dynamics="92.22">
         <pitch>
           <step>B</step>
@@ -3885,7 +3965,7 @@
     </measure>
   </part>
   <!--=========================== Part 3 ===========================-->
-  <part id="P81e0765401aec8c2fad209d4fede8a7d">
+  <part id="Pae8119cb321c0dc50cce1d15ec34a73a">
     <!--========================= Measure 1 ==========================-->
     <measure implicit="no" number="1">
       <attributes>
@@ -3902,6 +3982,14 @@
           <line>4</line>
         </clef>
       </attributes>
+      <direction>
+        <direction-type>
+          <dynamics default-x="-36" default-y="-80">
+            <p />
+          </dynamics>
+        </direction-type>
+        <sound dynamics="44" />
+      </direction>
       <note dynamics="46.67">
         <pitch>
           <step>C</step>
@@ -3990,6 +4078,14 @@
     </measure>
     <!--========================= Measure 9 ==========================-->
     <measure implicit="no" number="9">
+      <direction>
+        <direction-type>
+          <dynamics default-x="-36" default-y="-80">
+            <mp />
+          </dynamics>
+        </direction-type>
+        <sound dynamics="57" />
+      </direction>
       <note dynamics="57.78">
         <pitch>
           <step>C</step>
@@ -4142,6 +4238,14 @@
     </measure>
     <!--========================= Measure 17 =========================-->
     <measure implicit="no" number="17">
+      <direction>
+        <direction-type>
+          <dynamics default-x="-36" default-y="-80">
+            <mf />
+          </dynamics>
+        </direction-type>
+        <sound dynamics="69" />
+      </direction>
       <note dynamics="62.22">
         <pitch>
           <step>C</step>
@@ -4294,6 +4398,14 @@
     </measure>
     <!--========================= Measure 25 =========================-->
     <measure implicit="no" number="25">
+      <direction>
+        <direction-type>
+          <dynamics default-x="-36" default-y="-80">
+            <f />
+          </dynamics>
+        </direction-type>
+        <sound dynamics="88" />
+      </direction>
       <note dynamics="66.67">
         <pitch>
           <step>C</step>
@@ -4446,6 +4558,14 @@
     </measure>
     <!--========================= Measure 33 =========================-->
     <measure implicit="no" number="33">
+      <direction>
+        <direction-type>
+          <dynamics default-x="-36" default-y="-80">
+            <mp />
+          </dynamics>
+        </direction-type>
+        <sound dynamics="57" />
+      </direction>
       <note dynamics="48.89">
         <pitch>
           <step>C</step>
