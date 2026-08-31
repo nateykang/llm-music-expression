@@ -54,13 +54,13 @@ QUALITY = [
      "Does it hold an intentional rhythmic identity, or is the rhythm erratic and pulseless?",
      "erratic, no pulse", "unified, intentional groove"),
     ("structure", "Structure / development",
-     "Is there clear form — repetition, contrast, development of ideas — or does it meander?",
+     "Is there clear form, like repetition, contrast, development of ideas, or does it meander?",
      "meanders, no form", "clear form, develops its material"),
     ("melody", "Melodic quality",
      "Is the melodic writing shapely and memorable, or just notes with no line?",
      "shapeless / random", "strong, memorable line"),
     ("emotion", "Emotional expressiveness",
-     "How vividly and intentionally does it express *some* emotional character (regardless of which)?",
+     "How vividly and intentionally does it express emotional character (regardless of which emotion)?",
      "flat, no affect", "vivid, strongly expressive"),
     ("creativity", "Creativity / interest",
      "Is it engaging and individual, or generic and formulaic?",
@@ -105,12 +105,14 @@ ALL_KEYS = QUALITY_KEYS + AFFECT_KEYS + ["intent", "topline"]  # csv column orde
 
 def _system(include_note: bool) -> str:
     base = (
-        # v2 prompt (composer persona) — pilot-validated 2026-08-03: better
-        # test-retest (0.230 vs 0.298), equal discrimination, anchors hold,
-        # uniform -0.075 mean shift vs the v1 critic prompt. v1 corpus scores
-        # in docs/analysis/judge*.csv were produced under the old prompt.
+        # v3 wording (2026-08-29, user+mentor approved): notation parenthetical
+        # dropped; structure/emotion rubric lines and rep_kind strings reworded.
+        # v2 (composer persona) — pilot-validated 2026-08-03: better test-retest
+        # (0.230 vs 0.298), equal discrimination, anchors hold, uniform -0.075
+        # mean shift vs the v1 critic prompt. v1 corpus scores in
+        # docs/analysis/judge*.csv were produced under the v1 prompt.
         "You are a music composer evaluating pieces presented in symbolic "
-        "notation (ABC, or a note-by-note listing). Judge ONLY what you can "
+        "notation. Judge ONLY what you can "
         "perceive from the notes. Do not reward length. Be calibrated "
         "and critical: on each 1-5 dimension, 3 = competent but unremarkable, 5 = "
         "genuinely excellent, 1 = a clear failure. For every dimension write a "
@@ -320,16 +322,17 @@ def representation(piece: dict, batch_dir: Path) -> tuple[str | None, str | None
             line = "Instruments: " + ", ".join(
                 f"{nm}{' ×' + str(n) if n > 1 else ''}" for nm, n in c.items())
             body = line + "\n" + body
-        return "ABC notation (with an instruments header)", body
+        return "ABC notation with an instruments header", body
     if piece.get("score"):
         from .analyze import _load
         with tempfile.TemporaryDirectory(prefix="judge_rep_") as td:
             _, score = _load(piece, batch_dir, Path(td))
         if score is not None:
             label = f"{piece.get('model', '?')} × {piece.get('prompt', '?')}"
-            return ("a note listing (key/time/tempo header, then per part — labelled "
-                    "with its instrument — per bar: Pitch+octave/duration with rests, "
-                    "dynamics [p]/[f], articulations and technical directions)",
+            return ("a note listing: a key/time/tempo header, then each part "
+                    "(labelled with its instrument) written bar by bar with notes as "
+                    "pitch+octave/duration, rests, dynamics [p]/[f], articulations, "
+                    "and technical directions",
                     _score_to_text(score, label=label))
     return None, None
 
@@ -397,12 +400,16 @@ def judge_piece(client, piece: dict, batch_dir: Path, include_note: bool = False
     user = build_user(piece, rep_kind, rep_text, include_note)
     who = f"{getattr(client, 'name', '?')} on {piece.get('model', '?')} × {piece.get('prompt', '?')}"
     obj = None
+    meta: dict = {}
     a = 0
     throttles = 0
     while a < attempts:
         _RATE_GATE.wait(getattr(client, "name", "?"))
         try:
-            raw = client.complete(_system(include_note), user, json_mode=True)
+            if hasattr(client, "complete_full"):
+                raw, meta = client.complete_full(_system(include_note), user, json_mode=True)
+            else:
+                raw, meta = client.complete(_system(include_note), user, json_mode=True), {}
             obj = _extract_json(raw)
             if obj is None:
                 a += 1
@@ -433,7 +440,12 @@ def judge_piece(client, piece: dict, batch_dir: Path, include_note: bool = False
     if not obj:
         log.warning("judge %s: no verdict after %d attempts", who, attempts)
         return None
-    return parse_verdict(obj, include_note)
+    verdict = parse_verdict(obj, include_note)
+    if verdict and meta.get("reasoning"):
+        # Free to keep (reasoning tokens are billed whether or not retrieved);
+        # capped so a runaway trace can't bloat checkpoints.
+        verdict["reasoning_trace"] = meta["reasoning"][:50000]
+    return verdict
 
 
 def parse_verdict(obj: dict, include_note: bool = False) -> dict | None:

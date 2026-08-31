@@ -40,3 +40,14 @@ class LLMClient(Protocol):
         reasoning trace). Providers that don't support it ignore the flag.
         """
         ...
+
+    def complete_full(self, system: str, user: str,
+                      json_mode: bool = False) -> tuple[str, dict]:
+        """Like complete(), but also returns response metadata.
+
+        The dict carries "reasoning" — the model's reasoning trace (or provider
+        summary) when one comes back, else absent. Retrieving it is free: reasoning
+        tokens are billed at generation time whether or not they are returned, and
+        requesting them changes nothing the model sees.
+        """
+        ...

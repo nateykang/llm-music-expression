@@ -42,6 +42,10 @@ class OpenRouterClient:
         return self._client
 
     def complete(self, system: str, user: str, json_mode: bool = False) -> str:
+        return self.complete_full(system, user, json_mode)[0]
+
+    def complete_full(self, system: str, user: str,
+                      json_mode: bool = False) -> tuple[str, dict]:
         client = self._ensure_client()
         kwargs = dict(
             model=self.model_id,
@@ -61,11 +65,20 @@ class OpenRouterClient:
         resp = client.chat.completions.create(**kwargs)
         choice = resp.choices[0] if resp.choices else None
         if not choice or not choice.message:
-            return ""
-        content = choice.message.content or ""
+            return "", {}
+        msg = choice.message
+        reasoning = getattr(msg, "reasoning", None) or None
+        if not reasoning:  # deepseek-style field, or the newer details list
+            extra = getattr(msg, "model_extra", None) or {}
+            reasoning = extra.get("reasoning_content") or None
+            if not reasoning and extra.get("reasoning_details"):
+                parts = [d.get("text") or d.get("summary") or ""
+                         for d in extra["reasoning_details"] if isinstance(d, dict)]
+                reasoning = "\n".join(p for p in parts if p) or None
+        content = msg.content or ""
         # Reasoning models (gemini, deepseek, …) occasionally return empty content
         # with the answer stranded in the reasoning field — fall back so the JSON
         # extractor can still find it.
         if not content.strip():
-            content = getattr(choice.message, "reasoning", "") or ""
-        return content
+            content = reasoning or ""
+        return content, ({"reasoning": reasoning} if reasoning else {})

@@ -38,10 +38,17 @@ class OpenAIClient:
         return self._client
 
     def complete(self, system: str, user: str, json_mode: bool = False) -> str:
+        return self.complete_full(system, user, json_mode)[0]
+
+    def complete_full(self, system: str, user: str,
+                      json_mode: bool = False) -> tuple[str, dict]:
         client = self._ensure_client()  # json_mode unused: gpt-* already return clean JSON
         kwargs = {}
         if self.reasoning_effort:
             kwargs["reasoning"] = {"effort": self.reasoning_effort}
+            if self.reasoning_effort != "none":
+                # Raw CoT is never returned; summaries are the retrievable trace.
+                kwargs["reasoning"]["summary"] = "auto"
         try:
             resp = client.responses.create(
                 model=self.model_id,
@@ -50,14 +57,13 @@ class OpenAIClient:
                 max_output_tokens=self.max_output_tokens,
                 **kwargs,
             )
-            text = getattr(resp, "output_text", None)
-            if text:
-                return text
-            # Defensive: assemble from output items if output_text is empty.
-            return _output_text_from_items(resp)
+            text = getattr(resp, "output_text", None) or _output_text_from_items(resp)
+            summary = _reasoning_summary_from_items(resp)
+            return text, ({"reasoning": summary} if summary else {})
         except (AttributeError, TypeError):
-            # Older SDK without Responses API -> fall back to Chat Completions.
-            return self._chat_fallback(client, system, user)
+            # Older SDK without Responses API -> fall back to Chat Completions
+            # (which never exposes reasoning).
+            return self._chat_fallback(client, system, user), {}
 
     def _chat_fallback(self, client, system: str, user: str) -> str:
         # Reasoning models reject `temperature` and use `max_completion_tokens`.
@@ -83,3 +89,14 @@ def _output_text_from_items(resp) -> str:
             if text:
                 parts.append(text)
     return "".join(parts)
+
+
+def _reasoning_summary_from_items(resp) -> str:
+    parts: list[str] = []
+    for item in getattr(resp, "output", []) or []:
+        if getattr(item, "type", None) == "reasoning":
+            for s in getattr(item, "summary", []) or []:
+                text = getattr(s, "text", None)
+                if text:
+                    parts.append(text)
+    return "\n".join(parts)

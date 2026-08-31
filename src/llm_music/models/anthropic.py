@@ -42,6 +42,10 @@ class AnthropicClient:
         return self._client
 
     def complete(self, system: str, user: str, json_mode: bool = False) -> str:  # noqa: ARG002 (opus returns clean JSON)
+        return self.complete_full(system, user, json_mode)[0]
+
+    def complete_full(self, system: str, user: str,  # noqa: ARG002
+                      json_mode: bool = False) -> tuple[str, dict]:
         client = self._ensure_client()
         kwargs = dict(
             model=self.model_id,
@@ -55,11 +59,19 @@ class AnthropicClient:
         if self.thinking:
             # Extended thinking requires temperature=1 (the default, so left unset)
             # and, with our high max_tokens, streaming (the SDK refuses non-streaming
-            # for potentially-long requests). Thinking blocks are dropped; only the
-            # answer text is returned, identical in shape to the non-thinking path.
-            kwargs["thinking"] = self.thinking
+            # for potentially-long requests). Answer text is what complete() returns;
+            # thinking-block text rides the meta dict.
+            thinking = dict(self.thinking)
+            if thinking.get("type") == "adaptive":
+                # Visibility-only switch (billing and sampling identical): without it,
+                # adaptive models on the omitted default return empty thinking text.
+                thinking.setdefault("display", "summarized")
+            kwargs["thinking"] = thinking
             with client.messages.stream(**kwargs) as stream:
                 msg = stream.get_final_message()
-            return "".join(b.text for b in msg.content if b.type == "text")
+            text = "".join(b.text for b in msg.content if b.type == "text")
+            trace = "\n".join(b.thinking for b in msg.content
+                              if b.type == "thinking" and getattr(b, "thinking", ""))
+            return text, ({"reasoning": trace} if trace else {})
         resp = client.messages.create(**kwargs)
-        return "".join(block.text for block in resp.content if block.type == "text")
+        return "".join(block.text for block in resp.content if block.type == "text"), {}
