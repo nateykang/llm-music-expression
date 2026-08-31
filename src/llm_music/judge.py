@@ -325,8 +325,13 @@ def representation(piece: dict, batch_dir: Path) -> tuple[str | None, str | None
         return "ABC notation with an instruments header", body
     if piece.get("score"):
         from .analyze import _load
-        with tempfile.TemporaryDirectory(prefix="judge_rep_") as td:
-            _, score = _load(piece, batch_dir, Path(td))
+        try:
+            with tempfile.TemporaryDirectory(prefix="judge_rep_") as td:
+                _, score = _load(piece, batch_dir, Path(td))
+        except Exception as e:
+            log.warning("representation: cannot load %s/%s: %s — piece skipped",
+                        batch_dir.name, piece.get("score"), e)
+            return None, None
         if score is not None:
             label = f"{piece.get('model', '?')} × {piece.get('prompt', '?')}"
             return ("a note listing: a key/time/tempo header, then each part "
