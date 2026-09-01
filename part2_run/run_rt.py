@@ -16,26 +16,11 @@ from dotenv import load_dotenv  # noqa: E402
 
 load_dotenv(ROOT / ".env")
 from llm_music.judge import judge_corpus  # noqa: E402
-import llm_music.judge as _J  # noqa: E402
 
-# Serve precomputed representations (identical bytes to what the batch legs
-# used) instead of re-rendering per judge call — throughput only, the judge
-# input is unchanged.
-_reps = json.loads((ROOT / "part2_run/reps_cache.json").read_text())
-_orig_repr = _J.representation
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from reps import wire_reps_cache  # noqa: E402
 
-
-def _cached_repr(piece, batch_dir):
-    key = (f"{batch_dir.name}|{piece['model']}|{piece['prompt']}|"
-           f"{piece.get('mode', '')}|{piece.get('sample', 0)}")
-    hit = _reps.get(key)
-    if hit and hit[1] is not None:
-        return hit[0], hit[1]
-    return _orig_repr(piece, batch_dir)
-
-
-_J.representation = _cached_repr
-print(f"reps cache wired into judge path ({len(_reps)} entries)", flush=True)
+wire_reps_cache(ROOT)
 
 BATCHES = ["20260819_201530__models_40_prompts_3", "20260819_203512__models_2_prompts_3",
            "20260820_061907__models_42_prompts_3"]

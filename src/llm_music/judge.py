@@ -485,6 +485,35 @@ def parse_verdict(obj: dict, include_note: bool = False) -> dict | None:
     return out
 
 
+def panel_row(pc: dict, batch_name: str, panel: dict[str, dict], include_note: bool = False) -> dict:
+    """Aggregate one piece's panel verdicts into a results row: per-dimension panel
+    means, the modal emotion label, and headline quality = mean of the quality
+    dims (+ intent when noted); affect dims are excluded from the headline."""
+    score_keys = QUALITY_KEYS + AFFECT_KEYS + (["intent"] if include_note else []) + ["topline"]
+    row = {"model": pc["model"], "prompt": pc["prompt"], "mode": pc.get("mode", ""),
+           "sample": pc.get("sample", 0), "batch": batch_name,
+           "title": pc.get("title", ""), "n_judges": len(panel)}
+    for k in score_keys:
+        scores = [v[k]["score"] for v in panel.values() if k in v]
+        row[k] = round(sum(scores) / len(scores), 3) if scores else None
+    labels = [v["emotion_label"] for v in panel.values() if v.get("emotion_label")]
+    row["emotion_label"] = Counter(labels).most_common(1)[0][0] if labels else ""
+    qk = QUALITY_KEYS + (["intent"] if include_note else [])
+    q = [row[k] for k in qk if row.get(k) is not None]
+    row["overall"] = round(sum(q) / len(q), 3) if q else None
+    return row
+
+
+def write_judge_csv(path: Path, rows: list[dict]) -> None:
+    import csv
+    with path.open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=["model", "prompt", "mode", "sample", "batch",
+                                          "title", "n_judges",
+                                          *ALL_KEYS, "emotion_label", "overall"])
+        w.writeheader()
+        w.writerows(rows)
+
+
 def judge_corpus(data_dir: Path, judge_names: list[str], *, prompt: str | None = None,
                  limit: int | None = None, workers: int = 6, exclude_self: bool = True,
                  include_note: bool = False, out_name: str | None = None):
@@ -573,37 +602,18 @@ def judge_corpus(data_dir: Path, judge_names: list[str], *, prompt: str | None =
             tkey, jname = key.rsplit("|", 1)
             verdicts.setdefault(tkey, {})[jname] = v
 
-    score_keys = QUALITY_KEYS + AFFECT_KEYS + (["intent"] if include_note else []) + ["topline"]
     rows, raw = [], []
     for pc, bd in tasks:
         panel = verdicts.get(_task_key(pc, bd), {})
         if not panel:
             continue
-        row = {"model": pc["model"], "prompt": pc["prompt"], "mode": pc.get("mode", ""),
-               "sample": pc.get("sample", 0), "batch": bd.name,
-               "title": pc.get("title", ""), "n_judges": len(panel)}
-        for k in score_keys:
-            scores = [v[k]["score"] for v in panel.values() if k in v]
-            row[k] = round(sum(scores) / len(scores), 3) if scores else None
-        labels = [v["emotion_label"] for v in panel.values() if v.get("emotion_label")]
-        row["emotion_label"] = Counter(labels).most_common(1)[0][0] if labels else ""
-        # headline quality = mean of quality dims (+ intent when noted); affect excluded
-        qk = QUALITY_KEYS + (["intent"] if include_note else [])
-        q = [row[k] for k in qk if row.get(k) is not None]
-        row["overall"] = round(sum(q) / len(q), 3) if q else None
-        rows.append(row)
+        rows.append(panel_row(pc, bd.name, panel, include_note))
         raw.append({"model": pc["model"], "prompt": pc["prompt"], "mode": pc.get("mode", ""),
                     "sample": pc.get("sample", 0), "batch": bd.name,
                     "title": pc.get("title", ""), "panel": panel})
 
-    import csv
     out_csv = analysis / f"{out_name}.csv"
-    with out_csv.open("w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=["model", "prompt", "mode", "sample", "batch",
-                                          "title", "n_judges",
-                                          *ALL_KEYS, "emotion_label", "overall"])
-        w.writeheader()
-        w.writerows(rows)
+    write_judge_csv(out_csv, rows)
     (analysis / f"{out_name}_raw.json").write_text(json.dumps(raw, indent=1), encoding="utf-8")
     ckpt_path.unlink(missing_ok=True)  # completed + written — clear the checkpoint
     print(f"\nWrote {len(rows)} judged pieces → {out_csv}")

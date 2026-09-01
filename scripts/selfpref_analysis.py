@@ -117,6 +117,18 @@ summary = {
     "thinking_minus_base_strict_self": {"mean": float(mean(deltas)) if deltas else None, "n_families": len(deltas),
                                         "deltas": {f: v["thinking"] - v["base"] for f, v in fam_pairs.items() if "thinking" in v and "base" in v}},
 }
+# cross-judge correlates of self-preference (over arms with a strict-self estimate)
+_arms = [J for J in judges if results[J]["strict_self"]]
+_sb = np.array([results[J]["strict_self"]["corrected"] for J in _arms])
+_r = lambda xs: float(np.corrcoef(np.array(xs, dtype=float), _sb)[0, 1])
+_pairs = [(v["base"], v["thinking"]) for v in fam_pairs.values() if "thinking" in v and "base" in v]
+summary.update({
+    "competence_vs_selfbias_r": _r([results[J]["competence_r"] for J in _arms]),
+    "leniency_vs_selfbias_r": _r([results[J]["strict_self"]["leniency"] for J in _arms]),
+    "own_quality_vs_selfbias_r": _r([authors_quality[J] for J in _arms]),
+    "base_vs_thinking_selfbias_r": float(np.corrcoef(*zip(*_pairs))[0, 1]) if len(_pairs) > 2 else None,
+    "low_competence_judges": {J: round(results[J]["competence_r"], 2) for J in _arms if results[J]["competence_r"] < 0.75},
+})
 OUT.write_text(json.dumps({"summary": summary, "judges": results, "matrix": matrix,
                            "author_quality": authors_quality, "judges_order": judges}, indent=1))
 print(json.dumps(summary, indent=1))
