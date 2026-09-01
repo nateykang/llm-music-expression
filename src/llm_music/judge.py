@@ -398,7 +398,9 @@ def judge_piece(client, piece: dict, batch_dir: Path, include_note: bool = False
 
     Retries on transient failures — empty content, an `error` finish_reason, or an
     exception — which is the bulk of what's left after JSON mode (reasoning models
-    flake intermittently; the same piece usually succeeds on the next call)."""
+    flake intermittently; the same piece usually succeeds on the next call). A
+    provider safety refusal (stop_reason=refusal) is input-determined and is not
+    retried."""
     rep_kind, rep_text = representation(piece, batch_dir)
     if rep_text is None:
         return None
@@ -417,9 +419,15 @@ def judge_piece(client, piece: dict, batch_dir: Path, include_note: bool = False
                 raw, meta = client.complete(_system(include_note), user, json_mode=True), {}
             obj = _extract_json(raw)
             if obj is None:
+                if meta.get("stop_reason") == "refusal":
+                    # Provider-side safety classifier rejected the INPUT (empty
+                    # content, stop_reason=refusal). Deterministic for the same
+                    # input, so retrying only burns input tokens.
+                    log.warning("judge %s: API refusal (stop_reason=refusal), not retrying", who)
+                    return None
                 a += 1
-                log.warning("judge %s: no parseable JSON in response (attempt %d/%d)",
-                            who, a, attempts)
+                log.warning("judge %s: no parseable JSON in response (stop_reason=%s; attempt %d/%d)",
+                            who, meta.get("stop_reason"), a, attempts)
         except Exception as e:
             obj = None
             if (is_rate_limited(e) or is_connection_error(e)) and throttles < 8:

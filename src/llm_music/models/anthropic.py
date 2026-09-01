@@ -72,6 +72,10 @@ class AnthropicClient:
             text = "".join(b.text for b in msg.content if b.type == "text")
             trace = "\n".join(b.thinking for b in msg.content
                               if b.type == "thinking" and getattr(b, "thinking", ""))
-            return text, ({"reasoning": trace} if trace else {})
+            meta = {"stop_reason": msg.stop_reason}
+            if trace:
+                meta["reasoning"] = trace
+            return text, meta
         resp = client.messages.create(**kwargs)
-        return "".join(block.text for block in resp.content if block.type == "text"), {}
+        return ("".join(block.text for block in resp.content if block.type == "text"),
+                {"stop_reason": resp.stop_reason})
