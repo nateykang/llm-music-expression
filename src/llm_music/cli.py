@@ -368,6 +368,14 @@ def cmd_genre_report(args) -> int:
     return 0
 
 
+def cmd_selfpref_v3_report(args) -> int:
+    from .selfpref_v3_report import build
+
+    out = build(Path(args.data_dir).parent / "analysis")
+    print(f"Wrote v3 self-preference page → {out}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="llm-music", description=__doc__)
     p.add_argument("-q", "--quiet", action="store_true",
@@ -457,6 +465,10 @@ def build_parser() -> argparse.ArgumentParser:
                         help="build the style-space & self-preference page (selfpref.html)")
     pe.add_argument("--data-dir", default="docs/data")
     pe.set_defaults(func=cmd_embed_report)
+    psv3 = sub.add_parser("selfpref-v3-report",
+                          help="build the v3 self-preference page (v3/selfpref.html) from analysis/selfpref_v3.json")
+    psv3.add_argument("--data-dir", default="docs/data")
+    psv3.set_defaults(func=cmd_selfpref_v3_report)
 
     pg = sub.add_parser("genre-report",
                         help="build the human-corpora genre-bias page (genre.html)")
