@@ -462,18 +462,27 @@ def parse_verdict(obj: dict, include_note: bool = False) -> dict | None:
     keys = QUALITY_KEYS + AFFECT_KEYS + (["intent"] if include_note else []) + ["topline"]
     for k in keys:
         v = obj.get(k)
+        score, reason = None, ""
         if isinstance(v, dict) and "score" in v:
             try:
-                out[k] = {"score": float(v["score"]), "reason": str(v.get("reason", ""))[:300]}
-            except Exception:
+                score, reason = float(v["score"]), str(v.get("reason", ""))[:300]
+            except (TypeError, ValueError):
                 pass
-        elif isinstance(v, (int, float)):
-            out[k] = {"score": float(v), "reason": ""}
+        elif isinstance(v, (int, float)) and not isinstance(v, bool):
+            score = float(v)
+        if score is None or not 1 <= score <= 5:
+            continue
+        out[k] = {"score": score, "reason": reason}
+    # A verdict is all-or-nothing: a response missing any rubric dimension or
+    # carrying an out-of-range score is treated as a failed attempt (retried),
+    # never banked partially.
+    if any(k not in out for k in keys):
+        return None
     lbl = str(obj.get("emotion_label", "")).strip().lower()
     lbl = _EMOTION_ALIASES.get(lbl, lbl)
     if lbl:
         out["emotion_label"] = lbl
-    return out or None
+    return out
 
 
 def judge_corpus(data_dir: Path, judge_names: list[str], *, prompt: str | None = None,
