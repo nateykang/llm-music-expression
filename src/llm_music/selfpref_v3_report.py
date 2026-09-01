@@ -168,14 +168,17 @@ def build(analysis: Path | None = None) -> Path:
             + table([("composer", None), ("panel mean quality", "mean of the 8 craft dimensions, averaged over all 42 judges and the arm's pieces"),
                      ("pieces", "express-yourself pieces that generated successfully")], lrows))
 
+    missing = S['n_pieces'] * S['n_judges'] - S['n_verdicts']
     methods = details_section(
         "Methods, coverage and caveats",
         "<ul>"
         "<li><b>Data.</b> The v3 express-yourself prompt only: 840 ABC pieces (42 arms × 20) and 771 code-gen pieces "
         "(69 code-gen generations failed and never existed). Each piece was judged by all 42 arms with the v3 judge prompt "
-        f"(blind, titles/notes stripped): {S['n_verdicts']:,} of {S['n_pieces'] * S['n_judges']:,} verdicts "
-        f"({S['n_pieces'] * S['n_judges'] - S['n_verdicts']} missing: verdicts a judge failed to return as parseable JSON after "
-        "repeated attempts, batch and realtime).</li>"
+        f"(blind, titles/notes stripped): {S['n_verdicts']:,} of {S['n_pieces'] * S['n_judges']:,} verdicts."
+        + (f" ({missing} missing: both Fable arms on one opus-4.1-thinking ABC piece, where Anthropic's API returns "
+           "<code>stop_reason: refusal</code> with zero output tokens — a provider-side safety classifier firing on the "
+           "input, deterministic across the batch leg and every realtime retry. A fill would require altering the judge "
+           "prompt or the piece representation, so the gap is left as is.)" if missing else "") + "</li>"
         "<li><b>Estimator.</b> For judge J on piece i, gap = q<sub>J</sub>(i) − mean of the other 41 judges on i, with q the mean of the "
         "eight craft dimensions. Leniency = mean gap over pieces by other families; strict self = mean gap over J's own pieces − leniency; "
         "sibling and family analogously. CIs: 1,000 bootstrap resamples of pieces (self set and leniency set resampled independently). "
