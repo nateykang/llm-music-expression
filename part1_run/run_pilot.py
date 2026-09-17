@@ -27,7 +27,8 @@ J.representation = lambda piece, bd: (KIND, REPS[piece["_rep_key"]])
 
 batch_dir = ROOT / "docs/data" / MAN["batch"]
 pieces = {(p["model"], p.get("sample", 0)): p
-          for p in json.loads((batch_dir / "data.json").read_text())["pieces"]}
+          for p in json.loads((batch_dir / "data.json").read_text())["pieces"]
+          if p["prompt"] == "express-yourself" and p.get("mode") == "codegen"}
 ck_path = ROOT / "part1_run/pilot_ckpt.json"
 ck = json.loads(ck_path.read_text()) if ck_path.exists() else {}
 ck = {k: v for k, v in ck.items() if v}  # retry failures on resume
