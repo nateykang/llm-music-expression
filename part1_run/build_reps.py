@@ -18,15 +18,12 @@ sys.path.insert(0, str(ROOT / "src"))
 warnings.filterwarnings("ignore")
 
 PC = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
-NOTE = re.compile(r"\b([A-G])([#-]{0,2})(\d)/")
+NOTE = re.compile(r"([A-G])(##|--|#|-)?(\d)")  # matches chord members too
 
 
 def pcs(text):
-    out = []
-    for m in NOTE.finditer(text):
-        p = PC[m.group(1)] + m.group(2).count("#") - m.group(2).count("-")
-        out.append(p % 12)
-    return out
+    return [(PC[m.group(1)] + m.group(2).count("#") - m.group(2).count("-")) % 12
+            for m in NOTE.finditer(text) if m.group(2) is None or len(set(m.group(2))) == 1]
 
 
 # For k semitones, the two enharmonic interval spellings and their effect on the
