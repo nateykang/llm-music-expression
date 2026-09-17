@@ -135,7 +135,17 @@ for i, pt in enumerate(raw):
                 _own_t[Jt][dim].append(g)
             elif family(pt["model"]) != family(Jt):
                 _oth_t[Jt][dim].append(g)
-by_trait = {Jt: {dim: (mean(_own_t[Jt][dim]) - mean(_oth_t[Jt][dim])
+def _bt_cell(o, e):
+    """Point estimate + 95% bootstrap CI for one (judge, trait) cell."""
+    o, e = np.asarray(o, dtype=float), np.asarray(e, dtype=float)
+    v = float(o.mean() - e.mean())
+    bo = o[np.random.randint(0, len(o), (1000, len(o)))].mean(axis=1)
+    be = e[np.random.randint(0, len(e), (1000, len(e)))].mean(axis=1)
+    lo, hi = np.percentile(bo - be, [2.5, 97.5])
+    return {"v": v, "ci95": [float(lo), float(hi)]}
+
+
+by_trait = {Jt: {dim: (_bt_cell(_own_t[Jt][dim], _oth_t[Jt][dim])
                        if _own_t[Jt].get(dim) and _oth_t[Jt].get(dim) else None)
                  for dim in DIMS_T}
             for Jt in judges}

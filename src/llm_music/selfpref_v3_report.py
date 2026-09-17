@@ -23,7 +23,7 @@ CSS = (".chart img { width: 100%; border: 1px solid var(--border); border-radius
        " .chart { margin: 1rem 0 1.5rem; } .chart figcaption { color: var(--muted); font-size: .85rem; margin-top: .4rem; }"
        " table.matrix th.rot { writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 400; font-size: .75rem; padding: 4px 2px; }"
        " table.matrix td { font-size: .72rem; padding: 2px 4px; text-align: center; }"
-       " table.matrix td.diag { outline: 2px solid var(--fg); outline-offset: -2px; font-weight: 600; }")
+       " table.matrix td.sig { text-decoration: underline; font-weight: 600; } table.matrix td.diag { outline: 2px solid var(--fg); outline-offset: -2px; font-weight: 600; }")
 
 
 def _fig(name, caption):
@@ -175,10 +175,20 @@ def build(analysis: Path | None = None) -> Path:
     DIMS_T = ["coherence", "harmony", "rhythm", "structure", "melody", "emotion",
               "creativity", "naturalness", "valence", "arousal"]
     hdr0 = "<tr><th>trait</th>" + "".join(f"<th class='rot'>{short(j)}</th>" for j in ORDER) + "</tr>"
-    rows0 = []
+    rows0, n_sig = [], 0
     for dim in DIMS_T:
-        tds = "".join(heat(BT[j].get(dim)) if BT[j].get(dim) is not None else "<td>—</td>" for j in ORDER)
-        rows0.append(f"<tr><td class='m'>{dim}</td>{tds}</tr>")
+        tds = []
+        for j in ORDER:
+            c = BT[j].get(dim)
+            if c is None:
+                tds.append("<td>—</td>"); continue
+            lo, hi = c["ci95"]
+            td = heat(c["v"]).replace("<td ", f"<td title='95% CI [{lo:+.2f}, {hi:+.2f}]' ", 1)
+            if lo > 0 or hi < 0:
+                n_sig += 1
+                td = td.replace("<td ", "<td class='sig' ", 1)
+            tds.append(td)
+        rows0.append(f"<tr><td class='m'>{dim}</td>{''.join(tds)}</tr>")
     foot0 = ("<tr><td class='m'>n own</td>" + "".join(
         f"<td>{J[j]['strict_self']['n_self'] if J[j]['strict_self'] else '—'}</td>" for j in ORDER) + "</tr>")
     sec0 = ("<h2>Self-bias by trait <span class='sub'>(leniency-corrected)</span></h2>"
@@ -189,7 +199,8 @@ def build(analysis: Path | None = None) -> Path:
             "of the panel on the same piece; † = thinking arm. Averaging a column's eight craft traits "
             "reproduces that arm's corrected self-preference below exactly. The v1 pattern — weak judges "
             "over-crediting themselves where they are weakest — recurs: grok-4.3-thinking's largest cell "
-            f"is harmony ({BT['grok-4.3-thinking']['harmony']:+.2f}).</p>"
+            f"is harmony ({BT['grok-4.3-thinking']['harmony']['v']:+.2f}). Hover any cell for its 95% bootstrap CI "
+            f"(pieces resampled, 1,000 draws); <u>underlined</u> cells' CIs exclude zero ({n_sig} of 420).</p>"
             f"<div class='tscroll'><table class='matrix'>{hdr0}{''.join(rows0)}{foot0}</table></div>")
 
     methods = details_section(
