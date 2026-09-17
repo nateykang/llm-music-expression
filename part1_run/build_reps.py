@@ -32,7 +32,9 @@ def pcs(text):
 # For k semitones, the two enharmonic interval spellings and their effect on the
 # key signature (circle-of-fifths delta). The chosen spelling minimizes the
 # resulting |sharps|, so a transposition never lands on an 8-sharp signature
-# when the 4-flat spelling of the same pitches exists.
+# when the 4-flat spelling of the same pitches exists. Note tokens are further
+# confined to the base corpus vocabulary: no double accidentals, no E#/B#/F-/C-
+# (0.09 per rep there) — pitches unchanged, spelling normalized.
 CANDIDATES = {
     1: [("m2", -5), ("a1", 7)], 2: [("M2", 2), ("d3", -10)], 3: [("m3", -3), ("a2", 9)],
     4: [("M3", 4), ("d4", -8)], 5: [("P4", -1), ("a3", 11)], 6: [("d5", -6), ("a4", 6)],
@@ -47,7 +49,10 @@ def desugar_doubles(score):
     so leaving them in would be a notation novelty confound, not a key effect."""
     for n in score.recurse().notes:
         for pt in n.pitches:
-            while pt.accidental is not None and abs(pt.accidental.alter) >= 2:
+            while pt.accidental is not None and (
+                    abs(pt.accidental.alter) >= 2
+                    or (pt.step, pt.accidental.alter) in
+                    {("E", 1), ("B", 1), ("F", -1), ("C", -1)}):
                 e = pt.getEnharmonic()
                 pt.step, pt.octave = e.step, e.octave
                 pt.accidental = e.accidental
