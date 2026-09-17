@@ -41,6 +41,19 @@ for _k, _c in list(CANDIDATES.items()):
     CANDIDATES[-_k] = [(n[0] + "-" + n[1:], -d) for n, d in _c]
 
 
+def desugar_doubles(score):
+    """Respell double-sharp/flat pitches to their simple enharmonic (F## -> G).
+    The base corpus the judges calibrated on contains zero double accidentals,
+    so leaving them in would be a notation novelty confound, not a key effect."""
+    for n in score.recurse().notes:
+        for pt in n.pitches:
+            while pt.accidental is not None and abs(pt.accidental.alter) >= 2:
+                e = pt.getEnharmonic()
+                pt.step, pt.octave = e.step, e.octave
+                pt.accidental = e.accidental
+    return score
+
+
 def best_interval(score, k):
     from music21 import interval, key as m21key
     ks = next(iter(score.recurse().getElementsByClass(m21key.KeySignature)), None)
@@ -61,7 +74,7 @@ def main() -> int:
             base = _score_to_text(s)
             base_pcs = pcs(base)
             for k in man["shifts"]:
-                t = _score_to_text(s.transpose(best_interval(s, k)))
+                t = _score_to_text(desugar_doubles(s.transpose(best_interval(s, k))))
                 key = f"{man['batch']}|{arm}|express-yourself|codegen|{p['sample']}|{k}"
                 reps[key] = t
                 got, want = pcs(t), [(x + k) % 12 for x in base_pcs]
