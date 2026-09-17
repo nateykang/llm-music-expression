@@ -22,8 +22,11 @@ NOTE = re.compile(r"([A-G])(##|--|#|-)?(\d)")  # matches chord members too
 
 
 def pcs(text):
-    return [(PC[m.group(1)] + m.group(2).count("#") - m.group(2).count("-")) % 12
-            for m in NOTE.finditer(text) if m.group(2) is None or len(set(m.group(2))) == 1]
+    out = []
+    for m in NOTE.finditer(text):
+        acc = m.group(2) or ""
+        out.append((PC[m.group(1)] + acc.count("#") - acc.count("-")) % 12)
+    return out
 
 
 # For k semitones, the two enharmonic interval spellings and their effect on the
@@ -67,23 +70,28 @@ def best_interval(score, k):
 def main() -> int:
     from music21 import converter
     from llm_music.judge import _score_to_text
-    man = json.loads((ROOT / "part1_run/pilot_manifest.json").read_text())
+    man_path = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "part1_run/pilot_manifest.json"
+    out_path = Path(sys.argv[2]) if len(sys.argv) > 2 else ROOT / "part1_run/pilot_reps.json"
+    man = json.loads(man_path.read_text())
+    if "picked_flat" in man:  # flat manifests carry prompt per piece
+        man = dict(man, picked={"__flat__": man["picked_flat"]})
     batch_dir = ROOT / "docs/data" / man["batch"]
     reps, bad = {}, []
     for arm, picks in man["picked"].items():
         for p in picks:
+            arm_name, prompt = p.get("model", arm), p.get("prompt", "express-yourself")
             s = converter.parse(str(batch_dir / p["score"]))
             base = _score_to_text(s)
             base_pcs = pcs(base)
             for k in man["shifts"]:
                 t = _score_to_text(desugar_doubles(s.transpose(best_interval(s, k))))
-                key = f"{man['batch']}|{arm}|express-yourself|codegen|{p['sample']}|{k}"
+                key = f"{man['batch']}|{arm_name}|{prompt}|codegen|{p['sample']}|{k}"
                 reps[key] = t
                 got, want = pcs(t), [(x + k) % 12 for x in base_pcs]
                 if len(got) != len(want) or got != want:
                     bad.append((key, len(got), len(want),
                                 sum(1 for a, b in zip(got, want) if a != b)))
-    out = ROOT / "part1_run/pilot_reps.json"
+    out = out_path
     out.write_text(json.dumps(reps))
     print(f"rendered {len(reps)} transposed reps → {out}")
     print("pitch-class validation:", "ALL EXACT" if not bad else f"{len(bad)} MISMATCHES: {bad[:5]}")

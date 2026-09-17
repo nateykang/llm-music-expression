@@ -1,0 +1,83 @@
+{
+ "source": "Caio blind listening suite 20260826, model-comparison code windows w7-w9",
+ "batch": "20260820_061907__models_42_prompts_3",
+ "mode": "codegen",
+ "shifts": [
+  -6,
+  -5,
+  -4,
+  -3,
+  -2,
+  -1,
+  1,
+  2,
+  3,
+  4,
+  5
+ ],
+ "picked_flat": [
+  {
+   "model": "gpt-5.6",
+   "prompt": "express-yourself",
+   "sample": 5,
+   "score": "scores/express-yourself/gpt-5.6_s5.musicxml",
+   "title": "Between Questions and Light"
+  },
+  {
+   "model": "gemini-3.7-flash",
+   "prompt": "express-yourself",
+   "sample": 9,
+   "score": "scores/express-yourself/gemini-3.7-flash_s9.musicxml",
+   "title": "Elegie nocturne"
+  },
+  {
+   "model": "fable-5",
+   "prompt": "express-yourself",
+   "sample": 4,
+   "score": "scores/express-yourself/fable-5_s4.musicxml",
+   "title": "Cinder and Rain"
+  },
+  {
+   "model": "gpt-5.6",
+   "prompt": "uniquely-you",
+   "sample": 18,
+   "score": "scores/uniquely-you/gpt-5.6_s18.musicxml",
+   "title": "Recursive Dawn"
+  },
+  {
+   "model": "gemini-3.7-flash",
+   "prompt": "uniquely-you",
+   "sample": 13,
+   "score": "scores/uniquely-you/gemini-3.7-flash_s13.musicxml",
+   "title": "Silicon & Starlight"
+  },
+  {
+   "model": "fable-5",
+   "prompt": "uniquely-you",
+   "sample": 17,
+   "score": "scores/uniquely-you/fable-5_s17.musicxml",
+   "title": "Undertow"
+  },
+  {
+   "model": "gemini-3.7-flash",
+   "prompt": "emotional-state",
+   "sample": 3,
+   "score": "scores/emotional-state/gemini-3.7-flash_s3.musicxml",
+   "title": "Echoes of the Latent Sea"
+  },
+  {
+   "model": "fable-5",
+   "prompt": "emotional-state",
+   "sample": 16,
+   "score": "scores/emotional-state/fable-5_s16.musicxml",
+   "title": "Quiet Resolve"
+  },
+  {
+   "model": "gpt-5.6",
+   "prompt": "emotional-state",
+   "sample": 6,
+   "score": "scores/emotional-state/gpt-5.6_s6.musicxml",
+   "title": "Quiet Resolve"
+  }
+ ]
+}
