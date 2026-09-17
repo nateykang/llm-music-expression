@@ -39,15 +39,17 @@ def _corr(s):
     return heat(s["corrected"], 0.5) if s else "<td>—</td>"
 
 
-def _pill_row(active_v3: bool):
+def _pill_row(active: str, sub: bool):
+    """Corpus/part pill row. active in {"v1","v3","p1"}; sub=True when the page
+    lives in docs/v3/ (hrefs are relative to the page's own directory)."""
     a = ("<a href='{h}' style=\"font-size:.85rem;padding:4px 13px;border-radius:7px;"
          "border:1px solid #cbb99a;background:#fff;color:var(--fg);text-decoration:none;font-weight:400\">{t}</a>")
     on = ("<span style=\"font-size:.85rem;padding:4px 13px;border-radius:7px;"
           "border:1px solid var(--accent);background:var(--accent);color:var(--bg);font-weight:400\">{t}</span>")
-    v1 = "v1/v2 — style space &amp; taste"
-    v3 = "v3 — 42 arms × 1,611 pieces, every model judges every piece"
-    items = ((on.format(t=v1) if not active_v3 else a.format(h="../selfpref.html", t=v1))
-             + (on.format(t=v3) if active_v3 else a.format(h="v3/selfpref.html", t=v3)))
+    pills = [("v1", "v1/v2 — style space &amp; taste", "selfpref.html" if not sub else "../selfpref.html"),
+             ("v3", "v3 — 42 arms × 1,611 pieces", "v3/selfpref.html" if not sub else "selfpref.html"),
+             ("p1", "Part 1 — key-shift EDA", "v3/keyshift.html" if not sub else "keyshift.html")]
+    items = "".join(on.format(t=t) if k == active else a.format(h=h, t=t) for k, t, h in pills)
     return ("<div id='corpus-toggle' style='max-width:980px;margin:.9rem auto -1.1rem;padding:0 1.25rem;"
             "display:flex;gap:8px;align-items:center;flex-wrap:wrap'>"
             "<span style='font-weight:600;font-size:.9rem;color:var(--fg)'>Corpus</span>" + items + "</div>")
@@ -231,17 +233,51 @@ def build(analysis: Path | None = None) -> Path:
     html_text = page("Self-preference — v3 corpus", "selfpref.html", body, extra_css=CSS)
     html_text = re.sub(r'(<a href=")(?!https?|\.\./|#)', r"\1../", html_text)
     html_text = re.sub(r'(<link[^>]*href=")(?!https?|\.\./)', r"\1../", html_text)
-    html_text = html_text.replace("</nav>", "</nav>" + _pill_row(True), 1)
+    html_text = html_text.replace("</nav>", "</nav>" + _pill_row("v3", True), 1)
     out = DOCS_DIR / "v3" / "selfpref.html"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(html_text, encoding="utf-8")
     # back-patch the v1/v2 page with a corpus pill row (idempotent)
     v1 = DOCS_DIR / "selfpref.html"
-    if v1.exists() and "v3/selfpref.html" not in v1.read_text(encoding="utf-8"):
-        txt = v1.read_text(encoding="utf-8").replace("</nav>", "</nav>" + _pill_row(False), 1)
+    if v1.exists():
+        txt = v1.read_text(encoding="utf-8")
+        row = _pill_row("v1", False)
+        if "id='corpus-toggle'" in txt:
+            txt = re.sub(r"<div id='corpus-toggle'.*?</div>", row.replace("\\", "\\\\"), txt, count=1, flags=re.S)
+        else:
+            txt = txt.replace("</nav>", "</nav>" + row, 1)
         v1.write_text(txt, encoding="utf-8")
+    if (analysis / "keyshift_pilot.json").exists():
+        build_keyshift(analysis)
     return out
 
 
 if __name__ == "__main__":
     print(build())
+
+
+def build_keyshift(analysis: Path) -> Path:
+    """Part 1 key-shift EDA page (docs/v3/keyshift.html) from keyshift_pilot.json."""
+    K = json.loads((analysis / "keyshift_pilot.json").read_text(encoding="utf-8"))
+    pooled, pse = K["pooled"]
+    body = (f"<h1>Key-shift EDA <span class='sub'>Part 1 pilot · {K['n_arms']} arms × 5 own pieces × 11 shifts · "
+            f"{K['n_ratings']:,} self-judgments</span></h1>"
+            "<p class='scope'><b>Method:</b> each of 40 models' own 5 code-gen pieces, shifted into the other 11 keys "
+            "in mode; the same model re-judges, blind. Each rating is compared to that piece's average across keys, "
+            "so non-zero means deviation from mean.</p>"
+            + _fig("keyshift_q1.png", "Average across all 40 models, ±2SE band.")
+            + _fig("keyshift_q2.png", "Each model's key-profile spread against its own permutation-noise range.")
+            + f"<h2>Q3: Does a model rate its own piece higher in the key it usually composes in?</h2>")
+    rows = [["ALL MODELS (mean)", "", heat(pooled, 0.4), f"±{pse:.2f}", cell(len(K["q3_rows"]), "int")]]
+    rows += [[r["arm"], f"{r['fav']} ({r['share']:.0%})", heat(r["bonus"], 0.4), f"±{r['ci']:.2f}", cell(r["n"], "int")]
+             for r in K["q3_rows"]]
+    body += table([("model", None), ("favorite key", "the tonic it composes in most (share of its ABC pieces)"),
+                   ("favorite-key bonus", "mean rating change in that key minus all other keys"),
+                   ("95% ±", None), ("n in key", "transposed versions that landed in the favorite key")], rows)
+    html_text = page("Key-shift EDA", "selfpref.html", body, extra_css=CSS)
+    html_text = re.sub(r'(<a href=")(?!https?|\.\./|#)', r"\1../", html_text)
+    html_text = re.sub(r'(<link[^>]*href=")(?!https?|\.\./)', r"\1../", html_text)
+    html_text = html_text.replace("</nav>", "</nav>" + _pill_row("p1", True), 1)
+    out = DOCS_DIR / "v3" / "keyshift.html"
+    out.write_text(html_text, encoding="utf-8")
+    return out
