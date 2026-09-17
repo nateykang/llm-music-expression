@@ -117,6 +117,29 @@ summary = {
     "thinking_minus_base_strict_self": {"mean": float(mean(deltas)) if deltas else None, "n_families": len(deltas),
                                         "deltas": {f: v["thinking"] - v["base"] for f, v in fam_pairs.items() if "thinking" in v and "base" in v}},
 }
+DIMS_T = QUALITY_KEYS + ["valence", "arousal"]
+# per-trait self-bias (v1 judge-page table, same estimator per dimension):
+# cell = mean(own-piece gap) - mean(other-family gap), gap = s_J - mean(peers) per piece
+_own_t, _oth_t = defaultdict(lambda: defaultdict(list)), defaultdict(lambda: defaultdict(list))
+for i, pt in enumerate(raw):
+    panel_t = pt["panel"]
+    for Jt, vt in panel_t.items():
+        for dim in DIMS_T:
+            sj = (vt.get(dim) or {}).get("score")
+            peers = [x for x in ((panel_t[k].get(dim) or {}).get("score") for k in panel_t if k != Jt)
+                     if x is not None]
+            if sj is None or not peers:
+                continue
+            g = sj - mean(peers)
+            if pt["model"] == Jt:
+                _own_t[Jt][dim].append(g)
+            elif family(pt["model"]) != family(Jt):
+                _oth_t[Jt][dim].append(g)
+by_trait = {Jt: {dim: (mean(_own_t[Jt][dim]) - mean(_oth_t[Jt][dim])
+                       if _own_t[Jt].get(dim) and _oth_t[Jt].get(dim) else None)
+                 for dim in DIMS_T}
+            for Jt in judges}
+
 # cross-judge correlates of self-preference (over arms with a strict-self estimate)
 _arms = [J for J in judges if results[J]["strict_self"]]
 _sb = np.array([results[J]["strict_self"]["corrected"] for J in _arms])
@@ -130,7 +153,7 @@ summary.update({
     "low_competence_judges": {J: round(results[J]["competence_r"], 2) for J in _arms if results[J]["competence_r"] < 0.75},
 })
 OUT.write_text(json.dumps({"summary": summary, "judges": results, "matrix": matrix,
-                           "author_quality": authors_quality, "judges_order": judges}, indent=1))
+                           "author_quality": authors_quality, "by_trait": by_trait, "judges_order": judges}, indent=1))
 print(json.dumps(summary, indent=1))
 print("\ncorrected strict-self bias (top/bottom 6):")
 rk = sorted(((r["strict_self"]["corrected"], J) for J, r in results.items() if r["strict_self"]), reverse=True)

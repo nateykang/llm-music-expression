@@ -80,6 +80,9 @@ def build(analysis: Path | None = None) -> Path:
                 f"wildly heterogeneous — it widens the gap for some families and narrows it for others — while a family's base and thinking "
                 f"arms still resemble each other (r = {S['base_vs_thinking_selfbias_r']:+.2f}).</p>")
 
+    def short(a):
+        return a.replace("-thinking", "†").replace("gemini-", "gem").replace("sonnet-", "son").replace("fable-", "fab")
+
     # ---- 1. per-judge table ----
     rows = []
     for j in sorted(ORDER, key=lambda x: -(J[x]["strict_self"] or {"corrected": -9})["corrected"]):
@@ -136,8 +139,6 @@ def build(analysis: Path | None = None) -> Path:
 
     # ---- 4. judge x author matrix (deviation from the judge's row mean) ----
     M = D["matrix"]
-    def short(a):
-        return a.replace("-thinking", "†").replace("gemini-", "gem").replace("sonnet-", "son").replace("fable-", "fab")
     hdr = "<tr><th class='m'>judge ↓ / author →</th>" + "".join(f"<th class='rot'>{short(a)}</th>" for a in ORDER) + "</tr>"
     body_rows = []
     for j in ORDER:
@@ -169,6 +170,28 @@ def build(analysis: Path | None = None) -> Path:
                      ("pieces", "express-yourself pieces that generated successfully")], lrows))
 
     missing = S['n_pieces'] * S['n_judges'] - S['n_verdicts']
+    # ---- 0. self-bias by trait (the v1 judge-page table, first result) ----
+    BT = D["by_trait"]
+    DIMS_T = ["coherence", "harmony", "rhythm", "structure", "melody", "emotion",
+              "creativity", "naturalness", "valence", "arousal"]
+    hdr0 = "<tr><th>trait</th>" + "".join(f"<th class='rot'>{short(j)}</th>" for j in ORDER) + "</tr>"
+    rows0 = []
+    for dim in DIMS_T:
+        tds = "".join(heat(BT[j].get(dim)) if BT[j].get(dim) is not None else "<td>—</td>" for j in ORDER)
+        rows0.append(f"<tr><td class='m'>{dim}</td>{tds}</tr>")
+    foot0 = ("<tr><td class='m'>n own</td>" + "".join(
+        f"<td>{J[j]['strict_self']['n_self'] if J[j]['strict_self'] else '—'}</td>" for j in ORDER) + "</tr>")
+    sec0 = ("<h2>Self-bias by trait <span class='sub'>(leniency-corrected)</span></h2>"
+            "<p class='scope'>Where each model judges its <i>own</i> music differently than it judges "
+            "everyone else's, per rubric trait. <span style='color:rgb(46,140,67)'>green = kinder to "
+            "itself</span>, <span style='color:rgb(197,80,70)'>red = harder on itself</span>. "
+            "Cell = mean(own-piece gap) − mean(other-family gap), gap = the judge's score minus the rest "
+            "of the panel on the same piece; † = thinking arm. Averaging a column's eight craft traits "
+            "reproduces that arm's corrected self-preference below exactly. The v1 pattern — weak judges "
+            "over-crediting themselves where they are weakest — recurs: grok-4.3-thinking's largest cell "
+            f"is harmony ({BT['grok-4.3-thinking']['harmony']:+.2f}).</p>"
+            f"<div class='tscroll'><table class='matrix'>{hdr0}{''.join(rows0)}{foot0}</table></div>")
+
     methods = details_section(
         "Methods, coverage and caveats",
         "<ul>"
@@ -193,7 +216,7 @@ def build(analysis: Path | None = None) -> Path:
         "Cross-family agreement is lower for some families (Gemini ≈ 0.6 vs Anthropic ≈ 0.9), so competence and self-preference are "
         "partly family effects. Emotion labels and reasoning traces are in the raw file but not analyzed here.</li></ul>")
 
-    body = scope + headline + sec1 + sec2 + sec3 + sec4 + sec5 + methods
+    body = scope + headline + sec0 + sec1 + sec2 + sec3 + sec4 + sec5 + methods
     html_text = page("Self-preference — v3 corpus", "selfpref.html", body, extra_css=CSS)
     html_text = re.sub(r'(<a href=")(?!https?|\.\./|#)', r"\1../", html_text)
     html_text = re.sub(r'(<link[^>]*href=")(?!https?|\.\./)', r"\1../", html_text)
