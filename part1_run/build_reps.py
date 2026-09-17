@@ -29,6 +29,26 @@ def pcs(text):
     return out
 
 
+# For k semitones, the two enharmonic interval spellings and their effect on the
+# key signature (circle-of-fifths delta). The chosen spelling minimizes the
+# resulting |sharps|, so a transposition never lands on an 8-sharp signature
+# when the 4-flat spelling of the same pitches exists.
+CANDIDATES = {
+    1: [("m2", -5), ("a1", 7)], 2: [("M2", 2), ("d3", -10)], 3: [("m3", -3), ("a2", 9)],
+    4: [("M3", 4), ("d4", -8)], 5: [("P4", -1), ("a3", 11)], 6: [("d5", -6), ("a4", 6)],
+}
+for _k, _c in list(CANDIDATES.items()):
+    CANDIDATES[-_k] = [(n[0] + "-" + n[1:], -d) for n, d in _c]
+
+
+def best_interval(score, k):
+    from music21 import interval, key as m21key
+    ks = next(iter(score.recurse().getElementsByClass(m21key.KeySignature)), None)
+    s0 = ks.sharps if ks is not None else 0
+    name, _ = min(CANDIDATES[k], key=lambda cd: (abs(s0 + cd[1]), cd[1]))
+    return interval.Interval(name)
+
+
 def main() -> int:
     from music21 import converter
     from llm_music.judge import _score_to_text
@@ -41,7 +61,7 @@ def main() -> int:
             base = _score_to_text(s)
             base_pcs = pcs(base)
             for k in man["shifts"]:
-                t = _score_to_text(s.transpose(k))
+                t = _score_to_text(s.transpose(best_interval(s, k)))
                 key = f"{man['batch']}|{arm}|express-yourself|codegen|{p['sample']}|{k}"
                 reps[key] = t
                 got, want = pcs(t), [(x + k) % 12 for x in base_pcs]

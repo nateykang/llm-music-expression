@@ -32,7 +32,7 @@ def transposable(pc, batch_dir) -> bool:
         s = converter.parse(str(batch_dir / pc["score"]))
         base = _score_to_text(s)
         for k in (-6, 5):
-            t = _score_to_text(s.transpose(k))
+            t = _score_to_text(s.transpose(k))  # spelling handled in build_reps
             if abs(len(t.split()) - len(base.split())) > 2:
                 return False
         return True
