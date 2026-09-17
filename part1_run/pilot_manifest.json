@@ -1,0 +1,1102 @@
+{
+ "seed": 20260917,
+ "batch": "20260820_061907__models_42_prompts_3",
+ "shifts": [
+  -6,
+  -5,
+  -4,
+  -3,
+  -2,
+  -1,
+  1,
+  2,
+  3,
+  4,
+  5
+ ],
+ "mode": "codegen",
+ "prompt": "express-yourself",
+ "picked": {
+  "fable-5": [
+   {
+    "sample": 11,
+    "overall": 3.342,
+    "score": "scores/express-yourself/fable-5_s11.musicxml"
+   },
+   {
+    "sample": 12,
+    "overall": 3.414,
+    "score": "scores/express-yourself/fable-5_s12.musicxml"
+   },
+   {
+    "sample": 10,
+    "overall": 3.491,
+    "score": "scores/express-yourself/fable-5_s10.musicxml"
+   },
+   {
+    "sample": 14,
+    "overall": 3.53,
+    "score": "scores/express-yourself/fable-5_s14.musicxml"
+   },
+   {
+    "sample": 2,
+    "overall": 3.566,
+    "score": "scores/express-yourself/fable-5_s2.musicxml"
+   }
+  ],
+  "fable-5-thinking": [
+   {
+    "sample": 9,
+    "overall": 2.902,
+    "score": "scores/express-yourself/fable-5-thinking_s9.musicxml"
+   },
+   {
+    "sample": 3,
+    "overall": 3.539,
+    "score": "scores/express-yourself/fable-5-thinking_s3.musicxml"
+   },
+   {
+    "sample": 7,
+    "overall": 3.712,
+    "score": "scores/express-yourself/fable-5-thinking_s7.musicxml"
+   },
+   {
+    "sample": 1,
+    "overall": 3.762,
+    "score": "scores/express-yourself/fable-5-thinking_s1.musicxml"
+   },
+   {
+    "sample": 16,
+    "overall": 3.813,
+    "score": "scores/express-yourself/fable-5-thinking_s16.musicxml"
+   }
+  ],
+  "gemini-3-flash": [
+   {
+    "sample": 12,
+    "overall": 1.946,
+    "score": "scores/express-yourself/gemini-3-flash_s12.musicxml"
+   },
+   {
+    "sample": 5,
+    "overall": 2.095,
+    "score": "scores/express-yourself/gemini-3-flash_s5.musicxml"
+   },
+   {
+    "sample": 15,
+    "overall": 2.247,
+    "score": "scores/express-yourself/gemini-3-flash_s15.musicxml"
+   },
+   {
+    "sample": 18,
+    "overall": 2.399,
+    "score": "scores/express-yourself/gemini-3-flash_s18.musicxml"
+   },
+   {
+    "sample": 16,
+    "overall": 2.649,
+    "score": "scores/express-yourself/gemini-3-flash_s16.musicxml"
+   }
+  ],
+  "gemini-3-flash-thinking": [
+   {
+    "sample": 13,
+    "overall": 2.116,
+    "score": "scores/express-yourself/gemini-3-flash-thinking_s13.musicxml"
+   },
+   {
+    "sample": 2,
+    "overall": 2.319,
+    "score": "scores/express-yourself/gemini-3-flash-thinking_s2.musicxml"
+   },
+   {
+    "sample": 4,
+    "overall": 2.366,
+    "score": "scores/express-yourself/gemini-3-flash-thinking_s4.musicxml"
+   },
+   {
+    "sample": 7,
+    "overall": 2.434,
+    "score": "scores/express-yourself/gemini-3-flash-thinking_s7.musicxml"
+   },
+   {
+    "sample": 8,
+    "overall": 2.565,
+    "score": "scores/express-yourself/gemini-3-flash-thinking_s8.musicxml"
+   }
+  ],
+  "gemini-3.1-pro": [
+   {
+    "sample": 16,
+    "overall": 2.167,
+    "score": "scores/express-yourself/gemini-3.1-pro_s16.musicxml"
+   },
+   {
+    "sample": 1,
+    "overall": 2.286,
+    "score": "scores/express-yourself/gemini-3.1-pro_s1.musicxml"
+   },
+   {
+    "sample": 15,
+    "overall": 2.402,
+    "score": "scores/express-yourself/gemini-3.1-pro_s15.musicxml"
+   },
+   {
+    "sample": 0,
+    "overall": 2.467,
+    "score": "scores/express-yourself/gemini-3.1-pro.musicxml"
+   },
+   {
+    "sample": 11,
+    "overall": 2.61,
+    "score": "scores/express-yourself/gemini-3.1-pro_s11.musicxml"
+   }
+  ],
+  "gemini-3.1-pro-thinking": [
+   {
+    "sample": 0,
+    "overall": 2.997,
+    "score": "scores/express-yourself/gemini-3.1-pro-thinking.musicxml"
+   },
+   {
+    "sample": 11,
+    "overall": 3.095,
+    "score": "scores/express-yourself/gemini-3.1-pro-thinking_s11.musicxml"
+   },
+   {
+    "sample": 1,
+    "overall": 3.2,
+    "score": "scores/express-yourself/gemini-3.1-pro-thinking_s1.musicxml"
+   },
+   {
+    "sample": 8,
+    "overall": 3.226,
+    "score": "scores/express-yourself/gemini-3.1-pro-thinking_s8.musicxml"
+   },
+   {
+    "sample": 18,
+    "overall": 3.369,
+    "score": "scores/express-yourself/gemini-3.1-pro-thinking_s18.musicxml"
+   }
+  ],
+  "gemini-3.5-flash": [
+   {
+    "sample": 2,
+    "overall": 2.5,
+    "score": "scores/express-yourself/gemini-3.5-flash_s2.musicxml"
+   },
+   {
+    "sample": 15,
+    "overall": 3.092,
+    "score": "scores/express-yourself/gemini-3.5-flash_s15.musicxml"
+   },
+   {
+    "sample": 3,
+    "overall": 3.19,
+    "score": "scores/express-yourself/gemini-3.5-flash_s3.musicxml"
+   },
+   {
+    "sample": 1,
+    "overall": 3.28,
+    "score": "scores/express-yourself/gemini-3.5-flash_s1.musicxml"
+   },
+   {
+    "sample": 13,
+    "overall": 3.539,
+    "score": "scores/express-yourself/gemini-3.5-flash_s13.musicxml"
+   }
+  ],
+  "gemini-3.5-flash-thinking": [
+   {
+    "sample": 10,
+    "overall": 3.223,
+    "score": "scores/express-yourself/gemini-3.5-flash-thinking_s10.musicxml"
+   },
+   {
+    "sample": 9,
+    "overall": 3.547,
+    "score": "scores/express-yourself/gemini-3.5-flash-thinking_s9.musicxml"
+   },
+   {
+    "sample": 14,
+    "overall": 3.589,
+    "score": "scores/express-yourself/gemini-3.5-flash-thinking_s14.musicxml"
+   },
+   {
+    "sample": 11,
+    "overall": 3.64,
+    "score": "scores/express-yourself/gemini-3.5-flash-thinking_s11.musicxml"
+   },
+   {
+    "sample": 4,
+    "overall": 3.768,
+    "score": "scores/express-yourself/gemini-3.5-flash-thinking_s4.musicxml"
+   }
+  ],
+  "gemini-3.6-flash": [
+   {
+    "sample": 10,
+    "overall": 2.354,
+    "score": "scores/express-yourself/gemini-3.6-flash_s10.musicxml"
+   },
+   {
+    "sample": 0,
+    "overall": 2.449,
+    "score": "scores/express-yourself/gemini-3.6-flash.musicxml"
+   },
+   {
+    "sample": 18,
+    "overall": 2.979,
+    "score": "scores/express-yourself/gemini-3.6-flash_s18.musicxml"
+   },
+   {
+    "sample": 4,
+    "overall": 3.301,
+    "score": "scores/express-yourself/gemini-3.6-flash_s4.musicxml"
+   },
+   {
+    "sample": 12,
+    "overall": 3.458,
+    "score": "scores/express-yourself/gemini-3.6-flash_s12.musicxml"
+   }
+  ],
+  "gemini-3.6-flash-thinking": [
+   {
+    "sample": 19,
+    "overall": 3.604,
+    "score": "scores/express-yourself/gemini-3.6-flash-thinking_s19.musicxml"
+   },
+   {
+    "sample": 11,
+    "overall": 3.658,
+    "score": "scores/express-yourself/gemini-3.6-flash-thinking_s11.musicxml"
+   },
+   {
+    "sample": 14,
+    "overall": 3.768,
+    "score": "scores/express-yourself/gemini-3.6-flash-thinking_s14.musicxml"
+   },
+   {
+    "sample": 17,
+    "overall": 3.821,
+    "score": "scores/express-yourself/gemini-3.6-flash-thinking_s17.musicxml"
+   },
+   {
+    "sample": 12,
+    "overall": 3.887,
+    "score": "scores/express-yourself/gemini-3.6-flash-thinking_s12.musicxml"
+   }
+  ],
+  "gemini-3.7-flash": [
+   {
+    "sample": 4,
+    "overall": 3.491,
+    "score": "scores/express-yourself/gemini-3.7-flash_s4.musicxml"
+   },
+   {
+    "sample": 11,
+    "overall": 3.649,
+    "score": "scores/express-yourself/gemini-3.7-flash_s11.musicxml"
+   },
+   {
+    "sample": 6,
+    "overall": 3.75,
+    "score": "scores/express-yourself/gemini-3.7-flash_s6.musicxml"
+   },
+   {
+    "sample": 2,
+    "overall": 3.795,
+    "score": "scores/express-yourself/gemini-3.7-flash_s2.musicxml"
+   },
+   {
+    "sample": 14,
+    "overall": 3.937,
+    "score": "scores/express-yourself/gemini-3.7-flash_s14.musicxml"
+   }
+  ],
+  "gemini-3.7-flash-thinking": [
+   {
+    "sample": 12,
+    "overall": 3.789,
+    "score": "scores/express-yourself/gemini-3.7-flash-thinking_s12.musicxml"
+   },
+   {
+    "sample": 13,
+    "overall": 3.896,
+    "score": "scores/express-yourself/gemini-3.7-flash-thinking_s13.musicxml"
+   },
+   {
+    "sample": 15,
+    "overall": 3.958,
+    "score": "scores/express-yourself/gemini-3.7-flash-thinking_s15.musicxml"
+   },
+   {
+    "sample": 11,
+    "overall": 3.994,
+    "score": "scores/express-yourself/gemini-3.7-flash-thinking_s11.musicxml"
+   },
+   {
+    "sample": 18,
+    "overall": 4.015,
+    "score": "scores/express-yourself/gemini-3.7-flash-thinking_s18.musicxml"
+   }
+  ],
+  "gpt-5": [
+   {
+    "sample": 6,
+    "overall": 2.134,
+    "score": "scores/express-yourself/gpt-5_s6.musicxml"
+   },
+   {
+    "sample": 17,
+    "overall": 2.137,
+    "score": "scores/express-yourself/gpt-5_s17.musicxml"
+   },
+   {
+    "sample": 18,
+    "overall": 2.795,
+    "score": "scores/express-yourself/gpt-5_s18.musicxml"
+   },
+   {
+    "sample": 10,
+    "overall": 3.068,
+    "score": "scores/express-yourself/gpt-5_s10.musicxml"
+   },
+   {
+    "sample": 16,
+    "overall": 3.083,
+    "score": "scores/express-yourself/gpt-5_s16.musicxml"
+   }
+  ],
+  "gpt-5-thinking": [
+   {
+    "sample": 17,
+    "overall": 2.83,
+    "score": "scores/express-yourself/gpt-5-thinking_s17.musicxml"
+   },
+   {
+    "sample": 13,
+    "overall": 2.875,
+    "score": "scores/express-yourself/gpt-5-thinking_s13.musicxml"
+   },
+   {
+    "sample": 15,
+    "overall": 3.146,
+    "score": "scores/express-yourself/gpt-5-thinking_s15.musicxml"
+   },
+   {
+    "sample": 2,
+    "overall": 3.196,
+    "score": "scores/express-yourself/gpt-5-thinking_s2.musicxml"
+   },
+   {
+    "sample": 19,
+    "overall": 3.316,
+    "score": "scores/express-yourself/gpt-5-thinking_s19.musicxml"
+   }
+  ],
+  "gpt-5.1": [
+   {
+    "sample": 13,
+    "overall": 2.503,
+    "score": "scores/express-yourself/gpt-5.1_s13.musicxml"
+   },
+   {
+    "sample": 16,
+    "overall": 2.604,
+    "score": "scores/express-yourself/gpt-5.1_s16.musicxml"
+   },
+   {
+    "sample": 4,
+    "overall": 2.795,
+    "score": "scores/express-yourself/gpt-5.1_s4.musicxml"
+   },
+   {
+    "sample": 17,
+    "overall": 2.819,
+    "score": "scores/express-yourself/gpt-5.1_s17.musicxml"
+   },
+   {
+    "sample": 5,
+    "overall": 2.994,
+    "score": "scores/express-yourself/gpt-5.1_s5.musicxml"
+   }
+  ],
+  "gpt-5.1-thinking": [
+   {
+    "sample": 2,
+    "overall": 2.247,
+    "score": "scores/express-yourself/gpt-5.1-thinking_s2.musicxml"
+   },
+   {
+    "sample": 12,
+    "overall": 2.274,
+    "score": "scores/express-yourself/gpt-5.1-thinking_s12.musicxml"
+   },
+   {
+    "sample": 10,
+    "overall": 2.506,
+    "score": "scores/express-yourself/gpt-5.1-thinking_s10.musicxml"
+   },
+   {
+    "sample": 1,
+    "overall": 2.616,
+    "score": "scores/express-yourself/gpt-5.1-thinking_s1.musicxml"
+   },
+   {
+    "sample": 11,
+    "overall": 3.063,
+    "score": "scores/express-yourself/gpt-5.1-thinking_s11.musicxml"
+   }
+  ],
+  "gpt-5.2": [
+   {
+    "sample": 19,
+    "overall": 2.771,
+    "score": "scores/express-yourself/gpt-5.2_s19.musicxml"
+   },
+   {
+    "sample": 17,
+    "overall": 3.051,
+    "score": "scores/express-yourself/gpt-5.2_s17.musicxml"
+   },
+   {
+    "sample": 0,
+    "overall": 3.11,
+    "score": "scores/express-yourself/gpt-5.2.musicxml"
+   },
+   {
+    "sample": 12,
+    "overall": 3.155,
+    "score": "scores/express-yourself/gpt-5.2_s12.musicxml"
+   },
+   {
+    "sample": 15,
+    "overall": 3.533,
+    "score": "scores/express-yourself/gpt-5.2_s15.musicxml"
+   }
+  ],
+  "gpt-5.2-thinking": [
+   {
+    "sample": 6,
+    "overall": 3.426,
+    "score": "scores/express-yourself/gpt-5.2-thinking_s6.musicxml"
+   },
+   {
+    "sample": 16,
+    "overall": 3.518,
+    "score": "scores/express-yourself/gpt-5.2-thinking_s16.musicxml"
+   },
+   {
+    "sample": 19,
+    "overall": 3.536,
+    "score": "scores/express-yourself/gpt-5.2-thinking_s19.musicxml"
+   },
+   {
+    "sample": 5,
+    "overall": 3.604,
+    "score": "scores/express-yourself/gpt-5.2-thinking_s5.musicxml"
+   },
+   {
+    "sample": 4,
+    "overall": 3.652,
+    "score": "scores/express-yourself/gpt-5.2-thinking_s4.musicxml"
+   }
+  ],
+  "gpt-5.4": [
+   {
+    "sample": 0,
+    "overall": 2.952,
+    "score": "scores/express-yourself/gpt-5.4.musicxml"
+   },
+   {
+    "sample": 19,
+    "overall": 3.241,
+    "score": "scores/express-yourself/gpt-5.4_s19.musicxml"
+   },
+   {
+    "sample": 2,
+    "overall": 3.351,
+    "score": "scores/express-yourself/gpt-5.4_s2.musicxml"
+   },
+   {
+    "sample": 1,
+    "overall": 3.434,
+    "score": "scores/express-yourself/gpt-5.4_s1.musicxml"
+   },
+   {
+    "sample": 7,
+    "overall": 3.682,
+    "score": "scores/express-yourself/gpt-5.4_s7.musicxml"
+   }
+  ],
+  "gpt-5.4-thinking": [
+   {
+    "sample": 3,
+    "overall": 3.696,
+    "score": "scores/express-yourself/gpt-5.4-thinking_s3.musicxml"
+   },
+   {
+    "sample": 4,
+    "overall": 3.729,
+    "score": "scores/express-yourself/gpt-5.4-thinking_s4.musicxml"
+   },
+   {
+    "sample": 18,
+    "overall": 3.8,
+    "score": "scores/express-yourself/gpt-5.4-thinking_s18.musicxml"
+   },
+   {
+    "sample": 6,
+    "overall": 3.866,
+    "score": "scores/express-yourself/gpt-5.4-thinking_s6.musicxml"
+   },
+   {
+    "sample": 14,
+    "overall": 3.991,
+    "score": "scores/express-yourself/gpt-5.4-thinking_s14.musicxml"
+   }
+  ],
+  "gpt-5.5": [
+   {
+    "sample": 6,
+    "overall": 3.33,
+    "score": "scores/express-yourself/gpt-5.5_s6.musicxml"
+   },
+   {
+    "sample": 14,
+    "overall": 3.542,
+    "score": "scores/express-yourself/gpt-5.5_s14.musicxml"
+   },
+   {
+    "sample": 4,
+    "overall": 3.703,
+    "score": "scores/express-yourself/gpt-5.5_s4.musicxml"
+   },
+   {
+    "sample": 0,
+    "overall": 3.759,
+    "score": "scores/express-yourself/gpt-5.5.musicxml"
+   },
+   {
+    "sample": 13,
+    "overall": 3.872,
+    "score": "scores/express-yourself/gpt-5.5_s13.musicxml"
+   }
+  ],
+  "gpt-5.5-thinking": [
+   {
+    "sample": 16,
+    "overall": 3.676,
+    "score": "scores/express-yourself/gpt-5.5-thinking_s16.musicxml"
+   },
+   {
+    "sample": 2,
+    "overall": 3.809,
+    "score": "scores/express-yourself/gpt-5.5-thinking_s2.musicxml"
+   },
+   {
+    "sample": 10,
+    "overall": 3.994,
+    "score": "scores/express-yourself/gpt-5.5-thinking_s10.musicxml"
+   },
+   {
+    "sample": 4,
+    "overall": 4.012,
+    "score": "scores/express-yourself/gpt-5.5-thinking_s4.musicxml"
+   },
+   {
+    "sample": 5,
+    "overall": 4.063,
+    "score": "scores/express-yourself/gpt-5.5-thinking_s5.musicxml"
+   }
+  ],
+  "gpt-5.6": [
+   {
+    "sample": 2,
+    "overall": 3.467,
+    "score": "scores/express-yourself/gpt-5.6_s2.musicxml"
+   },
+   {
+    "sample": 13,
+    "overall": 3.64,
+    "score": "scores/express-yourself/gpt-5.6_s13.musicxml"
+   },
+   {
+    "sample": 6,
+    "overall": 3.699,
+    "score": "scores/express-yourself/gpt-5.6_s6.musicxml"
+   },
+   {
+    "sample": 3,
+    "overall": 3.744,
+    "score": "scores/express-yourself/gpt-5.6_s3.musicxml"
+   },
+   {
+    "sample": 12,
+    "overall": 3.825,
+    "score": "scores/express-yourself/gpt-5.6_s12.musicxml"
+   }
+  ],
+  "gpt-5.6-thinking": [
+   {
+    "sample": 5,
+    "overall": 4.039,
+    "score": "scores/express-yourself/gpt-5.6-thinking_s5.musicxml"
+   },
+   {
+    "sample": 7,
+    "overall": 4.077,
+    "score": "scores/express-yourself/gpt-5.6-thinking_s7.musicxml"
+   },
+   {
+    "sample": 0,
+    "overall": 4.131,
+    "score": "scores/express-yourself/gpt-5.6-thinking.musicxml"
+   },
+   {
+    "sample": 15,
+    "overall": 4.146,
+    "score": "scores/express-yourself/gpt-5.6-thinking_s15.musicxml"
+   },
+   {
+    "sample": 19,
+    "overall": 4.176,
+    "score": "scores/express-yourself/gpt-5.6-thinking_s19.musicxml"
+   }
+  ],
+  "grok-4.3": [
+   {
+    "sample": 19,
+    "overall": 1.828,
+    "score": "scores/express-yourself/grok-4.3_s19.musicxml"
+   },
+   {
+    "sample": 2,
+    "overall": 2.259,
+    "score": "scores/express-yourself/grok-4.3_s2.musicxml"
+   },
+   {
+    "sample": 10,
+    "overall": 2.405,
+    "score": "scores/express-yourself/grok-4.3_s10.musicxml"
+   },
+   {
+    "sample": 5,
+    "overall": 2.512,
+    "score": "scores/express-yourself/grok-4.3_s5.musicxml"
+   },
+   {
+    "sample": 6,
+    "overall": 2.634,
+    "score": "scores/express-yourself/grok-4.3_s6.musicxml"
+   }
+  ],
+  "grok-4.3-thinking": [
+   {
+    "sample": 2,
+    "overall": 1.559,
+    "score": "scores/express-yourself/grok-4.3-thinking_s2.musicxml"
+   },
+   {
+    "sample": 16,
+    "overall": 1.646,
+    "score": "scores/express-yourself/grok-4.3-thinking_s16.musicxml"
+   },
+   {
+    "sample": 12,
+    "overall": 1.771,
+    "score": "scores/express-yourself/grok-4.3-thinking_s12.musicxml"
+   },
+   {
+    "sample": 6,
+    "overall": 1.938,
+    "score": "scores/express-yourself/grok-4.3-thinking_s6.musicxml"
+   },
+   {
+    "sample": 15,
+    "overall": 2.036,
+    "score": "scores/express-yourself/grok-4.3-thinking_s15.musicxml"
+   }
+  ],
+  "grok-4.6": [
+   {
+    "sample": 10,
+    "overall": 2.625,
+    "score": "scores/express-yourself/grok-4.6_s10.musicxml"
+   },
+   {
+    "sample": 17,
+    "overall": 2.741,
+    "score": "scores/express-yourself/grok-4.6_s17.musicxml"
+   },
+   {
+    "sample": 4,
+    "overall": 3.211,
+    "score": "scores/express-yourself/grok-4.6_s4.musicxml"
+   },
+   {
+    "sample": 7,
+    "overall": 3.375,
+    "score": "scores/express-yourself/grok-4.6_s7.musicxml"
+   },
+   {
+    "sample": 2,
+    "overall": 3.423,
+    "score": "scores/express-yourself/grok-4.6_s2.musicxml"
+   }
+  ],
+  "grok-4.6-thinking": [
+   {
+    "sample": 8,
+    "overall": 3.134,
+    "score": "scores/express-yourself/grok-4.6-thinking_s8.musicxml"
+   },
+   {
+    "sample": 10,
+    "overall": 3.256,
+    "score": "scores/express-yourself/grok-4.6-thinking_s10.musicxml"
+   },
+   {
+    "sample": 7,
+    "overall": 3.509,
+    "score": "scores/express-yourself/grok-4.6-thinking_s7.musicxml"
+   },
+   {
+    "sample": 19,
+    "overall": 3.783,
+    "score": "scores/express-yourself/grok-4.6-thinking_s19.musicxml"
+   },
+   {
+    "sample": 5,
+    "overall": 3.943,
+    "score": "scores/express-yourself/grok-4.6-thinking_s5.musicxml"
+   }
+  ],
+  "kimi-k2": [
+   {
+    "sample": 17,
+    "overall": 2.378,
+    "score": "scores/express-yourself/kimi-k2_s17.musicxml"
+   },
+   {
+    "sample": 7,
+    "overall": 2.625,
+    "score": "scores/express-yourself/kimi-k2_s7.musicxml"
+   },
+   {
+    "sample": 2,
+    "overall": 2.711,
+    "score": "scores/express-yourself/kimi-k2_s2.musicxml"
+   },
+   {
+    "sample": 10,
+    "overall": 2.732,
+    "score": "scores/express-yourself/kimi-k2_s10.musicxml"
+   },
+   {
+    "sample": 6,
+    "overall": 3.122,
+    "score": "scores/express-yourself/kimi-k2_s6.musicxml"
+   }
+  ],
+  "kimi-k2-thinking": [
+   {
+    "sample": 9,
+    "overall": 2.08,
+    "score": "scores/express-yourself/kimi-k2-thinking_s9.musicxml"
+   },
+   {
+    "sample": 17,
+    "overall": 2.122,
+    "score": "scores/express-yourself/kimi-k2-thinking_s17.musicxml"
+   },
+   {
+    "sample": 16,
+    "overall": 2.497,
+    "score": "scores/express-yourself/kimi-k2-thinking_s16.musicxml"
+   },
+   {
+    "sample": 2,
+    "overall": 2.982,
+    "score": "scores/express-yourself/kimi-k2-thinking_s2.musicxml"
+   },
+   {
+    "sample": 10,
+    "overall": 3.461,
+    "score": "scores/express-yourself/kimi-k2-thinking_s10.musicxml"
+   }
+  ],
+  "kimi-k3": [
+   {
+    "sample": 2,
+    "overall": 2.646,
+    "score": "scores/express-yourself/kimi-k3_s2.musicxml"
+   },
+   {
+    "sample": 3,
+    "overall": 2.828,
+    "score": "scores/express-yourself/kimi-k3_s3.musicxml"
+   },
+   {
+    "sample": 6,
+    "overall": 3.235,
+    "score": "scores/express-yourself/kimi-k3_s6.musicxml"
+   },
+   {
+    "sample": 1,
+    "overall": 3.426,
+    "score": "scores/express-yourself/kimi-k3_s1.musicxml"
+   },
+   {
+    "sample": 14,
+    "overall": 3.8,
+    "score": "scores/express-yourself/kimi-k3_s14.musicxml"
+   }
+  ],
+  "kimi-k3-thinking": [
+   {
+    "sample": 7,
+    "overall": 2.357,
+    "score": "scores/express-yourself/kimi-k3-thinking_s7.musicxml"
+   },
+   {
+    "sample": 5,
+    "overall": 3.095,
+    "score": "scores/express-yourself/kimi-k3-thinking_s5.musicxml"
+   },
+   {
+    "sample": 6,
+    "overall": 3.292,
+    "score": "scores/express-yourself/kimi-k3-thinking_s6.musicxml"
+   },
+   {
+    "sample": 18,
+    "overall": 3.681,
+    "score": "scores/express-yourself/kimi-k3-thinking_s18.musicxml"
+   },
+   {
+    "sample": 13,
+    "overall": 3.768,
+    "score": "scores/express-yourself/kimi-k3-thinking_s13.musicxml"
+   }
+  ],
+  "opus-4.5": [
+   {
+    "sample": 4,
+    "overall": 2.485,
+    "score": "scores/express-yourself/opus-4.5_s4.musicxml"
+   },
+   {
+    "sample": 2,
+    "overall": 2.729,
+    "score": "scores/express-yourself/opus-4.5_s2.musicxml"
+   },
+   {
+    "sample": 13,
+    "overall": 2.929,
+    "score": "scores/express-yourself/opus-4.5_s13.musicxml"
+   },
+   {
+    "sample": 0,
+    "overall": 3.095,
+    "score": "scores/express-yourself/opus-4.5.musicxml"
+   },
+   {
+    "sample": 10,
+    "overall": 3.196,
+    "score": "scores/express-yourself/opus-4.5_s10.musicxml"
+   }
+  ],
+  "opus-4.5-thinking": [
+   {
+    "sample": 4,
+    "overall": 3.306,
+    "score": "scores/express-yourself/opus-4.5-thinking_s4.musicxml"
+   },
+   {
+    "sample": 1,
+    "overall": 3.485,
+    "score": "scores/express-yourself/opus-4.5-thinking_s1.musicxml"
+   },
+   {
+    "sample": 17,
+    "overall": 3.655,
+    "score": "scores/express-yourself/opus-4.5-thinking_s17.musicxml"
+   },
+   {
+    "sample": 2,
+    "overall": 3.759,
+    "score": "scores/express-yourself/opus-4.5-thinking_s2.musicxml"
+   },
+   {
+    "sample": 7,
+    "overall": 3.816,
+    "score": "scores/express-yourself/opus-4.5-thinking_s7.musicxml"
+   }
+  ],
+  "opus-4.8": [
+   {
+    "sample": 1,
+    "overall": 3.054,
+    "score": "scores/express-yourself/opus-4.8_s1.musicxml"
+   },
+   {
+    "sample": 11,
+    "overall": 3.461,
+    "score": "scores/express-yourself/opus-4.8_s11.musicxml"
+   },
+   {
+    "sample": 10,
+    "overall": 3.551,
+    "score": "scores/express-yourself/opus-4.8_s10.musicxml"
+   },
+   {
+    "sample": 17,
+    "overall": 3.586,
+    "score": "scores/express-yourself/opus-4.8_s17.musicxml"
+   },
+   {
+    "sample": 12,
+    "overall": 3.717,
+    "score": "scores/express-yourself/opus-4.8_s12.musicxml"
+   }
+  ],
+  "opus-4.8-thinking": [
+   {
+    "sample": 6,
+    "overall": 3.476,
+    "score": "scores/express-yourself/opus-4.8-thinking_s6.musicxml"
+   },
+   {
+    "sample": 2,
+    "overall": 3.503,
+    "score": "scores/express-yourself/opus-4.8-thinking_s2.musicxml"
+   },
+   {
+    "sample": 10,
+    "overall": 3.545,
+    "score": "scores/express-yourself/opus-4.8-thinking_s10.musicxml"
+   },
+   {
+    "sample": 1,
+    "overall": 3.583,
+    "score": "scores/express-yourself/opus-4.8-thinking_s1.musicxml"
+   },
+   {
+    "sample": 15,
+    "overall": 3.625,
+    "score": "scores/express-yourself/opus-4.8-thinking_s15.musicxml"
+   }
+  ],
+  "sonnet-4.5": [
+   {
+    "sample": 10,
+    "overall": 2.309,
+    "score": "scores/express-yourself/sonnet-4.5_s10.musicxml"
+   },
+   {
+    "sample": 5,
+    "overall": 2.566,
+    "score": "scores/express-yourself/sonnet-4.5_s5.musicxml"
+   },
+   {
+    "sample": 8,
+    "overall": 2.774,
+    "score": "scores/express-yourself/sonnet-4.5_s8.musicxml"
+   },
+   {
+    "sample": 3,
+    "overall": 2.931,
+    "score": "scores/express-yourself/sonnet-4.5_s3.musicxml"
+   },
+   {
+    "sample": 9,
+    "overall": 3.315,
+    "score": "scores/express-yourself/sonnet-4.5_s9.musicxml"
+   }
+  ],
+  "sonnet-4.5-thinking": [
+   {
+    "sample": 11,
+    "overall": 2.292,
+    "score": "scores/express-yourself/sonnet-4.5-thinking_s11.musicxml"
+   },
+   {
+    "sample": 2,
+    "overall": 2.622,
+    "score": "scores/express-yourself/sonnet-4.5-thinking_s2.musicxml"
+   },
+   {
+    "sample": 17,
+    "overall": 2.97,
+    "score": "scores/express-yourself/sonnet-4.5-thinking_s17.musicxml"
+   },
+   {
+    "sample": 6,
+    "overall": 3.042,
+    "score": "scores/express-yourself/sonnet-4.5-thinking_s6.musicxml"
+   },
+   {
+    "sample": 10,
+    "overall": 3.464,
+    "score": "scores/express-yourself/sonnet-4.5-thinking_s10.musicxml"
+   }
+  ],
+  "sonnet-4.6": [
+   {
+    "sample": 2,
+    "overall": 3.393,
+    "score": "scores/express-yourself/sonnet-4.6_s2.musicxml"
+   },
+   {
+    "sample": 12,
+    "overall": 3.613,
+    "score": "scores/express-yourself/sonnet-4.6_s12.musicxml"
+   },
+   {
+    "sample": 5,
+    "overall": 3.649,
+    "score": "scores/express-yourself/sonnet-4.6_s5.musicxml"
+   },
+   {
+    "sample": 6,
+    "overall": 3.741,
+    "score": "scores/express-yourself/sonnet-4.6_s6.musicxml"
+   },
+   {
+    "sample": 19,
+    "overall": 3.842,
+    "score": "scores/express-yourself/sonnet-4.6_s19.musicxml"
+   }
+  ],
+  "sonnet-4.6-thinking": [
+   {
+    "sample": 1,
+    "overall": 3.452,
+    "score": "scores/express-yourself/sonnet-4.6-thinking_s1.musicxml"
+   },
+   {
+    "sample": 9,
+    "overall": 3.577,
+    "score": "scores/express-yourself/sonnet-4.6-thinking_s9.musicxml"
+   },
+   {
+    "sample": 12,
+    "overall": 3.637,
+    "score": "scores/express-yourself/sonnet-4.6-thinking_s12.musicxml"
+   },
+   {
+    "sample": 17,
+    "overall": 3.676,
+    "score": "scores/express-yourself/sonnet-4.6-thinking_s17.musicxml"
+   },
+   {
+    "sample": 15,
+    "overall": 3.738,
+    "score": "scores/express-yourself/sonnet-4.6-thinking_s15.musicxml"
+   }
+  ]
+ },
+ "dropped": []
+}
