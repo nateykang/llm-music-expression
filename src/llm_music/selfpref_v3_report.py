@@ -48,7 +48,8 @@ def _pill_row(active: str, sub: bool):
           "border:1px solid var(--accent);background:var(--accent);color:var(--bg);font-weight:400\">{t}</span>")
     pills = [("v1", "v1/v2 — style space &amp; taste", "selfpref.html" if not sub else "../selfpref.html"),
              ("v3", "v3 — 42 arms × 1,611 pieces", "v3/selfpref.html" if not sub else "selfpref.html"),
-             ("p1", "Part 1 — key-shift EDA", "v3/keyshift.html" if not sub else "keyshift.html")]
+             ("p1", "Part 1 — key-shift EDA (own pieces)", "v3/keyshift.html" if not sub else "keyshift.html"),
+             ("p2", "Part 1 — fixed pieces", "v3/keyshift2.html" if not sub else "keyshift2.html")]
     items = "".join(on.format(t=t) if k == active else a.format(h=h, t=t) for k, t, h in pills)
     return ("<div id='corpus-toggle' style='max-width:980px;margin:.9rem auto -1.1rem;padding:0 1.25rem;"
             "display:flex;gap:8px;align-items:center;flex-wrap:wrap'>"
@@ -249,6 +250,8 @@ def build(analysis: Path | None = None) -> Path:
         v1.write_text(txt, encoding="utf-8")
     if (analysis / "keyshift_pilot.json").exists():
         build_keyshift(analysis)
+    if (analysis / "keyshift2.json").exists():
+        build_keyshift2(analysis)
     return out
 
 
@@ -279,5 +282,33 @@ def build_keyshift(analysis: Path) -> Path:
     html_text = re.sub(r'(<link[^>]*href=")(?!https?|\.\./)', r"\1../", html_text)
     html_text = html_text.replace("</nav>", "</nav>" + _pill_row("p1", True), 1)
     out = DOCS_DIR / "v3" / "keyshift.html"
+    out.write_text(html_text, encoding="utf-8")
+    return out
+
+
+def build_keyshift2(analysis: Path) -> Path:
+    """Part 1 stage-2 fixed-pieces EDA page (docs/v3/keyshift2.html)."""
+    K = json.loads((analysis / "keyshift2.json").read_text(encoding="utf-8"))
+    pooled, pse = K["pooled"]
+    body = (f"<h1>Key-shift EDA — fixed pieces <span class='sub'>Part 1 stage 2 · {K['n_pieces']} pieces × 11 shifts × "
+            f"{K['n_judges']} judges · {K['n_ratings']:,} judgments</span></h1>"
+            "<p class='scope'><b>Method:</b> the 9 blind-listening model-comparison code-gen pieces, shifted into the "
+            "other 11 keys in mode; all 40 models judge every version, blind. Each judge is scored as its deviation "
+            "from the other 39 on the same piece and key, so piece quality and transposition artifacts cancel — "
+            "non-zero means that judge treats the key differently from the panel.</p>"
+            + _fig("keyshift2_q1.png", "Panel mean per shift (left) and per target key (right), ±2SE over pieces.")
+            + _fig("keyshift2_q2.png", "Each judge's deviation-profile spread against its own permutation-noise range; * = p<.05.")
+            + "<h2>Q3: Does a judge rate pieces higher in the key it usually composes in?</h2>")
+    rows = [["ALL MODELS (mean)", "", heat(pooled, 0.4), f"±{pse:.2f}", cell(len(K["q3_rows"]), "int")]]
+    rows += [[r["arm"], f"{r['fav']} ({r['share']:.0%})", heat(r["bonus"], 0.4), f"±{r['ci']:.2f}", cell(r["n"], "int")]
+             for r in K["q3_rows"]]
+    body += table([("model", None), ("favorite key", "the tonic it composes in most (share of its ABC pieces)"),
+                   ("favorite-key bonus", "mean deviation from the panel in that key minus all other keys"),
+                   ("95% ±", None), ("n in key", "piece×shift cells landing in the favorite key")], rows)
+    html_text = page("Key-shift EDA — fixed pieces", "selfpref.html", body, extra_css=CSS)
+    html_text = re.sub(r'(<a href=")(?!https?|\.\./|#)', r"\1../", html_text)
+    html_text = re.sub(r'(<link[^>]*href=")(?!https?|\.\./)', r"\1../", html_text)
+    html_text = html_text.replace("</nav>", "</nav>" + _pill_row("p2", True), 1)
+    out = DOCS_DIR / "v3" / "keyshift2.html"
     out.write_text(html_text, encoding="utf-8")
     return out

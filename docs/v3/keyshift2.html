@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Key-shift EDA — fixed pieces</title>
+<link rel="stylesheet" href="../style.css?v=23">
+<style>
+  .wrap { max-width: 980px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  .sub { color: var(--muted); font-weight: 400; font-size: .8em; }
+  .scope { color: var(--muted); font-size: .9rem; margin: .25rem 0 1.25rem; }
+  .tscroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: .9rem; }
+  th, td { text-align: right; padding: .35rem .55rem; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; position: relative; }
+  .tip { border-bottom: 1px dotted var(--muted); cursor: help; outline: none; }
+  #tipbox { position: fixed; z-index: 100; width: 240px; white-space: normal; text-align: left;
+    font-weight: 400; font-size: .76rem; line-height: 1.45; color: var(--bg); background: var(--fg);
+    padding: .55rem .65rem; border-radius: 7px; box-shadow: 0 6px 20px rgba(0,0,0,.2);
+    pointer-events: none; display: none; }
+  td.m, th:first-child { text-align: left; font-weight: 600; }
+  td.sub { color: var(--muted); font-size: .8rem; }
+  tr.ref td { font-style: italic; color: var(--accent); background: #f3ede4; border-bottom: 2px solid #d8c9b5; }
+  table.heat td { text-align: center; }
+  h2 { margin-top: 2.4rem; }
+  figure { margin: 1.5rem 0; }
+  figcaption { color: var(--muted); font-size: .85rem; margin-top: .4rem; }
+  .callout { background: #f3ede4; border-left: 3px solid var(--accent); padding: .7rem .9rem;
+    border-radius: 0 7px 7px 0; font-size: .9rem; margin: .8rem 0 0; }
+  .mode-toggle { position: sticky; top: 0; z-index: 10; background: var(--bg); display: flex;
+    gap: 8px; align-items: center; padding: .6rem 0; margin-bottom: .5rem;
+    border-bottom: 1px solid var(--border); }
+  .mode-toggle .lbl { font-weight: 600; color: var(--fg); font-size: .9rem; }
+  .mode-toggle .note { font-size: .8rem; color: var(--muted); }
+  .mode-toggle button { font: inherit; font-size: .85rem; padding: 4px 13px; border-radius: 7px;
+    border: 1px solid #cbb99a; background: #fff; color: var(--fg); cursor: pointer; }
+  .mode-toggle button[aria-pressed=true] { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .mode-pane[hidden] { display: none; }
+  table.sortable th { cursor: pointer; user-select: none; white-space: nowrap; }
+  table.sortable th[data-dir=asc]::after { content: ' ▲'; font-size: .6em; opacity: .6; }
+  table.sortable th[data-dir=desc]::after { content: ' ▼'; font-size: .6em; opacity: .6; }
+  .scorebar { position: relative; display: inline-block; min-width: 84px; padding: 1px 6px; }
+  .scorebar-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px;
+    background: color-mix(in srgb, var(--accent) 22%, transparent); }
+  .scorebar b { position: relative; }
+  details.lowlevel { margin: 1.2rem 0; border: 1px solid var(--border); border-radius: 8px;
+    padding: .5rem .9rem; background: var(--card); }
+  details.lowlevel > summary { cursor: pointer; color: var(--muted); font-size: .92rem;
+    font-weight: 600; }
+  details.lowlevel[open] > summary { margin-bottom: .5rem; }
+  details.lowlevel h2 { margin-top: .6rem; font-size: 1.05rem; }
+  .toc { font-size: .8rem; color: var(--muted); margin: .2rem 0 1rem; line-height: 1.9; }
+  .toc a { color: var(--accent); text-decoration: none; white-space: nowrap; margin-right: .9rem; }
+  .sd { color: var(--muted); font-size: .78em; font-weight: 400; }
+  sup.fn { line-height: 0; }
+  sup.fn a { text-decoration: none; color: var(--accent); font-weight: 600; font-size: .78em;
+    padding: 0 1px; }
+  ol.footnotes { color: var(--muted); font-size: .82rem; line-height: 1.6; padding-left: 1.3rem;
+    margin-top: .6rem; }
+  ol.footnotes li { margin-bottom: .4rem; }
+  ol.footnotes li:target { color: var(--fg); background: #f3ede4; border-radius: 4px; }
+.chart img { width: 100%; border: 1px solid var(--border); border-radius: 8px; } .chart { margin: 1rem 0 1.5rem; } .chart figcaption { color: var(--muted); font-size: .85rem; margin-top: .4rem; } table.matrix th.rot { writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 400; font-size: .75rem; padding: 4px 2px; } table.matrix td { font-size: .72rem; padding: 2px 4px; text-align: center; } table.matrix td.sig { text-decoration: underline; font-weight: 600; } table.matrix td.diag { outline: 2px solid var(--fg); outline-offset: -2px; font-weight: 600; }</style>
+
+</head><body>
+<nav class="tabs">
+  <a href="../index.html">Browse outputs</a>
+  <a href="../results.html">Results &amp; analysis</a>
+  <a href="../judge.html">LLM judge</a>
+  <a href="../audio.html">Audio emotion</a>
+  <a href="../selfpref.html" class="active">Self-preference</a>
+  <a href="../genre.html">Genre bias</a>
+  <a href="../multimodal.html">Multimodal</a>
+  <a href="../studio.html">Studio</a>
+</nav><div id='corpus-toggle' style='max-width:980px;margin:.9rem auto -1.1rem;padding:0 1.25rem;display:flex;gap:8px;align-items:center;flex-wrap:wrap'><span style='font-weight:600;font-size:.9rem;color:var(--fg)'>Corpus</span><a href='../selfpref.html' style="font-size:.85rem;padding:4px 13px;border-radius:7px;border:1px solid #cbb99a;background:#fff;color:var(--fg);text-decoration:none;font-weight:400">v1/v2 — style space &amp; taste</a><a href='selfpref.html' style="font-size:.85rem;padding:4px 13px;border-radius:7px;border:1px solid #cbb99a;background:#fff;color:var(--fg);text-decoration:none;font-weight:400">v3 — 42 arms × 1,611 pieces</a><a href='keyshift.html' style="font-size:.85rem;padding:4px 13px;border-radius:7px;border:1px solid #cbb99a;background:#fff;color:var(--fg);text-decoration:none;font-weight:400">Part 1 — key-shift EDA (own pieces)</a><span style="font-size:.85rem;padding:4px 13px;border-radius:7px;border:1px solid var(--accent);background:var(--accent);color:var(--bg);font-weight:400">Part 1 — fixed pieces</span></div>
+<div class="wrap">
+<h1>Key-shift EDA — fixed pieces <span class='sub'>Part 1 stage 2 · 9 pieces × 11 shifts × 40 judges · 3,960 judgments</span></h1><p class='scope'><b>Method:</b> the 9 blind-listening model-comparison code-gen pieces, shifted into the other 11 keys in mode; all 40 models judge every version, blind. Each judge is scored as its deviation from the other 39 on the same piece and key, so piece quality and transposition artifacts cancel — non-zero means that judge treats the key differently from the panel.</p><figure class='chart'><img src='../analysis/keyshift2_q1.png' alt='Panel mean per shift (left) and per target key (right), ±2SE over pieces.'><figcaption>Panel mean per shift (left) and per target key (right), ±2SE over pieces.</figcaption></figure><figure class='chart'><img src='../analysis/keyshift2_q2.png' alt='Each judge&#x27;s deviation-profile spread against its own permutation-noise range; * = p&lt;.05.'><figcaption>Each judge's deviation-profile spread against its own permutation-noise range; * = p<.05.</figcaption></figure><h2>Q3: Does a judge rate pieces higher in the key it usually composes in?</h2><div class='tscroll'><table class='sortable'><thead><tr><th>model</th><th><span class='tip' tabindex='0' data-tip="the tonic it composes in most (share of its ABC pieces)">favorite&nbsp;key</span></th><th><span class='tip' tabindex='0' data-tip="mean deviation from the panel in that key minus all other keys">favorite-key&nbsp;bonus</span></th><th>95% ±</th><th><span class='tip' tabindex='0' data-tip="piece×shift cells landing in the favorite key">n&nbsp;in&nbsp;key</span></th></tr></thead><tbody><tr><td class='m'>ALL MODELS (mean)</td><td class=''></td><td class=''><td style='background:rgba(46,160,67,0.01)'>+0.01</td></td><td class=''>±0.03</td><td class=''>40</td></tr><tr><td class='m'>kimi-k2-thinking</td><td class=''>D (38%)</td><td class=''><td style='background:rgba(46,160,67,0.32)'>+0.25</td></td><td class=''>±0.18</td><td class=''>7</td></tr><tr><td class='m'>gpt-5</td><td class=''>D (100%)</td><td class=''><td style='background:rgba(46,160,67,0.26)'>+0.20</td></td><td class=''>±0.24</td><td class=''>7</td></tr><tr><td class='m'>grok-4.3</td><td class=''>D (35%)</td><td class=''><td style='background:rgba(46,160,67,0.20)'>+0.16</td></td><td class=''>±0.21</td><td class=''>7</td></tr><tr><td class='m'>gpt-5.6</td><td class=''>D (79%)</td><td class=''><td style='background:rgba(46,160,67,0.14)'>+0.11</td></td><td class=''>±0.12</td><td class=''>7</td></tr><tr><td class='m'>sonnet-4.6</td><td class=''>D (77%)</td><td class=''><td style='background:rgba(46,160,67,0.14)'>+0.11</td></td><td class=''>±0.20</td><td class=''>7</td></tr><tr><td class='m'>gemini-3.5-flash-thinking</td><td class=''>G (39%)</td><td class=''><td style='background:rgba(46,160,67,0.14)'>+0.11</td></td><td class=''>±0.12</td><td class=''>9</td></tr><tr><td class='m'>gemini-3.1-pro</td><td class=''>A (76%)</td><td class=''><td style='background:rgba(46,160,67,0.13)'>+0.11</td></td><td class=''>±0.24</td><td class=''>9</td></tr><tr><td class='m'>gpt-5.5</td><td class=''>D (95%)</td><td class=''><td style='background:rgba(46,160,67,0.13)'>+0.10</td></td><td class=''>±0.12</td><td class=''>7</td></tr><tr><td class='m'>gemini-3.7-flash</td><td class=''>D (79%)</td><td class=''><td style='background:rgba(46,160,67,0.11)'>+0.09</td></td><td class=''>±0.15</td><td class=''>7</td></tr><tr><td class='m'>gpt-5.5-thinking</td><td class=''>D (93%)</td><td class=''><td style='background:rgba(46,160,67,0.11)'>+0.09</td></td><td class=''>±0.13</td><td class=''>7</td></tr><tr><td class='m'>gemini-3.5-flash</td><td class=''>G (36%)</td><td class=''><td style='background:rgba(46,160,67,0.07)'>+0.06</td></td><td class=''>±0.11</td><td class=''>9</td></tr><tr><td class='m'>sonnet-4.6-thinking</td><td class=''>D (47%)</td><td class=''><td style='background:rgba(46,160,67,0.07)'>+0.06</td></td><td class=''>±0.16</td><td class=''>7</td></tr><tr><td class='m'>sonnet-4.5-thinking</td><td class=''>D (80%)</td><td class=''><td style='background:rgba(46,160,67,0.07)'>+0.06</td></td><td class=''>±0.16</td><td class=''>7</td></tr><tr><td class='m'>opus-4.5-thinking</td><td class=''>D (41%)</td><td class=''><td style='background:rgba(46,160,67,0.06)'>+0.04</td></td><td class=''>±0.08</td><td class=''>7</td></tr><tr><td class='m'>kimi-k3-thinking</td><td class=''>D (80%)</td><td class=''><td style='background:rgba(46,160,67,0.05)'>+0.04</td></td><td class=''>±0.18</td><td class=''>7</td></tr><tr><td class='m'>opus-4.8-thinking</td><td class=''>A (50%)</td><td class=''><td style='background:rgba(46,160,67,0.04)'>+0.04</td></td><td class=''>±0.12</td><td class=''>9</td></tr><tr><td class='m'>opus-4.8</td><td class=''>D (87%)</td><td class=''><td style='background:rgba(46,160,67,0.04)'>+0.03</td></td><td class=''>±0.21</td><td class=''>7</td></tr><tr><td class='m'>opus-4.5</td><td class=''>D (97%)</td><td class=''><td style='background:rgba(46,160,67,0.04)'>+0.03</td></td><td class=''>±0.25</td><td class=''>7</td></tr><tr><td class='m'>fable-5-thinking</td><td class=''>E (52%)</td><td class=''><td style='background:rgba(46,160,67,0.03)'>+0.02</td></td><td class=''>±0.13</td><td class=''>8</td></tr><tr><td class='m'>gpt-5.1-thinking</td><td class=''>D (64%)</td><td class=''><td style='background:rgba(46,160,67,0.02)'>+0.02</td></td><td class=''>±0.22</td><td class=''>7</td></tr><tr><td class='m'>gpt-5.4</td><td class=''>D (77%)</td><td class=''><td style='background:rgba(46,160,67,0.02)'>+0.02</td></td><td class=''>±0.13</td><td class=''>7</td></tr><tr><td class='m'>gpt-5.4-thinking</td><td class=''>D (87%)</td><td class=''><td style='background:rgba(46,160,67,0.01)'>+0.01</td></td><td class=''>±0.08</td><td class=''>7</td></tr><tr><td class='m'>gpt-5.1</td><td class=''>A (53%)</td><td class=''><td style='background:rgba(46,160,67,0.01)'>+0.01</td></td><td class=''>±0.15</td><td class=''>9</td></tr><tr><td class='m'>gpt-5.2</td><td class=''>D (82%)</td><td class=''><td style='background:rgba(46,160,67,0.00)'>+0.00</td></td><td class=''>±0.11</td><td class=''>7</td></tr><tr><td class='m'>fable-5</td><td class=''>D (85%)</td><td class=''><td style='background:rgba(207,90,80,0.00)'>-0.00</td></td><td class=''>±0.19</td><td class=''>7</td></tr><tr><td class='m'>gpt-5-thinking</td><td class=''>D (71%)</td><td class=''><td style='background:rgba(207,90,80,0.02)'>-0.01</td></td><td class=''>±0.16</td><td class=''>7</td></tr><tr><td class='m'>grok-4.6</td><td class=''>E (30%)</td><td class=''><td style='background:rgba(207,90,80,0.03)'>-0.02</td></td><td class=''>±0.14</td><td class=''>8</td></tr><tr><td class='m'>gemini-3.6-flash</td><td class=''>C (45%)</td><td class=''><td style='background:rgba(207,90,80,0.04)'>-0.03</td></td><td class=''>±0.25</td><td class=''>5</td></tr><tr><td class='m'>gpt-5.2-thinking</td><td class=''>D (95%)</td><td class=''><td style='background:rgba(207,90,80,0.04)'>-0.03</td></td><td class=''>±0.10</td><td class=''>7</td></tr><tr><td class='m'>grok-4.3-thinking</td><td class=''>C (80%)</td><td class=''><td style='background:rgba(207,90,80,0.07)'>-0.05</td></td><td class=''>±0.32</td><td class=''>5</td></tr><tr><td class='m'>sonnet-4.5</td><td class=''>D (90%)</td><td class=''><td style='background:rgba(207,90,80,0.07)'>-0.06</td></td><td class=''>±0.22</td><td class=''>7</td></tr><tr><td class='m'>grok-4.6-thinking</td><td class=''>A (54%)</td><td class=''><td style='background:rgba(207,90,80,0.08)'>-0.06</td></td><td class=''>±0.10</td><td class=''>9</td></tr><tr><td class='m'>gpt-5.6-thinking</td><td class=''>D (87%)</td><td class=''><td style='background:rgba(207,90,80,0.09)'>-0.07</td></td><td class=''>±0.10</td><td class=''>7</td></tr><tr><td class='m'>kimi-k3</td><td class=''>D (84%)</td><td class=''><td style='background:rgba(207,90,80,0.11)'>-0.09</td></td><td class=''>±0.27</td><td class=''>7</td></tr><tr><td class='m'>gemini-3-flash-thinking</td><td class=''>C (56%)</td><td class=''><td style='background:rgba(207,90,80,0.13)'>-0.10</td></td><td class=''>±0.14</td><td class=''>5</td></tr><tr><td class='m'>gemini-3-flash</td><td class=''>C (100%)</td><td class=''><td style='background:rgba(207,90,80,0.13)'>-0.10</td></td><td class=''>±0.11</td><td class=''>5</td></tr><tr><td class='m'>kimi-k2</td><td class=''>D (37%)</td><td class=''><td style='background:rgba(207,90,80,0.14)'>-0.11</td></td><td class=''>±0.24</td><td class=''>7</td></tr><tr><td class='m'>gemini-3.6-flash-thinking</td><td class=''>D (57%)</td><td class=''><td style='background:rgba(207,90,80,0.21)'>-0.16</td></td><td class=''>±0.28</td><td class=''>7</td></tr><tr><td class='m'>gemini-3.7-flash-thinking</td><td class=''>D (89%)</td><td class=''><td style='background:rgba(207,90,80,0.30)'>-0.24</td></td><td class=''>±0.31</td><td class=''>7</td></tr><tr><td class='m'>gemini-3.1-pro-thinking</td><td class=''>A (37%)</td><td class=''><td style='background:rgba(207,90,80,0.40)'>-0.32</td></td><td class=''>±0.51</td><td class=''>9</td></tr></tbody></table></div>
+</div>
+<script>
+(function(){
+  var tog = document.querySelector('.mode-toggle');
+  function setMode(m){
+    document.querySelectorAll('.mode-pane').forEach(function(p){ p.hidden = p.dataset.mode !== m; });
+    if (tog) tog.querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.mode === m)); });
+    if (window.__onModeChange) window.__onModeChange(m);
+  }
+  if (tog){
+    tog.querySelectorAll('button').forEach(function(b){ b.addEventListener('click', function(){ setMode(b.dataset.mode); }); });
+    setMode(tog.dataset.default || 'all');
+  }
+
+  function makeSortable(table){
+    var head = table.tHead, body = table.tBodies[0];
+    if (!head || !body) return;
+    var cells = head.rows[0].cells;
+    Array.prototype.forEach.call(cells, function(th, idx){
+      th.addEventListener('click', function(){
+        var asc = th.dataset.dir !== 'asc';
+        Array.prototype.forEach.call(cells, function(h){ h.removeAttribute('data-dir'); });
+        th.dataset.dir = asc ? 'asc' : 'desc';
+        var num = function(c){ var n = parseFloat(c.textContent.trim().replace(/[%,+\s]/g, '')); return isNaN(n) ? null : n; };
+        var rows = Array.prototype.slice.call(body.rows);
+        var refs = rows.filter(function(r){ return r.classList.contains('ref'); });
+        var data = rows.filter(function(r){ return !r.classList.contains('ref'); });
+        data.sort(function(a, b){
+          var ka = num(a.cells[idx]), kb = num(b.cells[idx]);
+          if (ka === null && kb === null){ var c = a.cells[idx].textContent.trim().localeCompare(b.cells[idx].textContent.trim()); return asc ? c : -c; }
+          if (ka === null) return 1;
+          if (kb === null) return -1;
+          return asc ? ka - kb : kb - ka;
+        });
+        refs.concat(data).forEach(function(r){ body.appendChild(r); });
+      });
+    });
+  }
+  document.querySelectorAll('table.sortable').forEach(makeSortable);
+
+  // Jump nav: long pages get a compact section index built from their h2s
+  // (skipping ones inside collapsed low-level <details>).
+  var h2s = Array.prototype.filter.call(document.querySelectorAll('.wrap > h2, .wrap h2'), function(h){
+    return !h.closest('details.lowlevel');
+  });
+  if (h2s.length >= 4){
+    var toc = document.createElement('nav'); toc.className = 'toc';
+    h2s.forEach(function(h, i){
+      if (!h.id) h.id = 'sec-' + (i + 1);
+      var a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = (h.childNodes[0] && h.childNodes[0].textContent || h.textContent).trim();
+      toc.appendChild(a);
+    });
+    var anchor = document.querySelector('.mode-toggle') || document.querySelector('.wrap h1');
+    if (anchor) anchor.insertAdjacentElement('afterend', toc);
+  }
+
+  var box = document.createElement('div'); box.id = 'tipbox'; document.body.appendChild(box);
+  function show(el){
+    var t = el.getAttribute('data-tip'); if (!t) return;
+    box.textContent = t; box.style.display = 'block';
+    var r = el.getBoundingClientRect();
+    box.style.left = Math.max(6, Math.min(r.left, window.innerWidth - 252)) + 'px';
+    var top = r.top - box.offsetHeight - 6; if (top < 6) top = r.bottom + 6;
+    box.style.top = top + 'px';
+  }
+  function hide(){ box.style.display = 'none'; }
+  document.addEventListener('mouseover', function(e){ var el = e.target.closest && e.target.closest('.tip'); if (el) show(el); });
+  document.addEventListener('mouseout', function(e){ if (e.target.closest && e.target.closest('.tip')) hide(); });
+  document.addEventListener('focusin', function(e){ var el = e.target.closest && e.target.closest('.tip'); if (el) show(el); });
+  document.addEventListener('focusout', hide);
+})();
+</script>
+</body></html>
