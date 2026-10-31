@@ -33,7 +33,7 @@ from llm_music.models import get_client  # noqa: E402
 from llm_music.models.registry import MODEL_REGISTRY  # noqa: E402
 
 NEW_ARMS = ["fable-5.1", "fable-5.1-thinking", "opus-5.5", "opus-5.5-thinking",
-            "gpt-6-astra", "gpt-6-astra-thinking"]
+            "gpt-6-astra", "gpt-6-astra-thinking", "gemini-4-argon", "gemini-4-argon-thinking"]
 PROBE_BATCH = "20260819_201530__models_40_prompts_3"
 
 

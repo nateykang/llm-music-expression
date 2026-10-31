@@ -123,6 +123,11 @@ MODEL_REGISTRY: dict[str, tuple] = {
     # (checks the slug resolves and that the base arm reports 0 reasoning tokens).
     "gpt-6-astra": ("openrouter", "openai/gpt-6-astra", {"reasoning": {"enabled": False}}),
     "gpt-6-astra-thinking": ("openrouter", "openai/gpt-6-astra", {"reasoning": {"effort": "high"}}),
+    # Gemini 4 'argon' via OpenRouter. Recent Google models make reasoning
+    # mandatory (enabled:false -> 400), so the pair is effort low vs high like
+    # gemini 3.5+ flash. Slug resolved live by part2_run/resolve_slugs.py.
+    "gemini-4-argon": ("openrouter", "google/gemini-4-argon", {"reasoning": {"effort": "low"}}),
+    "gemini-4-argon-thinking": ("openrouter", "google/gemini-4-argon", {"reasoning": {"effort": "high"}}),
 }
 
 

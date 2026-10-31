@@ -48,7 +48,8 @@ ANTHROPIC_PRICES = {
     "claude-sonnet-4-6": (3.0, 15.0), "claude-sonnet-4-5-20250929": (3.0, 15.0),
 }
 # Proxy arms whose stored pieces stand in for the not-yet-generated new arms.
-GEN_PROXY = {"fable-5.1": "fable-5", "opus-5.5": "opus-4.8", "gpt-6-astra": "gpt-5.6"}
+GEN_PROXY = {"fable-5.1": "fable-5", "opus-5.5": "opus-4.8", "gpt-6-astra": "gpt-5.6",
+             "gemini-4-argon": "gemini-3.1-pro"}
 CKPT = ROOT / "part2_run/analysis/part2_selfpref_ckpt.json"
 SAMPLE = ROOT / "part2_run/cost_sample.json"
 REPS_CACHE = ROOT / "part2_run/reps_cache.json"
