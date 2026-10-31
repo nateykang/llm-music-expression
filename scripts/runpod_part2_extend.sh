@@ -73,9 +73,13 @@ push() {  # commit + push given paths to the working branch
   say "push failed ($1)"
 }
 
-for k in ANTHROPIC_API_KEY OPENROUTER_API_KEY; do
-  [ -n "${!k:-}" ] || { say "missing $k (or its pod alias)"; exit 1; }
-done
+[ -n "${OPENROUTER_API_KEY:-}" ] || { say "missing OPENROUTER_API_KEY (or OPENROUTER_KEY)"; exit 1; }
+# Only native-Anthropic arms need the Anthropic key (generation arms all route
+# via OpenRouter now; the old panel's Claude judges need it at the judge stage).
+if [ -n "${ANTHROPIC_API_KEY:-}" ] && ! curl -s -o /dev/null -w '%{http_code}' https://api.anthropic.com/v1/models \
+     -H "x-api-key: $ANTHROPIC_API_KEY" -H "anthropic-version: 2023-06-01" | grep -q 200; then
+  say "WARNING: Anthropic key rejected — native-Anthropic judges will fail until it is replaced"
+fi
 say "start: stage=$STAGE arms=$NEW_ARMS"
 
 if has resolve; then

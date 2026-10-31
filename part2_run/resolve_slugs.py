@@ -24,6 +24,8 @@ REG = ROOT / "src/llm_music/models/registry.py"
 FAMILIES = {  # registry base id -> tokens every candidate id must contain
     "gpt-6-astra": ("gpt-6", "astra"),
     "gemini-4-argon": ("gemini-4", "argon"),
+    "fable-5.1": ("anthropic/", "fable-5.1"),
+    "opus-5.5": ("anthropic/", "opus-5.5"),
 }
 SKIP = re.compile(r"(image|audio|tts|realtime|embed|search|transcribe|:free|:batch|:online)")
 
@@ -51,7 +53,11 @@ def main() -> int:
                   f"${float(m['pricing']['completion']) * 1e6:.2f} per M, "
                   f"batch={'yes' if c + ':batch' in ids else 'no'}, "
                   f"reasoning={'reasoning' in (m.get('supported_parameters') or [])}")
-        cur = re.search(rf'"{re.escape(arm)}": \("openrouter", "([^"]+)"', src).group(1)
+        m_cur = re.search(rf'"{re.escape(arm)}": \("openrouter", "([^"]+)"', src)
+        if not m_cur:
+            print(f"  -> {arm}: not routed via OpenRouter in the registry; skipped")
+            continue
+        cur = m_cur.group(1)
         if len(cands) > 1 and cur in cands:
             # The registry's own slug is an exact catalog id: keep it rather than
             # guess between it and suffixed variants (e.g. -pro).

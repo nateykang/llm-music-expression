@@ -34,10 +34,13 @@ MODEL_REGISTRY: dict[str, tuple] = {
     # Part 2 extension arms (Oct 2026). Fable 5.1 and Opus 5.5 both reject
     # thinking disabled / budget_tokens (400), so like fable-5 the pair is the
     # effort dial, pinned explicitly (Opus 5.5's API default is medium, not high).
-    "fable-5.1": ("anthropic", "claude-fable-5-1", {"thinking": {"type": "adaptive"}, "effort": "low"}),
-    "fable-5.1-thinking": ("anthropic", "claude-fable-5-1", {"thinking": {"type": "adaptive"}, "effort": "high"}),
-    "opus-5.5": ("anthropic", "claude-opus-5-5", {"thinking": {"type": "adaptive"}, "effort": "low"}),
-    "opus-5.5-thinking": ("anthropic", "claude-opus-5-5", {"thinking": {"type": "adaptive"}, "effort": "high"}),
+    # Routed via OpenRouter (the pod's Anthropic key 401s); same effort low/high
+    # split through the unified reasoning param — the probe checks the base arm
+    # really emits fewer tokens. Native ids: claude-fable-5-1 / claude-opus-5-5.
+    "fable-5.1": ("openrouter", "anthropic/claude-fable-5.1", {"reasoning": {"effort": "low"}}),
+    "fable-5.1-thinking": ("openrouter", "anthropic/claude-fable-5.1", {"reasoning": {"effort": "high"}}),
+    "opus-5.5": ("openrouter", "anthropic/claude-opus-5.5", {"reasoning": {"effort": "low"}}),
+    "opus-5.5-thinking": ("openrouter", "anthropic/claude-opus-5.5", {"reasoning": {"effort": "high"}}),
     # OpenAI (confirmed available on this org; extend as new ones ship).
     # v3 non-thinking arms are pinned to the reasoning floor ("none", 5.1+);
     # unpinned = provider default (medium) — what the v2 corpus ran.
