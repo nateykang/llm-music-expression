@@ -73,7 +73,7 @@ say "start: stage=$STAGE arms=$NEW_ARMS"
 
 if has resolve; then
   say "resolve: pin new model slugs from the live catalogs"
-  python part2_run/resolve_slugs.py || { say "slug resolution ambiguous — see above"; exit 1; }
+  python part2_run/resolve_slugs.py || { say "resolve step failed — see above"; exit 1; }
 fi
 
 if has probe; then

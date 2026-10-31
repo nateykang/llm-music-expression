@@ -11,6 +11,7 @@ dependencies = [
     "python-dotenv>=1.0",
     "muspy>=0.5",
     "pretty_midi>=0.2",
+    "httpx>=0.27",  # OpenRouter catalog + batch legs (anthropic 1.x no longer pulls it in)
 ]
 
 [project.optional-dependencies]
