@@ -118,10 +118,10 @@ MODEL_REGISTRY: dict[str, tuple] = {
     # thinking/non-thinking arms are explicit rather than provider defaults.
     "gpt-5.6": ("openrouter", "openai/gpt-5.6-sol", {"reasoning": {"enabled": False}}),
     "gpt-5.6-thinking": ("openrouter", "openai/gpt-5.6-sol", {"reasoning": {"effort": "high"}}),
-    # gpt-6 'astra' variant via OpenRouter, mirroring gpt-5.6-sol. UNVERIFIED
-    # slug and reasoning floor: run part2_run/probe_arms.py before any full run
-    # (checks the slug resolves and that the base arm reports 0 reasoning tokens).
-    "gpt-6-astra": ("openrouter", "openai/gpt-6-astra", {"reasoning": {"enabled": False}}),
+    # gpt-6 'astra' via OpenRouter (slug confirmed live; -pro is a separate
+    # variant). Reasoning is mandatory (enabled:false -> 400), so the pair is
+    # effort low vs high, like gemini 3.5+ flash, grok-4.6 and kimi-k3.
+    "gpt-6-astra": ("openrouter", "openai/gpt-6-astra", {"reasoning": {"effort": "low"}}),
     "gpt-6-astra-thinking": ("openrouter", "openai/gpt-6-astra", {"reasoning": {"effort": "high"}}),
     # Gemini 4 'argon' via OpenRouter. Recent Google models make reasoning
     # mandatory (enabled:false -> 400), so the pair is effort low vs high like

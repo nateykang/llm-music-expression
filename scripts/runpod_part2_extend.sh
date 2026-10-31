@@ -36,9 +36,11 @@ if [ -r /proc/1/environ ]; then
       [ -z "${!k:-}" ] && export "$kv";; esac
   done < /proc/1/environ
 fi
-export ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-${ANT_KEY:-}}"
-export OPENAI_API_KEY="${OPENAI_API_KEY:-${OPENAI_KEY:-}}"
-export OPENROUTER_API_KEY="${OPENROUTER_API_KEY:-${OPENROUTER_KEY:-}}"
+# The pod's own names (ANT_KEY / OPENAI_KEY / OPENROUTER_KEY) are the fresh
+# keys: they win over any older standard-named key in the env or .env.
+export ANTHROPIC_API_KEY="${ANT_KEY:-${ANTHROPIC_API_KEY:-}}"
+export OPENAI_API_KEY="${OPENAI_KEY:-${OPENAI_API_KEY:-}}"
+export OPENROUTER_API_KEY="${OPENROUTER_KEY:-${OPENROUTER_API_KEY:-}}"
 # Pod env values can carry a trailing newline / CR, which makes the auth header
 # illegal (and the HTTP error then echoes the key). Strip all whitespace.
 for k in ANTHROPIC_API_KEY OPENAI_API_KEY OPENROUTER_API_KEY GITHUB_TOKEN; do
