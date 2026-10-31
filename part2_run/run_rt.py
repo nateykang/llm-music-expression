@@ -22,12 +22,14 @@ from reps import wire_reps_cache  # noqa: E402
 
 wire_reps_cache(ROOT)
 
-BATCHES = ["20260819_201530__models_40_prompts_3", "20260819_203512__models_2_prompts_3",
-           "20260820_061907__models_42_prompts_3"]
+from config import BATCHES  # noqa: E402
 ARMS = ["gpt-5", "gpt-5-thinking", "gpt-5.1", "gpt-5.1-thinking", "gpt-5.4", "gpt-5.4-thinking",
         "gpt-5.6", "gpt-5.6-thinking", "grok-4.3", "grok-4.3-thinking", "grok-4.6", "grok-4.6-thinking",
         "kimi-k2", "kimi-k2-thinking", "gpt-5.5", "gpt-5.5-thinking", "gpt-5.2", "gpt-5.2-thinking",
         "opus-4.1", "opus-4.1-thinking"]
+# Extension runs name their own realtime arms (the old list is all cached anyway).
+if os.environ.get("PART2_RT_ARMS"):
+    ARMS = [a.strip() for a in os.environ["PART2_RT_ARMS"].split(",") if a.strip()]
 data = ROOT / "part2_run/data"
 data.mkdir(parents=True, exist_ok=True)
 for b in BATCHES:

@@ -27,17 +27,14 @@ from llm_music.judge import (_extract_json, _system, build_user,  # noqa: E402
 from llm_music.models import get_client  # noqa: E402
 from llm_music.models.registry import MODEL_REGISTRY  # noqa: E402
 
-BATCHES = [
-    "20260819_201530__models_40_prompts_3",
-    "20260819_203512__models_2_prompts_3",
-    "20260820_061907__models_42_prompts_3",
-]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from config import BATCHES, judges_from, manifest_name  # noqa: E402
 CKPT = ROOT / "part2_run/analysis/part2_selfpref_ckpt.json"
-MANIFEST = ROOT / "part2_run/batch_anthropic_manifest.json"
+MANIFEST = ROOT / "part2_run" / manifest_name("batch_anthropic_manifest")
 
-panel = sorted({p["model"] for b in BATCHES
+panel = judges_from(sorted({p["model"] for b in BATCHES
                 for p in json.loads((ROOT / "docs/data" / b / "data.json").read_text())["pieces"]
-                if p.get("ok")})
+                if p.get("ok")}))
 ARMS = [n for n in panel if MODEL_REGISTRY[n][0] == "anthropic"]
 print(f"native-Anthropic arms ({len(ARMS)}): {ARMS}", flush=True)
 

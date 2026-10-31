@@ -31,6 +31,13 @@ MODEL_REGISTRY: dict[str, tuple] = {
     # low = the non-thinking-analog arm, high (API default) = the thinking arm.
     "fable-5": ("anthropic", "claude-fable-5", {"thinking": {"type": "adaptive"}, "effort": "low"}),
     "fable-5-thinking": ("anthropic", "claude-fable-5", {"thinking": {"type": "adaptive"}, "effort": "high"}),
+    # Part 2 extension arms (Oct 2026). Fable 5.1 and Opus 5.5 both reject
+    # thinking disabled / budget_tokens (400), so like fable-5 the pair is the
+    # effort dial, pinned explicitly (Opus 5.5's API default is medium, not high).
+    "fable-5.1": ("anthropic", "claude-fable-5-1", {"thinking": {"type": "adaptive"}, "effort": "low"}),
+    "fable-5.1-thinking": ("anthropic", "claude-fable-5-1", {"thinking": {"type": "adaptive"}, "effort": "high"}),
+    "opus-5.5": ("anthropic", "claude-opus-5-5", {"thinking": {"type": "adaptive"}, "effort": "low"}),
+    "opus-5.5-thinking": ("anthropic", "claude-opus-5-5", {"thinking": {"type": "adaptive"}, "effort": "high"}),
     # OpenAI (confirmed available on this org; extend as new ones ship).
     # v3 non-thinking arms are pinned to the reasoning floor ("none", 5.1+);
     # unpinned = provider default (medium) — what the v2 corpus ran.
@@ -111,6 +118,11 @@ MODEL_REGISTRY: dict[str, tuple] = {
     # thinking/non-thinking arms are explicit rather than provider defaults.
     "gpt-5.6": ("openrouter", "openai/gpt-5.6-sol", {"reasoning": {"enabled": False}}),
     "gpt-5.6-thinking": ("openrouter", "openai/gpt-5.6-sol", {"reasoning": {"effort": "high"}}),
+    # gpt-6 'astra' variant via OpenRouter, mirroring gpt-5.6-sol. UNVERIFIED
+    # slug and reasoning floor: run part2_run/probe_arms.py before any full run
+    # (checks the slug resolves and that the base arm reports 0 reasoning tokens).
+    "gpt-6-astra": ("openrouter", "openai/gpt-6-astra", {"reasoning": {"enabled": False}}),
+    "gpt-6-astra-thinking": ("openrouter", "openai/gpt-6-astra", {"reasoning": {"effort": "high"}}),
 }
 
 
