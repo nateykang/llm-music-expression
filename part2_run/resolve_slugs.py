@@ -35,10 +35,10 @@ def main() -> int:
     if os.environ.get("OPENAI_API_KEY"):
         try:
             r = httpx.get("https://api.openai.com/v1/models", timeout=60,
-                          headers={"Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}"})
+                          headers={"Authorization": f"Bearer {os.environ['OPENAI_API_KEY'].strip()}"})
             native = {m["id"] for m in r.json().get("data", [])}
-        except Exception as e:  # noqa: BLE001
-            print(f"(native OpenAI model list unavailable: {e})")
+        except Exception as e:  # noqa: BLE001 — type only: messages can echo the auth header
+            print(f"(native OpenAI model list unavailable: {type(e).__name__})")
     src = REG.read_text()
     bad = False
     for arm, toks in FAMILIES.items():
@@ -51,12 +51,17 @@ def main() -> int:
                   f"${float(m['pricing']['completion']) * 1e6:.2f} per M, "
                   f"batch={'yes' if c + ':batch' in ids else 'no'}, "
                   f"reasoning={'reasoning' in (m.get('supported_parameters') or [])}")
+        cur = re.search(rf'"{re.escape(arm)}": \("openrouter", "([^"]+)"', src).group(1)
+        if len(cands) > 1 and cur in cands:
+            # The registry's own slug is an exact catalog id: keep it rather than
+            # guess between it and suffixed variants (e.g. -pro).
+            print(f"  -> {arm}: registry slug {cur} is in the catalog; keeping it over {[c for c in cands if c != cur]}")
+            continue
         if len(cands) != 1:
             print(f"  !! {arm}: need exactly one OpenRouter candidate, got {len(cands)} — "
                   f"set the slug in registry.py by hand")
             bad = True
             continue
-        cur = re.search(rf'"{re.escape(arm)}": \("openrouter", "([^"]+)"', src).group(1)
         if cur != cands[0]:
             src = src.replace(f'"openrouter", "{cur}"', f'"openrouter", "{cands[0]}"')
             print(f"  -> pinned {arm} (+ -thinking) to {cands[0]} (was {cur})")

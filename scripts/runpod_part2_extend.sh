@@ -39,6 +39,11 @@ fi
 export ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-${ANT_KEY:-}}"
 export OPENAI_API_KEY="${OPENAI_API_KEY:-${OPENAI_KEY:-}}"
 export OPENROUTER_API_KEY="${OPENROUTER_API_KEY:-${OPENROUTER_KEY:-}}"
+# Pod env values can carry a trailing newline / CR, which makes the auth header
+# illegal (and the HTTP error then echoes the key). Strip all whitespace.
+for k in ANTHROPIC_API_KEY OPENAI_API_KEY OPENROUTER_API_KEY GITHUB_TOKEN; do
+  v="${!k:-}"; v="${v//[$'\t\r\n ']/}"; export "$k=$v"
+done
 export LLM_MUSIC_ROOT="$PWD"
 
 NEW_ARMS="${NEW_ARMS:-fable-5.1,fable-5.1-thinking,opus-5.5,opus-5.5-thinking,gpt-6-astra,gpt-6-astra-thinking,gemini-4-argon,gemini-4-argon-thinking}"
