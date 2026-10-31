@@ -28,11 +28,24 @@ cd "$WORKDIR"
 cd llm-music-expression
 
 echo "=== [3/4] python env ==="
-python3 -m venv .venv
-# shellcheck disable=SC1091
-source .venv/bin/activate
-pip install -q --upgrade pip
-pip install -q -e .
+# The project needs Python >= 3.11 (music21 9). Older images (Ubuntu 20.04 ships
+# 3.8) get a standalone 3.11 from uv instead of the system interpreter.
+if python3 -c 'import sys; sys.exit(sys.version_info < (3, 11))' 2>/dev/null; then
+  python3 -m venv .venv
+  # shellcheck disable=SC1091
+  source .venv/bin/activate
+  pip install -q --upgrade pip
+  pip install -q -e .
+else
+  echo "system python3 is $(python3 -V 2>&1 | cut -d' ' -f2) (< 3.11) — using uv-managed Python 3.11"
+  command -v uv >/dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
+  export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+  rm -rf .venv
+  uv venv -q -p 3.11 .venv
+  # shellcheck disable=SC1091
+  source .venv/bin/activate
+  uv pip install -q -e .
+fi
 
 echo "=== [4/4] soundfont ==="
 bash scripts/setup_soundfont.sh || echo "(soundfont setup failed — pieces will generate without audio, metrics still work)"
