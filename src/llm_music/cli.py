@@ -28,7 +28,8 @@ def _split(csv: str) -> list[str]:
 
 def _run_matrix(models: list[str], prompts: list[str], mode: str, max_attempts: int,
                 samples: int = 1, workers: int = 6, bake_audio: bool = True,
-                independent_description: bool = False, resume: Path | None = None):
+                independent_description: bool = False, resume: Path | None = None,
+                first_responses: dict | None = None):
     # The batch folder + manifest are created up front and rewritten after every
     # piece, so an interrupted run still leaves a valid, viewable partial batch —
     # and `resume` continues one: cells already recorded in its manifest (ok OR
@@ -49,6 +50,8 @@ def _run_matrix(models: list[str], prompts: list[str], mode: str, max_attempts: 
     # with a thread pool. Clients are created once per model and shared (the SDKs are
     # thread-safe for concurrent requests). Cells are ordered sample-major so the
     # first `len(models)` in flight hit *different* providers — spreads rate limits.
+    # `first_responses` maps (model, prompt, sample) to a pre-fetched first-attempt
+    # response (Batch API); retries still run live.
     clients = {m: get_client(m) for m in models}
     cells = [(m, p, s) for s in range(samples) for p in prompts for m in models
              if (m, p, s) not in done]
@@ -62,7 +65,8 @@ def _run_matrix(models: list[str], prompts: list[str], mode: str, max_attempts: 
             wd = Path(scratch) / m / p / str(s)
             return cell, generate_piece(clients[m], p, mode, wd,
                                         max_attempts=max_attempts, bake_audio=bake_audio,
-                                        independent_description=independent_description)
+                                        independent_description=independent_description,
+                                        first_response=(first_responses or {}).get(cell))
 
         with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
             for fut in as_completed([ex.submit(work_cell, c) for c in cells]):

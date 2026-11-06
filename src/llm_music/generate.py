@@ -87,6 +87,14 @@ def _load_prompt(mode_mod) -> str:
     return template.format(mode_task=mode_mod.TASK, mode_block=mode_block)
 
 
+def first_attempt_prompts(prompt_name: str, mode: str) -> tuple[str, str]:
+    """(system, user) of a piece's first attempt — what a Batch API request must
+    send to stand in for it (see generate_piece's `first_response`)."""
+    mode_mod = MODES[mode]
+    system = SYSTEM_TEMPLATE.format(variant=_variant_row(prompt_name)["instruction"])
+    return system, mode_mod.build_user_prompt(_load_prompt(mode_mod), None)
+
+
 def generate_piece(
     client: LLMClient,
     prompt_name: str,
@@ -96,7 +104,11 @@ def generate_piece(
     bake_audio: bool = True,
     independent_description: bool = False,
     description_max_attempts: int = 3,
+    first_response: str | None = None,
 ) -> PieceResult:
+    """`first_response`, when given, stands in for the first attempt's API call
+    (e.g. a Batch API result for the identical request); later attempts, which
+    carry the prior error, are made live."""
     if mode not in MODES:
         raise ValueError(f"unknown mode '{mode}'. Known: {', '.join(MODES)}")
     mode_mod = MODES[mode]
@@ -126,11 +138,14 @@ def generate_piece(
     while attempt < max_attempts:
         user = mode_mod.build_user_prompt(base_user, prior_error)
         try:
-            # json_mode enforces at the decoder what the prompt already demands
-            # ("a single JSON object and nothing else") — on OpenRouter reasoning
-            # models it stops the answer being stranded/truncated in the reasoning
-            # trace (same fix the judge path has always used). Prompt text unchanged.
-            response = client.complete(system, user, json_mode=True)
+            if first_response is not None:
+                response, first_response = first_response, None
+            else:
+                # json_mode enforces at the decoder what the prompt already demands
+                # ("a single JSON object and nothing else") — on OpenRouter reasoning
+                # models it stops the answer being stranded/truncated in the reasoning
+                # trace (same fix the judge path has always used). Prompt text unchanged.
+                response = client.complete(system, user, json_mode=True)
         except Exception as e:  # API/network failure
             if ((is_overloaded(e) or is_rate_limited(e) or is_connection_error(e))
                     and overloads < OVERLOAD_RETRIES):

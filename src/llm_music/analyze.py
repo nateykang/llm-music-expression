@@ -6,9 +6,8 @@ surface what models reach for **by default** — aggregate them over a batch and
 get statements like "model X defaults to minor keys / sparse textures / slow tempi."
 
 Metric provenance (so choices are citable):
-  - MusPy (Dong et al., 2020): pitch_class_entropy, scale_consistency,
-    pitch_in_scale_rate, polyphony, empty_beat_rate, groove_consistency,
-    n_pitches_used, pitch_range.
+  - MusPy (Dong et al., 2020): the full metric set, see MUSPY_PITCH / MUSPY_RHYTHM.
+    Drum metrics are blank for pieces without a drum track.
   - music21: key/mode (Krumhansl-Schmuckler), tempo, note content.
   - valence/arousal: a transparent feature-based affect proxy following the
     Russell circumplex convention in Music Emotion Recognition (mode -> valence;
@@ -35,22 +34,31 @@ log = logging.getLogger(__name__)
 # pitch_in_scale_rate actually computed, groove uses the real time signature,
 # valence None (not 0) for unknown mode, sample/batch identity columns;
 # 3 = tempo_bpm blank when the model never set a tempo (was: silent 120),
-# plus the tempo_defaulted flag column.
-FEATURES_VERSION = 3
+# plus the tempo_defaulted flag column; 4 = remaining MusPy metrics.
+FEATURES_VERSION = 4
+
+# All 14 MusPy metrics, grouped as in the MusPy docs.
+MUSPY_PITCH = [
+    "pitch_range", "n_pitches_used", "n_pitch_classes_used", "polyphony", "polyphony_rate",
+    "pitch_in_scale_rate", "scale_consistency", "pitch_entropy", "pitch_class_entropy",
+]
+MUSPY_RHYTHM = [
+    "empty_beat_rate", "empty_measure_rate", "drum_in_pattern_rate",
+    "drum_pattern_consistency", "groove_consistency",
+]
+MUSPY_METRICS = MUSPY_PITCH + MUSPY_RHYTHM
 
 # Columns emitted per piece, in order.
 FIELDS = [
     "model", "prompt", "mode", "sample", "batch", "title",
     "key_tonic", "key_mode", "key_confidence",
     "key_declared_tonic", "key_declared_mode", "key_mode_best", "mode_match",
-    "scale_consistency", "pitch_class_entropy", "pitch_entropy", "pitch_in_scale_rate",
+    *MUSPY_METRICS,
     "consonance_rate", "chord_tone_rate", "chord_tonal_distance", "structureness",
-    "polyphony", "n_voices", "n_instruments", "instrument_rarity",
+    "n_voices", "n_instruments", "instrument_rarity",
     "n_dynamic_marks", "dynamic_span", "dynamic_changes",
     "velocity_mean", "dynamics_range",
-    "empty_beat_rate", "groove_consistency",
     "pitch_interval", "ioi", "rhythm_entropy",
-    "n_pitches_used", "pitch_range",
     "tempo_bpm", "tempo_defaulted", "n_notes", "length_seconds", "note_density",
     "valence", "arousal", "affect_quadrant",
     "features_version",
@@ -417,6 +425,7 @@ def _compute_features(mus, score, meta) -> dict | None:
     ts = score.recurse().getElementsByClass(m21meter.TimeSignature).first()
     bar_quarters = float(ts.barDuration.quarterLength) if ts else 4.0
     resolution = int((mus.resolution or 480) * bar_quarters)
+    meter = "triple" if ts and ts.numerator % 3 == 0 else "duple"
 
     # Declared (K: field) vs detected (Krumhansl–Schmuckler) key. Declared is the
     # model's stated intent — more reliable for "what key did it choose" — so it
@@ -448,23 +457,28 @@ def _compute_features(mus, score, meta) -> dict | None:
         "key_confidence": key_conf,
         "key_declared_tonic": decl_tonic or "", "key_declared_mode": decl_mode or "",
         "key_mode_best": best_mode or "", "mode_match": "" if mode_match is None else mode_match,
-        "scale_consistency": safe(muspy.scale_consistency),
-        "pitch_class_entropy": safe(muspy.pitch_class_entropy),
-        "pitch_entropy": safe(muspy.pitch_entropy),
+        "pitch_range": safe(muspy.pitch_range),
+        "n_pitches_used": safe(muspy.n_pitches_used),
+        "n_pitch_classes_used": safe(muspy.n_pitch_classes_used),
+        "polyphony": safe(muspy.polyphony),
+        "polyphony_rate": safe(muspy.polyphony_rate),
         "pitch_in_scale_rate": pitch_in_scale,
+        "scale_consistency": safe(muspy.scale_consistency),
+        "pitch_entropy": safe(muspy.pitch_entropy),
+        "pitch_class_entropy": safe(muspy.pitch_class_entropy),
+        "empty_beat_rate": safe(muspy.empty_beat_rate),
+        "empty_measure_rate": safe(muspy.empty_measure_rate, resolution),
+        "drum_in_pattern_rate": safe(muspy.drum_in_pattern_rate, meter),
+        "drum_pattern_consistency": safe(muspy.drum_pattern_consistency),
+        "groove_consistency": safe(muspy.groove_consistency, resolution),
         "consonance_rate": consonance_rate, "chord_tone_rate": chord_tone_rate,
         "chord_tonal_distance": chord_tonal_distance, "structureness": structureness,
-        "polyphony": safe(muspy.polyphony),
         "n_voices": len(mus.tracks), "n_instruments": n_instruments,
         "instrument_rarity": instrument_rarity,
         "n_dynamic_marks": n_dynamic_marks, "dynamic_span": dynamic_span,
         "dynamic_changes": dynamic_changes,
         "velocity_mean": velocity_mean, "dynamics_range": dynamics_range,
-        "empty_beat_rate": safe(muspy.empty_beat_rate),
-        "groove_consistency": safe(muspy.groove_consistency, resolution),
         "pitch_interval": pitch_interval, "ioi": ioi, "rhythm_entropy": rhythm_entropy,
-        "n_pitches_used": safe(muspy.n_pitches_used),
-        "pitch_range": safe(muspy.pitch_range),
         "tempo_bpm": "" if tempo_defaulted else round(bpm, 1),
         "tempo_defaulted": int(tempo_defaulted), "n_notes": n_notes,
         "length_seconds": round(length_s, 1), "note_density": round(notes_per_beat, 2),

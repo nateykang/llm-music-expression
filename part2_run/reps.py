@@ -7,8 +7,8 @@ from pathlib import Path
 import llm_music.judge as _J
 
 
-def wire_reps_cache(root: Path) -> int:
-    reps = json.loads((root / "part2_run/reps_cache.json").read_text())
+def wire_reps_cache(root: Path, cache: Path | None = None) -> int:
+    reps = json.loads((cache or root / "part2_run/reps_cache.json").read_text())
     orig = _J.representation
 
     def cached(piece, batch_dir):

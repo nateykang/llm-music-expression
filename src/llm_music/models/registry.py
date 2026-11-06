@@ -31,6 +31,11 @@ MODEL_REGISTRY: dict[str, tuple] = {
     # low = the non-thinking-analog arm, high (API default) = the thinking arm.
     "fable-5": ("anthropic", "claude-fable-5", {"thinking": {"type": "adaptive"}, "effort": "low"}),
     "fable-5-thinking": ("anthropic", "claude-fable-5", {"thinking": {"type": "adaptive"}, "effort": "high"}),
+    # Fable 5.1 and Opus 5.5 reject thinking "disabled": same effort-dial pair.
+    "fable-5.1": ("anthropic", "claude-fable-5-1", {"thinking": {"type": "adaptive"}, "effort": "low"}),
+    "fable-5.1-thinking": ("anthropic", "claude-fable-5-1", {"thinking": {"type": "adaptive"}, "effort": "high"}),
+    "opus-5.5": ("anthropic", "claude-opus-5-5", {"thinking": {"type": "adaptive"}, "effort": "low"}),
+    "opus-5.5-thinking": ("anthropic", "claude-opus-5-5", {"thinking": {"type": "adaptive"}, "effort": "high"}),
     # OpenAI (confirmed available on this org; extend as new ones ship).
     # v3 non-thinking arms are pinned to the reasoning floor ("none", 5.1+);
     # unpinned = provider default (medium) — what the v2 corpus ran.
@@ -38,6 +43,13 @@ MODEL_REGISTRY: dict[str, tuple] = {
     "gpt-5.5-thinking": ("openai", "gpt-5.5", {"reasoning_effort": "high"}),
     "gpt-5.2": ("openai", "gpt-5.2", {"reasoning_effort": "none"}),
     "gpt-5.2-thinking": ("openai", "gpt-5.2", {"reasoning_effort": "high"}),
+    # gpt-6.1-sol rejects effort "none" (floor is low), so its ± pair is
+    # effort low vs high, like gemini 3.5+ flash and kimi-k3.
+    "gpt-6.1-sol": ("openai", "gpt-6.1-sol", {"reasoning_effort": "low"}),
+    "gpt-6.1-sol-thinking": ("openai", "gpt-6.1-sol", {"reasoning_effort": "high"}),
+    # gpt-6-astra's effort floor is also low.
+    "gpt-6-astra": ("openai", "gpt-6-astra", {"reasoning_effort": "low"}),
+    "gpt-6-astra-thinking": ("openai", "gpt-6-astra", {"reasoning_effort": "high"}),
     "gpt-4.1": ("openai", "gpt-4.1"),
     # 5.1/5.4 aren't listed on the native org — routed via OpenRouter.
     "gpt-5.1": ("openrouter", "openai/gpt-5.1", {"reasoning": {"enabled": False}}),
@@ -80,6 +92,9 @@ MODEL_REGISTRY: dict[str, tuple] = {
     "gemini-3.6-flash-thinking": ("openrouter", "google/gemini-3.6-flash", {"reasoning": {"effort": "high"}}),
     "gemini-3.7-flash": ("openrouter", "google/gemini-3.7-flash", {"reasoning": {"effort": "low"}}),
     "gemini-3.7-flash-thinking": ("openrouter", "google/gemini-3.7-flash", {"reasoning": {"effort": "high"}}),
+    # gemini-4-argon: reasoning is mandatory, so effort low vs high.
+    "gemini-4-argon": ("openrouter", "google/gemini-4-argon", {"reasoning": {"effort": "low"}}),
+    "gemini-4-argon-thinking": ("openrouter", "google/gemini-4-argon", {"reasoning": {"effort": "high"}}),
     # grok-4.1 (the one Grok shipped with an explicit non-thinking variant) is no
     # longer served anywhere we can reach; 4.3 honors reasoning enabled:false via
     # OpenRouter (probe: 167 -> 0 reasoning tokens), so it carries the ± pair.

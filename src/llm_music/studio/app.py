@@ -613,7 +613,9 @@ def review_piece_file(session_id: str, idx: int, kind: str):
         raise HTTPException(status_code=404, detail="no such file")
     if not path.exists():
         raise HTTPException(status_code=404, detail="no such file")
-    return FileResponse(path)
+    # Pieces can be re-rendered in place; old mtimes would otherwise let
+    # browsers heuristically cache the stale file for days.
+    return FileResponse(path, headers={"Cache-Control": "no-cache"})
 
 
 @app.get("/api/sessions/{session_id}/features/{version}",
