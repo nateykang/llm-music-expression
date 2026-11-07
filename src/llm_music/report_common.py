@@ -278,13 +278,15 @@ def cell(v, kind):
 def table(cols, rows, left=1):
     """Sortable table. cols = [(label, tip_or_None)]; each row is a list of
     cell-HTML strings, or a (cells, row_class) tuple (rows classed 'ref' stay
-    pinned on top when sorting). The first `left` cells are left-aligned."""
+    pinned on top when sorting). The first `left` cells are left-aligned.
+    A cell that is already a <td> (heat()) is used as is."""
     head = "<thead><tr>" + "".join(tip(l, t) for l, t in cols) + "</tr></thead>"
     body = "<tbody>"
     for row in rows:
         cells, cls = row if isinstance(row, tuple) else (row, "")
         body += (f"<tr class='{cls}'>" if cls else "<tr>") + "".join(
-            f"<td class='{'m' if i < left else ''}'>{c}</td>" for i, c in enumerate(cells)) + "</tr>"
+            c if str(c).startswith("<td") else f"<td class='{'m' if i < left else ''}'>{c}</td>"
+            for i, c in enumerate(cells)) + "</tr>"
     body += "</tbody>"
     return f"<div class='tscroll'><table class='sortable'>{head}{body}</table></div>"
 
