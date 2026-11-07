@@ -10,7 +10,7 @@ A: gap = q_J - mean(q_O, O != J) where q is the mean of the 8 quality dims.
 Bootstrap (pieces) 95% CIs; competence = r(q_J, leave-J-out panel mean).
 Writes docs/analysis/selfpref_v3.json (+ matrix PNG).
 
-    python scripts/selfpref_analysis.py [raw_json]
+    python scripts/selfpref_analysis.py [raw_json] [out_json]
 """
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from llm_music.judge import QUALITY_KEYS  # noqa: E402
 
 SRC = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "part2_run/analysis/part2_selfpref_raw.json"
-OUT = ROOT / "docs/analysis/selfpref_v3.json"
+OUT = Path(sys.argv[2]) if len(sys.argv) > 2 else ROOT / "docs/analysis/selfpref_v3.json"
 random.seed(20260901); np.random.seed(20260901)
 B = 1000
 
