@@ -40,7 +40,7 @@ def _corr(s):
 
 
 def _pill_row(active: str, sub: bool):
-    """Corpus/part pill row. active in {"v1","v3","p1"}; sub=True when the page
+    """Corpus/part pill row. active in {"v1","v3","new","p1","p2"}; sub=True when the page
     lives in docs/v3/ (hrefs are relative to the page's own directory)."""
     a = ("<a href='{h}' style=\"font-size:.85rem;padding:4px 13px;border-radius:7px;"
          "border:1px solid #cbb99a;background:#fff;color:var(--fg);text-decoration:none;font-weight:400\">{t}</a>")
@@ -48,6 +48,7 @@ def _pill_row(active: str, sub: bool):
           "border:1px solid var(--accent);background:var(--accent);color:var(--bg);font-weight:400\">{t}</span>")
     pills = [("v1", "v1/v2 — style space &amp; taste", "selfpref.html" if not sub else "../selfpref.html"),
              ("v3", "v3 — 42 arms × 1,611 pieces", "v3/selfpref.html" if not sub else "selfpref.html"),
+             ("new", "v3 + new models — 52 arms × 2,011 pieces", "v3/new_models.html" if not sub else "new_models.html"),
              ("p1", "Part 1 — key-shift EDA (own pieces)", "v3/keyshift.html" if not sub else "keyshift.html"),
              ("p2", "Part 1 — fixed pieces", "v3/keyshift2.html" if not sub else "keyshift2.html")]
     items = "".join(on.format(t=t) if k == active else a.format(h=h, t=t) for k, t, h in pills)
@@ -252,11 +253,131 @@ def build(analysis: Path | None = None) -> Path:
         build_keyshift(analysis)
     if (analysis / "keyshift2.json").exists():
         build_keyshift2(analysis)
+    if (analysis / "new_models_v3.json").exists():
+        build_new_models(analysis)
     return out
 
 
 if __name__ == "__main__":
     print(build())
+
+
+def build_new_models(analysis: Path) -> Path:
+    D = json.loads((analysis / "new_models_v3.json").read_text(encoding="utf-8"))
+    A, O, SP, F = D["authors"], D["order"], D["selfp"], D["focus"]
+    mark = lambda a: f"<span class='newarm'>{a}</span>" if a in F else f"<span class='oldarm'>{a}</span>"
+
+    def shade(v, scale=0.5):
+        rgb = "46,160,67" if v >= 0 else "207,90,80"
+        return (f"<span style='display:block;margin:-4px -6px;padding:4px 6px;"
+                f"background:rgba({rgb},{min(0.5, abs(v) / scale * 0.5):.2f})'>{v:+.2f}</span>")
+
+    def ci(c):
+        star = "&nbsp;*" if c[0] > 0 or c[1] < 0 else ""
+        return f"[{c[0]:+.2f}, {c[1]:+.2f}]{star}"
+
+    missing = D["expected"] - D["n_verdicts"]
+    scope = (f"<h1>New models <span class='sub'>v3 prompts · {D['n_judges']} judges × {D['n_pieces']:,} pieces · "
+             f"{D['n_verdicts']:,} verdicts</span></h1>"
+             "<p class='scope'>I added fable-5.1, opus-5.5, gpt-6-astra and gemini-4-argon to the v3 corpus, plus gpt-6.1-sol, "
+             "which was generated in October but never judged. All of these reject thinking turned off, so each ± pair is low "
+             "vs high effort. Each arm wrote 120 pieces (3 self-expression variants × 20 samples × ABC and code-gen). The "
+             "express-yourself pieces went to the full panel on the unchanged v3 judge prompt"
+             f"{fnote('llm-judge')}. New arms are highlighted. Quality is the mean of the eight craft dimensions on the 1–5 rubric.</p>")
+
+    rows = []
+    for a in O:
+        x = A[a]
+        rows.append([mark(a), cell(x["rank"], "int"), cell(x["n"], "int"), scorebar(x["q"]),
+                     f"[{x['ci'][0]:.2f}, {x['ci'][1]:.2f}]", cell(x["abc"], "f2"), cell(x["codegen"], "f2"),
+                     f"{x['labels'][0][0]} {x['labels'][0][1]:.0%}", f"{x['labels'][1][0]} {x['labels'][1][1]:.0%}"])
+    sec1 = ("<h2>Quality of every arm's pieces</h2>"
+            "<p class='scope'>Scored only by judges outside the piece's own model family, so an arm's own opinion and its "
+            "±effort sibling's do not count. CIs are bootstrapped over pieces.</p>"
+            + table([("arm", None), ("rank", "rank among all 52 arms"), ("n", "express-yourself pieces"),
+                     ("quality", "mean of the eight craft dimensions, out-of-family judges"), ("95% CI", "bootstrap over pieces"),
+                     ("ABC", "ABC pieces only"), ("code-gen", "code-gen pieces only"),
+                     ("top label", "most common emotion label, out-of-family judges"), ("second label", "second most common label")], rows))
+
+    dims = list(A[F[0]]["dims"])
+    drows = [[mark(a)] + [cell(A[a]["dims"][k], "f2") for k in dims] for a in sorted(F, key=lambda a: -A[a]["q"])]
+    sec2 = "<h2>Craft dimensions, new arms</h2>" + table([("arm", None)] + [(k, None) for k in dims], drows)
+
+    srows = []
+    for j in sorted(SP, key=lambda x: -SP[x]["vs_recent"]):
+        s = SP[j]
+        srows.append([mark(j), cell(s["n_own"], "int"), cell(s["own_gap"], "f2"), cell(s["recent_gap"], "f2"), cell(s["old_gap"], "f2"),
+                      shade(s["vs_recent"]), ci(s["vs_recent_ci"]), shade(s["vs_all"]), ci(s["vs_all_ci"]),
+                      cell(s["competence"], "f2"), cell(s["mean_given"], "f2")])
+    n_pos = sum(SP[j]["vs_recent_ci"][0] > 0 for j in SP)
+    n_neg = sum(SP[j]["vs_recent_ci"][1] < 0 for j in SP)
+    sec3 = ("<h2>Do models favor their own music?</h2>"
+            "<p class='scope'>For each piece, gap = the judge's score minus the mean of the other judges. Self-preference is the "
+            "mean gap on the judge's own pieces minus its mean gap on a baseline set. The v3 page uses every other family's pieces "
+            "as the baseline. Here that misleads, because the new pieces are stronger than most of the corpus: gemini-4-argon "
+            "marks older pieces far below its peers, which makes its own look better than they are. So I sort by a second "
+            "baseline, other families' pieces among the new arms. "
+            f"On that baseline {n_pos} arms favor themselves and {n_neg} are harsher on themselves (CI excludes zero; * marks those).</p>"
+            + table([("judge", None), ("n own", "own pieces judged"), ("own gap", "mean gap on its own pieces"),
+                     ("new-arm gap", "mean gap on other families' pieces among new arms"),
+                     ("older gap", "mean gap on other families' older pieces"),
+                     ("vs new arms", "own gap − new-arm gap"), ("95% CI", "bootstrap over pieces"),
+                     ("vs all", "own gap − gap on all other families' pieces, the v3 page's estimator"), ("95% CI ", "bootstrap over pieces"),
+                     ("competence", "r(judge's score, leave-one-out panel mean) across all pieces"),
+                     ("mean given", "the judge's average quality score")], srows))
+
+    mrows = [[mark(j)] + [cell(D["matrix"][j][a], "f2") for a in F] for j in F]
+    short = lambda a: a.replace("-thinking", "†")
+    sec4 = ("<h2>New judges × new authors</h2><p class='scope'>Mean quality each judge (row) gives each author (column). † = high effort. "
+            "Includes own pieces.</p>" + table([("judge \\ author", None)] + [(short(a), a) for a in F], mrows))
+
+    FE = D["features"]
+    frows = []
+    for a in F + ["v3 corpus (42 arms)"]:
+        x = FE[a]
+        frows.append([mark(a), cell(x["n"], "int"), cell(x["minor"], "pct"), str(x["top_key"][0]).replace(" ", "&nbsp;") if x["top_key"] else "—",
+                      cell(x["tempo"], "f0"), cell(x["length_seconds"], "f0"), cell(x["n_notes"], "f0"), cell(x["n_instruments"], "f0"),
+                      cell(x["pitch_class_entropy"], "f2"), cell(x["polyphony"], "f2"), cell(x["dynamic_span"], "f0"), cell(x["structureness"], "f2")])
+    sec5 = ("<h2>Musical defaults</h2><p class='scope'>All three prompts and both formats. Medians except minor share. These use the same "
+            "feature code as the v3 corpus row.</p>"
+            + table([("arm", None), ("n", "pieces"), ("minor", "share of pieces in a minor mode (key_mode_best)"), ("top key", "most common declared key"),
+                     ("tempo", "median BPM, pieces that set a tempo"), ("seconds", "median length"), ("notes", "median note count"),
+                     ("instruments", "median instruments"), ("PC entropy", "pitch-class entropy"), ("polyphony", "mean simultaneous pitches"),
+                     ("dyn. span", "dynamic marks range"), ("structure", "structureness")], frows))
+
+    grows = []
+    for a in F:
+        g = D["generation"][a]
+        grows.append([mark(a), f"{g['abc'][1]}/{g['abc'][0]}", cell(g["abc"][2] / g["abc"][0], "f2"),
+                      f"{g['codegen'][1]}/{g['codegen'][0]}", cell(g["codegen"][2] / g["codegen"][0], "f2")])
+    sec6 = details_section("Generation success and attempts",
+                           table([("arm", None), ("ABC ok", None), ("ABC attempts", "mean attempts per piece"),
+                                  ("code-gen ok", None), ("code-gen attempts", "mean attempts per piece")], grows))
+    methods = (
+        "<h2>Methods and caveats</h2><ul class='scope'>"
+        f"<li><b>Coverage.</b> {D['n_verdicts']:,} of {D['expected']:,} verdicts. The {missing} gaps: 1 fable-5-thinking refusal on an "
+        "opus-4.1-thinking piece, already a gap on the v3 page, and 6 kimi-k2 and kimi-k2-thinking failures on code-gen pieces, which I did not retry.</li>"
+        "<li><b>Integrity gate override.</b> The 32 older arms judged the new pieces through batch APIs, and all of them failed the automatic gate "
+        "(top label ≤ 60%, keyword alignment ≥ 90%, r ≥ 0.35 against the Anthropic panel). I merged them anyway. The gate assumes a full-range corpus. "
+        "These pieces are narrow in quality (panel SD 0.22 vs 0.50 on older pieces) and mostly wistful, so passing judges reach 57–68% wistful on them too. "
+        "Most correlation checks also had no reference, because the Anthropic arms were quarantined at the same time. "
+        "Against the four merged Anthropic arms, six older arms stay under r = 0.35 on these pieces: gemini-3-flash ±, gemini-3.1-pro, gemini-3.5-flash and grok-4.3 ±. "
+        "On older pieces those arms reach 0.59–0.83.</li>"
+        "<li><b>Realtime arms.</b> gpt-5, 5.1 and 5.4 ±, kimi-k2 ± and opus-4.1 ± were judged realtime without the gate. Three are under r = 0.35: kimi-k2-thinking, gpt-5.1-thinking, opus-4.1-thinking.</li>"
+        "<li><b>Score level.</b> Every older judge rates the new pieces above its usual level, by about 0.3–1.0 points. This could be real quality or judge bias.</li>"
+        "<li><b>abc2midi.</b> Pieces were generated on a pod with abc2midi 4.27. Judge inputs and features were rebuilt with 5.03, matching the rest of the corpus. On a 270-piece comparison, 267 had identical notes.</li>"
+        "<li><b>Scope.</b> Scores come from model judges, not listeners, and cover only the express-yourself prompt. Pieces are not in the Browse tab yet.</li></ul>")
+
+    body = scope + sec1 + sec2 + sec3 + sec4 + sec5 + sec6 + methods
+    css = (CSS + " .newarm { background: var(--accent); color: var(--bg); padding: 1px 6px; border-radius: 4px; white-space: nowrap; }"
+           " .oldarm { font-weight: 400; white-space: nowrap; } .nowrap td { white-space: nowrap; }")
+    html_text = page("New models — v3", "selfpref.html", body, extra_css=css)
+    html_text = re.sub(r'(<a href=")(?!https?|\.\./|#)', r"\1../", html_text)
+    html_text = re.sub(r'(<link[^>]*href=")(?!https?|\.\./)', r"\1../", html_text)
+    html_text = html_text.replace("</nav>", "</nav>" + _pill_row("new", True), 1)
+    out = DOCS_DIR / "v3" / "new_models.html"
+    out.write_text(html_text, encoding="utf-8")
+    return out
 
 
 def build_keyshift(analysis: Path) -> Path:

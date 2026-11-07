@@ -603,7 +603,7 @@ def _corpus_toggle_v3():
             "<span style='font-weight:600;font-size:.9rem;color:var(--fg)'>Corpus</span>"
             + a.format(h="../results.html", t="v1 (pilot)")
             + a.format(h="../v2/results.html", t="v2 — 15 models × 100")
-            + active + "</div>")
+            + active + a.format(h="new_models.html", t="v3 + new models — 52 arms") + "</div>")
 
 
 def _inject_pill(path: Path, href: str):
