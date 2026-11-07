@@ -6,7 +6,7 @@
   3. What does each model prefer? (key/mode, tempo, dynamics — style, not skill)
   4. Do model families share traits? (the same lens, by family)
 
-Builds docs/v3/results.html from the three v3 batches' features.csv +
+Builds docs/v3/results.html from the v3 batches' features.csv +
 data.json and the cached Bach reference; extends the corpus pill on the
 v1/v2 results pages. Research-notebook conventions: prose figcaptions,
 sortable tables, no summary widgets.
@@ -28,7 +28,11 @@ from .report_common import (cell, details_section, fnote, heat, page, paned,
 
 V3_BATCHES = ["20260819_201530__models_40_prompts_3",
               "20260819_203512__models_2_prompts_3",
-              "20260820_061907__models_42_prompts_3"]
+              "20260820_061907__models_42_prompts_3",
+              "20261001_121052__models_2_prompts_3",
+              "20261001_121202__models_2_prompts_3",
+              "20261106_031646__models_8_prompts_3",
+              "20261106_040840__models_8_prompts_3"]
 
 # base model -> (family, release month). Preview-only models carry their
 # preview date; the paper's roster table documents access dates separately.
@@ -36,12 +40,14 @@ RELEASE = {
     "gpt-5": ("openai", "2025-08"), "gpt-5.1": ("openai", "2025-11"),
     "gpt-5.2": ("openai", "2025-12"), "gpt-5.4": ("openai", "2026-03"),
     "gpt-5.5": ("openai", "2026-04"), "gpt-5.6": ("openai", "2026-07"),
+    "gpt-6-astra": ("openai", "2026-09"), "gpt-6.1-sol": ("openai", "2026-09"),
     "opus-4.1": ("anthropic", "2025-08"), "sonnet-4.5": ("anthropic", "2025-09"),
     "opus-4.5": ("anthropic", "2025-11"), "sonnet-4.6": ("anthropic", "2026-02"),
     "opus-4.8": ("anthropic", "2026-05"), "fable-5": ("anthropic", "2026-08"),
+    "fable-5.1": ("anthropic", "2026-09"), "opus-5.5": ("anthropic", "2026-09"),
     "gemini-3-flash": ("google", "2025-12"), "gemini-3.1-pro": ("google", "2026-02"),
     "gemini-3.5-flash": ("google", "2026-05"), "gemini-3.6-flash": ("google", "2026-07"),
-    "gemini-3.7-flash": ("google", "2026-08"),
+    "gemini-3.7-flash": ("google", "2026-08"), "gemini-4-argon": ("google", "2026-10"),
     "grok-4.3": ("xai", "2026-04"), "grok-4.6": ("xai", "2026-08"),
     "kimi-k2": ("kimi", "2025-07"), "kimi-k3": ("kimi", "2026-07"),
 }
@@ -221,8 +227,9 @@ def _q1_bach_section(feats, bach):
             ("direction", None),
             ("Bach chorales", "Median [IQR] over 40 chorales from music21's built-in "
                               "corpus, measured with the identical pipeline."),
-            ("LLM — ABC", "Median [IQR] over all 2,515 ABC pieces."),
-            ("LLM — code-gen", "Median over the 2,292 completed code-gen pieces."),
+            ("LLM — ABC", f"Median [IQR] over all {len(_abc(feats)):,} ABC pieces."),
+            ("LLM — code-gen", "Median over the "
+             f"{sum(r.get('mode') == 'codegen' for r in feats):,} completed code-gen pieces."),
             ("verdict", "Direction of the LLM–Bach difference, shaded when the LLM "
                         "median falls outside Bach's interquartile range.")]
     return (
@@ -269,7 +276,7 @@ def _q2_ranking_section(feats):
                     + [cell(r["ranks"].get(col), "int") for col, *_ in COMPLEX_PANEL])
     cols = ([("#", None), ("model", None), ("family", None), ("released", None),
              ("avg rank", "Mean of the eight per-metric ranks; 1 = most complex "
-                          "of the 21 models on that metric. ABC pieces, ±thinking "
+                          f"of the {len(BASES)} models on that metric. ABC pieces, ±thinking "
                           "arms pooled.")]
             + [(lab, tp) for _c, lab, _d, _s, tp in COMPLEX_PANEL])
     body = table(cols, rows, left=4)
@@ -291,8 +298,8 @@ def _q2_ranking_section(feats):
     trend = _table_raw([("metric", None),
                         ("ρ (newer → more complex)",
                          "Spearman correlation between release rank and the metric, "
-                         "oriented so positive = newer models more complex. n=21 "
-                         "models; |ρ| under ~0.45 is within noise.")], trows)
+                         f"oriented so positive = newer models more complex. n={len(BASES)} "
+                         "models; |ρ| under ~0.39 is within noise.")], trows)
     return (
         "<h2>2 · Do more capable LLMs write more complex music?</h2>"
         "<figure><figcaption>Models ranked by their average rank across the same eight "
@@ -330,8 +337,8 @@ def _thinking_section(feats):
         "<h3>Thinking − non-thinking, same model <span class='sub'>(median deltas)</span></h3>"
         + toggle(default="abc")
         + "<figure><figcaption>The other capability axis: identical model, more reasoning. "
-        "Green = the thinking arm is higher. For always-thinking models (fable-5, kimi-k3, "
-        "gemini pro/3.5+ flash, grok-4.6) the pair is effort low vs high. Code-gen deltas "
+        "Green = the thinking arm is higher. For always-thinking models (fable-5+, opus-5.5, gpt-6.x, kimi-k3, "
+        "gemini pro/3.5+ flash, gemini-4-argon, grok-4.6) the pair is effort low vs high. Code-gen deltas "
         "carry a survivorship caveat: failed pieces (concentrated in early non-thinking "
         "arms) are missing non-randomly.</figcaption>"
         + paned(pane, default="abc") + "</figure>")
@@ -341,7 +348,7 @@ def _thinking_section(feats):
 
 def _key_widget(feats):
     """The v1 interactive circle-of-fifths histogram, fed with v3 data: all
-    three prompt variants, ±thinking arms pooled per base model (21 buttons)."""
+    three prompt variants, ±thinking arms pooled per base model (one button each)."""
     buckets = {"text": {}, "code": {}, "all": {}}
     for r in feats:
         tonic = (r.get("key_declared_tonic") or r.get("key_tonic") or "").replace("-", "b")
@@ -580,7 +587,7 @@ def _appendix(feats):
                         ("valence", "Mode-based affect proxy, −1…1."),
                         ("arousal", "Tempo + density affect proxy, 0…1.")], prow))
     return ("<h2>Appendix</h2>"
-            + details_section("Full per-arm feature table (42 arms × 12 features)", per_arm)
+            + details_section(f"Full per-arm feature table ({2 * len(BASES)} arms × 12 features)", per_arm)
             + details_section("Prompt-variant effects", prompts))
 
 
@@ -588,7 +595,7 @@ def _appendix(feats):
 
 V3_PILL = ("<a href='{href}' style=\"font-size:.85rem;padding:4px 13px;border-radius:7px;"
            "border:1px solid #cbb99a;background:#fff;color:var(--fg);text-decoration:none;"
-           "font-weight:400\">v3 — 42 arms × 60</a>")
+           "font-weight:400\">v3 — 52 arms × 60</a>")
 
 
 def _corpus_toggle_v3():
@@ -597,13 +604,13 @@ def _corpus_toggle_v3():
          "font-weight:400\">{t}</a>")
     active = ("<span style=\"font-size:.85rem;padding:4px 13px;border-radius:7px;"
               "border:1px solid var(--accent);background:var(--accent);color:var(--bg);"
-              "font-weight:400\">v3 — 42 arms × 60</span>")
+              "font-weight:400\">v3 — 52 arms × 60</span>")
     return ("<div id='corpus-toggle' style='max-width:980px;margin:.9rem auto -1.1rem;"
             "padding:0 1.25rem;display:flex;gap:8px;align-items:center'>"
             "<span style='font-weight:600;font-size:.9rem;color:var(--fg)'>Corpus</span>"
             + a.format(h="../results.html", t="v1 (pilot)")
             + a.format(h="../v2/results.html", t="v2 — 15 models × 100")
-            + active + a.format(h="new_models.html", t="v3 + new models — 52 arms") + "</div>")
+            + active + "</div>")
 
 
 def _inject_pill(path: Path, href: str):
@@ -623,12 +630,12 @@ def build() -> Path:
     feats, pieces = _load()
     bach = _bach_rows()
     body = (
-        "<h1>v3 corpus — objective features <span class='sub'>42 arms × 3 prompts × 20 samples</span></h1>"
-        "<p class='scope'>21 models (±thinking pairs) from five labs, released 2025-07 – "
-        "2026-08. Each arm wrote 60 pieces per medium (3 self-expression variants × 20 "
+        f"<h1>v3 corpus — objective features <span class='sub'>{2 * len(BASES)} arms × 3 prompts × 20 samples</span></h1>"
+        f"<p class='scope'>{len(BASES)} models (±thinking pairs) from five labs, released 2025-07 – "
+        f"{max(r for _f, r in RELEASE.values())}. Each arm wrote 60 pieces per medium (3 self-expression variants × 20 "
         "samples): ABC notation and toolkit-free music21 code. The variant sentence is the "
-        "system prompt; the user prompt is a fixed frame. Generated 2026-08-19/20; "
-        "features v3. Four questions organize this page: are LLMs simpler than humans, "
+        "system prompt; the user prompt is a fixed frame. Generated 2026-08-19/20, with "
+        "the newest five models added 2026-10-01 and 2026-11-06; features v4. Four questions organize this page: are LLMs simpler than humans, "
         "does capability buy complexity, what does each model prefer, and do families "
         "share traits.</p>"
         + _completion_section(pieces)

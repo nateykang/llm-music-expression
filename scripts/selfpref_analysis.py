@@ -27,8 +27,10 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 from llm_music.judge import QUALITY_KEYS  # noqa: E402
 
-SRC = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "part2_run/analysis/part2_selfpref_raw.json"
+SRC = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "part4_run/analysis/part4_selfpref_raw.json"
 OUT = Path(sys.argv[2]) if len(sys.argv) > 2 else ROOT / "docs/analysis/selfpref_v3.json"
+NEW_ARMS = {f"{m}{s}" for m in ("fable-5.1", "opus-5.5", "gpt-6-astra", "gpt-6.1-sol", "gemini-4-argon")
+            for s in ("", "-thinking")}
 random.seed(20260901); np.random.seed(20260901)
 B = 1000
 
@@ -92,6 +94,8 @@ for J in judges:
          "strict_self": stats(own), "sibling": stats(sib), "family_self": stats(own | sib),
          "by_mode": {m: stats(own & (mode == m), oth & (mode == m)) for m in ("abc", "codegen")},
          "mean_given": float(np.mean([pieces[i]["q"][J] for i in idx]))}
+    newer = oth & np.array([a in NEW_ARMS for a in auth])
+    r["vs_new"] = float(g[own].mean() - g[newer].mean())
     # competence: r(q_J, leave-J-out mean)
     xs = np.array([pieces[i]["q"][J] for i in idx])
     ys = np.array([(sum(pieces[i]["q"].values()) - pieces[i]["q"][J]) / (len(pieces[i]["q"]) - 1) for i in idx])
@@ -110,7 +114,8 @@ for J, r in results.items():
 deltas = [v["thinking"] - v["base"] for v in fam_pairs.values() if "thinking" in v and "base" in v]
 authors_quality = {a: float(mean(v)) for a, v in panel_mean_by_author.items()}
 summary = {
-    "n_pieces": len(pieces), "n_judges": len(judges), "n_verdicts": sum(len(g) for g in gaps.values()),
+    "n_pieces": len(pieces), "n_judges": len(judges),
+    "n_abc": int((modes_by_piece == "abc").sum()), "n_codegen": int((modes_by_piece == "codegen").sum()), "n_verdicts": sum(len(g) for g in gaps.values()),
     "mean_corrected_strict_self": float(mean(r["strict_self"]["corrected"] for r in results.values() if r["strict_self"])),
     "n_positive_strict_self": sum(1 for r in results.values() if r["strict_self"] and r["strict_self"]["ci95"][0] > 0),
     "n_negative_strict_self": sum(1 for r in results.values() if r["strict_self"] and r["strict_self"]["ci95"][1] < 0),

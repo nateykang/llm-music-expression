@@ -34,7 +34,7 @@ def strip(ax):
 # ---- Fig 1: corrected strict-self bias per judge, diverging bars + 95% CI ----
 rows = [(j, J[j]["strict_self"]) for j in ORDER if J[j]["strict_self"]]
 rows.sort(key=lambda r: r[1]["corrected"])
-fig, ax = plt.subplots(figsize=(7.2, 10.5), dpi=160)
+fig, ax = plt.subplots(figsize=(7.2, 0.25 * len(rows)), dpi=160)
 ys = range(len(rows))
 for y, (j, s) in zip(ys, rows):
     c = s["corrected"]; lo, hi = s["ci95"]
@@ -43,11 +43,11 @@ for y, (j, s) in zip(ys, rows):
 ax.axvline(0, color=AXIS, linewidth=1)
 ax.set_yticks(list(ys)); ax.set_yticklabels([j for j, _ in rows])
 ax.set_xlabel("leniency-corrected self-preference (own pieces − others' pieces, quality scale points)")
-ax.set_title("Does each model rate its own music higher than the panel does?", loc="left", color=INK, fontsize=11)
-ax.text(0, 1.012, "blue = favors its own pieces · red = harsher on its own pieces · whiskers = 95% bootstrap CI over pieces",
+ax.set_title("Does each model rate its own music higher than the panel does?", loc="left", color=INK, fontsize=11, pad=20)
+ax.text(0, 1.012, "blue = favors its own pieces · red = harsher on its own pieces · whiskers = 95% CI",
         transform=ax.transAxes, color=INK2, fontsize=8)
 strip(ax); ax.grid(axis="y", visible=False)
-ax.set_xlim(-0.45, 0.85)
+ax.set_xlim(min(s["ci95"][0] for _, s in rows) - 0.05, max(s["ci95"][1] for _, s in rows) + 0.05)
 fig.tight_layout(); fig.savefig(ROOT / "docs/analysis/selfpref_bias.png"); plt.close(fig)
 
 # ---- Fig 2: thinking vs base per family (dumbbell) ----
@@ -57,7 +57,7 @@ for j in ORDER:
     if s: fam.setdefault(J[j]["family"], {})["thinking" if J[j]["thinking"] else "base"] = s["corrected"]
 pairs = sorted([(f, v["base"], v["thinking"]) for f, v in fam.items() if "base" in v and "thinking" in v],
                key=lambda x: x[2] - x[1])
-fig, ax = plt.subplots(figsize=(7.2, 6.6), dpi=160)
+fig, ax = plt.subplots(figsize=(7.2, 8.2), dpi=160)
 for y, (f, b, t) in enumerate(pairs):
     ax.plot([b, t], [y, y], color=GRID, linewidth=2, zorder=1)
     ax.scatter([b], [y], s=52, color=BLUE_LIGHT, edgecolor=SURFACE, linewidth=1.5, zorder=3)
@@ -67,7 +67,7 @@ ax.set_yticks(range(len(pairs))); ax.set_yticklabels([p[0] for p in pairs])
 ax.scatter([], [], s=52, color=BLUE_LIGHT, label="base arm"); ax.scatter([], [], s=52, color=BLUE_DARK, label="thinking arm")
 ax.legend(loc="lower right", frameon=False, fontsize=8)
 ax.set_xlabel("corrected self-preference")
-ax.set_title("Same model, thinking on vs off: does reasoning change self-preference?", loc="left", color=INK, fontsize=11)
+ax.set_title("Same model, thinking on vs off: does reasoning change self-preference?", loc="left", color=INK, fontsize=11, pad=20)
 ax.text(0, 1.015, "sorted by thinking − base; families where thinking widened the self-preference gap sit at the bottom",
         transform=ax.transAxes, color=INK2, fontsize=8)
 strip(ax); ax.grid(axis="y", visible=False)
